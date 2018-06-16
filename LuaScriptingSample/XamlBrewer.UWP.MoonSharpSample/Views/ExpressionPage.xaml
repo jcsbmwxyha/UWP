@@ -1,0 +1,77 @@
+﻿<Page x:Class="XamlBrewer.UWP.MoonSharpSample.Views.ExpressionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:XamlBrewer.UWP.MoonSharpSample.Views"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}"
+                   Text="Lua Expression Evaluation"
+                   Foreground="OrangeRed"
+                   Padding="20 0 0 20" />
+
+        <!-- Body -->
+        <Grid Grid.Row="1"
+              Margin="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="160" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="160" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Expression -->
+            <TextBox x:Name="Expression"
+                     Grid.ColumnSpan="2"
+                     FontSize="24"
+                     IsSpellCheckEnabled="False" />
+
+            <!-- Button -->
+            <Button x:Name="Evaluate"
+                    Content="Evaluate"
+                    Click="Button_Click"
+                    FontSize="24"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Stretch"
+                    Margin="0 8 0 0" />
+
+            <!-- Result -->
+            <TextBlock x:Name="Result"
+                       FontWeight="SemiBold"
+                       FontSize="24"
+                       Padding="12 4 0 0"
+                       Grid.Row="1"
+                       VerticalAlignment="Top"
+                       Margin="0 8 0 0" />
+
+            <!-- Guidance -->
+            <TextBlock FontSize="16"
+                       Foreground="DimGray"
+                       Grid.Row="2"
+                       TextWrapping="WrapWholeWords">
+                <Run Text="Enter a Lua expression and click the " /><Italic>Evaluate</Italic><Run Text=" button." />
+                <LineBreak />
+                <Run Text="Some examples: " />
+                <LineBreak />
+                <Run Text="   (200 + 321) - (math.cos(3) * 100)" />
+                <LineBreak />
+                <Run Text="   'Hello'..' '..'World'" />
+                <LineBreak />
+                <Run Text="   os.date()" />
+            </TextBlock>
+        </Grid>
+    </Grid>
+</Page>
