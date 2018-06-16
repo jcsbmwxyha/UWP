@@ -1,0 +1,39 @@
+﻿<ContentDialog
+    x:Class="AuraEditor.ZoneCustomizedDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraEditor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Edit Customize"
+    PrimaryButtonText="OK"
+    PrimaryButtonClick="ZoneCustomizedDialog_PrimaryButtonClick"
+    CloseButtonText="Cancel"
+    CloseButtonClick="ZoneCustomizedDialog_CloseButtonClick"
+    >
+
+    <Grid Name="DialogGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"  
+               PointerPressed="Image_PointerPressed"
+               PointerReleased="Image_PointerReleased"
+               PointerMoved="Image_PointerMoved"
+               RightTapped="Image_RightTapped">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Image Name="DeviceImage" Canvas.ZIndex="0" Stretch="None" Width="942" Height="471"/>
+        <RichTextBlock Name="DialogLogBlock"
+                         TextWrapping="Wrap"
+                         Foreground="Firebrick"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Grid.Row="1">
+        </RichTextBlock>
+        <Rectangle Name="mouseRectangle" Width="0" Height="0" Fill="Transparent" Stroke="Red" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Rectangle.RenderTransform>
+                <CompositeTransform/>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+    </Grid>
+</ContentDialog>

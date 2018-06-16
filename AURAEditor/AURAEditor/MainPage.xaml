@@ -1,0 +1,213 @@
+﻿<Page
+    x:Class="AuraEditor.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraEditor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style TargetType="Image" x:Key="DeviceImgStyle">
+            <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
+            <Setter Property="Stretch" Value="Fill"/>
+        </Style>
+        <Storyboard x:Name="TimeLineStoryboard">
+            <DoubleAnimation From="0" To="3000" Duration="00:00:30"
+                             Storyboard.TargetName="timelinetransform"
+                             Storyboard.TargetProperty="X">
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="SpaceLineStoryboard">
+            <DoubleAnimation From="0" To="3000" Duration="00:00:30"
+                             Storyboard.TargetName="Spacelinetransform"
+                             Storyboard.TargetProperty="X">
+            </DoubleAnimation>
+        </Storyboard>
+        <Style TargetType="Canvas">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Width" Value="2500" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="AllowDrop" Value="True" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="12*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="R0C0" Grid.Column="0" BorderBrush="black" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Name="AddDeviceButton" FontSize="19" Content="＋ Add Device" Click="AddDeviceButton_Click" Margin="1,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <!--<Button Name="TestButton" FontSize="24" Content="Add Flaire Image" Click="TestButton_Click" Margin="1,0,0,0"/>-->
+                <Button Name="PlayButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE102;" Click="TimeLineTimer_Play" Margin="1,0,0,0"/>
+                <Button Name="StopButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE002;" Click="TimeLineTimer_Stop" Margin="1,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="SaveButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE105;" Margin="1,0,0,0" Click="SaveButton_Click"/>
+                <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;" Margin="1,0,0,0" Click="SaveAsButton_Click"/>
+                <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;" Margin="1,0,0,0" Click="OpenFileButton_Click"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="OptionsBlockGrid" Grid.Column="0" Grid.Row="1" BorderBrush="black" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="1">
+                <StackPanel>
+                    <RadioButton x:Name="EffectsRadioButton" Content="Effects" GroupName="EffectOption"
+                                 IsChecked="True" Checked="EffectsRadioButton_Checked"
+                                 FontSize="20" Foreground="Firebrick"/>
+                    <ListView x:Name="EffectListView"
+                        Grid.Row="2" Margin="22,4"
+                        SelectionMode="Extended"
+                        CanDragItems="True"
+                        DragItemsStarting="EffectListView_DragStarting">
+                    </ListView>
+                    <!--<RadioButton x:Name="EventTriggerRadioButton" Content="Event Trigger"
+                                 HorizontalAlignment="Stretch" GroupName="EffectOption" FontSize="20"
+                                 Foreground="Firebrick" IsChecked="False" Checked="EffectsRadioButton_Checked"/>-->
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Grid x:Name="EditAreaGrid" Grid.Column="1" Grid.Row="1" BorderBrush="black" BorderThickness="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
+            <RichTextBlock Name="eventLog"  
+                         TextWrapping="Wrap" 
+                         Foreground="Firebrick" 
+                         ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Grid.Row="0">
+            </RichTextBlock>
+            <Line Name="SpaceLine" Stroke="Red" X1="1" Y1="0" X2="1" Y2="1000" Canvas.ZIndex="5" Visibility="Visible"
+                  Grid.Row="1">
+                <Line.RenderTransform>
+                    <TranslateTransform x:Name="Spacelinetransform" />
+                </Line.RenderTransform>
+            </Line>
+            <ScrollViewer MinZoomFactor="1" MaxZoomFactor="100" ZoomMode="Enabled" Grid.Row="1"
+                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <RelativePanel Name="SpacePanel" Width="2136" Height="1424">
+                    <Image Name="GridImage" Source="Assets/grid.png" Stretch="Uniform"/>
+                </RelativePanel>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="2" BorderBrush="black" BorderThickness="1" Grid.ColumnSpan="2"/>
+        <Grid x:Name="AuraBlockGrid" Grid.Column="2" Grid.Row="1" BorderBrush="black" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="10,5,0,0">
+                    <TextBlock Name="Title" FontSize="42" Text="[None]"/>
+                    <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
+                           PointerPressed="ColorRect_Pressed" Margin="0,10" Visibility="Collapsed">
+                        <FlyoutBase.AttachedFlyout>
+                            <Flyout Placement="Top">
+                                <StackPanel>
+                                    <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
+                                             IsColorChannelTextInputVisible="False"
+                                             IsHexInputVisible="False"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="OK" Click="ColorPickerOk_Click"/>
+                                        <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Flyout>
+                        </FlyoutBase.AttachedFlyout>
+                    </Rectangle>
+                    <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged" 
+                              Header="Colors" PlaceholderText="Pick a wave type" Width="190">
+                            <x:String>SineWave</x:String>
+                            <x:String>HalfSineWave</x:String>
+                            <x:String>QuarterSineWave</x:String>
+                            <x:String>SquareWave</x:String>
+                            <x:String>TriangleWave</x:String>
+                            <x:String>SawToothleWave</x:String>
+                        </ComboBox>
+                        <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Min:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="MaxTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Max:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="WaveLenTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="WaveLen:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Freq:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Phase:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Start:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                    </StackPanel>
+                    <StackPanel x:Name="TempoGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Tempo" Margin="20,20,0,0"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <RadioButton x:Name="SlowRadioButton" Content="Slow" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click"/>
+                            <RadioButton x:Name="MediumRadioButton" Content="Medium" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click"/>
+                            <RadioButton x:Name="FastRadioButton" Content="Fast" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="DirectionGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Direction" Margin="20,20,0,0"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <RadioButton x:Name="LeftRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click"/>
+                            <RadioButton x:Name="RightRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click"/>
+                            <RadioButton x:Name="UpRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click"/>
+                            <RadioButton x:Name="DownRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <ScrollViewer Name="LeftScrollViewer" Grid.Column="0" Grid.Row="3" BorderThickness="1" BorderBrush="black"
+                      VerticalScrollMode="Disabled"
+                      VerticalScrollBarVisibility="Hidden"
+                      >
+            <ListView x:Name="TimeLineDeviceNameListView"
+                            ItemsSource="{x:Bind _deviceGroupManager.DeviceGroupCollection}"
+                            SelectionMode="Extended"
+                            BorderBrush="Azure" HorizontalAlignment="Center" SelectionChanged="DeviceList_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:DeviceGroup">
+                        <TextBlock Text="{x:Bind GroupName}" FontSize="30" Foreground="Black"
+                                   Height="50" HorizontalTextAlignment="Center"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
+        <Line Stroke="Red" X1="1" Y1="0" X2="1" Y2="500" Canvas.ZIndex="5" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2">
+            <Line.RenderTransform>
+                <TranslateTransform x:Name="timelinetransform" />
+            </Line.RenderTransform>
+        </Line>
+        <ScrollViewer Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible" Canvas.ZIndex="2" ViewChanging="ScrollViewer_ViewChanging">
+            <StackPanel Name="TimeLineStackPanel" BorderThickness="1"/>
+        </ScrollViewer>
+
+        <Grid x:Name="AddDeleteGrid" Grid.Column="0" Grid.Row="4" BorderBrush="black" BorderThickness="1">
+            <StackPanel>
+                <Button x:Name="TrashCanButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE107;" Margin="0,5,0,0"
+                           HorizontalAlignment="Center" Click="TrashCanButton_Click"/>
+                <!--<TextBlock x:Name="Add_Delete_Text" FontSize="30" FontFamily="Segoe MDL2 Assets" Text="&#xE107;"
+                           HorizontalAlignment="Center" Margin="0,5"
+                           AllowDrop="True"
+                           DragEnter="DeleteItem_DragEnter"
+                           Drop="DeleteItem_Drop"/>-->
+            </StackPanel>
+        </Grid>
+        <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="black" BorderThickness="1">
+            <TextBlock Name="TimeLineTimerText" Text="00:00.00" Margin="10,0,0,0" FontSize="20" RelativePanel.AlignLeftWithPanel="True"/>
+            <Slider Name="TimeLineZoomSlider" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignRightWithPanel="True" Width="100"
+                    Margin="0,0,20,0" Value="25" ValueChanged="TimeLineZoomSlider_ValueChanged"/>
+        </RelativePanel>
+    </Grid>
+</Page>
