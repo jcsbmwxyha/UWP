@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#define DEBUG
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using System;
 using Windows.UI.Xaml.Controls;
@@ -213,13 +214,22 @@ namespace AuraEditor
                 width = (int)fe.Width / 10 * 10;
             }
 
-            if (MyDeviceGroup.IsEffectLineOverlap(this, leftPosition, width))
-            {
-                ct.TranslateX = Start;
-                fe.Width = Duration;
-                return;
-            }
-            
+            //Point position = e.GetCurrentPoint(MyDeviceGroup.UICanvas).Position;
+            //string s = "EffectLine: " + position.X;
+            //System.Diagnostics.Debug.WriteLine(s);
+            leftPosition = MyDeviceGroup.InsertEffectLine(this, leftPosition, width);
+            //if (MyDeviceGroup.InsertEffectLine(this, leftPosition, width))
+            //{
+            //    return;
+            //}
+
+            //if (MyDeviceGroup.IsEffectLineOverlap(this, leftPosition, width))
+            //{
+            //    ct.TranslateX = Start;
+            //    fe.Width = Duration;
+            //    return;
+            //}
+            //
             Start = leftPosition;
             Duration = width;
 
@@ -388,6 +398,53 @@ namespace AuraEditor
                 Effect effect = new Effect(this, type);
                 AddEffect(effect);
             }
+        }
+        public int InsertEffectLine(Effect effect, int leftpoint, int w)
+        {
+            Effect coveredEffectLine = null;
+
+            // Step 1 : Determine if the leftpoint on someone effectline
+            foreach (Effect e in Effects)
+            {
+                if (e != effect && e.Start < leftpoint && e.Start + e.Duration > leftpoint)
+                {
+                    coveredEffectLine = e;
+                }
+            }
+
+            // Step 2 : Calculate leftpoint position
+            if (coveredEffectLine != null)
+            {
+                leftpoint = coveredEffectLine.Start + coveredEffectLine.Duration;
+            }
+
+            // Step 3 : determine all effectlines position on the right
+            bool needToAdjustPosition = false;
+            int offset = 999999;
+            foreach (Effect e in Effects)
+            {
+                if (e != effect && e.Start > leftpoint && e.Start < leftpoint + w)
+                {
+                    needToAdjustPosition = true;
+                    int len = effect.Duration - (e.Start - leftpoint);
+
+                    if (len < offset)
+                        offset = len;
+                }
+            }
+
+            if (needToAdjustPosition == true)
+            {
+                foreach (Effect e in Effects)
+                {
+                    if (e != effect && e.Start > leftpoint && e.Start < leftpoint + w)
+                    {
+                        e.Start += offset;
+                    }
+                }
+            }
+
+            return leftpoint;
         }
         public bool IsEffectLineOverlap(Effect effect, int x, int w)
         {

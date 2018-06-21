@@ -7,7 +7,7 @@ namespace AuraEditor.Common
 {
     class EffectHelper
     {
-        static string[] effectNames = 
+        static string[] _commonEffects = 
         {
             "Static",
             "Breath",
@@ -15,18 +15,48 @@ namespace AuraEditor.Common
             "Rainbow",
             "Strobing",
             "Comet",
-            //"Reactive",
-            //"Laser",
-            //"Radius",
-            //"Ripple",
             "Star",
         };
+        static string[] _triggerEffects =
+        {
+            "Raidus",
+            "Reactive",
+            "Laser",
+            "Ripple",
+        };
+        static string[] _otherTriggerEffects =
+        {
+            "Music",
+            "Smart",
+        };
 
-        static public ObservableCollection<string> GetSampleData()
+        static public ObservableCollection<string> GetCommonEffectList()
         {
             ObservableCollection<string> collection = new ObservableCollection<string>();
 
-            foreach (string name in effectNames)
+            foreach (string name in _commonEffects)
+            {
+                collection.Add(name);
+            }
+
+            return collection;
+        }
+        static public ObservableCollection<string> GetTriggerEffectList()
+        {
+            ObservableCollection<string> collection = new ObservableCollection<string>();
+
+            foreach (string name in _triggerEffects)
+            {
+                collection.Add(name);
+            }
+
+            return collection;
+        }
+        static public ObservableCollection<string> GetOtherTriggerEffectList()
+        {
+            ObservableCollection<string> collection = new ObservableCollection<string>();
+
+            foreach (string name in _otherTriggerEffects)
             {
                 collection.Add(name);
             }
@@ -36,6 +66,11 @@ namespace AuraEditor.Common
 
         static public int GetEffectIndex(string effectName)
         {
+            List<string> effectList = new List<string>();
+            effectList.AddRange(_commonEffects);
+            effectList.AddRange(_triggerEffects);
+            effectList.AddRange(_otherTriggerEffects);
+
             // remove index
             char[] charArray = effectName.ToCharArray();
             foreach (char c in charArray)
@@ -47,19 +82,23 @@ namespace AuraEditor.Common
                 }
             }
 
-            for (int idx = 0; idx < effectNames.Length; idx++)
+            for (int idx = 0; idx < effectList.Count; idx++)
             {
-                if (effectName.Equals(effectNames[idx]))
+                if (effectName.Equals(effectList[idx]))
                     return idx;
             }
 
             return -1;
         }
-
         static public string GetEffectName(int effectIdx)
         {
-            if (effectIdx < effectNames.Length)
-                return effectNames[effectIdx];
+            List<string> effectList = new List<string>();
+            effectList.AddRange(_commonEffects);
+            effectList.AddRange(_triggerEffects);
+            effectList.AddRange(_otherTriggerEffects);
+
+            if (effectIdx < effectList.Count)
+                return effectList[effectIdx];
             else
                 return "";
         }
@@ -104,7 +143,7 @@ namespace AuraEditor.Common
 
             if (GetEffectName(effectIdx) == "Static") { usage = "point"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectIdx) == "Breath") { usage = "point"; func = PointViewportTransformFunc; }
-            else if (GetEffectName(effectIdx) == "ColorCycle") { usage = "point"; func = OrthogonaProjectViewportTransformFunc; }
+            else if (GetEffectName(effectIdx) == "ColorCycle") { usage = "point"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectIdx) == "Rainbow") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }
             else if (GetEffectName(effectIdx) == "Strobing") { usage = "OrthogonaProject"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectIdx) == "Comet") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }

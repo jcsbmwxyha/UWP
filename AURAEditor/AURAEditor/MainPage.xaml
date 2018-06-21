@@ -65,11 +65,11 @@
                 <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;" Margin="1,0,0,0" Click="OpenFileButton_Click"/>
             </StackPanel>
         </Grid>
-        <Grid x:Name="OptionsBlockGrid" Grid.Column="0" Grid.Row="1" BorderBrush="black" BorderThickness="1">
+        <Grid x:Name="OptionsBlockGrid" Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="1">
                 <StackPanel>
-                    <RadioButton x:Name="EffectsRadioButton" Content="Effects" GroupName="EffectOption"
-                                 IsChecked="True" Checked="EffectsRadioButton_Checked"
+                    <RadioButton x:Name="EffectRadioButton" Content="Effects" GroupName="EffectOption"
+                                 Click="EffectRadioButton_Click" IsChecked="True" 
                                  FontSize="20" Foreground="Firebrick"/>
                     <ListView x:Name="EffectListView"
                         Grid.Row="2" Margin="22,4"
@@ -77,9 +77,28 @@
                         CanDragItems="True"
                         DragItemsStarting="EffectListView_DragStarting">
                     </ListView>
-                    <!--<RadioButton x:Name="EventTriggerRadioButton" Content="Event Trigger"
+                    
+                    <RadioButton x:Name="EventRadioButton" Content="Event Trigger"
                                  HorizontalAlignment="Stretch" GroupName="EffectOption" FontSize="20"
-                                 Foreground="Firebrick" IsChecked="False" Checked="EffectsRadioButton_Checked"/>-->
+                                 Foreground="Firebrick" Click="EffectRadioButton_Click" IsChecked="True"/>
+                    <StackPanel Name="EventStackPanel">
+                        <RadioButton x:Name="TriggerEventRadioButton" Content="Event Trigger"
+                                     Click="EffectRadioButton_Click" IsChecked="True" GroupName="123" Margin="20,0,0,0" Foreground="Blue"/>
+                        <ListView x:Name="TriggerEventListView"
+                              Grid.Row="2" Margin="44,0"
+                              SelectionMode="Extended"
+                              CanDragItems="True"
+                              DragItemsStarting="EffectListView_DragStarting">
+                        </ListView>
+                        <RadioButton x:Name="OtherTriggerEventRadioButton" Content="Other trigger events"
+                                     Click="EffectRadioButton_Click" IsChecked="True" Margin="20,0,0,0" Foreground="Blue"/>
+                        <ListView x:Name="OtherTriggerEventListView"
+                              Grid.Row="2" Margin="44,0"
+                              SelectionMode="Extended"
+                              CanDragItems="True"
+                              DragItemsStarting="EffectListView_DragStarting">
+                        </ListView>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

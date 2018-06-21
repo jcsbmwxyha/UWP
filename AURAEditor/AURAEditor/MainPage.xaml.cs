@@ -70,25 +70,33 @@ namespace AuraEditor
         public MainPage()
         {
             this.InitializeComponent();
-            EffectListView.ItemsSource = EffectHelper.GetSampleData();
+            EffectListView.ItemsSource = EffectHelper.GetCommonEffectList();
+            TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
+            OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
             SpaceLine.Visibility = Visibility.Collapsed;
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
         }
 
-        private void EffectsRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {
-            if (EffectsRadioButton.IsChecked == true)
-            {
-                if (EffectListView != null)
-                    EffectListView.Visibility = Visibility.Visible;
-                //Option_Effects_Stack.Visibility = Visibility.Collapsed;
-            }
+            RadioButton rb = sender as RadioButton;
+            FrameworkElement fe;
+
+            if (rb.Name == "EffectRadioButton")
+                fe = EffectListView;
+            else if (rb.Name == "EventRadioButton")
+                fe = EventStackPanel;
+            else if (rb.Name == "TriggerEventRadioButton")
+                fe = TriggerEventListView;
+            else // OtherTriggerEventToggleButton
+                fe = OtherTriggerEventListView;
+
+            if (fe == null)
+                return;
+            else if (fe.Visibility == Visibility.Visible)
+                fe.Visibility = Visibility.Collapsed;
             else
-            {
-                if (EffectListView != null)
-                    EffectListView.Visibility = Visibility.Collapsed;
-                //Option_Event_Trigger_Stack.Visibility = Visibility.Collapsed;
-            }
+                fe.Visibility = Visibility.Visible;
         }
         private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
         {
