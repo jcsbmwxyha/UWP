@@ -77,27 +77,50 @@ namespace AuraEditor.Common
 
         public static Color HslToRgb(double a, double h, double s, double l)
         {
-            double r = 0, g = 0, b = 0;
-            if (l != 0)
+            byte r, g, b;
+            int hi = Convert.ToInt32(Math.Floor((h % 360) / 60)) % 6;
+            double C = (1 - Math.Abs(2 * l - 1)) * s;
+            double X = C * (1 - Math.Abs(((h % 360) / 60) % 2 - 1));
+            double m = l - (C / 2);
+
+            if (hi == 0)
             {
-                if (s == 0)
-                    r = g = b = l;
-                else
-                {
-                    double temp2;
-                    if (l < 0.5)
-                        temp2 = l * (1.0 + s);
-                    else
-                        temp2 = l + s - (l * s);
-
-                    double temp1 = 2.0 * l - temp2;
-
-                    r = GetColorComponent(temp1, temp2, h + 1.0 / 3.0);
-                    g = GetColorComponent(temp1, temp2, h);
-                    b = GetColorComponent(temp1, temp2, h - 1.0 / 3.0);
-                }
+                r = Convert.ToByte((C + m) * 255);
+                g = Convert.ToByte((X + m) * 255);
+                b = Convert.ToByte((m) * 255);
             }
-            return new Color { A = (byte)(255 * a), R = (byte)(255 * r), G = (byte)(255 * g), B = (byte)(255 * b) };
+            else if (hi == 1)
+            {
+                r = Convert.ToByte((X + m) * 255);
+                g = Convert.ToByte((C + m) * 255);
+                b = Convert.ToByte((m) * 255);
+            }
+            else if (hi == 2)
+            {
+                r = Convert.ToByte((m) * 255);
+                g = Convert.ToByte((C + m) * 255);
+                b = Convert.ToByte((X + m) * 255);
+            }
+            else if (hi == 3)
+            {
+                r = Convert.ToByte((m) * 255);
+                g = Convert.ToByte((X + m) * 255);
+                b = Convert.ToByte((C + m) * 255);
+            }
+            else if (hi == 4)
+            {
+                r = Convert.ToByte((X + m) * 255);
+                g = Convert.ToByte((m) * 255);
+                b = Convert.ToByte((C + m) * 255);
+            }
+            else
+            {
+                r = Convert.ToByte((C + m) * 255);
+                g = Convert.ToByte((m) * 255);
+                b = Convert.ToByte((X + m) * 255);
+            }
+
+            return Color.FromArgb(255, r, g, b);
         }
 
         static private double GetColorComponent(double temp1, double temp2, double temp3)
@@ -123,44 +146,33 @@ namespace AuraEditor.Common
             double _G = ((int)RGB.G) / 255f;
             double _B = ((int)RGB.B) / 255f;
 
-            double _Min = Math.Min(Math.Min(_R, _G), _B);
             double _Max = Math.Max(Math.Max(_R, _G), _B);
+            double _Min = Math.Min(Math.Min(_R, _G), _B);
             double _Delta = _Max - _Min;
 
             double H = 0;
             double S = 0;
-            double L = (double)((_Max + _Min) / 2.0f);
+            double L = (_Max + _Min) / 2.0;
 
             if (_Delta != 0)
             {
-                if (L < 0.5f)
-                {
-                    S = (double)(_Delta / (_Max + _Min));
-                }
-                else
-                {
-                    S = (double)(_Delta / (2.0f - _Max - _Min));
-                }
-
+                S = _Delta / (1 - Math.Abs(2 * L - 1));
 
                 if (_R == _Max)
                 {
-                    H = (_G - _B) / _Delta;
+                    H = 60 * ((_G - _B) / _Delta % 6);
                 }
                 else if (_G == _Max)
                 {
-                    H = 2f + (_B - _R) / _Delta;
+                    H = 60 * ((_B - _R) / _Delta + 2);
                 }
                 else if (_B == _Max)
                 {
-                    H = 4f + (_R - _G) / _Delta;
+                    H = 60 * ((_R - _G) / _Delta + 4);
                 }
             }
-
-            H = H / 6.0;
-            H = Math.Round(H, 1);
-            S = Math.Round(S, 1);
-            L = Math.Round(L, 1);
+            if (H < 0)
+                H += 360;
 
             double[] HSL = new double[3];
             HSL[0] = H;
