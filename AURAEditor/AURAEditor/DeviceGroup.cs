@@ -26,6 +26,7 @@ namespace AuraEditor
         public double Freq { get; set; }
         public double Phase { get; set; }
         public double Start { get; set; }
+        public double Velocity { get; set; }
 
         public EffectInfo()
         {
@@ -37,6 +38,19 @@ namespace AuraEditor
             Freq  = 0;
             Phase = 0;
             Start = 0;
+            Velocity = 0;
+        }
+        public EffectInfo(int type)
+        {
+            Color = Colors.Red;
+            WaveType = EffectHelper.GetSuggestedWaveTypeValue(type);
+            Min = EffectHelper.GetSuggestedMinValue(type);
+            Max = EffectHelper.GetSuggestedMaxValue(type);
+            WaveLength = EffectHelper.GetSuggestedWaveLenValue(type);
+            Freq = EffectHelper.GetSuggestedFreqValue(type);
+            Phase = EffectHelper.GetSuggestedPhaseValue(type);
+            Start = 0;
+            Velocity = EffectHelper.GetSuggestedVelocityValue(type);
         }
     }
 
@@ -89,7 +103,7 @@ namespace AuraEditor
             UIBorder = CreateUIBorder(effectType);
             Start = (int)MyDeviceGroup.GetFirstSpaceCanPut();
             Duration = 100;
-            Info = new EffectInfo();
+            Info = new EffectInfo(effectType);
 
             _cursorSizeRight = false;
             _cursorSizeLeft = false;
@@ -263,8 +277,8 @@ namespace AuraEditor
         public double W { get; set; }
         public double H { get; set; }
         public Image DeviceImg { get; set; }
-        public string UriString { get; set; }
-        public int[] SelectedZone { get; set; }
+        public string DeviceImgPath { get; set; }
+        //public int[] SelectedZone { get; set; }
 
         public Device() { }
         public Device(string s, int type, int x, int y)
@@ -277,20 +291,20 @@ namespace AuraEditor
 
             if (type == 0)
             {
-                UriString = "ms-appx:///Assets/device_local.png";
+                DeviceImgPath = "ms-appx:///Assets/device_local.png";
                 W = 21;
                 H = 6;
             }
             else if (type == 1)
-                UriString = "ms-appx:///Assets/asus_aura_sync_mouse.png";
+                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_mouse.png";
             else if (type == 2)
             {
-                UriString = "ms-appx:///Assets/asus_aura_sync_keyboard.png";
+                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_keyboard.png";
                 W = 23;
                 H = 6;
             }
             else if (type == 3)
-                UriString = "ms-appx:///Assets/asus_aura_sync_headset.png";
+                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_headset.png";
 
             int commonFactor = 71;
 
@@ -305,7 +319,7 @@ namespace AuraEditor
                 RenderTransform = ct,
                 Width = commonFactor,
                 Height = commonFactor,
-                Source = new BitmapImage(new Uri(UriString)),
+                Source = new BitmapImage(new Uri(DeviceImgPath)),
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY
             };
 
@@ -356,28 +370,30 @@ namespace AuraEditor
     public class DeviceGroup
     {
         public string GroupName { get; set; }
-        List<Device> _devices;
+        //List<Device> _devices;
         public List<Effect> Effects;
         public Canvas UICanvas;
-        
+        Dictionary<int, int[]> _deviceToZonesDictionary;
+
         public DeviceGroup(string name = "")
         {
             GroupName = name;
-            _devices = new List<Device>();
+            //_devices = new List<Device>();
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
+            _deviceToZonesDictionary = new Dictionary<int, int[]>();
         }
-        public List<Device> GetDevices()
+        public Dictionary<int, int[]> GetDeviceToZonesDictionary()
         {
-            return _devices;
+            return _deviceToZonesDictionary;
         }
-        public void AddDevice(Device device)
+        //public void SetDeviceZones(List<Device> devices)
+        //{
+        //    _devices = devices;
+        //}
+        public void AddDeviceZones(int type, int[] indexes)
         {
-            _devices.Add(device);
-        }
-        public void SetDevices(List<Device> devices)
-        {
-            _devices = devices;
+            _deviceToZonesDictionary.Add(type, indexes);
         }
         public void AddEffect(Effect effect)
         {
@@ -495,6 +511,7 @@ namespace AuraEditor
         static StackPanel TimeLineStackPanel;
         Script script;
         Dictionary<DynValue, string> _functionDictionary;
+        public List<Device> GlobalDevices;
 
         public DeviceGroupManager(StackPanel sp)
         {
@@ -502,6 +519,7 @@ namespace AuraEditor
             TimeLineStackPanel = sp;
             DeviceGroupCollection = new ObservableCollection<DeviceGroup>();
             _functionDictionary = new Dictionary<DynValue, string>();
+            GlobalDevices = new List<Device>();
         }
         public void AddDeviceGroup(DeviceGroup dg)
         {
@@ -517,6 +535,10 @@ namespace AuraEditor
         {
             TimeLineStackPanel.Children.Clear();
             DeviceGroupCollection.Clear();
+        }
+        public Device GetGroupDevice(int type)
+        {
+            return GlobalDevices.Find(x => x.DeviceType == type);
         }
         public string PrintLuaScript()
         {
@@ -592,10 +614,14 @@ namespace AuraEditor
             foreach (DeviceGroup dg in DeviceGroupCollection)
             {
                 groupTable = CreateNewTable();
-                List<Device> devices = dg.GetDevices();
 
-                foreach (Device d in devices)
+                Dictionary<int, int[]> deviceToZonesDictionary = dg.GetDeviceToZonesDictionary();
+
+                //foreach (Device d in devices)
+                foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
                 {
+                    Device d = GetGroupDevice(pair.Key);
+
                     layoutTable = CreateNewTable();
                     locationTable = CreateNewTable();
                     deviceTable = CreateNewTable();
@@ -616,14 +642,14 @@ namespace AuraEditor
                     else
                         deviceTable.Set("DeviceType", DynValue.NewString("Headset"));
 
-                    deviceTable.Set("layout", DynValue.NewTable(layoutTable));
+                    //deviceTable.Set("layout", DynValue.NewTable(layoutTable));
                     deviceTable.Set("location", DynValue.NewTable(locationTable));
 
                     rangeTable = CreateNewTable();
-                    if (d.SelectedZone != null && d.SelectedZone.Length > 0)
+                    if (pair.Value != null && pair.Value[0] != -1)
                     {
                         int count = 1;
-                        foreach (int index in d.SelectedZone)
+                        foreach (int index in pair.Value)
                         {
                             fromToTable = CreateNewTable();
                             int i = 0;
@@ -708,7 +734,7 @@ namespace AuraEditor
                     waveTable.Set("freq", DynValue.NewNumber(info.Freq));
                     waveTable.Set("phase", DynValue.NewNumber(info.Phase));
                     waveTable.Set("start", DynValue.NewNumber(info.Start));
-                    waveTable.Set("velocity", DynValue.NewNumber(EffectHelper.GetVelocityValue(eff.EffectType)));
+                    waveTable.Set("velocity", DynValue.NewNumber(info.Velocity));
                     effectTable.Set("wave", DynValue.NewTable(waveTable));
 
                     eventTable.Set(eff.EffectLuaName, DynValue.NewTable(effectTable));

@@ -127,6 +127,9 @@
                 </RelativePanel>
             </ScrollViewer>
         </Grid>
+        <Grid Grid.Row="2" HorizontalAlignment="Center">
+            <Button Name="AddGroupButton" FontSize="19" Content="＋ Add Group" Click="AddGroupButton_Click" Margin="1,0,0,0"/>
+        </Grid>
         <Grid Grid.Column="1" Grid.Row="2" BorderBrush="black" BorderThickness="1" Grid.ColumnSpan="2"/>
         <Grid x:Name="AuraBlockGrid" Grid.Column="2" Grid.Row="1" BorderBrush="black" BorderThickness="1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
@@ -150,7 +153,7 @@
                     </Rectangle>
                     <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
                         <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged" 
-                              Header="Colors" PlaceholderText="Pick a wave type" Width="190">
+                              Header="Wave Type" PlaceholderText="Pick a wave type" Width="190">
                             <x:String>SineWave</x:String>
                             <x:String>HalfSineWave</x:String>
                             <x:String>QuarterSineWave</x:String>
@@ -164,6 +167,7 @@
                         <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Freq:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
                         <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Phase:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
                         <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Start:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
+                        <TextBox Name="VelocityTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" Header="Velocity:" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus"/>
                     </StackPanel>
                     <StackPanel x:Name="TempoGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Tempo" Margin="20,20,0,0"/>

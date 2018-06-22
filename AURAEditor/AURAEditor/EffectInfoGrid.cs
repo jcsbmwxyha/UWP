@@ -34,47 +34,147 @@ namespace AuraEditor
             EffectInfoGroup.Visibility = Visibility.Visible;
             Title.Text = EffectHelper.GetEffectName(effectType);
 
-            switch (effectType)
+            switch (Title.Text)
             {
-                case 0:
+                case "Static":
                     ColorRect.Visibility = Visibility.Visible;
-                    TempoGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Collapsed;
+                    MinTextBox.Visibility = Visibility.Collapsed;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Collapsed;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
-                case 1:
+                case "Breath":
                     ColorRect.Visibility = Visibility.Visible;
-                    TempoGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
-                case 2:
+                case "ColorCycle":
                     ColorRect.Visibility = Visibility.Collapsed;
-                    TempoGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
-                case 3:
+                case "Rainbow":
                     ColorRect.Visibility = Visibility.Collapsed;
-                    TempoGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
-                case 4:
+                case "Strobing":
                     ColorRect.Visibility = Visibility.Visible;
-                    TempoGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
-                case 5:
-                    ColorRect.Visibility = Visibility.Collapsed;
-                    TempoGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                case "Comet":
+                    ColorRect.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Visible;
                     break;
-                case 6:
+                case "Star":
+                    ColorRect.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
+                    break;
+                case "Raidus":
                     ColorRect.Visibility = Visibility.Collapsed;
-                    TempoGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
+                    break;
+                case "Reactive":
+                    ColorRect.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
+                    break;
+                case "Laser":
+                    ColorRect.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Visible;
+                    break;
+                case "Ripple":
+                    ColorRect.Visibility = Visibility.Visible;
+                    WaveTypeComboBox.Visibility = Visibility.Visible;
+                    MinTextBox.Visibility = Visibility.Visible;
+                    MaxTextBox.Visibility = Visibility.Visible;
+                    WaveLenTextBox.Visibility = Visibility.Visible;
+                    FreqTextBox.Visibility = Visibility.Visible;
+                    PhaseTextBox.Visibility = Visibility.Visible;
+                    VelocityTextBox.Visibility = Visibility.Visible;
+                    break;
+                case "Music":
+                    ColorRect.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Collapsed;
+                    MinTextBox.Visibility = Visibility.Collapsed;
+                    MaxTextBox.Visibility = Visibility.Collapsed;
+                    WaveLenTextBox.Visibility = Visibility.Collapsed;
+                    FreqTextBox.Visibility = Visibility.Collapsed;
+                    PhaseTextBox.Visibility = Visibility.Collapsed;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
+                    break;
+                case "Smart":
+                    ColorRect.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Collapsed;
+                    MinTextBox.Visibility = Visibility.Collapsed;
+                    MaxTextBox.Visibility = Visibility.Collapsed;
+                    WaveLenTextBox.Visibility = Visibility.Collapsed;
+                    FreqTextBox.Visibility = Visibility.Collapsed;
+                    PhaseTextBox.Visibility = Visibility.Collapsed;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
                 default:
                     ColorRect.Visibility = Visibility.Collapsed;
-                    TempoGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    WaveTypeComboBox.Visibility = Visibility.Collapsed;
+                    MinTextBox.Visibility = Visibility.Collapsed;
+                    MaxTextBox.Visibility = Visibility.Collapsed;
+                    WaveLenTextBox.Visibility = Visibility.Collapsed;
+                    FreqTextBox.Visibility = Visibility.Collapsed;
+                    PhaseTextBox.Visibility = Visibility.Collapsed;
+                    VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
             }
             TempoGroup.Visibility = Visibility.Collapsed;
@@ -90,6 +190,7 @@ namespace AuraEditor
             FreqTextBox.Text = info.Freq.ToString();
             PhaseTextBox.Text = info.Phase.ToString();
             StartTextBox.Text = info.Start.ToString();
+            VelocityTextBox.Text = info.Start.ToString();
         }
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
@@ -205,28 +306,7 @@ namespace AuraEditor
             ei.Freq = double.Parse(FreqTextBox.Text);
             ei.Phase = double.Parse(PhaseTextBox.Text);
             ei.Start = double.Parse(StartTextBox.Text);
-
-            //switch (tb.Name)
-            //{
-            //    case "MinTextBox":
-            //        ei.Min = double.Parse(tb.Text);
-            //        break;
-            //    case "MaxTextBox":
-            //        ei.Max = double.Parse(tb.Text);
-            //        break;
-            //    case "WaveLenTextBox":
-            //        ei.WaveLength = double.Parse(tb.Text);
-            //        break;
-            //    case "FreqTextBox":
-            //        ei.Freq = double.Parse(tb.Text);
-            //        break;
-            //    case "PhaseTextBox":
-            //        ei.Phase = double.Parse(tb.Text);
-            //        break;
-            //    case "StartTextBox":
-            //        ei.Start = double.Parse(tb.Text);
-            //        break;
-            //}
+            ei.Start = double.Parse(VelocityTextBox.Text);
         }
 
         private void EffectInfo_LostFocus(object sender, RoutedEventArgs e)
@@ -254,6 +334,7 @@ namespace AuraEditor
             ei.Freq = double.Parse(FreqTextBox.Text);
             ei.Phase = double.Parse(PhaseTextBox.Text);
             ei.Start = double.Parse(StartTextBox.Text);
+            ei.Velocity = double.Parse(VelocityTextBox.Text);
         }
     }
 }

@@ -188,7 +188,75 @@ namespace AuraEditor.Common
             return bindToSlotTable;
         }
 
-        static public double GetVelocityValue(int effectIdx)
+        static public int GetSuggestedWaveTypeValue(int effectIdx)
+        {
+            if (GetEffectName(effectIdx) == "Static") return 4;
+            else if (GetEffectName(effectIdx) == "Breath") return 4;
+            else if (GetEffectName(effectIdx) == "ColorCycle") return 2;
+            else if (GetEffectName(effectIdx) == "Rainbow") return 2;
+            else if (GetEffectName(effectIdx) == "Strobing") return 4;
+            else if (GetEffectName(effectIdx) == "Comet") return 0;
+            else if (GetEffectName(effectIdx) == "Reactive") return 0;
+            else if (GetEffectName(effectIdx) == "Laser") return 0;
+            else if (GetEffectName(effectIdx) == "Radius") return 0;
+            else if (GetEffectName(effectIdx) == "Ripple") return 0;
+            else if (GetEffectName(effectIdx) == "Star") return 0;
+            return 0;
+        }
+        static public double GetSuggestedMinValue(int effectIdx)
+        {
+            return 0;
+        }
+        static public double GetSuggestedMaxValue(int effectIdx)
+        {
+            if (GetEffectName(effectIdx) == "Static") return 0.5;
+            else if (GetEffectName(effectIdx) == "Breath") return 0.5;
+            else if (GetEffectName(effectIdx) == "ColorCycle") return 1;
+            else if (GetEffectName(effectIdx) == "Rainbow") return 1;
+            else if (GetEffectName(effectIdx) == "Strobing") return 0.5;
+            else if (GetEffectName(effectIdx) == "Comet") return 1;
+            else if (GetEffectName(effectIdx) == "Reactive") return 1;
+            else if (GetEffectName(effectIdx) == "Laser") return 1;
+            else if (GetEffectName(effectIdx) == "Radius") return 1;
+            else if (GetEffectName(effectIdx) == "Ripple") return 1;
+            else if (GetEffectName(effectIdx) == "Star") return 0.5;
+            return 0;
+        }
+        static public double GetSuggestedWaveLenValue(int effectIdx)
+        {
+            if (GetEffectName(effectIdx) == "Static") return 23;
+            else if (GetEffectName(effectIdx) == "Breath") return 23;
+            else if (GetEffectName(effectIdx) == "ColorCycle") return 23;
+            else if (GetEffectName(effectIdx) == "Rainbow") return 64;
+            else if (GetEffectName(effectIdx) == "Strobing") return 23;
+            else if (GetEffectName(effectIdx) == "Comet") return 2;
+            else if (GetEffectName(effectIdx) == "Reactive") return 1;
+            else if (GetEffectName(effectIdx) == "Laser") return 8;
+            else if (GetEffectName(effectIdx) == "Radius") return 0;
+            else if (GetEffectName(effectIdx) == "Ripple") return 40;
+            else if (GetEffectName(effectIdx) == "Star") return 10;
+            return 0;
+        }
+        static public double GetSuggestedFreqValue(int effectIdx)
+        {
+            if (GetEffectName(effectIdx) == "Static") return 0;
+            else if (GetEffectName(effectIdx) == "Breath") return 0.2;
+            else if (GetEffectName(effectIdx) == "ColorCycle") return -0.01;
+            else if (GetEffectName(effectIdx) == "Rainbow") return 0.04;
+            else if (GetEffectName(effectIdx) == "Strobing") return 2;
+            else if (GetEffectName(effectIdx) == "Comet") return 1;
+            else if (GetEffectName(effectIdx) == "Reactive") return 1;
+            else if (GetEffectName(effectIdx) == "Laser") return 0.1;
+            else if (GetEffectName(effectIdx) == "Radius") return 0;
+            else if (GetEffectName(effectIdx) == "Ripple") return 1;
+            else if (GetEffectName(effectIdx) == "Star") return 0.5;
+            return 0;
+        }
+        static public double GetSuggestedPhaseValue(int effectIdx)
+        {
+            return 0;
+        }
+        static public double GetSuggestedVelocityValue(int effectIdx)
         {
             if (GetEffectName(effectIdx) == "Static") return 0;
             else if (GetEffectName(effectIdx) == "Breath") return 0;
@@ -201,13 +269,11 @@ namespace AuraEditor.Common
             else if (GetEffectName(effectIdx) == "Radius") return 0;
             else if (GetEffectName(effectIdx) == "Ripple") return 5;
             else if (GetEffectName(effectIdx) == "Star") return 0;
-            
             return 0;
         }
 
         static public double GetTriggerString(int effectIdx)
         {
-
             return 0;
         }
 

@@ -66,6 +66,7 @@ namespace AuraEditor
                     return;
             }
         }
+        ObservableCollection<DeviceItem> _devicelist;
 
         public MainPage()
         {
@@ -75,70 +76,14 @@ namespace AuraEditor
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
             SpaceLine.Visibility = Visibility.Collapsed;
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
+            _devicelist = GetCurrentDevices();
+            UpdateSpaceGrid();
         }
 
-        private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            RadioButton rb = sender as RadioButton;
-            FrameworkElement fe;
-
-            if (rb.Name == "EffectRadioButton")
-                fe = EffectListView;
-            else if (rb.Name == "EventRadioButton")
-                fe = EventStackPanel;
-            else if (rb.Name == "TriggerEventRadioButton")
-                fe = TriggerEventListView;
-            else // OtherTriggerEventToggleButton
-                fe = OtherTriggerEventListView;
-
-            if (fe == null)
-                return;
-            else if (fe.Visibility == Visibility.Visible)
-                fe.Visibility = Visibility.Collapsed;
-            else
-                fe.Visibility = Visibility.Visible;
-        }
-        private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
-        {
-            var item = e.Items[0] as string;
-            e.Data.SetText(item);
-            e.Data.RequestedOperation = DataPackageOperation.Copy;
-        }
-
-        async private void ShowMess(string res)
-        {
-            var messDialog = new MessageDialog(res);
-            await messDialog.ShowAsync();
-        }
-        public void UpdateEventLog(string s)
-        {
-            Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            eventLog.TextWrapping = TextWrapping.Wrap;
-            run.Text = s;
-            paragraph.Inlines.Add(run);
-            eventLog.Blocks.Insert(0, paragraph);
-        }
-
-        private void DeleteItem_DragEnter(object sender, DragEventArgs e)
-        {
-            // Trash only accepts text
-            e.AcceptedOperation = DataPackageOperation.Move;
-            // We don't want to show the Move icon
-            e.DragUIOverride.IsGlyphVisible = false;
-            e.DragUIOverride.Caption = "Drop item here to remove it from selection";
-        }
-        private void DeleteItem_Drop(object sender, DragEventArgs e)
-        {
-            //if (e.DataView.Contains(StandardDataFormats.Text))
-            //{
-            //    canDelete = true;
-            //}
-        }
-
-        private async void AddDeviceButton_Click(object sender, RoutedEventArgs e)
+        private ObservableCollection<DeviceItem> GetCurrentDevices()
         {
             DeviceItem d;
+            Device device;
             ObservableCollection<DeviceItem> devicelist = new ObservableCollection<DeviceItem>();
 
             // NB Example
@@ -279,116 +224,116 @@ namespace AuraEditor
             {
                 Image = "ms-appx:///Assets/Flaire.png",
                 LightRegions = new int[,] {
-                   // key 0 ~ 9
-{ 18 , 89 , 58, 118} ,
-{ 97 , 89 , 138, 118} ,
-{ 136, 89 , 177, 118} ,
-{ 176, 89 , 217, 118} ,
-{ 215, 89 , 256, 118} ,
-{ 275, 89 , 315, 118} ,
-{ 315, 89 , 355, 118} ,
-{ 354, 89 , 394, 118} ,
-{ 394, 89 , 434, 118} ,
-{ 453, 89 , 493, 118} ,
-{ 492, 89 , 532, 118} ,
-{ 532, 89 , 571, 118} ,
-{ 572, 89 , 611, 118} ,
-{ 625, 87 , 665, 116} ,
-{ 664, 87 , 704, 116} ,
-{ 704, 87 , 744, 116} ,
+                    // key 0 ~ 9
+                    { 18 , 89 , 58, 118} ,
+                    { 97 , 89 , 138, 118} ,
+                    { 136, 89 , 177, 118} ,
+                    { 176, 89 , 217, 118} ,
+                    { 215, 89 , 256, 118} ,
+                    { 275, 89 , 315, 118} ,
+                    { 315, 89 , 355, 118} ,
+                    { 354, 89 , 394, 118} ,
+                    { 394, 89 , 434, 118} ,
+                    { 453, 89 , 493, 118} ,
+                    { 492, 89 , 532, 118} ,
+                    { 532, 89 , 571, 118} ,
+                    { 572, 89 , 611, 118} ,
+                    { 625, 87 , 665, 116} ,
+                    { 664, 87 , 704, 116} ,
+                    { 704, 87 , 744, 116} ,
 
-{ 18 , 119, 58, 161} ,
-{ 57 , 119, 98, 161} ,
-{ 97 , 119, 138, 161} ,
-{ 136, 119, 177, 161} ,
-{ 176, 119, 217, 161} ,
-{ 215, 119, 256, 161} ,
-{ 255, 119, 296, 161} ,
-{ 294, 119, 335, 161} ,
-{ 334, 119, 375, 161} ,
-{ 373, 119, 414, 161} ,
-{ 413, 119, 453, 161} ,
-{ 453, 119, 493, 161} ,
-{ 492, 119, 532, 161} ,
-{ 532, 119, 611, 161} ,
-{ 625, 119, 665, 161} ,
-{ 664, 119, 704, 161} ,
-{ 704, 119, 744, 161} ,
-{ 749, 117, 789, 159} ,
-{ 788, 117, 828, 159} ,
-{ 828, 117, 868, 159} ,
-{ 868, 117, 907, 159} ,
+                    { 18 , 119, 58, 161} ,
+                    { 57 , 119, 98, 161} ,
+                    { 97 , 119, 138, 161} ,
+                    { 136, 119, 177, 161} ,
+                    { 176, 119, 217, 161} ,
+                    { 215, 119, 256, 161} ,
+                    { 255, 119, 296, 161} ,
+                    { 294, 119, 335, 161} ,
+                    { 334, 119, 375, 161} ,
+                    { 373, 119, 414, 161} ,
+                    { 413, 119, 453, 161} ,
+                    { 453, 119, 493, 161} ,
+                    { 492, 119, 532, 161} ,
+                    { 532, 119, 611, 161} ,
+                    { 625, 119, 665, 161} ,
+                    { 664, 119, 704, 161} ,
+                    { 704, 119, 744, 161} ,
+                    { 749, 117, 789, 159} ,
+                    { 788, 117, 828, 159} ,
+                    { 828, 117, 868, 159} ,
+                    { 868, 117, 907, 159} ,
 
-{ 18 , 163, 78, 205} ,
-{ 77 , 163, 117, 205} ,
-{ 117, 163, 157, 205} ,
-{ 156, 163, 196, 205} ,
-{ 196, 163, 236, 205} ,
-{ 235, 163, 275, 205} ,
-{ 275, 163, 315, 205} ,
-{ 314, 163, 354, 205} ,
-{ 354, 163, 394, 205} ,
-{ 393, 163, 433, 205} ,
-{ 433, 163, 473, 205} ,
-{ 472, 163, 513, 205} ,
-{ 512, 163, 552, 205} ,
-{ 552, 163, 611, 205} ,
-{ 625, 162, 665, 204} ,
-{ 664, 162, 704, 204} ,
-{ 704, 162, 744, 204} ,
-{ 749, 161, 789, 203} ,
-{ 788, 161, 828, 203} ,
-{ 828, 161, 868, 203} ,
-{ 868, 161, 907, 246} ,
+                    { 18 , 163, 78, 205} ,
+                    { 77 , 163, 117, 205} ,
+                    { 117, 163, 157, 205} ,
+                    { 156, 163, 196, 205} ,
+                    { 196, 163, 236, 205} ,
+                    { 235, 163, 275, 205} ,
+                    { 275, 163, 315, 205} ,
+                    { 314, 163, 354, 205} ,
+                    { 354, 163, 394, 205} ,
+                    { 393, 163, 433, 205} ,
+                    { 433, 163, 473, 205} ,
+                    { 472, 163, 513, 205} ,
+                    { 512, 163, 552, 205} ,
+                    { 552, 163, 611, 205} ,
+                    { 625, 162, 665, 204} ,
+                    { 664, 162, 704, 204} ,
+                    { 704, 162, 744, 204} ,
+                    { 749, 161, 789, 203} ,
+                    { 788, 161, 828, 203} ,
+                    { 828, 161, 868, 203} ,
+                    { 868, 161, 907, 246} ,
 
-{ 18 , 206, 88, 248} ,
-{ 87 , 206, 127, 248} ,
-{ 126, 206, 167, 248} ,
-{ 166, 206, 206, 248} ,
-{ 205, 206, 246, 248} ,
-{ 245, 206, 285, 248} ,
-{ 285, 206, 325, 248} ,
-{ 325, 206, 364, 248} ,
-{ 364, 206, 404, 248} ,
-{ 404, 206, 443, 248} ,
-{ 443, 206, 483, 248} ,
-{ 483, 206, 522, 248} ,
-{ 523, 206, 611, 248} ,
-{ 749, 204, 789, 246} ,
-{ 788, 204, 828, 246} ,
-{ 828, 204, 868, 246} ,
+                    { 18 , 206, 88, 248} ,
+                    { 87 , 206, 127, 248} ,
+                    { 126, 206, 167, 248} ,
+                    { 166, 206, 206, 248} ,
+                    { 205, 206, 246, 248} ,
+                    { 245, 206, 285, 248} ,
+                    { 285, 206, 325, 248} ,
+                    { 325, 206, 364, 248} ,
+                    { 364, 206, 404, 248} ,
+                    { 404, 206, 443, 248} ,
+                    { 443, 206, 483, 248} ,
+                    { 483, 206, 522, 248} ,
+                    { 523, 206, 611, 248} ,
+                    { 749, 204, 789, 246} ,
+                    { 788, 204, 828, 246} ,
+                    { 828, 204, 868, 246} ,
 
-{ 18 , 250, 107, 292} ,
-{ 107, 250, 146, 292} ,
-{ 147, 250, 186, 292} ,
-{ 186, 250, 226, 292} ,
-{ 226, 250, 266, 292} ,
-{ 265, 250, 305, 292} ,
-{ 305, 250, 345, 292} ,
-{ 344, 250, 384, 292} ,
-{ 384, 250, 424, 292} ,
-{ 423, 250, 463, 292} ,
-{ 463, 250, 503, 292} ,
-{ 502, 250, 611, 292} ,
-{ 663, 250, 703, 292} ,
-{ 749, 248, 789, 290} ,
-{ 788, 248, 828, 290} ,
-{ 828, 248, 868, 290} ,
-{ 868, 248, 907, 333} ,
+                    { 18 , 250, 107, 292} ,
+                    { 107, 250, 146, 292} ,
+                    { 147, 250, 186, 292} ,
+                    { 186, 250, 226, 292} ,
+                    { 226, 250, 266, 292} ,
+                    { 265, 250, 305, 292} ,
+                    { 305, 250, 345, 292} ,
+                    { 344, 250, 384, 292} ,
+                    { 384, 250, 424, 292} ,
+                    { 423, 250, 463, 292} ,
+                    { 463, 250, 503, 292} ,
+                    { 502, 250, 611, 292} ,
+                    { 663, 250, 703, 292} ,
+                    { 749, 248, 789, 290} ,
+                    { 788, 248, 828, 290} ,
+                    { 828, 248, 868, 290} ,
+                    { 868, 248, 907, 333} ,
 
-{ 18 , 293, 67, 335} ,
-{ 68 , 293, 121, 335} ,
-{ 119, 293, 177, 335} ,
-{ 175, 293, 385, 345} ,
-{ 384, 293, 424, 335} ,
-{ 423, 293, 463, 335} ,
-{ 463, 293, 503, 335} ,
-{ 528, 293, 612, 335} ,
-{ 623, 291, 663, 333} ,
-{ 663, 291, 703, 333} ,
-{ 702, 291, 742, 333} ,
-{ 748, 291, 829, 333} ,
-{ 828, 291, 868, 333} ,
+                    { 18 , 293, 67, 335} ,
+                    { 68 , 293, 121, 335} ,
+                    { 119, 293, 177, 335} ,
+                    { 175, 293, 385, 345} ,
+                    { 384, 293, 424, 335} ,
+                    { 423, 293, 463, 335} ,
+                    { 463, 293, 503, 335} ,
+                    { 528, 293, 612, 335} ,
+                    { 623, 291, 663, 333} ,
+                    { 663, 291, 703, 333} ,
+                    { 702, 291, 742, 333} ,
+                    { 748, 291, 829, 333} ,
+                    { 828, 291, 868, 333} ,
                 }
             };
 
@@ -406,17 +351,97 @@ namespace AuraEditor
             {
                 Image = "ms-appx:///Assets/ROG-Strix-Wireless-front.png",
                 LightRegions = new int[,] {
-                   {234, 198, 448, 428},
-{478, 198, 692, 428},
+                    {234, 198, 448, 428},
+                    {478, 198, 692, 428},
                 }
             };
             devicelist.Add(d);
-            
-            AddDeviceDialog dialog = new AddDeviceDialog(devicelist);
+
+            // TODO : combine DeviceItem class and Device class
+            device = new Device("Notebook", 0, 0, 0);
+            _deviceGroupManager.GlobalDevices.Add(device);
+            device = new Device("Mouse", 1, 0, 1);
+            _deviceGroupManager.GlobalDevices.Add(device);
+            device = new Device("Keyboard", 2, 1, 0);
+            _deviceGroupManager.GlobalDevices.Add(device);
+            device = new Device("Headset", 3, 1, 1);
+            _deviceGroupManager.GlobalDevices.Add(device);
+
+            return devicelist;
+        }
+
+        private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+            FrameworkElement fe;
+
+            if (rb.Name == "EffectRadioButton")
+                fe = EffectListView;
+            else if (rb.Name == "EventRadioButton")
+                fe = EventStackPanel;
+            else if (rb.Name == "TriggerEventRadioButton")
+                fe = TriggerEventListView;
+            else // OtherTriggerEventToggleButton
+                fe = OtherTriggerEventListView;
+
+            if (fe == null)
+                return;
+            else if (fe.Visibility == Visibility.Visible)
+                fe.Visibility = Visibility.Collapsed;
+            else
+                fe.Visibility = Visibility.Visible;
+        }
+        private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            var item = e.Items[0] as string;
+            e.Data.SetText(item);
+            e.Data.RequestedOperation = DataPackageOperation.Copy;
+        }
+
+        async private void ShowMess(string res)
+        {
+            var messDialog = new MessageDialog(res);
+            await messDialog.ShowAsync();
+        }
+        public void UpdateEventLog(string s)
+        {
+            Paragraph paragraph = new Paragraph();
+            Run run = new Run();
+            eventLog.TextWrapping = TextWrapping.Wrap;
+            run.Text = s;
+            paragraph.Inlines.Add(run);
+            eventLog.Blocks.Insert(0, paragraph);
+        }
+
+        private void DeleteItem_DragEnter(object sender, DragEventArgs e)
+        {
+            // Trash only accepts text
+            e.AcceptedOperation = DataPackageOperation.Move;
+            // We don't want to show the Move icon
+            e.DragUIOverride.IsGlyphVisible = false;
+            e.DragUIOverride.Caption = "Drop item here to remove it from selection";
+        }
+        private void DeleteItem_Drop(object sender, DragEventArgs e)
+        {
+            //if (e.DataView.Contains(StandardDataFormats.Text))
+            //{
+            //    canDelete = true;
+            //}
+        }
+
+        private async void AddDeviceButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private async void AddGroupButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddDeviceDialog dialog = new AddDeviceDialog(_devicelist);
             var result = await dialog.ShowAsync();
         }
+
         public async void AddDeviceFinished(ContentDialog sender, ContentDialogClosedEventArgs args)
         {
+            DeviceGroup dg = new DeviceGroup();
             AddDeviceDialog d = AddDeviceDialog.GetInstance();
             bool none = true;
 
@@ -437,40 +462,39 @@ namespace AuraEditor
             if (result == ContentDialogResult.None)
                 return;
 
-            string name = namedDialog.CustomizeName;
-            if (name == "")
+            dg.GroupName = namedDialog.CustomizeName;
+            if (dg.GroupName == "")
                 return;
-
-            DeviceGroup dg = new DeviceGroup();
 
             foreach (DeviceItem di in d.DeviceList)
             {
-                Device device;
+                int type = 0;
                 string devicename = di.DeviceName;
 
                 if (di.Mode == 0)
                     continue;
 
                 if (devicename == "Notebook")
-                    device = new Device(devicename, 0, 0, 0);
+                    type = 0;
                 else if (devicename == "Mouse")
-                    device = new Device(devicename, 1, 0, 1);
+                    type = 1;
                 else if (devicename == "Keyboard")
-                    device = new Device(devicename, 2, 1, 0);
+                    type = 2;
                 else if (devicename == "Headset")
-                    device = new Device(devicename, 3, 1, 1);
+                    type = 3;
                 else
                     continue;
-                
-                if (di.Mode == 2)
-                {
-                    device.SelectedZone = di.SelectedIndexes;
-                }
 
-                dg.AddDevice(device);
+                if (di.Mode == 1)
+                {
+                    dg.AddDeviceZones(type, new int[] { -1 }); // -1 means all
+                }
+                else if (di.Mode == 2)
+                {
+                    dg.AddDeviceZones(type, di.SelectedIndexes);
+                }
             }
 
-            dg.GroupName = name;
             _deviceGroupManager.AddDeviceGroup(dg);
             TimeLineDeviceNameListView.SelectedIndex = 0;
         }
@@ -522,7 +546,7 @@ namespace AuraEditor
             foreach(var dg in devicegroups)
             {
                 List<Device> devices = GetDevicesFromViewportTable(viewport_table, dg.GroupName);
-                dg.SetDevices(devices);
+                //dg.SetDevices(devices);
 
                 foreach (var effect in dg.Effects)
                 {
@@ -600,17 +624,18 @@ namespace AuraEditor
                     case "Headset": type = 3; break;
                 }
 
-                Table layoutTable = deviceTable.Get("layout").Table;
+                //Table layoutTable = deviceTable.Get("layout").Table;
                 Table locationTable = deviceTable.Get("location").Table;
 
                 int x = (int)locationTable.Get("x").Number;
                 int y = (int)locationTable.Get("y").Number;
 
-                Device d = new Device(deviceName, type, x, y)
-                {
-                    W = layoutTable.Get("weight").Number,
-                    H = layoutTable.Get("height").Number,
-                };
+                //Device d = new Device(deviceName, type, x, y)
+                //{
+                //    W = layoutTable.Get("weight").Number,
+                //    H = layoutTable.Get("height").Number,
+                //};
+                Device d = new Device(deviceName, type, x, y);
                 devices.Add(d);
             }
 
@@ -684,6 +709,7 @@ namespace AuraEditor
             ei.Freq = waveTable.Get("freq").Number;
             ei.Phase = waveTable.Get("phase").Number;
             ei.Start = waveTable.Get("start").Number;
+            ei.Velocity = waveTable.Get("velocity").Number;
 
             return ei;
         }
@@ -695,23 +721,34 @@ namespace AuraEditor
 
         private void DeviceList_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            ListView lv = sender as ListView;
-            int index = lv.SelectedIndex;
+            //ListView lv = sender as ListView;
+            //int index = lv.SelectedIndex;
 
-            if (index >= 0)
-                UpdateSpaceGrid(_deviceGroupManager.DeviceGroupCollection[index]);
+            //if (index >= 0)
+            //    UpdateSpaceGrid(_deviceGroupManager.DeviceGroupCollection[index]);
         }
-        private void UpdateSpaceGrid(DeviceGroup dg)
+        private void UpdateSpaceGrid()
         {
             SpacePanel.Children.Clear();
             SpacePanel.Children.Add(GridImage);
-            List<Device> devices = dg.GetDevices();
+            List<Device> devices = _deviceGroupManager.GlobalDevices;
 
             foreach (Device d in devices)
             {
                 SpacePanel.Children.Add(d.DeviceImg);
             }
         }
+        //private void UpdateSpaceGrid(DeviceGroup dg)
+        //{
+        //    SpacePanel.Children.Clear();
+        //    SpacePanel.Children.Add(GridImage);
+        //    List<Device> devices = dg.GetDevices();
+
+        //    foreach (Device d in devices)
+        //    {
+        //        SpacePanel.Children.Add(d.DeviceImg);
+        //    }
+        //}
 
         private async void TestButton_Click(object sender, RoutedEventArgs e)
         {
