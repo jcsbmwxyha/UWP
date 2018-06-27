@@ -10,6 +10,7 @@ using VocabularyTest.Common;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -48,7 +49,7 @@ namespace VocabularyTest
             {
                 if (value == true)
                 {
-                    SoundButton.IsEnabled = false;
+                    //SoundButton.IsEnabled = false;
                     VocabularyListBox.SelectedIndex = -1;
                     SaveButton.IsEnabled = true;
                 }
@@ -71,11 +72,11 @@ namespace VocabularyTest
         {
             this.InitializeComponent();
             
-            Task curtask = Task.Run(async () => MyVolsList = await GetVocabularies());
-            curtask.Wait();
+            //Task curtask = Task.Run(async () => MyVolsList = await GetVocabularies());
+            //curtask.Wait();
 
             SaveBtnEnabled = false;
-            SoundButton.IsEnabled = false;
+            //SoundButton.IsEnabled = false;
         }
 
         async Task<ObservableCollection<Vocabulary>> GetVocabularies()
@@ -92,13 +93,15 @@ namespace VocabularyTest
 
             string CountriesFile = @"Assets\vols.dat";
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            _volStorageFile = await InstallationFolder.GetFileAsync(CountriesFile);
+            //_volStorageFile = await InstallationFolder.GetFileAsync(CountriesFile);
 
+            _volStorageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/vols.dat"));
+            //await _volStorageFile.CopyAsync(ApplicationData.Current.LocalFolder);
 
 
 
             //_volStorageFile = (StorageFile)await InstallationFolder.TryGetItemAsync(CountriesFile);
-            
+
             string fileContent = await FileIO.ReadTextAsync(_volStorageFile);
             string[] stringSeparators = new string[] { "\r\n" };
             string[] result;
@@ -167,7 +170,7 @@ namespace VocabularyTest
             VocabularyListItem cur_selectedItem = itemList[selectedIndex];
 
             cur_v.IsSelect = Visibility.Visible;
-            SoundButton.IsEnabled = true;
+            //SoundButton.IsEnabled = true;
             TextBoxEnglish.Text = cur_v.English;
             TextBoxChinese.Text = cur_v.Chinese;
 
@@ -197,7 +200,7 @@ namespace VocabularyTest
                 return;
             }
 
-            SoundButton.IsEnabled = false;
+            //SoundButton.IsEnabled = false;
             Task<string> source = GetWebPageSourceAsync(volD.English);
         }
 
@@ -257,7 +260,7 @@ namespace VocabularyTest
             PlayMusic.SetSource(await destinationFile.OpenAsync(FileAccessMode.Read), destinationFile.ContentType);
             PlayMusic.Play();
 
-            SoundButton.IsEnabled = true;
+            //SoundButton.IsEnabled = true;
             return httpResponseBody;
         }
 
@@ -290,11 +293,6 @@ namespace VocabularyTest
                 DefaultLaunch(volD.English, Website.Google);
             }
         }
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            WriteVolsFile();
-            SaveBtnEnabled = false;
-        }
 
         async void DefaultLaunch(string s, Website web)
         {
@@ -306,28 +304,6 @@ namespace VocabularyTest
                 u = new Uri(googleURL + s.Replace(" ", "%20"));
 
             var success = await Windows.System.Launcher.LaunchUriAsync(u);
-        }
-
-        async void WriteVolsFile()
-        {
-            StorageFolder picturesLibrary = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
-            //StorageFolder storageFolder = KnownFolders.PicturesLibrary;
-            _volStorageFile = (StorageFile)await picturesLibrary.TryGetItemAsync(_defaultFileName);
-
-            if (_volStorageFile != null)
-            {
-                string result = "";
-
-                foreach (Vocabulary vd in MyVolsList)
-                {
-                    result += vd.English + "\r\n" + vd.Chinese + "\r\n";
-                }
-
-                if (!String.IsNullOrEmpty(result))
-                {
-                    await FileIO.WriteTextAsync(_volStorageFile, result);
-                }
-            }
         }
 
         private void VolDeleteBtn_Click(object sender, RoutedEventArgs e)
@@ -353,6 +329,96 @@ namespace VocabularyTest
             run.Text = s;
             paragraph.Inlines.Add(run);
             eventLog.Blocks.Insert(0, paragraph);
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_volStorageFile == null)
+                return;
+
+            string result = "";
+            foreach (Vocabulary vd in MyVolsList)
+            {
+                result += vd.English + "\r\n" + vd.Chinese + "\r\n";
+            }
+
+            if (!String.IsNullOrEmpty(result))
+            {
+                await FileIO.WriteTextAsync(_volStorageFile, result);
+            }
+
+            SaveBtnEnabled = false;
+        }
+        private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.Desktop;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".dat" });
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "MyVols";
+
+            StorageFile saveFile = await savePicker.PickSaveFileAsync();
+
+            if (saveFile != null)
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
+
+                // write to file
+                string result = "";
+
+                foreach (Vocabulary vd in MyVolsList)
+                {
+                    result += vd.English + "\r\n" + vd.Chinese + "\r\n";
+                }
+
+                if (!String.IsNullOrEmpty(result))
+                {
+                    await FileIO.WriteTextAsync(saveFile, result);
+                }
+
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
+                
+                _volStorageFile = saveFile;
+            }
+        }
+        private async void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker fileOpenPicker = new FileOpenPicker();
+            fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            fileOpenPicker.FileTypeFilter.Add(".dat");
+            fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
+
+            var inputFile = await fileOpenPicker.PickSingleFileAsync();
+
+            if (inputFile == null)
+            {
+                // The user cancelled the picking operation
+                return;
+            }
+
+            string fileContent = await FileIO.ReadTextAsync(inputFile);
+            string[] stringSeparators = new string[] { "\r\n" };
+            string[] result = fileContent.Split(stringSeparators, StringSplitOptions.None);
+            
+            ObservableCollection<Vocabulary> vols = new ObservableCollection<Vocabulary>();
+
+            for (int i = 0; i + 1 < result.Length; i += 2)
+            {
+                if (result[i] != "" && result[i] != "")
+                    vols.Add(new Vocabulary(result[i], result[i + 1], ""));
+            }
+
+            MyVolsList = vols;
+            _volStorageFile = inputFile;
+            VocabularyListBox.ItemsSource = MyVolsList;
         }
     }
 }
