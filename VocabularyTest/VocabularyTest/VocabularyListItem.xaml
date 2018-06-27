@@ -1,0 +1,43 @@
+﻿<UserControl
+    x:Class="VocabularyTest.VocabularyListItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VocabularyTest"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <RelativePanel Width="800" Tapped="RelativePanel_Tapped" GotFocus="RelativePanel_GotFocus">
+        <TextBlock Text="{x:Bind MyVocabulary.English}" FontSize="20" RelativePanel.AlignLeftWithPanel="True"/>
+        <Button Name="YahooButton"
+                Content="Y"
+                FontSize="20"
+                RelativePanel.LeftOf="GoogleButton"
+                Click="YahooButton_Click"
+                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+        <Button Name="GoogleButton"
+                Content="G"
+                FontSize="20"
+                RelativePanel.LeftOf="SoundButton"
+                Click="GoogleButton_Click"
+                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+        <Button Name="SoundButton"
+                Content="&#xE15D;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="20"
+                Height="40"
+                RelativePanel.LeftOf="DeleteButton"
+                Click="SoundButton_Click"
+                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+        <Button Name="DeleteButton"
+                Content="&#xE10A;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="20"
+                Height="40"
+                RelativePanel.AlignRightWithPanel="True"
+                Click="DeleteButton_Click"
+                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+    </RelativePanel>
+</UserControl>
