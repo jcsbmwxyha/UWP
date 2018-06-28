@@ -9,20 +9,32 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <RelativePanel Width="800" Tapped="RelativePanel_Tapped" GotFocus="RelativePanel_GotFocus">
-        <TextBlock Text="{x:Bind MyVocabulary.English}" FontSize="20" RelativePanel.AlignLeftWithPanel="True"/>
+    <RelativePanel>
+        <TextBlock Text="{x:Bind MyVocabulary.English}"
+                   FontSize="20"
+                   RelativePanel.AlignLeftWithPanel="True"/>
+        <Button Name="EditButton"
+                Content="&#xE104;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="20"
+                Height="40"
+                RelativePanel.LeftOf="YahooButton"
+                Click="EditButton_Click"
+                Visibility="{x:Bind IsSeleted}"/>
         <Button Name="YahooButton"
                 Content="Y"
                 FontSize="20"
+                Height="40"
                 RelativePanel.LeftOf="GoogleButton"
                 Click="YahooButton_Click"
-                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+                Visibility="{x:Bind IsSeleted}"/>
         <Button Name="GoogleButton"
                 Content="G"
                 FontSize="20"
+                Height="40"
                 RelativePanel.LeftOf="SoundButton"
                 Click="GoogleButton_Click"
-                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+                Visibility="{x:Bind IsSeleted}"/>
         <Button Name="SoundButton"
                 Content="&#xE15D;"
                 FontFamily="Segoe MDL2 Assets"
@@ -30,7 +42,7 @@
                 Height="40"
                 RelativePanel.LeftOf="DeleteButton"
                 Click="SoundButton_Click"
-                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+                Visibility="{x:Bind IsSeleted}"/>
         <Button Name="DeleteButton"
                 Content="&#xE10A;"
                 FontFamily="Segoe MDL2 Assets"
@@ -38,6 +50,6 @@
                 Height="40"
                 RelativePanel.AlignRightWithPanel="True"
                 Click="DeleteButton_Click"
-                Visibility="{x:Bind MyVocabulary.IsSelect}"/>
+                Visibility="{x:Bind IsSeleted}"/>
     </RelativePanel>
 </UserControl>

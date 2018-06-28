@@ -14,11 +14,9 @@ namespace VocabularyTest
             English = e;
             Chinese = c;
             Translater = t;
-            IsSelect = Visibility.Collapsed;
         }
         public string English { get; set; }
         public string Chinese { get; set; }
         public string Translater { get; set; }
-        public Windows.UI.Xaml.Visibility IsSelect { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using VocabularyTest.Common;
+using VocabularyTest.Dialog;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -61,52 +62,77 @@ namespace VocabularyTest
             }
         }
 
-        int _curSelectedItemIndex;
-        public int CurrentSelectedItemIndex
+        int _selectedItemIndex;
+        public int SelectedItemIndex
         {
-            get => _curSelectedItemIndex;
-            set => _curSelectedItemIndex = value;
+            get => _selectedItemIndex;
+            set
+            {
+                if (_selectedItemIndex != value)
+                {
+                    List<VocabularyListItem> listItem =
+                        ControlHelper.FindAllControl<VocabularyListItem>(VocabularyListBox, typeof(VocabularyListItem));
+
+                    // update content
+                    if (_selectedItemIndex != -1)
+                    {
+                        VocabularyListItem oldItem = listItem[_selectedItemIndex];
+                        oldItem.IsSeleted = false;
+                        oldItem.UpdateContent();
+                    }
+
+                    if (value == -1)
+                    {
+                        ClearScreen();
+                    }
+                    else
+                    {
+                        VocabularyListItem newItem = listItem[value];
+                        newItem.IsSeleted = true;
+                        newItem.UpdateContent();
+
+                        // update text
+                        Vocabulary vol = VocabularyListBox.SelectedItem as Vocabulary;
+                        Paragraph paragraph = new Paragraph();
+                        Run run = new Run();
+                        eventLog.TextWrapping = TextWrapping.Wrap;
+                        run.Text = vol.English + "\n" + vol.Chinese;
+                        paragraph.Inlines.Add(run);
+
+                        VocabularyRichTextBlock.Blocks.Clear();
+                        VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
+                    }
+
+                    _selectedItemIndex = value;
+                    VocabularyListBox.SelectedIndex = value;
+                }
+            }
         }
 
         public MainPage()
         {
             this.InitializeComponent();
-            
-            //Task curtask = Task.Run(async () => MyVolsList = await GetVocabularies());
-            //curtask.Wait();
-
             SaveBtnEnabled = false;
-            //SoundButton.IsEnabled = false;
         }
 
         async Task<ObservableCollection<Vocabulary>> GetVocabularies()
         {
+            // Method
+            // StorageFolder Folder = await StorageFolder.GetFolderFromPathAsync("...");
+            // StorageFolder Folder = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
+            // StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            // StorageFile File = await InstallationFolder.GetFileAsync("Assets\vols.dat");
+            // StorageFile File = (StorageFile)await InstallationFolder.TryGetItemAsync("Assets\vols.dat");
+
+            // Step 1 : Get Folder & File
             ObservableCollection<Vocabulary> vols = new ObservableCollection<Vocabulary>();
-            //StorageFolder picturesLibrary = await StorageFolder.GetFolderFromPathAsync("ms-appx:///Assets/asus_gc_aura_customize_keyboard_g703_mask.png");
-            //= await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
-            //string CountriesFile = @"Assets\vols.dat";
-            //StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            //StorageFile picturesLibrary = await InstallationFolder.GetFileAsync(CountriesFile);
-
-
-
-
-            string CountriesFile = @"Assets\vols.dat";
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            //_volStorageFile = await InstallationFolder.GetFileAsync(CountriesFile);
-
             _volStorageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/vols.dat"));
-            //await _volStorageFile.CopyAsync(ApplicationData.Current.LocalFolder);
 
-
-
-            //_volStorageFile = (StorageFile)await InstallationFolder.TryGetItemAsync(CountriesFile);
-
+            // Step 2 : Parsing
             string fileContent = await FileIO.ReadTextAsync(_volStorageFile);
             string[] stringSeparators = new string[] { "\r\n" };
-            string[] result;
-
-            result = fileContent.Split(stringSeparators, StringSplitOptions.None);
+            string[] result = fileContent.Split(stringSeparators, StringSplitOptions.None);
 
             for (int i = 0; i + 1 < result.Length; i += 2)
             {
@@ -116,211 +142,147 @@ namespace VocabularyTest
 
             return vols;
         }
-        
-        private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+
+
+        private void VocabularyListBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (TextBoxEnglish.Text == "" || TextBoxChinese.Text == "")
-                return;
-
-            if ((int)e.Key == 0xD) // Enter
-            {
-                Vocabulary volD = VocabularyListBox.SelectedItem as Vocabulary;
-
-                if (volD != null)
-                {
-                    volD.English = TextBoxEnglish.Text;
-                    volD.Chinese = TextBoxChinese.Text;
-                    TextBoxEnglish.Text = "";
-                    TextBoxChinese.Text = "";
-                    //tblockEng.Focus(FocusState.Programmatic);
-
-                    SaveBtnEnabled = true;
-                    return;
-                }
-                else
-                {
-                    for (int i = 0; i < MyVolsList.Count; i++)
-                    {
-                        if (MyVolsList[i].English == TextBoxEnglish.Text)
-                        {
-                            ShowMessage(TextBoxEnglish.Text + " already in your vocabulary list !");
-                            return;
-                        }
-                    }
-
-                    MyVolsList.Add(new Vocabulary(TextBoxEnglish.Text, TextBoxChinese.Text, ""));
-                    VocabularyListBox.ItemsSource = null;
-                    VocabularyListBox.ItemsSource = MyVolsList;
-                    TextBoxEnglish.Text = "";
-                    TextBoxChinese.Text = "";
-                    SaveBtnEnabled = true;
-                }
-            }
+            //SelectedItemIndex = -1;
         }
-
         private void VocabularyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int selectedIndex = VocabularyListBox.SelectedIndex;
-            List<VocabularyListItem> itemList =
-                ControlHelper.FindAllControl<VocabularyListItem>(VocabularyListBox, typeof(VocabularyListItem));
-
-            Vocabulary bef_v = VocabularyListBox.Items[CurrentSelectedItemIndex] as Vocabulary;
-            VocabularyListItem bef_selectedItem = itemList[CurrentSelectedItemIndex];
-            Vocabulary cur_v = VocabularyListBox.SelectedItem as Vocabulary;
-            VocabularyListItem cur_selectedItem = itemList[selectedIndex];
-
-            cur_v.IsSelect = Visibility.Visible;
-            //SoundButton.IsEnabled = true;
-            TextBoxEnglish.Text = cur_v.English;
-            TextBoxChinese.Text = cur_v.Chinese;
-
-            bef_v.IsSelect = Visibility.Collapsed;
-            CurrentSelectedItemIndex = selectedIndex;
-
-            Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            eventLog.TextWrapping = TextWrapping.Wrap;
-            run.Text = cur_v.English + "\n" + cur_v.Chinese;
-            paragraph.Inlines.Add(run);
-
+            SelectedItemIndex = VocabularyListBox.SelectedIndex;
+        }
+        private void ClearScreen()
+        {
             VocabularyRichTextBlock.Blocks.Clear();
-            VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
-
-            bef_selectedItem.UpdateContent();
-            cur_selectedItem.UpdateContent();
         }
 
-        private void SoundButton_Click(object sender, RoutedEventArgs e)
-        {
-            Vocabulary volD = VocabularyListBox.SelectedItem as Vocabulary;
+        //private void SoundButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Vocabulary volD = VocabularyListBox.SelectedItem as Vocabulary;
 
-            if (volD == null || volD.English.Contains(" "))
-            {
-                ShowMessage("No sound can play!");
-                return;
-            }
+        //    if (volD == null || volD.English.Contains(" "))
+        //    {
+        //        CommonHelper.ShowMessage("No sound can play!");
+        //        return;
+        //    }
 
-            //SoundButton.IsEnabled = false;
-            Task<string> source = GetWebPageSourceAsync(volD.English);
-        }
+        //    //SoundButton.IsEnabled = false;
+        //    Task<string> source = GetWebPageSourceAsync(volD.English);
+        //}
 
-        private async Task<string> GetWebPageSourceAsync(string eng)
-        {
-            MediaElement PlayMusic = new MediaElement();
-            StorageFolder picturesLibrary = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
-            StorageFolder mp3folder = await picturesLibrary.GetFolderAsync("MP3");
-            StorageFile destinationFile = null;
+        //private async Task<string> GetWebPageSourceAsync(string eng)
+        //{
+        //    MediaElement PlayMusic = new MediaElement();
+        //    StorageFolder picturesLibrary = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
+        //    StorageFolder mp3folder = await picturesLibrary.GetFolderAsync("MP3");
+        //    StorageFile destinationFile = null;
 
-            string mp3filename = eng + ".mp3";
-            string mp3folderpath = mp3folder.Path;
-            string httpResponseBody = "";
+        //    string mp3filename = eng + ".mp3";
+        //    string mp3folderpath = mp3folder.Path;
+        //    string httpResponseBody = "";
 
-            if (await mp3folder.TryGetItemAsync(mp3filename) == null)
-            {
-                string endString = "mp3";
-                string startString = "https:";
+        //    if (await mp3folder.TryGetItemAsync(mp3filename) == null)
+        //    {
+        //        string endString = "mp3";
+        //        string startString = "https:";
 
-                Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+        //        Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 
-                Uri requestUri = new Uri(@"https://tw.dictionary.search.yahoo.com/search?p=" + eng);
+        //        Uri requestUri = new Uri(@"https://tw.dictionary.search.yahoo.com/search?p=" + eng);
 
-                //Send the GET request asynchronously and retrieve the response as a string.
-                Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+        //        //Send the GET request asynchronously and retrieve the response as a string.
+        //        Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
 
-                //Send the GET request
-                httpResponse = await httpClient.GetAsync(requestUri);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+        //        //Send the GET request
+        //        httpResponse = await httpClient.GetAsync(requestUri);
+        //        httpResponse.EnsureSuccessStatusCode();
+        //        httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                string fileContent = await FileIO.ReadTextAsync(_volStorageFile);
-                string[] stringSeparators = new string[] { "\r\n" };
-                string stringTemp;
-                int startIndex, endIndex;
+        //        string fileContent = await FileIO.ReadTextAsync(_volStorageFile);
+        //        string[] stringSeparators = new string[] { "\r\n" };
+        //        string stringTemp;
+        //        int startIndex, endIndex;
 
-                endIndex = httpResponseBody.IndexOf(endString);
-                stringTemp = httpResponseBody.Substring(0, endIndex + endString.Length);
-                startIndex = stringTemp.LastIndexOf(startString);
-                stringTemp = stringTemp.Substring(startIndex);
-                stringTemp = stringTemp.Replace("\\", "");
-                //ShowMessage(stringTemp);
+        //        endIndex = httpResponseBody.IndexOf(endString);
+        //        stringTemp = httpResponseBody.Substring(0, endIndex + endString.Length);
+        //        startIndex = stringTemp.LastIndexOf(startString);
+        //        stringTemp = stringTemp.Substring(startIndex);
+        //        stringTemp = stringTemp.Replace("\\", "");
+        //        //ShowMessage(stringTemp);
 
-                Uri downloadAddress = new Uri(stringTemp, UriKind.Absolute);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downloadAddress);
-                WebResponse response = await request.GetResponseAsync();
-                Stream stream = response.GetResponseStream();
-                destinationFile = await mp3folder.CreateFileAsync(mp3filename, CreationCollisionOption.GenerateUniqueName);
+        //        Uri downloadAddress = new Uri(stringTemp, UriKind.Absolute);
+        //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downloadAddress);
+        //        WebResponse response = await request.GetResponseAsync();
+        //        Stream stream = response.GetResponseStream();
+        //        destinationFile = await mp3folder.CreateFileAsync(mp3filename, CreationCollisionOption.GenerateUniqueName);
 
-                await Windows.Storage.FileIO.WriteBytesAsync(destinationFile, ReadStream(stream));
-            }
-            else
-            {
-                destinationFile = await StorageFile.GetFileFromPathAsync(mp3folderpath + "\\" + mp3filename);
-            }
+        //        await Windows.Storage.FileIO.WriteBytesAsync(destinationFile, ReadStream(stream));
+        //    }
+        //    else
+        //    {
+        //        destinationFile = await StorageFile.GetFileFromPathAsync(mp3folderpath + "\\" + mp3filename);
+        //    }
 
-            PlayMusic.SetSource(await destinationFile.OpenAsync(FileAccessMode.Read), destinationFile.ContentType);
-            PlayMusic.Play();
+        //    PlayMusic.SetSource(await destinationFile.OpenAsync(FileAccessMode.Read), destinationFile.ContentType);
+        //    PlayMusic.Play();
 
-            //SoundButton.IsEnabled = true;
-            return httpResponseBody;
-        }
+        //    //SoundButton.IsEnabled = true;
+        //    return httpResponseBody;
+        //}
 
-        private byte[] ReadStream(Stream stream)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
+        //private byte[] ReadStream(Stream stream)
+        //{
+        //    byte[] buffer = new byte[16 * 1024];
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        int read;
+        //        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+        //        {
+        //            ms.Write(buffer, 0, read);
+        //        }
+        //        return ms.ToArray();
+        //    }
 
-        }
+        //}
 
-        private void YahooButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (VocabularyListBox.SelectedItem is Vocabulary volD)
-            {
-                DefaultLaunch(volD.English, Website.Yahoo);
-            }
-        }
-        private void GoogleButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (VocabularyListBox.SelectedItem is Vocabulary volD)
-            {
-                DefaultLaunch(volD.English, Website.Google);
-            }
-        }
+        //private void YahooButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (VocabularyListBox.SelectedItem is Vocabulary volD)
+        //    {
+        //        DefaultLaunch(volD.English, Website.Yahoo);
+        //    }
+        //}
+        //private void GoogleButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (VocabularyListBox.SelectedItem is Vocabulary volD)
+        //    {
+        //        DefaultLaunch(volD.English, Website.Google);
+        //    }
+        //}
 
-        async void DefaultLaunch(string s, Website web)
-        {
-            Uri u;
+        //async void DefaultLaunch(string s, Website web)
+        //{
+        //    Uri u;
 
-            if (web == Website.Yahoo)
-                u = new Uri(yahooURL + s.Replace(" ", "+"));
-            else
-                u = new Uri(googleURL + s.Replace(" ", "%20"));
+        //    if (web == Website.Yahoo)
+        //        u = new Uri(yahooURL + s.Replace(" ", "+"));
+        //    else
+        //        u = new Uri(googleURL + s.Replace(" ", "%20"));
 
-            var success = await Windows.System.Launcher.LaunchUriAsync(u);
-        }
+        //    var success = await Windows.System.Launcher.LaunchUriAsync(u);
+        //}
 
-        private void VolDeleteBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Button b = sender as Button;
+        //private void VolDeleteBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Button b = sender as Button;
 
-            //VolData vd = VocabularyListBox.SelectedItem as VolData;
-            MyVolsList.RemoveAt(VocabularyListBox.SelectedIndex);
-            VocabularyListBox.ItemsSource = null;
-            VocabularyListBox.ItemsSource = MyVolsList;
-        }
+        //    //VolData vd = VocabularyListBox.SelectedItem as VolData;
+        //    MyVolsList.RemoveAt(VocabularyListBox.SelectedIndex);
+        //    VocabularyListBox.ItemsSource = null;
+        //    VocabularyListBox.ItemsSource = MyVolsList;
+        //}
 
-        async void ShowMessage(string res)
-        {
-            var messDialog = new MessageDialog(res);
-            await messDialog.ShowAsync();
-        }
         private void UpdateEventLog(string s)
         {
             Paragraph paragraph = new Paragraph();
@@ -419,6 +381,29 @@ namespace VocabularyTest
             MyVolsList = vols;
             _volStorageFile = inputFile;
             VocabularyListBox.ItemsSource = MyVolsList;
+        }
+
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVolsList == null)
+                MyVolsList = new ObservableCollection<Vocabulary>();
+
+            Vocabulary vol = new Vocabulary("", "", "");
+            EditDialog dialog = new EditDialog(vol);
+            await dialog.ShowAsync();
+
+            if (vol.English != "" && vol.Chinese != "")
+            {
+                MyVolsList.Add(vol);
+                VocabularyListBox.ItemsSource = MyVolsList;
+            }
+        }
+
+        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            VocabularyRichTextBlockGrid.Width = MainGrid.ColumnDefinitions[0].ActualWidth;
+            eventLogGrid.Width = MainGrid.ColumnDefinitions[0].ActualWidth;
+            VocabularyListBox.Width = MainGrid.ColumnDefinitions[1].ActualWidth;
         }
     }
 }

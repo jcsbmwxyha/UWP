@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-          Margin="10,10,10,10" >
+          Margin="10,10,10,10" SizeChanged="MainGrid_SizeChanged">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*" />
@@ -18,87 +18,62 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="7*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid HorizontalAlignment="Left"
+            <Grid Name="VocabularyRichTextBlockGrid"
+                  HorizontalAlignment="Left"
                   BorderBrush="Black"
                   BorderThickness="1"
-                  Width="{Binding ElementName=MainGrid, Path=ColumnDefinitions[0].ActualWidth}">
+                  Width="{Binding ElementName=MainGrid, Path=ColumnDefinitions[0].ActualWidth}" >
                 <RichTextBlock Name="VocabularyRichTextBlock"
                                FontSize="20"
                                FontStyle="Italic"
                                HorizontalAlignment="Left"
                                Margin="6"/>
             </Grid>
-            <Grid HorizontalAlignment="Left"
+            <Grid Name="eventLogGrid"
+                  HorizontalAlignment="Left"
                   BorderBrush="Black"
                   BorderThickness="1"
                   Grid.Row="1"
                   Width="{Binding ElementName=MainGrid, Path=ColumnDefinitions[0].ActualWidth}">
-                <StackPanel Name="Column1"
-                            Orientation="Vertical"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="6">
-                    <TextBlock Text="English"
-                               FontSize="26"
-                               Foreground="DarkGreen"/>
-                    <TextBox x:Name="TextBoxEnglish"
-                             PlaceholderText="Please type your text"
-                             Foreground="Gray"
-                             Width="300"
-                             HorizontalAlignment="Left"
-                             Height="39"
-                             Margin="0,10,0,0"
-                             KeyDown="TextBox_KeyDown"/>
-                    <TextBlock Text="Chinese"
-                               FontSize="26"
-                               Foreground="DarkGreen"
-                               Margin="0,10,0,0"/>
-                    <TextBox x:Name="TextBoxChinese"
-                             PlaceholderText="Please type your text"
-                             Width="300"
-                             Height="39"
-                             Foreground="Gray"
-                             HorizontalAlignment="Left"
-                             Margin="0,10,0,0"
-                             KeyDown="TextBox_KeyDown"/>
-                    <RichTextBlock Name="eventLog" Margin="0,20,0,0"
-                                   TextWrapping="Wrap" 
-                                   FontSize="8"
-                                   Foreground="Firebrick" 
-                                   ScrollViewer.VerticalScrollBarVisibility="Visible" 
-                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    </RichTextBlock>
-                </StackPanel>
+                <RichTextBlock Name="eventLog" Margin="0,20,0,0"
+                               TextWrapping="Wrap" 
+                               FontSize="8"
+                               Foreground="Firebrick" 
+                               ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </Grid>
         </Grid>
-        <ListBox x:Name="VocabularyListBox"
-                 ItemsSource="{x:Bind MyVolsList}"
-                 Height="{Binding ScreenHeight}" VerticalAlignment="Top" Margin="10,10,10,10"
-                 HorizontalAlignment="Left"
-                 ScrollViewer.VerticalScrollBarVisibility="Visible" Grid.Column="1"
-                 SelectionChanged="VocabularyListBox_SelectionChanged">
+        <StackPanel Grid.Column="1">
+            <Button Name="AddButton"
+                    Content="&#xE710;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="20"
+                    Height="40"
+                    Click="AddButton_Click" Margin="6" VerticalAlignment="Top"/>
+            <ListBox x:Name="VocabularyListBox" LostFocus="VocabularyListBox_LostFocus"
+                     ItemsSource="{x:Bind MyVolsList}"
+                     Height="{Binding ScreenHeight}"
+                     VerticalAlignment="Top"
+                     Margin="10"
+                     HorizontalAlignment="Left"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     SelectionChanged="VocabularyListBox_SelectionChanged">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <local:VocabularyListItem/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:VocabularyListItem Width="600"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="2" Margin="10,10,10,10">
-            <!--<Button Name="SoundButton" BorderBrush="Red"  Margin="0,10,0,0" Click="SoundButton_Click" Width="50" Height="50" Background="White">
-                <Image x:Name="SoundImg" Source="Assets/sound.png" Stretch="Fill"/>
-            </Button>-->
-            <!--<Button Name="GoogleButton"  Content="Google" Click="GoogleButton_Click" Width="150" Margin="0,10,0,0"/>
-            <Button Name="YahooButton" Content="Yahoo" Margin="0,10,0,0" Click="YahooButton_Click" Width="150"/>
-            <Button Name="VolDeleteBtn" Content="Delete" Margin="0,10,0,0" Click="VolDeleteBtn_Click" Width="150"/>-->
             <Button Name="SaveButton"
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
