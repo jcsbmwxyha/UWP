@@ -16,6 +16,12 @@ namespace AuraEditor
         internal FlyoutBase m_flyoutBase;
         internal Effect _selectedEffectLine;
 
+        public void ClearEffectInfoGrid()
+        {
+            Title.Text = "";
+            ColorRect.Visibility = Visibility.Collapsed;
+            EffectInfoGroup.Visibility = Visibility.Collapsed;
+        }
         public void UpdateEffectInfoGrid(Effect effect)
         {
             _selectedEffectLine = effect;

@@ -529,24 +529,33 @@ namespace AuraEditor
             Table eventprovider_table;
             Table viewport_table;
             Table event_table;
-            
+            Table globalspace_table;
+
             script_dv = script.DoString(luaScript + "\nreturn EventProvider");
             eventprovider_table = script_dv.Table;
             script_dv = script.DoString(luaScript + "\nreturn Viewport");
             viewport_table = script_dv.Table;
             script_dv = script.DoString(luaScript + "\nreturn Event");
             event_table = script_dv.Table;
+            script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
+            globalspace_table = script_dv.Table;
 
             _deviceGroupManager.ClearAllGroup();
-            List<DeviceGroup> devicegroups = ParsingEventProviderTable(eventprovider_table);
 
+            // Step 1 : Get global devices from GlobalSpace table and set to deviceGroupManager
+            List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
+            _deviceGroupManager.SetGlobalDevices(globaldevices);
+
+            // Step 2 : Get all device groups from EventProvider table
+            List<DeviceGroup> devicegroups = ParsingEventProviderTable(eventprovider_table);
             if (devicegroups.Count == 0)
                 return;
 
-            foreach(var dg in devicegroups)
+            // Step 3 : According to device group name, get all device zones from Viewport table
+            foreach (var dg in devicegroups)
             {
-                List<Device> devices = GetDevicesFromViewportTable(viewport_table, dg.GroupName);
-                //dg.SetDevices(devices);
+                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, dg.GroupName);
+                dg.AddDeviceZones(dictionary);
 
                 foreach (var effect in dg.Effects)
                 {
@@ -556,6 +565,8 @@ namespace AuraEditor
                 _deviceGroupManager.AddDeviceGroup(dg);
             }
 
+            UpdateSpaceGrid();
+            ClearEffectInfoGrid();
             TimeLineDeviceNameListView.SelectedIndex = 0;
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -605,17 +616,19 @@ namespace AuraEditor
 
             return await sf.CreateFolderAsync(folderName);
         }
-        private List<Device> GetDevicesFromViewportTable(Table viewport_table, string groupName)
+        private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string groupName)
         {
+            Dictionary<int, int[]> zoneDictionary = new Dictionary<int, int[]>();
             List<Device> devices = new List<Device>();
             Table groupTable = viewport_table.Get(groupName).Table;
 
             foreach (var deviceKey in groupTable.Keys)
             {
                 Table deviceTable = groupTable.Get(deviceKey.String).Table;
-                string deviceName = deviceTable.Get("name").String;
-
+                //string deviceName = deviceTable.Get("name").String;
                 int type = 0;
+                List<int> zones = new List<int>();
+
                 switch (deviceTable.Get("DeviceType").String)
                 {
                     case "Notebook": type = 0; break;
@@ -624,22 +637,23 @@ namespace AuraEditor
                     case "Headset": type = 3; break;
                 }
 
-                //Table layoutTable = deviceTable.Get("layout").Table;
-                Table locationTable = deviceTable.Get("location").Table;
+                Table usageTable = deviceTable.Get("usage").Table;
+                foreach (var index in usageTable.Keys)
+                {
+                    int physicalIndex = (int)usageTable.Get(index.Number).Number;
 
-                int x = (int)locationTable.Get("x").Number;
-                int y = (int)locationTable.Get("y").Number;
+                    if (type == 0)
+                        zones.Add(KeyRemap.G703ReRemap(physicalIndex));
+                    else if (type == 2)
+                        zones.Add(KeyRemap.FlairReRemap(physicalIndex));
+                    else
+                        zones.Add(physicalIndex);
+                }
 
-                //Device d = new Device(deviceName, type, x, y)
-                //{
-                //    W = layoutTable.Get("weight").Number,
-                //    H = layoutTable.Get("height").Number,
-                //};
-                Device d = new Device(deviceName, type, x, y);
-                devices.Add(d);
+                zoneDictionary.Add(type, zones.ToArray());
             }
 
-            return devices;
+            return zoneDictionary;
         }
         private List<DeviceGroup> ParsingEventProviderTable(Table eventProviderTable)
         {
@@ -712,6 +726,33 @@ namespace AuraEditor
             ei.Velocity = waveTable.Get("velocity").Number;
 
             return ei;
+        }
+        private List<Device> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
+        {
+            List<Device> devices = new List<Device>();
+
+            foreach (var deviceKey in globalspaceTable.Keys)
+            {
+                Table deviceTable = globalspaceTable.Get(deviceKey.String).Table;
+
+                int type = 0;
+                switch (deviceTable.Get("DeviceType").String)
+                {
+                    case "Notebook": type = 0; break;
+                    case "Mouse": type = 1; break;
+                    case "Keyboard": type = 2; break;
+                    case "Headset": type = 3; break;
+                }
+
+                Table locationTable = deviceTable.Get("location").Table;
+                int x = (int)locationTable.Get("x").Number;
+                int y = (int)locationTable.Get("y").Number;
+
+                Device d = new Device(deviceKey.String, type, x, y);
+                devices.Add(d);
+            }
+
+            return devices;
         }
 
         private void TimeLineZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)

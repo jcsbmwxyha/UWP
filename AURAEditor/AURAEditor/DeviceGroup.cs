@@ -186,20 +186,24 @@ namespace AuraEditor
             var fe = sender as FrameworkElement;
             CompositeTransform ct = fe.RenderTransform as CompositeTransform;
 
-            if ((ct.TranslateX + e.Delta.Translation.X < 0))
-                return;
-
             if (_cursorMove)
             {
+                if ((ct.TranslateX + e.Delta.Translation.X < 0))
+                    return;
                 ct.TranslateX += e.Delta.Translation.X;
             }
             else if (_cursorSizeRight)
             {
+                MyDeviceGroup.OnCursorSizeRight(this, (int)(ct.TranslateX), (int)(fe.Width + e.Delta.Translation.X));
+
                 if (e.Position.X > 50)
                     fe.Width = e.Position.X;
             }
             else if (_cursorSizeLeft)
             {
+                if (MyDeviceGroup.IsEffectLineOverlap(this, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(fe.Width - e.Delta.Translation.X)) != null)
+                    return;
+
                 if (fe.Width - e.Delta.Translation.X > 50)
                 {
                     ct.TranslateX += e.Delta.Translation.X;
@@ -387,10 +391,19 @@ namespace AuraEditor
         {
             return _deviceToZonesDictionary;
         }
-        //public void SetDeviceZones(List<Device> devices)
-        //{
-        //    _devices = devices;
-        //}
+        public void AddDeviceZones(Dictionary<int, int[]> dictionary)
+        {
+            if (dictionary == null)
+                return;
+
+            foreach (var item in dictionary)
+            {
+                if (!_deviceToZonesDictionary.ContainsKey(item.Key))
+                {
+                    _deviceToZonesDictionary.Add(item.Key, item.Value);
+                }
+            }
+        }
         public void AddDeviceZones(int type, int[] indexes)
         {
             _deviceToZonesDictionary.Add(type, indexes);
@@ -415,64 +428,100 @@ namespace AuraEditor
                 AddEffect(effect);
             }
         }
-        public int InsertEffectLine(Effect effect, int leftpoint, int w)
+        public int InsertEffectLine(Effect selectedEffect, int leftposition, int w)
         {
+            int oldStart = selectedEffect.Start;
+
             Effect coveredEffectLine = null;
+            int newLeftposition = leftposition;
 
             // Step 1 : Determine if the leftpoint on someone effectline
             foreach (Effect e in Effects)
             {
-                if (e != effect && e.Start < leftpoint && e.Start + e.Duration > leftpoint)
+                if (e != selectedEffect && e.Start <= leftposition && e.Start + e.Duration > leftposition)
                 {
                     coveredEffectLine = e;
+                    break;
                 }
             }
 
             // Step 2 : Calculate leftpoint position
             if (coveredEffectLine != null)
             {
-                leftpoint = coveredEffectLine.Start + coveredEffectLine.Duration;
+                // if have same Start, move coveredEffectLine to back
+                if (coveredEffectLine.Start != leftposition)
+                    newLeftposition = coveredEffectLine.Start + coveredEffectLine.Duration;
             }
 
-            // Step 3 : determine all effectlines position on the right
+            // Step 3 : determine all effectlines position on the right hand side
             bool needToAdjustPosition = false;
-            int offset = 999999;
+            int distanceToMove = 0;
             foreach (Effect e in Effects)
             {
-                if (e != effect && e.Start > leftpoint && e.Start < leftpoint + w)
+                // if there is overlap to selected effectline
+                if (e != selectedEffect && e.Start >= newLeftposition && e.Start < newLeftposition + w)
                 {
                     needToAdjustPosition = true;
-                    int len = effect.Duration - (e.Start - leftpoint);
+                    int len = selectedEffect.Duration - (e.Start - newLeftposition);
 
-                    if (len < offset)
-                        offset = len;
+                    // There may be many e which is overlap to selected effectline.
+                    // We should find the longgest distance.
+                    if (len > distanceToMove)
+                        distanceToMove = len;
                 }
             }
 
             if (needToAdjustPosition == true)
             {
+                if (newLeftposition < oldStart)
+                    foreach (Effect e in Effects)
+                    {
+                        if (e != selectedEffect && e.Start >= newLeftposition && e.Start < oldStart)
+                        {
+                            e.Start += distanceToMove;
+                        }
+                    }
+                else
+                    foreach (Effect e in Effects)
+                    {
+                        if (e != selectedEffect && e.Start >= newLeftposition/* && e.Start < newLeftposition + w*/)
+                        {
+                            e.Start += distanceToMove;
+                        }
+                    }
+            }
+
+            return newLeftposition;
+        }
+        public void OnCursorSizeRight(Effect effect, int x, int w)
+        {
+            Effect overlapEff = IsEffectLineOverlap(effect, x, w);
+            int moveLength = 0;
+
+            if (overlapEff != null)
+            {
+                moveLength = (x + w) - overlapEff.Start;
                 foreach (Effect e in Effects)
                 {
-                    if (e != effect && e.Start > leftpoint && e.Start < leftpoint + w)
+                    if (!e.Equals(effect))
                     {
-                        e.Start += offset;
+                        if (x < e.Start)
+                            e.Start += moveLength;
                     }
                 }
             }
-
-            return leftpoint;
         }
-        public bool IsEffectLineOverlap(Effect effect, int x, int w)
+        public Effect IsEffectLineOverlap(Effect effect, int x, int w)
         {
             foreach (Effect e in Effects)
             {
                 if (!e.Equals(effect))
                 {
                     if ((x < e.Start + e.Duration) && (x + w > e.Start))
-                        return true;
+                        return e;
                 }
             }
-            return false;
+            return null;
         }
         public double GetFirstSpaceCanPut()
         {
@@ -531,6 +580,10 @@ namespace AuraEditor
             DeviceGroupCollection.Add(dg);
             TimeLineStackPanel.Children.Add(dg.UICanvas);
         }
+        public void SetGlobalDevices(List<Device> devices)
+        {
+            GlobalDevices = devices;
+        }
         public void ClearAllGroup()
         {
             TimeLineStackPanel.Children.Clear();
@@ -552,6 +605,9 @@ namespace AuraEditor
             sb.Append("\n");
             sb.Append("Event = ");
             sb.Append(PrintTable(GetEventTable()));
+            sb.Append("\n");
+            sb.Append("GlobalSpace = ");
+            sb.Append(PrintTable(GetGlobalSpaceTable()));
             sb.Append("\n");
             return sb.ToString();
         }
@@ -607,8 +663,8 @@ namespace AuraEditor
             Table deviceTable;
             Table layoutTable;
             Table locationTable;
-            Table rangeTable;
-            Table fromToTable;
+            Table usageTable;
+            //Table fromToTable;
 
             int groupIndex = 1;
             foreach (DeviceGroup dg in DeviceGroupCollection)
@@ -625,7 +681,7 @@ namespace AuraEditor
                     layoutTable = CreateNewTable();
                     locationTable = CreateNewTable();
                     deviceTable = CreateNewTable();
-                    rangeTable = CreateNewTable();
+                    usageTable = CreateNewTable();
 
                     layoutTable.Set("weight", DynValue.NewNumber(d.W));
                     layoutTable.Set("height", DynValue.NewNumber(d.H));
@@ -645,13 +701,13 @@ namespace AuraEditor
                     //deviceTable.Set("layout", DynValue.NewTable(layoutTable));
                     deviceTable.Set("location", DynValue.NewTable(locationTable));
 
-                    rangeTable = CreateNewTable();
+                    usageTable = CreateNewTable();
                     if (pair.Value != null && pair.Value[0] != -1)
                     {
                         int count = 1;
                         foreach (int index in pair.Value)
                         {
-                            fromToTable = CreateNewTable();
+                            //fromToTable = CreateNewTable();
                             int i = 0;
 
                             if (d.DeviceType == 0)
@@ -659,20 +715,18 @@ namespace AuraEditor
                             else if (d.DeviceType == 2)
                                 i = KeyRemap.FlairRemap(index);
 
-                            fromToTable.Set("from", DynValue.NewNumber(i));
-                            fromToTable.Set("to", DynValue.NewNumber(i));
-                            rangeTable.Set(count, DynValue.NewTable(fromToTable));
+                            //fromToTable.Set("from", DynValue.NewNumber(i));
+                            //fromToTable.Set("to", DynValue.NewNumber(i));
+                            usageTable.Set(count, DynValue.NewNumber(i));
                             count++;
                         };
                     }
                     else
                     {
-                        fromToTable = CreateNewTable();
-                        fromToTable.Set("from", DynValue.NewNumber(0));
-                        fromToTable.Set("to", DynValue.NewNumber(168));
-                        rangeTable.Set(1, DynValue.NewTable(fromToTable));
+                        for (int count = 0; count < 169; count++)
+                            usageTable.Set(count, DynValue.NewNumber(count));
                     }
-                    deviceTable.Set("range", DynValue.NewTable(rangeTable));
+                    deviceTable.Set("usage", DynValue.NewTable(usageTable));
 
                     groupTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
                 }
@@ -741,6 +795,37 @@ namespace AuraEditor
                 }
             }
             return eventTable;
+        }
+
+        private Table GetGlobalSpaceTable()
+        {
+            Table globalSpace = CreateNewTable();
+            Table deviceTable;
+            Table locationTable;
+            string deviceTypeName = "";
+
+            foreach (Device d in GlobalDevices)
+            {
+                deviceTable = CreateNewTable();
+                locationTable = CreateNewTable();
+
+                locationTable.Set("x", DynValue.NewNumber(d.X));
+                locationTable.Set("y", DynValue.NewNumber(d.Y));
+
+                switch (d.DeviceType)
+                {
+                    case 0: deviceTypeName = "Notebook"; break;
+                    case 1: deviceTypeName = "Mouse"; break;
+                    case 2: deviceTypeName = "Keyboard"; break;
+                    case 3: deviceTypeName = "Headset"; break;
+                }
+                deviceTable.Set("DeviceType", DynValue.NewString(deviceTypeName));
+                deviceTable.Set("location", DynValue.NewTable(locationTable));
+
+                globalSpace.Set(d.DeviceName, DynValue.NewTable(deviceTable));
+            }
+
+            return globalSpace;
         }
         private string PrintTable(Table tb, int tab = 0)
         {

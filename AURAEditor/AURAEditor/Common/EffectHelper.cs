@@ -7,7 +7,7 @@ namespace AuraEditor.Common
 {
     class EffectHelper
     {
-        static string[] _commonEffects = 
+        static string[] _commonEffects =
         {
             "Static",
             "Breath",
