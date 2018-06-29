@@ -112,6 +112,28 @@ namespace AuraEditor.Common
 
             return false;
         }
+        static public bool IsTriggerEffects(string effectName)
+        {
+            foreach (string s in _triggerEffects)
+            {
+                if (s == effectName)
+                    return true;
+            }
+
+            return false;
+        }
+        static public bool IsTriggerEffects(int index)
+        {
+            string effectName = GetEffectName(index);
+
+            foreach (string s in _triggerEffects)
+            {
+                if (s == effectName)
+                    return true;
+            }
+
+            return false;
+        }
 
         public const string PointViewportTransformFunc = @"
 	        	function(viewport)

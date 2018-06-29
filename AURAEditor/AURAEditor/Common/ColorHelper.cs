@@ -179,7 +179,7 @@ namespace AuraEditor.Common
                 H += 360;
 
             double[] HSL = new double[3];
-            HSL[0] = H;
+            HSL[0] = H / 360;
             HSL[1] = S;
             HSL[2] = L;
 

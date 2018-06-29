@@ -704,6 +704,8 @@ namespace AuraEditor
                     queueItemtable.Set("Viewport", DynValue.NewString(gp.GroupName));
                     if (EffectHelper.GetEffectName(eff.EffectType) == "Comet")
                         queueItemtable.Set("Trigger", DynValue.NewString("Period"));
+                    else if(EffectHelper.IsTriggerEffects(eff.EffectType))
+                        queueItemtable.Set("Trigger", DynValue.NewString("KeyboardInput"));
                     else
                         queueItemtable.Set("Trigger", DynValue.NewString("OneTime"));
                     queueItemtable.Set("Delay", DynValue.NewNumber(eff.Start * 10));

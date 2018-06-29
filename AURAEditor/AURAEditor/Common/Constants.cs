@@ -21,43 +21,40 @@ namespace AuraEditor.Common
                 local delayMilisecond = EventProvider[""queue""][key][""Delay""]
                 local lifeTime = EventProvider[""queue""][key][""Duration""]
                 local trigger = EventProvider[""queue""][key][""Trigger""]
-
 				if (trigger == ""OneTime"") then
 					if (not global.OneTimeDone) then
                         Provider:makeEvent(vp, Event[executeName] , delayMilisecond , lifeTime)
                     end
                 elseif(trigger == ""Period"") then
-
 					if (not global.PeriodDone) then
                         Provider:makeEvent(vp, Event[executeName] , delayMilisecond , lifeTime)
                     end
-
-				--[[elseif(trigger == ""KeyboardInput"") then
-                    local keyPressCount = #AURA.keyStates
+                elseif(trigger == ""KeyboardInput"") then
+                   local keyPressCount = #AURA.keyStates
 					for j = 1 , keyPressCount do
-                        global.keyPressX = AURA.keyStates[j].X
+						global.keyPressX = AURA.keyStates[j].X
                         global.keyPressY = AURA.keyStates[j].Y
                         global.keystrokeStrength = global.keystrokeStrength + 1
                         Provider:makeEvent(vp, Event[executeName], delayMilisecond, lifeTime)
                     end
-
-					if (global.keystrokeStrength > 0) then
-                        global.keystrokeStrength = global.keystrokeStrength - 0.2
+					if (global.keystrokeStrength > 5) then
+                        Provider:makeEvent(vp, Event[""Ripple""] , 2000 , 5000)
+                        global.keystrokeStrength = 0					-- Reset keystrokeStrength, if it increases to MAXIMUN
                     end
-				]]
-				end
-            end	
-
-            if (not global.OneTimeDone) then
+					if (global.keystrokeStrength > 0) then
+                        global.keystrokeStrength = global.keystrokeStrength - 0.3
+                    end
+                end
+            end
+			if (not global.OneTimeDone) then
                 global.OneTimeDone = true
-            end
-
+			end
 			if (timer > EventProvider[""period""]) then
-                global.PeriodDone = false
-                Provider:clock():reset()
+               global.PeriodDone = false
+				Provider:clock():reset()
 			else
-                global.PeriodDone = true
-            end
-        end";
+               global.PeriodDone = true
+           end
+    end";
     }
 }
