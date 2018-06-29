@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using VocabularyTest.Common;
 using VocabularyTest.Dialog;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -47,10 +37,17 @@ namespace VocabularyTest
             EditDialog dialog = new EditDialog(MyVocabulary);
             await dialog.ShowAsync();
             Bindings.Update();
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.SaveBtnEnabled = true;
         }
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DeleteVocabulary(MyVocabulary);
+            page.SaveBtnEnabled = true;
         }
         private void SoundButton_Click(object sender, RoutedEventArgs e)
         {

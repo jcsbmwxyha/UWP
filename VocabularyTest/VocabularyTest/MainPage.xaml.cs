@@ -48,16 +48,7 @@ namespace VocabularyTest
             get => _saveBtnEnabled;
             set
             {
-                if (value == true)
-                {
-                    //SoundButton.IsEnabled = false;
-                    VocabularyListBox.SelectedIndex = -1;
-                    SaveButton.IsEnabled = true;
-                }
-                else
-                {
-                    SaveButton.IsEnabled = false;
-                }
+                SaveButton.IsEnabled = value;
                 _saveBtnEnabled = value;
             }
         }
@@ -156,132 +147,6 @@ namespace VocabularyTest
         {
             VocabularyRichTextBlock.Blocks.Clear();
         }
-
-        //private void SoundButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Vocabulary volD = VocabularyListBox.SelectedItem as Vocabulary;
-
-        //    if (volD == null || volD.English.Contains(" "))
-        //    {
-        //        CommonHelper.ShowMessage("No sound can play!");
-        //        return;
-        //    }
-
-        //    //SoundButton.IsEnabled = false;
-        //    Task<string> source = GetWebPageSourceAsync(volD.English);
-        //}
-
-        //private async Task<string> GetWebPageSourceAsync(string eng)
-        //{
-        //    MediaElement PlayMusic = new MediaElement();
-        //    StorageFolder picturesLibrary = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
-        //    StorageFolder mp3folder = await picturesLibrary.GetFolderAsync("MP3");
-        //    StorageFile destinationFile = null;
-
-        //    string mp3filename = eng + ".mp3";
-        //    string mp3folderpath = mp3folder.Path;
-        //    string httpResponseBody = "";
-
-        //    if (await mp3folder.TryGetItemAsync(mp3filename) == null)
-        //    {
-        //        string endString = "mp3";
-        //        string startString = "https:";
-
-        //        Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
-        //        Uri requestUri = new Uri(@"https://tw.dictionary.search.yahoo.com/search?p=" + eng);
-
-        //        //Send the GET request asynchronously and retrieve the response as a string.
-        //        Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
-
-        //        //Send the GET request
-        //        httpResponse = await httpClient.GetAsync(requestUri);
-        //        httpResponse.EnsureSuccessStatusCode();
-        //        httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-
-        //        string fileContent = await FileIO.ReadTextAsync(_volStorageFile);
-        //        string[] stringSeparators = new string[] { "\r\n" };
-        //        string stringTemp;
-        //        int startIndex, endIndex;
-
-        //        endIndex = httpResponseBody.IndexOf(endString);
-        //        stringTemp = httpResponseBody.Substring(0, endIndex + endString.Length);
-        //        startIndex = stringTemp.LastIndexOf(startString);
-        //        stringTemp = stringTemp.Substring(startIndex);
-        //        stringTemp = stringTemp.Replace("\\", "");
-        //        //ShowMessage(stringTemp);
-
-        //        Uri downloadAddress = new Uri(stringTemp, UriKind.Absolute);
-        //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downloadAddress);
-        //        WebResponse response = await request.GetResponseAsync();
-        //        Stream stream = response.GetResponseStream();
-        //        destinationFile = await mp3folder.CreateFileAsync(mp3filename, CreationCollisionOption.GenerateUniqueName);
-
-        //        await Windows.Storage.FileIO.WriteBytesAsync(destinationFile, ReadStream(stream));
-        //    }
-        //    else
-        //    {
-        //        destinationFile = await StorageFile.GetFileFromPathAsync(mp3folderpath + "\\" + mp3filename);
-        //    }
-
-        //    PlayMusic.SetSource(await destinationFile.OpenAsync(FileAccessMode.Read), destinationFile.ContentType);
-        //    PlayMusic.Play();
-
-        //    //SoundButton.IsEnabled = true;
-        //    return httpResponseBody;
-        //}
-
-        //private byte[] ReadStream(Stream stream)
-        //{
-        //    byte[] buffer = new byte[16 * 1024];
-        //    using (MemoryStream ms = new MemoryStream())
-        //    {
-        //        int read;
-        //        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-        //        {
-        //            ms.Write(buffer, 0, read);
-        //        }
-        //        return ms.ToArray();
-        //    }
-
-        //}
-
-        //private void YahooButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (VocabularyListBox.SelectedItem is Vocabulary volD)
-        //    {
-        //        DefaultLaunch(volD.English, Website.Yahoo);
-        //    }
-        //}
-        //private void GoogleButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (VocabularyListBox.SelectedItem is Vocabulary volD)
-        //    {
-        //        DefaultLaunch(volD.English, Website.Google);
-        //    }
-        //}
-
-        //async void DefaultLaunch(string s, Website web)
-        //{
-        //    Uri u;
-
-        //    if (web == Website.Yahoo)
-        //        u = new Uri(yahooURL + s.Replace(" ", "+"));
-        //    else
-        //        u = new Uri(googleURL + s.Replace(" ", "%20"));
-
-        //    var success = await Windows.System.Launcher.LaunchUriAsync(u);
-        //}
-
-        //private void VolDeleteBtn_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Button b = sender as Button;
-
-        //    //VolData vd = VocabularyListBox.SelectedItem as VolData;
-        //    MyVolsList.RemoveAt(VocabularyListBox.SelectedIndex);
-        //    VocabularyListBox.ItemsSource = null;
-        //    VocabularyListBox.ItemsSource = MyVolsList;
-        //}
 
         private void UpdateEventLog(string s)
         {
@@ -396,6 +261,7 @@ namespace VocabularyTest
             {
                 MyVolsList.Add(vol);
                 VocabularyListBox.ItemsSource = MyVolsList;
+                SaveBtnEnabled = true;
             }
         }
 
@@ -403,7 +269,14 @@ namespace VocabularyTest
         {
             VocabularyRichTextBlockGrid.Width = MainGrid.ColumnDefinitions[0].ActualWidth;
             eventLogGrid.Width = MainGrid.ColumnDefinitions[0].ActualWidth;
-            VocabularyListBox.Width = MainGrid.ColumnDefinitions[1].ActualWidth;
+            VocabularyListBox.Width = MainGrid.ColumnDefinitions[1].ActualWidth - 50;
+        }
+
+        public async void DeleteVocabulary(Vocabulary vol)
+        {
+            SelectedItemIndex = -1;
+            MyVolsList.Remove(vol);
+            VocabularyListBox.ItemsSource = MyVolsList;
         }
     }
 }

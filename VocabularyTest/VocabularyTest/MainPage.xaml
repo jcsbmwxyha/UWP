@@ -45,14 +45,18 @@
                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </Grid>
         </Grid>
-        <StackPanel Grid.Column="1">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Button Name="AddButton"
                     Content="&#xE710;"
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="20"
                     Height="40"
                     Click="AddButton_Click" Margin="6" VerticalAlignment="Top"/>
-            <ListBox x:Name="VocabularyListBox" LostFocus="VocabularyListBox_LostFocus"
+            <ListBox x:Name="VocabularyListBox" LostFocus="VocabularyListBox_LostFocus" Grid.Row="1"
                      ItemsSource="{x:Bind MyVolsList}"
                      Height="{Binding ScreenHeight}"
                      VerticalAlignment="Top"
@@ -72,7 +76,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </StackPanel>
+        </Grid>
         <StackPanel Orientation="Vertical" Grid.Column="2" Margin="10,10,10,10">
             <Button Name="SaveButton"
                     FontSize="24"
