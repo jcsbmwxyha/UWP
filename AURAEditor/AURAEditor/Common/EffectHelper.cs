@@ -102,7 +102,17 @@ namespace AuraEditor.Common
             else
                 return "";
         }
-        
+        static public bool IsCommonEffect(string effectName)
+        {
+            foreach (string s in _commonEffects)
+            {
+                if (s == effectName)
+                    return true;
+            }
+
+            return false;
+        }
+
         public const string PointViewportTransformFunc = @"
 	        	function(viewport)
 	        		return AURA.ViewPortTransform.point(viewport)

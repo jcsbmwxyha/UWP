@@ -413,9 +413,17 @@ namespace AuraEditor
             Effects.Add(effect);
             UICanvas.Children.Add(effect.UIBorder);
         }
-        private void Canvas_DragOver(object sender, DragEventArgs e)
+        private async void Canvas_DragOver(object sender, DragEventArgs e)
         {
-            e.AcceptedOperation = DataPackageOperation.Copy;
+            if (e.DataView.Contains(StandardDataFormats.Text))
+            {
+                var effectname = await e.DataView.GetTextAsync();
+
+                if (!EffectHelper.IsCommonEffect(effectname))
+                    e.AcceptedOperation = DataPackageOperation.None;
+                else
+                    e.AcceptedOperation = DataPackageOperation.Copy;
+            }
         }
         private async void Canvas_Drop(object sender, DragEventArgs e)
         {
@@ -553,6 +561,47 @@ namespace AuraEditor
             return canvas;
         }
     }
+    public class TriggerDeviceGroup : DeviceGroup
+    {
+        Dictionary<int, int[]> _deviceToZonesDictionary;
+
+        public TriggerDeviceGroup()
+        {
+            GroupName = "Trigger Effect";
+            Effects = new List<Effect>();
+            UICanvas = CreateUICanvas();
+            UICanvas.Background = new SolidColorBrush(Colors.Purple);
+            _deviceToZonesDictionary = new Dictionary<int, int[]>();
+        }
+        private void Canvas_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = DataPackageOperation.Copy;
+        }
+        private async void Canvas_Drop(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Contains(StandardDataFormats.Text))
+            {
+                var effectname = await e.DataView.GetTextAsync();
+                int type = EffectHelper.GetEffectIndex(effectname);
+
+                Effect effect = new Effect(this, type);
+                AddEffect(effect);
+            }
+        }
+        private Canvas CreateUICanvas()
+        {
+            Canvas canvas = new Canvas
+            {
+                Width = 5000,
+                Height = 50
+            };
+
+            canvas.DragOver += Canvas_DragOver;
+            canvas.Drop += Canvas_Drop;
+
+            return canvas;
+        }
+    }
 
     public class DeviceGroupManager
     {
@@ -569,13 +618,28 @@ namespace AuraEditor
             DeviceGroupCollection = new ObservableCollection<DeviceGroup>();
             _functionDictionary = new Dictionary<DynValue, string>();
             GlobalDevices = new List<Device>();
+            AddTriggerDeviceGroup();
+        }
+        private void AddTriggerDeviceGroup()
+        {
+            TriggerDeviceGroup tdg = new TriggerDeviceGroup();
+            tdg.GroupName = "Trigger Effect";
+            tdg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
+
+            tdg.AddDeviceZones(0, new int[] { -1 });
+            tdg.AddDeviceZones(1, new int[] { -1 });
+            tdg.AddDeviceZones(2, new int[] { -1 });
+            tdg.AddDeviceZones(3, new int[] { -1 });
+
+            DeviceGroupCollection.Add(tdg);
+            TimeLineStackPanel.Children.Add(tdg.UICanvas);
         }
         public void AddDeviceGroup(DeviceGroup dg)
         {
             if (DeviceGroupCollection.Count % 2 == 0)
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(true);
+                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(1);
             else
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(false);
+                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(2);
 
             DeviceGroupCollection.Add(dg);
             TimeLineStackPanel.Children.Add(dg.UICanvas);

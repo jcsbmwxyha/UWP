@@ -65,13 +65,17 @@ namespace AuraEditor.Common
             return lgb;
         }
 
-        public static Brush GetTimeLineBackgroundColor(bool odd)
+        public static Brush GetTimeLineBackgroundColor(int colorIndex)
         {
             Color color;
-            if (odd)
+
+            if (colorIndex == 0)
+                color = Colors.Purple;
+            else if (colorIndex == 1)
                 color = new Color { A = 127, R = 123, G = 211, B = 123 };
-            else
+            else if (colorIndex == 2)
                 color = new Color { A = 127, R = 93, G = 181, B = 93 };
+
             return new SolidColorBrush(color);
         }
 
