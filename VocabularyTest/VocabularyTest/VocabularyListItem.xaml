@@ -8,48 +8,56 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
-
+    
+    <UserControl.Resources>
+        <Style x:Key="VocabularyListItemButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+    </UserControl.Resources>
+    
     <RelativePanel>
         <TextBlock Text="{x:Bind MyVocabulary.English}"
                    FontSize="20"
                    RelativePanel.AlignLeftWithPanel="True"/>
         <Button Name="EditButton"
                 Content="&#xE104;"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
                 FontFamily="Segoe MDL2 Assets"
-                FontSize="20"
-                Height="40"
                 RelativePanel.LeftOf="YahooButton"
                 Click="EditButton_Click"
-                Visibility="{x:Bind IsSeleted}"/>
+                Visibility="{x:Bind IsSeleted}"
+                Margin="0,0,2,0"/>
         <Button Name="YahooButton"
                 Content="Y"
-                FontSize="20"
-                Height="40"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
                 RelativePanel.LeftOf="GoogleButton"
                 Click="YahooButton_Click"
-                Visibility="{x:Bind IsSeleted}"/>
+                Visibility="{x:Bind IsSeleted}"
+                Margin="0,0,2,0"/>
         <Button Name="GoogleButton"
                 Content="G"
-                FontSize="20"
-                Height="40"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
                 RelativePanel.LeftOf="SoundButton"
                 Click="GoogleButton_Click"
-                Visibility="{x:Bind IsSeleted}"/>
+                Visibility="{x:Bind IsSeleted}"
+                Margin="0,0,2,0"/>
         <Button Name="SoundButton"
                 Content="&#xE15D;"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
                 FontFamily="Segoe MDL2 Assets"
-                FontSize="20"
-                Height="40"
                 RelativePanel.LeftOf="DeleteButton"
                 Click="SoundButton_Click"
-                Visibility="{x:Bind IsSeleted}"/>
+                Visibility="{x:Bind IsSeleted}"
+                Margin="0,0,2,0"/>
         <Button Name="DeleteButton"
                 Content="&#xE10A;"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
                 FontFamily="Segoe MDL2 Assets"
-                FontSize="20"
-                Height="40"
                 RelativePanel.AlignRightWithPanel="True"
                 Click="DeleteButton_Click"
-                Visibility="{x:Bind IsSeleted}"/>
+                Visibility="{x:Bind IsSeleted}"
+                Margin="0,0,40,0"/>
     </RelativePanel>
 </UserControl>

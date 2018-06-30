@@ -1,0 +1,38 @@
+﻿<ContentDialog
+    x:Class="VocabularyTest.Dialog.StartTestDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VocabularyTest.Dialog"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Test"
+    PrimaryButtonText="End Test"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+
+    <Grid Width="500">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" VerticalAlignment="Center">
+            <TextBlock Name="EnglishTextBlock"
+                       FontSize="24"
+                       Margin="0"/>
+            <TextBlock Name="ChineseTextBlock"
+                       FontSize="24"
+                       Margin="0,10,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Button Content="Next"
+                    Width="150"
+                    FontSize="16"
+                    Click="NextButton_Click"/>
+            <Button Content="Show Answer"
+                    Width="150"
+                    FontSize="16"
+                    Click="AnswerButton_Click"
+                    Margin="0,5"/>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

@@ -19,14 +19,14 @@ namespace VocabularyTest.Dialog
 {
     public sealed partial class EditDialog : ContentDialog
     {
-        Vocabulary _vol;
+        Vocabulary _voc;
 
-        public EditDialog(Vocabulary vol)
+        public EditDialog(Vocabulary voc)
         {
             this.InitializeComponent();
-            _vol = vol;
-            TextBoxEnglish.Text = _vol.English;
-            TextBoxChinese.Text = _vol.Chinese;
+            _voc = voc;
+            TextBoxEnglish.Text = _voc.English;
+            TextBoxChinese.Text = _voc.Chinese;
         }
 
         private new void PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -49,8 +49,8 @@ namespace VocabularyTest.Dialog
         {
             if (TextBoxEnglish.Text != "" && TextBoxChinese.Text != "")
             {
-                _vol.English = TextBoxEnglish.Text;
-                _vol.Chinese = TextBoxChinese.Text;
+                _voc.English = TextBoxEnglish.Text;
+                _voc.Chinese = TextBoxChinese.Text;
             }
         }
 
