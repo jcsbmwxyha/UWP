@@ -74,7 +74,7 @@ namespace VocabularyTest
 
                 HttpClient httpClient = new HttpClient();
 
-                Uri requestUri = new Uri(@"https://tw.dictionary.search.yahoo.com/search?p=" + eng);
+                Uri requestUri = new Uri(yahooURL + eng);
 
                 //Send the GET request asynchronously and retrieve the response as a string.
                 HttpResponseMessage httpResponse = new HttpResponseMessage();

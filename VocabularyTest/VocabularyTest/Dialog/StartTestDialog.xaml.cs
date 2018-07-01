@@ -43,12 +43,14 @@ namespace VocabularyTest.Dialog
             Random rnd = new Random();
             _vocIndex = rnd.Next(0, _voclist.Count - 1);
 
+            KKTextBlock.Text = "";
             ChineseTextBlock.Text = "";
             EnglishTextBlock.Text = _voclist[_vocIndex].English;
         }
 
         private void AnswerButton_Click(object sender, RoutedEventArgs e)
         {
+            KKTextBlock.Text = _voclist[_vocIndex].KK;
             ChineseTextBlock.Text = _voclist[_vocIndex].Chinese;
         }
     }

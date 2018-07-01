@@ -9,14 +9,16 @@ namespace VocabularyTest
 {
     public class Vocabulary
     {
-        public Vocabulary(string e, string c, string t)
+        public Vocabulary(string e, string kk, string c, string note)
         {
             English = e;
+            KK = kk;
             Chinese = c;
-            Translater = t;
+            Note = note;
         }
         public string English { get; set; }
+        public string KK { get; set; }
         public string Chinese { get; set; }
-        public string Translater { get; set; }
+        public string Note { get; set; }
     }
 }

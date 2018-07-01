@@ -19,6 +19,9 @@
             <TextBlock Name="EnglishTextBlock"
                        FontSize="24"
                        Margin="0"/>
+            <TextBlock Name="KKTextBlock"
+                       FontSize="24"
+                       Margin="0,10,0,0"/>
             <TextBlock Name="ChineseTextBlock"
                        FontSize="24"
                        Margin="0,10,0,0"/>

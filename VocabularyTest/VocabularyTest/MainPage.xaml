@@ -33,7 +33,7 @@
                     Content="&#xE105;"
                     Click="SaveButton_Click"
                     IsEnabled="False"
-                    Margin="2"/>
+                    Margin="5,2,2,2"/>
             <Button Name="SaveAsButton"
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"

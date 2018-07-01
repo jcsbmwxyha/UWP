@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VocabularyTest.Common;
 using VocabularyTest.Dialog;
@@ -26,10 +27,10 @@ using Windows.UI.Xaml.Navigation;
 
 namespace VocabularyTest
 {
-    enum Website { Google = 0, Yahoo };
-
     public sealed partial class MainPage : Page
     {
+        public const string _defaultFileName = "vocs.dat";
+
         StorageFile _vocStorageFile;
         public StorageFile VocStorageFile
         {
@@ -40,9 +41,6 @@ namespace VocabularyTest
                 _vocStorageFile = value;
             }
         }
-        public const string _defaultFileName = "vocs.dat";
-        public const string yahooURL = @"https://tw.dictionary.search.yahoo.com/search?p=";
-        public const string googleURL = @"https://translate.google.com.tw/#en/zh-TW/";
 
         private ObservableCollection<Vocabulary> _myVocsList;
         public ObservableCollection<Vocabulary> MyVocsList
@@ -62,7 +60,7 @@ namespace VocabularyTest
             }
         }
 
-        int _selectedItemIndex;
+        int _selectedItemIndex = -1;
         public int SelectedItemIndex
         {
             get => _selectedItemIndex;
@@ -96,7 +94,11 @@ namespace VocabularyTest
                         Paragraph paragraph = new Paragraph();
                         Run run = new Run();
                         eventLog.TextWrapping = TextWrapping.Wrap;
-                        run.Text = voc.English + "\n" + voc.Chinese;
+                        run.Text =
+                            voc.English + "\n"
+                            + voc.KK + "\n"
+                            + voc.Chinese + "\n"
+                            + voc.Note;
                         paragraph.Inlines.Add(run);
 
                         VocabularyRichTextBlock.Blocks.Clear();
@@ -121,8 +123,8 @@ namespace VocabularyTest
             // StorageFolder Folder = await StorageFolder.GetFolderFromPathAsync("...");
             // StorageFolder Folder = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
             // StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            // StorageFile File = await InstallationFolder.GetFileAsync("Assets\vocs.dat");
-            // StorageFile File = (StorageFile)await InstallationFolder.TryGetItemAsync("Assets\vocs.dat");
+            // StorageFile File = await InstallationFolder.GetFileAsync("Assets\abc.vocs");
+            // StorageFile File = (StorageFile)await InstallationFolder.TryGetItemAsync("Assets\abc.vocs");
 
             // Step 1 : Get Folder & File
             ObservableCollection<Vocabulary> vocs = new ObservableCollection<Vocabulary>();
@@ -137,7 +139,7 @@ namespace VocabularyTest
             for (int i = 0; i + 1 < result.Length; i += 2)
             {
                 if (result[i] != "" && result[i] != "")
-                    vocs.Add(new Vocabulary(result[i], result[i + 1], ""));
+                    vocs.Add(new Vocabulary(result[i], "", result[i + 1], ""));
             }
 
             return vocs;
@@ -172,11 +174,7 @@ namespace VocabularyTest
             if (VocStorageFile == null)
                 return;
 
-            string result = "";
-            foreach (Vocabulary vd in MyVocsList)
-            {
-                result += vd.English + "\r\n" + vd.Chinese + "\r\n";
-            }
+            string result = CreateFileContent(MyVocsList.ToList());
 
             if (!String.IsNullOrEmpty(result))
             {
@@ -191,7 +189,7 @@ namespace VocabularyTest
             savePicker.SuggestedStartLocation =
                 Windows.Storage.Pickers.PickerLocationId.Desktop;
             // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".dat" });
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".vocs" });
             // Default file name if the user does not type one in or select a file to replace
             savePicker.SuggestedFileName = "MyVocs";
 
@@ -204,12 +202,8 @@ namespace VocabularyTest
                 Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
 
                 // write to file
-                string result = "";
+                string result = CreateFileContent(MyVocsList.ToList());
 
-                foreach (Vocabulary vd in MyVocsList)
-                {
-                    result += vd.English + "\r\n" + vd.Chinese + "\r\n";
-                }
 
                 if (!String.IsNullOrEmpty(result))
                 {
@@ -225,11 +219,28 @@ namespace VocabularyTest
                 VocStorageFile = saveFile;
             }
         }
+
+        private string CreateFileContent(List<Vocabulary> voclist)
+        {
+            string result = "";
+
+            foreach (Vocabulary vd in voclist)
+            {
+                result +=
+                    "<eg>" + vd.English + "<eg/>\r\n" +
+                    "<kk>" + vd.KK + "<kk/>\r\n" +
+                    "<ch>" + vd.Chinese + "<ch/>\r\n" +
+                    "<note>" + vd.Note + "<note/>\r\n";
+            }
+
+            return result;
+        }
+
         private async void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
             fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            fileOpenPicker.FileTypeFilter.Add(".dat");
+            fileOpenPicker.FileTypeFilter.Add(".vocs");
             fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
 
             var inputFile = await fileOpenPicker.PickSingleFileAsync();
@@ -241,20 +252,50 @@ namespace VocabularyTest
             }
 
             string fileContent = await FileIO.ReadTextAsync(inputFile);
-            string[] stringSeparators = new string[] { "\r\n" };
-            string[] result = fileContent.Split(stringSeparators, StringSplitOptions.None);
-            
-            ObservableCollection<Vocabulary> vocs = new ObservableCollection<Vocabulary>();
-
-            for (int i = 0; i + 1 < result.Length; i += 2)
-            {
-                if (result[i] != "" && result[i] != "")
-                    vocs.Add(new Vocabulary(result[i], result[i + 1], ""));
-            }
-
-            MyVocsList = vocs;
+            List<Vocabulary> results = ParsingVocabularies(fileContent);
+            MyVocsList = new ObservableCollection<Vocabulary>(results);
+            SelectedItemIndex = -1;
             VocStorageFile = inputFile;
             VocabularyListBox.ItemsSource = MyVocsList;
+        }
+        private List<Vocabulary> ParsingVocabularies(string fileContent)
+        {
+            List<Vocabulary> vocs = new List<Vocabulary>();
+            string[] stringSeparators = new string[] { "<note/>" };
+            string[] vocsString = fileContent.Split(stringSeparators, StringSplitOptions.None);
+
+            foreach(string vocString in vocsString)
+            {
+                Vocabulary voc = new Vocabulary(
+                    GetElementsByTagName(vocString, "eg"),
+                    GetElementsByTagName(vocString, "kk"),
+                    GetElementsByTagName(vocString, "ch"),
+                    GetElementsByTagName(vocString, "note")
+                    );
+
+                if (voc.English.Replace("\n","").Replace("\r", "").Replace(" ", "") == "")
+                    continue;
+
+                vocs.Add(voc);
+            }
+
+            return vocs;
+        }
+        private string GetElementsByTagName(string text, string tagName)
+        {
+            string textBeforeTag = "([^\n]*\n+)*<" + tagName + ">";
+            string textAfterTag = "<" + tagName + "\\/>([^\n]*\n*)*";
+            string replacement = "";
+
+            // Remove the text before tagName
+            Regex rgx = new Regex(textBeforeTag);
+            text = rgx.Replace(text, replacement);
+
+            // Remove the text after tagName
+            rgx = new Regex(textAfterTag);
+            text = rgx.Replace(text, replacement);
+
+            return text;
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -262,7 +303,7 @@ namespace VocabularyTest
             if (MyVocsList == null)
                 MyVocsList = new ObservableCollection<Vocabulary>();
 
-            Vocabulary voc = new Vocabulary("", "", "");
+            Vocabulary voc = new Vocabulary("", "", "", "");
             EditDialog dialog = new EditDialog(voc);
             await dialog.ShowAsync();
 
