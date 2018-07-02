@@ -1,0 +1,82 @@
+﻿<Page
+    x:Class="TimeLineTest.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimeLineTest"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="MainPage_Loaded">
+
+    <Grid Background="Black" Height="250" Width="1700">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="1500"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Source="Assets/asus_auraeditor_timeline_bg.png"
+               Grid.RowSpan="2"
+               Grid.ColumnSpan="2"
+               Width="1700"
+               Stretch="Fill"/>
+        <Image Source="Assets/asus_auraeditor_time_bg.png"
+               Grid.ColumnSpan="2"
+               Width="1700"
+               Stretch="Fill"/>
+        <Image Source="Assets/asus_auraeditor_timeline_ic.png"
+               Canvas.ZIndex="6"
+               Grid.RowSpan="2"
+               Grid.Column="1"
+               HorizontalAlignment="Left" Margin="-7,0,0,0">
+            <Image.RenderTransform>
+                <TranslateTransform x:Name="timelinetransform"/>
+            </Image.RenderTransform>
+        </Image>
+
+        <Canvas Name="TimeLineScaleCanvas" Grid.Column="1"/>
+
+
+        <RelativePanel VerticalAlignment="Center">
+            <TextBlock Text="Layers" Foreground="LightGray" FontSize="20" Margin="10,0,0,0"/>
+            <TextBlock Text="00:00.00" Foreground="LightGray" FontSize="20" RelativePanel.AlignRightWithPanel="True" Margin="0,0,10,0"/>
+        </RelativePanel>
+
+        <ScrollViewer Name="LeftScrollViewer" Grid.Row="1" Grid.Column="0"
+                      BorderThickness="1"
+                      BorderBrush="black"
+                      VerticalScrollMode="Disabled"
+                      VerticalScrollBarVisibility="Hidden">
+            <ListView x:Name="TimeLineDeviceNameListView"
+                      ItemsSource="{x:Bind DeviceGroupCollection}"
+                      SelectionMode="Extended"
+                      BorderBrush="Azure"
+                      HorizontalAlignment="Center"
+                      SelectionChanged="DeviceList_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:DeviceGroup">
+                        <TextBlock Text="{x:Bind GroupName}"
+                                   FontSize="30"
+                                   Foreground="White"
+                                   Height="50"
+                                   HorizontalTextAlignment="Center"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="1"
+                      Grid.Row="1" 
+                      BorderThickness="1"
+                      BorderBrush="black"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible"
+                      Canvas.ZIndex="2"
+                      ViewChanging="ScrollViewer_ViewChanging">
+            <StackPanel Name="TimeLineStackPanel"
+                        BorderThickness="1"/>
+        </ScrollViewer>
+    </Grid>
+</Page>
