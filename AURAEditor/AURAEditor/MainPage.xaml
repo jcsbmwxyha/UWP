@@ -116,8 +116,10 @@
                 <Button Name="SettingsButton">
                     <Image Source="Assets/asus_auraeditor_settings_ic.png"/>
                 </Button>
-                <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;" Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
-                <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;" Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
+                <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
+                        Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
+                <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
+                        Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="OptionsBlockGrid" Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="1">

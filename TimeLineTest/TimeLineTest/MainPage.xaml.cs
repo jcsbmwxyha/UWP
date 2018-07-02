@@ -234,7 +234,6 @@ namespace TimeLineTest
             DeviceGroupCollection.Add(dg1);
             DeviceGroupCollection.Add(dg2);
             DeviceGroupCollection.Add(dg3);
-
         }
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {

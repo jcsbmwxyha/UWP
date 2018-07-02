@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TimeLineTest"
+    xmlns:local2="using:TimeLineTest.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -58,11 +59,7 @@
                       SelectionChanged="DeviceList_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:DeviceGroup">
-                        <TextBlock Text="{x:Bind GroupName}"
-                                   FontSize="30"
-                                   Foreground="White"
-                                   Height="50"
-                                   HorizontalTextAlignment="Center"/>
+                        <local2:ListViewItem HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
