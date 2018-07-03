@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TimeLineTest.UserControls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -26,6 +27,7 @@ namespace TimeLineTest
         public string EffectLuaName { get; set; }
         public int EffectType { get; set; }
         public Border UIBorder { get; }
+        public EffectLine EffectLineUI { get; }
         private int _start;
         public int Start
         {
@@ -57,6 +59,7 @@ namespace TimeLineTest
             MyDeviceGroup = dg;
             EffectType = effectType;
             UIBorder = CreateUIBorder(effectType);
+            EffectLineUI = CreateEffectLineUI(effectType);
             Start = 0;
             Duration = 100;
 
@@ -78,7 +81,7 @@ namespace TimeLineTest
 
             Border border = new Border
             {
-                BorderBrush = new SolidColorBrush(Colors.Black),
+                BorderBrush = new SolidColorBrush(Colors.Yellow),
                 Height = 50,
                 BorderThickness = new Thickness(3, 3, 3, 3),
                 Padding = new Thickness(5),
@@ -97,6 +100,24 @@ namespace TimeLineTest
             border.RenderTransform = ct;
 
             return border;
+        }
+        public EffectLine CreateEffectLineUI(int effectType)
+        {
+            //string effectname = EffectHelper.GetEffectName(effectType);
+            string effectname = "123";
+
+            TextBlock tb = new TextBlock
+            {
+                Text = effectname,
+                FontSize = 22,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+
+            EffectLine el = new EffectLine();
+            el.Width = 500;
+            el.Height = 50;
+
+            return el;
         }
     }
     public class DeviceGroup
@@ -138,7 +159,8 @@ namespace TimeLineTest
         public void AddEffect(Effect effect)
         {
             Effects.Add(effect);
-            UICanvas.Children.Add(effect.UIBorder);
+            //UICanvas.Children.Add(effect.UIBorder);
+            UICanvas.Children.Add(effect.EffectLineUI);
         }
         public int InsertEffectLine(Effect selectedEffect, int leftposition, int w)
         {
@@ -210,7 +232,8 @@ namespace TimeLineTest
             Canvas canvas = new Canvas
             {
                 Width = 5000,
-                Height = 50
+                Height = 50,
+                VerticalAlignment = VerticalAlignment.Center
             };
 
             return canvas;
@@ -234,6 +257,12 @@ namespace TimeLineTest
             DeviceGroupCollection.Add(dg1);
             DeviceGroupCollection.Add(dg2);
             DeviceGroupCollection.Add(dg3);
+
+            dg1.UICanvas.Background = new SolidColorBrush(Colors.Black);
+            TimeLineStackPanel.Children.Add(dg1.UICanvas);
+            Effect ef = new Effect(null, 0);
+            ef.EffectLineUI.Width = 500;
+            dg1.AddEffect(ef);
         }
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {

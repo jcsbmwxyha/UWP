@@ -6,10 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="50"
+    d:DesignWidth="400"
+    Width="200"
+    Height="40">
 
-    <Grid>
-
+    <Grid HorizontalAlignment="Left" Background="DarkBlue">
+        <Image Source="../Assets/asus_auraeditor_effectblock_btn_s.png" Stretch="Fill"/>
+        <TextBlock Text="123" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0"/>
     </Grid>
 </UserControl>

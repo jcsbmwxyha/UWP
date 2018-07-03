@@ -33,7 +33,8 @@ namespace TimeLineTest.UserControls
         private void Test(object sender, RoutedEventArgs e)
         {
             Bindings.Update();
-
+            Button b = sender as Button;
+            b.IsEnabled = !b.IsEnabled;
         }
     }
 }

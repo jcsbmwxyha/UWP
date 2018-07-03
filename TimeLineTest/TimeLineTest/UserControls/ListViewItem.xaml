@@ -8,12 +8,70 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <BitmapImage x:Key="EyeOn" UriSource="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                <BitmapImage x:Key="EyeOff" UriSource="../Assets/asus_auraeditor_eye_off_ic.png"/>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    
     <Grid Height="50" Width="500">
         <Image Source="../Assets/asus_auraeditor_layer_n_btn.png"
                Stretch="Fill"/>
         <StackPanel Orientation="Horizontal">
-            <Button Name="EyeButton" Margin="1,0,0,0" Click="Test">
-                <Image Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Fill"/>
+            <Button Name="EyeButton" Margin="1,0,0,0" Click="Test" IsEnabled="False">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Image Name="Eye" Stretch="Fill" Source="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <!--<Style TargetType="Button" x>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border>
+                                    --><!--<VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Target="Eye.Source" Value="{ThemeResource EyeOn}"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <VisualState.Setters>
+                                                    <Setter Target="Eye.Source" Value="{ThemeResource EyeOff}"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>--><!--
+                                    <Image Name="Eye" Stretch="Fill" Source="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>-->
             </Button>
             <TextBlock Text="{x:Bind MyDeviceGroup.GroupName}"
                        VerticalAlignment="Center"

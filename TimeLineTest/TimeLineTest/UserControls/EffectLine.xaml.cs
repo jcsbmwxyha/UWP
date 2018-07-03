@@ -19,6 +19,8 @@ namespace TimeLineTest.UserControls
 {
     public sealed partial class EffectLine : UserControl
     {
+        public Effect MyEffect { get { return this.DataContext as Effect; } }
+
         public EffectLine()
         {
             this.InitializeComponent();
