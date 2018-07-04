@@ -38,7 +38,6 @@
             </Image.RenderTransform>
         </Image>
 
-        <Canvas Name="TimeLineScaleCanvas" Grid.Column="1"/>
 
 
         <RelativePanel VerticalAlignment="Center">
@@ -65,15 +64,21 @@
             </ListView>
         </ScrollViewer>
         <ScrollViewer Grid.Column="1"
-                      Grid.Row="1" 
-                      BorderThickness="1"
-                      BorderBrush="black"
+                      Grid.Row="0" 
+                      Grid.RowSpan="2"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
                       Canvas.ZIndex="2"
                       ViewChanging="ScrollViewer_ViewChanging">
-            <StackPanel Name="TimeLineStackPanel"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Canvas Name="TimeLineScaleCanvas"  Grid.Row="0" Width="5000"/>
+                <StackPanel Name="TimeLineStackPanel" Grid.Row="1"
                         BorderThickness="1"/>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>

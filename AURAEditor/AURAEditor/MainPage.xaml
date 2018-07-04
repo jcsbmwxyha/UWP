@@ -5,7 +5,8 @@
     xmlns:local="using:AuraEditor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Loaded="MainPage_Loaded">
 
     <Page.Resources>
         <Style TargetType="Image" x:Key="DeviceImgStyle">
@@ -181,10 +182,26 @@
                 </RelativePanel>
             </ScrollViewer>
         </Grid>
-        <Grid Grid.Row="2" HorizontalAlignment="Center">
-            <Button Name="AddGroupButton" FontSize="19" Content="＋ Add Group" Click="AddGroupButton_Click" Margin="1,0,0,0" Style="{StaticResource ButtonStyle}"/>
-        </Grid>
-        <Grid Grid.Column="1" Grid.Row="2" BorderBrush="black" BorderThickness="1" Grid.ColumnSpan="2"/>
+        <Image Grid.Row="2"
+               Grid.Column="0"
+               Grid.RowSpan="3"
+               Grid.ColumnSpan="3"
+               Source="Assets/asus_auraeditor_timeline_bg.png"
+               Stretch="Fill"/>
+        <Image Grid.Row="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="3"
+               Source="Assets/asus_auraeditor_time_bg.png"
+               Stretch="Fill"/>
+        <Button Name="AddGroupButton"
+                FontSize="19"
+                Content="＋ Add Group"
+                Grid.Row="2"
+                Click="AddGroupButton_Click"
+                HorizontalAlignment="Center"
+                Margin="1,0,0,0"
+                Style="{StaticResource ButtonStyle}"/>
+
         <Grid x:Name="AuraBlockGrid" Grid.Column="2" Grid.Row="1" BorderBrush="black" BorderThickness="1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="10,5,0,0">
@@ -276,8 +293,7 @@
         </Grid>
         <ScrollViewer Name="LeftScrollViewer" Grid.Column="0" Grid.Row="3" BorderThickness="1" BorderBrush="black"
                       VerticalScrollMode="Disabled"
-                      VerticalScrollBarVisibility="Hidden"
-                      >
+                      VerticalScrollBarVisibility="Hidden">
             <ListView x:Name="TimeLineDeviceNameListView"
                             ItemsSource="{x:Bind _deviceGroupManager.DeviceGroupCollection}"
                             SelectionMode="Extended"
@@ -295,10 +311,26 @@
                 <TranslateTransform x:Name="timelinetransform"/>
             </Image.RenderTransform>
         </Image>
-        <ScrollViewer Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"
+        <ScrollViewer Grid.Column="1"
+                      Grid.Row="2"
+                      Grid.RowSpan="2"
+                      Grid.ColumnSpan="2"
+                      Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible"
-                      VerticalScrollBarVisibility="Visible" Canvas.ZIndex="2" ViewChanging="ScrollViewer_ViewChanging">
-            <StackPanel Name="TimeLineStackPanel" BorderThickness="1"/>
+                      VerticalScrollBarVisibility="Visible"
+                      ViewChanging="ScrollViewer_ViewChanging">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                
+                <Canvas Name="TimeLineScaleCanvas"
+                        Grid.Row="0"
+                        Width="5000"/>
+                <StackPanel Name="TimeLineStackPanel"
+                            Grid.Row="1"/>
+            </Grid>
         </ScrollViewer>
 
         <Grid x:Name="AddDeleteGrid" Grid.Column="0" Grid.Row="4" BorderBrush="black" BorderThickness="1">

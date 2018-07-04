@@ -326,7 +326,7 @@ namespace TimeLineTest
 
         private void DeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            TimeLineDeviceNameListView.SelectedIndex = -1;
         }
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {

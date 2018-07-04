@@ -113,8 +113,12 @@
     <None Include="TimeLineTest_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_n.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_s.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_s.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_s.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_s.png" />
     <Content Include="Assets\asus_auraeditor_eye_off_ic.png" />
     <Content Include="Assets\asus_auraeditor_eye_on_ic.png" />
     <Content Include="Assets\asus_auraeditor_layer_bg.png" />

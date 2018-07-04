@@ -21,6 +21,8 @@ using AuraEditor.Common;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -78,6 +80,65 @@ namespace AuraEditor
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
             _devicelist = GetCurrentDevices();
             UpdateSpaceGrid();
+        }
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // TimeUnit : the seconds between two number(long line)
+            int secondsPerTimeUnit = 3;
+            int minimumScaleUnitLength = 100;
+            int timeUnitLength = 300;
+
+            TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
+            TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
+
+            int width = (int)TimeLineScaleCanvas.ActualWidth;
+            int height = (int)TimeLineScaleCanvas.ActualHeight;
+            int y1_short = (int)(height / 1.5);
+            int y1_long = height / 2;
+            double y2 = height;
+
+            int linePerTimeUnit = timeUnitLength / minimumScaleUnitLength;
+            int totalLineCount = width / minimumScaleUnitLength;
+
+            for (int i = 1; i < totalLineCount; i++)
+            {
+                int x = minimumScaleUnitLength * i;
+                int y1;
+
+                if (i % linePerTimeUnit == 0)
+                {
+                    y1 = y1_long;
+
+                    CompositeTransform ct = new CompositeTransform
+                    {
+                        TranslateX = x + 10,
+                        TranslateY = 5
+                    };
+
+                    TextBlock tb = new TextBlock
+                    {
+                        Text = ts.ToString("mm\\:ss"),
+                        RenderTransform = ct,
+                        Foreground = new SolidColorBrush(Colors.White)
+                    };
+
+                    TimeLineScaleCanvas.Children.Add(tb);
+                    ts = ts.Add(interval);
+                }
+                else
+                    y1 = y1_short;
+
+                Line line = new Line
+                {
+                    X1 = x,
+                    Y1 = y1,
+                    X2 = x,
+                    Y2 = y2,
+                    Stroke = new SolidColorBrush(Colors.White)
+                };
+
+                TimeLineScaleCanvas.Children.Add(line);
+            }
         }
 
         private ObservableCollection<DeviceItem> GetCurrentDevices()

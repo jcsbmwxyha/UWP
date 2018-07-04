@@ -34,7 +34,7 @@ namespace TimeLineTest.UserControls
         {
             Bindings.Update();
             Button b = sender as Button;
-            b.IsEnabled = !b.IsEnabled;
+            
         }
     }
 }

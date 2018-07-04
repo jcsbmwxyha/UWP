@@ -11,8 +11,47 @@
     Width="200"
     Height="40">
 
-    <Grid HorizontalAlignment="Left" Background="DarkBlue">
-        <Image Source="../Assets/asus_auraeditor_effectblock_btn_s.png" Stretch="Fill"/>
-        <TextBlock Text="123" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0"/>
-    </Grid>
+    <ToggleButton HorizontalAlignment="Left" Background="DarkBlue">
+        <ToggleButton.Template>
+            <ControlTemplate>
+                <Grid>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_n.png"/>
+                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_n.png"/>
+                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_n.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="CheckedPointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_s.png"/>
+                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_s.png"/>
+                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_s.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Checked">
+                                <VisualState.Setters>
+                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_s.png"/>
+                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_s.png"/>
+                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_s.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="24"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="18"/>
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="LPart" Grid.Column="0" Source="../Assets/asus_auraeditor_effectblock_btn_1_n.png" Stretch="Fill"/>
+                    <Image x:Name="MPart" Grid.Column="1" Source="../Assets/asus_auraeditor_effectblock_btn_2_n.png" Stretch="Fill"/>
+                    <Image x:Name="RPart" Grid.Column="2" Source="../Assets/asus_auraeditor_effectblock_btn_3_n.png" Stretch="Fill"/>
+                    <TextBlock Text="123" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
+                </Grid>
+            </ControlTemplate>
+        </ToggleButton.Template>
+    </ToggleButton>
 </UserControl>

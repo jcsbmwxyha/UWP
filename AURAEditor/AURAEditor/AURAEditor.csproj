@@ -105,10 +105,13 @@
     <Compile Include="Common\KeyRemap.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="DeviceGroup.cs" />
+    <Compile Include="UserControls\DeviceGroupListViewItem.xaml.cs">
+      <DependentUpon>DeviceGroupListViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\AddDeviceDialog.xaml.cs">
       <DependentUpon>AddDeviceDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DeviceListViewItem.xaml.cs">
+    <Compile Include="UserControls\DeviceListViewItem.xaml.cs">
       <DependentUpon>DeviceListViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\NamedDialog.xaml.cs">
@@ -137,7 +140,9 @@
     <Content Include="Assets\asus_auraeditor_redo_ic.png" />
     <Content Include="Assets\asus_auraeditor_save_ic.png" />
     <Content Include="Assets\asus_auraeditor_settings_ic.png" />
+    <Content Include="Assets\asus_auraeditor_timeline_bg.png" />
     <Content Include="Assets\asus_auraeditor_timeline_ic.png" />
+    <Content Include="Assets\asus_auraeditor_time_bg.png" />
     <Content Include="Assets\asus_auraeditor_undo_ic.png" />
     <Content Include="Assets\Flaire.png" />
     <Content Include="Assets\201701050624411245.png" />
@@ -164,11 +169,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="UserControls\DeviceGroupListViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\AddDeviceDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\DeviceListViewItem.xaml">
+    <Page Include="UserControls\DeviceListViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

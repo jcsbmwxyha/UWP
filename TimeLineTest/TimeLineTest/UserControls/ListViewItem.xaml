@@ -17,13 +17,41 @@
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    
-    <Grid Height="50" Width="500">
+
+    <ToggleButton Content="{x:Bind MyDeviceGroup.GroupName}" Click="Test" FontSize="30" Foreground="White" VerticalAlignment="Center" VerticalContentAlignment="Center">
+        <ToggleButton.Template>
+            <ControlTemplate TargetType="ToggleButton">
+                <StackPanel Orientation="Horizontal">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                </VisualState.Setters></VisualState>
+                            <VisualState x:Name="CheckedPointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Checked">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Uniform"/>
+                    <TextBlock Text="{TemplateBinding Content}" Margin="10,0,0,0"/>
+                </StackPanel>
+            </ControlTemplate>
+        </ToggleButton.Template>
+    </ToggleButton>
+    <!--<Grid Height="50" Width="500">
         <Image Source="../Assets/asus_auraeditor_layer_n_btn.png"
                Stretch="Fill"/>
         <StackPanel Orientation="Horizontal">
-            <Button Name="EyeButton" Margin="1,0,0,0" Click="Test" IsEnabled="False">
+            <Button Name="EyeButton" Margin="1,0,0,0" Click="Test">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Border>
@@ -46,36 +74,10 @@
                         </Border>
                     </ControlTemplate>
                 </Button.Template>
-                <!--<Style TargetType="Button" x>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border>
-                                    --><!--<VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal"/>
-                                            <VisualState x:Name="PointerOver">
-                                                <VisualState.Setters>
-                                                    <Setter Target="Eye.Source" Value="{ThemeResource EyeOn}"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState x:Name="Pressed">
-                                                <VisualState.Setters>
-                                                    <Setter Target="Eye.Source" Value="{ThemeResource EyeOff}"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>--><!--
-                                    <Image Name="Eye" Stretch="Fill" Source="../Assets/asus_auraeditor_eye_on_ic.png"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>-->
             </Button>
             <TextBlock Text="{x:Bind MyDeviceGroup.GroupName}"
                        VerticalAlignment="Center"
                        Foreground="White"/>
         </StackPanel>
-    </Grid>
+    </Grid>-->
 </UserControl>
