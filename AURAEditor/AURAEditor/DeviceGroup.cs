@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Text;
 using MoonSharp.Interpreter;
+using AuraEditor.UserControls;
 
 namespace AuraEditor
 {
@@ -57,16 +58,18 @@ namespace AuraEditor
     public class Effect
     {
         public DeviceGroup MyDeviceGroup { get; set; }
+        public string EffectName { get; set; }
         public string EffectLuaName { get; set; }
         public int EffectType { get; set; }
         public Border UIBorder { get; }
+        public EffectLine EffectLineUI { get; }
         private int _start;
         public int Start
         {
             get { return _start; }
             set
             {
-                CompositeTransform ct = UIBorder.RenderTransform as CompositeTransform;
+                CompositeTransform ct = EffectLineUI.RenderTransform as CompositeTransform;
                 ct.TranslateX = value;
                 _start = value;
             }
@@ -77,7 +80,7 @@ namespace AuraEditor
             set
             {
                 _duration = value;
-                UIBorder.Width = value;
+                EffectLineUI.Width = value;
             }
         }
         private EffectInfo _info;
@@ -87,27 +90,22 @@ namespace AuraEditor
             set
             {
                 if ((EffectType != 3) && (EffectType != 6) && (EffectType != 2))
-                    UIBorder.Background = new SolidColorBrush(value.Color);
+                    EffectLineUI.Background = new SolidColorBrush(value.Color);
                 _info = value;
             }
         }
-
-        private bool _cursorSizeRight;
-        private bool _cursorSizeLeft;
-        private bool _cursorMove;
 
         public Effect(DeviceGroup dg, int effectType)
         {
             MyDeviceGroup = dg;
             EffectType = effectType;
             UIBorder = CreateUIBorder(effectType);
+            EffectName = EffectHelper.GetEffectName(effectType);
+            EffectLineUI = CreateEffectUI(effectType);
+            EffectLineUI.DataContext = this;
             Start = (int)MyDeviceGroup.GetFirstSpaceCanPut();
             Duration = 100;
             Info = new EffectInfo(effectType);
-
-            _cursorSizeRight = false;
-            _cursorSizeLeft = false;
-            _cursorMove = false;
         }
         public Border CreateUIBorder(int effectType)
         {
@@ -132,14 +130,6 @@ namespace AuraEditor
                 ManipulationMode = ManipulationModes.TranslateX
             };
 
-            border.PointerPressed += EffectLine_PointerPressed;
-            border.ManipulationStarted += EffectLine_ManipulationStarted;
-            border.ManipulationCompleted += EffectLine_ManipulationCompleted;
-            border.ManipulationDelta += EffectLine_ManipulationDelta;
-            border.PointerReleased += EffectLine_PointerReleased;
-            border.PointerMoved += EffectLine_PointerMoved;
-            border.PointerExited += EffectLine_PointerExited;
-
 
             if (effectType == EffectHelper.GetEffectIndex("Smart"))
                 border.Background = AuraEditorColorHelper.GetSmartBrush();
@@ -156,120 +146,133 @@ namespace AuraEditor
 
             return border;
         }
-        private void EffectLine_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private EffectLine CreateEffectUI(int effectType)
         {
-            var border = sender as Border;
-            border.Opacity = 0.5;
 
-            Point position = e.GetCurrentPoint(border).Position;
-            bool _hasCapture = border.CapturePointer(e.Pointer);
-
-            if (position.X > border.Width - 5)
-                _cursorSizeRight = true;
-            else if (position.X > 5)
-                _cursorMove = true;
-            else
-                _cursorSizeLeft = true;
-
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-
-            string effectname = ((TextBlock)border.Child).Text;
-
-            page.UpdateEffectInfoGrid(this);
-        }
-        void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        {
-        }
-        void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            var fe = sender as FrameworkElement;
-            CompositeTransform ct = fe.RenderTransform as CompositeTransform;
-
-            if (_cursorMove)
+            EffectLine el = new EffectLine
             {
-                if ((ct.TranslateX + e.Delta.Translation.X < 0))
-                    return;
-                ct.TranslateX += e.Delta.Translation.X;
-            }
-            else if (_cursorSizeRight)
-            {
-                MyDeviceGroup.OnCursorSizeRight(this, (int)(ct.TranslateX), (int)(fe.Width + e.Delta.Translation.X));
+                Height = 50,
+                Width = 100,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                ManipulationMode = ManipulationModes.TranslateX
+            };
 
-                if (e.Position.X > 50)
-                    fe.Width = e.Position.X;
-            }
-            else if (_cursorSizeLeft)
-            {
-                if (MyDeviceGroup.IsEffectLineOverlap(this, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(fe.Width - e.Delta.Translation.X)) != null)
-                    return;
-
-                if (fe.Width - e.Delta.Translation.X > 50)
-                {
-                    ct.TranslateX += e.Delta.Translation.X;
-                    fe.Width -= e.Delta.Translation.X;
-                }
-            }
+            return el;
         }
-        void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
-        { }
-        private void EffectLine_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            int leftPosition, rightPosition, width;
-            var fe = sender as FrameworkElement;
-            fe.Opacity = 1;
-
-            CompositeTransform ct = fe.RenderTransform as CompositeTransform;
-            leftPosition = (int)ct.TranslateX / 10 * 10;
-
-            if (_cursorSizeLeft)
-            {
-                rightPosition = (int)ct.TranslateX + (int)fe.Width;
-                width = rightPosition - leftPosition;
-            }
-            else
-            {
-                width = (int)fe.Width / 10 * 10;
-            }
-
-            //Point position = e.GetCurrentPoint(MyDeviceGroup.UICanvas).Position;
-            //string s = "EffectLine: " + position.X;
-            //System.Diagnostics.Debug.WriteLine(s);
-            leftPosition = MyDeviceGroup.InsertEffectLine(this, leftPosition, width);
-            //if (MyDeviceGroup.InsertEffectLine(this, leftPosition, width))
-            //{
-            //    return;
-            //}
-
-            //if (MyDeviceGroup.IsEffectLineOverlap(this, leftPosition, width))
-            //{
-            //    ct.TranslateX = Start;
-            //    fe.Width = Duration;
-            //    return;
-            //}
-            //
-            Start = leftPosition;
-            Duration = width;
-
-            _cursorMove = false;
-            _cursorSizeRight = false;
-            _cursorSizeLeft = false;
-        }
-        private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            FrameworkElement fe = sender as FrameworkElement;
-            if (e.GetCurrentPoint(fe).Position.X > fe.Width - 5 || e.GetCurrentPoint(fe).Position.X < 5)
-                Window.Current.CoreWindow.PointerCursor =
-                    new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeWestEast, 0);
-            else
-                Window.Current.CoreWindow.PointerCursor =
-                    new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
-        }
-        private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            Window.Current.CoreWindow.PointerCursor =
-                new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-        }
+        //private void EffectLine_PointerPressed(object sender, PointerRoutedEventArgs e)
+        //{
+        //    var border = sender as Border;
+        //    border.Opacity = 0.5;
+        //
+        //    Point position = e.GetCurrentPoint(border).Position;
+        //    bool _hasCapture = border.CapturePointer(e.Pointer);
+        //
+        //    if (position.X > border.Width - 5)
+        //        _cursorSizeRight = true;
+        //    else if (position.X > 5)
+        //        _cursorMove = true;
+        //    else
+        //        _cursorSizeLeft = true;
+        //
+        //    var frame = (Frame)Window.Current.Content;
+        //    var page = (MainPage)frame.Content;
+        //
+        //    string effectname = ((TextBlock)border.Child).Text;
+        //
+        //    page.UpdateEffectInfoGrid(this);
+        //}
+        //void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        //{
+        //}
+        //void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        //{
+        //    var fe = sender as FrameworkElement;
+        //    CompositeTransform ct = fe.RenderTransform as CompositeTransform;
+        //
+        //    if (_cursorMove)
+        //    {
+        //        if ((ct.TranslateX + e.Delta.Translation.X < 0))
+        //            return;
+        //        ct.TranslateX += e.Delta.Translation.X;
+        //    }
+        //    else if (_cursorSizeRight)
+        //    {
+        //        MyDeviceGroup.OnCursorSizeRight(this, (int)(ct.TranslateX), (int)(fe.Width + e.Delta.Translation.X));
+        //
+        //        if (e.Position.X > 50)
+        //            fe.Width = e.Position.X;
+        //    }
+        //    else if (_cursorSizeLeft)
+        //    {
+        //        if (MyDeviceGroup.IsEffectLineOverlap(this, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(fe.Width - e.Delta.Translation.X)) != null)
+        //            return;
+        //
+        //        if (fe.Width - e.Delta.Translation.X > 50)
+        //        {
+        //            ct.TranslateX += e.Delta.Translation.X;
+        //            fe.Width -= e.Delta.Translation.X;
+        //        }
+        //    }
+        //}
+        //void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        //{ }
+        //private void EffectLine_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+        //    int leftPosition, rightPosition, width;
+        //    var fe = sender as FrameworkElement;
+        //    fe.Opacity = 1;
+        //
+        //    CompositeTransform ct = fe.RenderTransform as CompositeTransform;
+        //    leftPosition = (int)ct.TranslateX / 10 * 10;
+        //
+        //    if (_cursorSizeLeft)
+        //    {
+        //        rightPosition = (int)ct.TranslateX + (int)fe.Width;
+        //        width = rightPosition - leftPosition;
+        //    }
+        //    else
+        //    {
+        //        width = (int)fe.Width / 10 * 10;
+        //    }
+        //
+        //    //Point position = e.GetCurrentPoint(MyDeviceGroup.UICanvas).Position;
+        //    //string s = "EffectLine: " + position.X;
+        //    //System.Diagnostics.Debug.WriteLine(s);
+        //    leftPosition = MyDeviceGroup.InsertEffectLine(this, leftPosition, width);
+        //    //if (MyDeviceGroup.InsertEffectLine(this, leftPosition, width))
+        //    //{
+        //    //    return;
+        //    //}
+        //
+        //    //if (MyDeviceGroup.IsEffectLineOverlap(this, leftPosition, width))
+        //    //{
+        //    //    ct.TranslateX = Start;
+        //    //    fe.Width = Duration;
+        //    //    return;
+        //    //}
+        //    //
+        //    Start = leftPosition;
+        //    Duration = width;
+        //
+        //    _cursorMove = false;
+        //    _cursorSizeRight = false;
+        //    _cursorSizeLeft = false;
+        //}
+        //private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
+        //{
+        //    FrameworkElement fe = sender as FrameworkElement;
+        //    if (e.GetCurrentPoint(fe).Position.X > fe.Width - 5 || e.GetCurrentPoint(fe).Position.X < 5)
+        //        Window.Current.CoreWindow.PointerCursor =
+        //            new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeWestEast, 0);
+        //    else
+        //        Window.Current.CoreWindow.PointerCursor =
+        //            new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
+        //}
+        //private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
+        //{
+        //    Window.Current.CoreWindow.PointerCursor =
+        //        new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+        //}
     }
 
     public class Device
@@ -411,7 +414,7 @@ namespace AuraEditor
         public void AddEffect(Effect effect)
         {
             Effects.Add(effect);
-            UICanvas.Children.Add(effect.UIBorder);
+            UICanvas.Children.Add(effect.EffectLineUI);
         }
         private async void Canvas_DragOver(object sender, DragEventArgs e)
         {

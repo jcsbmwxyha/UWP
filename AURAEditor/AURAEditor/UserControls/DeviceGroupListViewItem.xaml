@@ -9,7 +9,38 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
-
-    </Grid>
+    <ToggleButton Content="{x:Bind MyDeviceGroup.GroupName}"
+                  FontSize="30"
+                  Foreground="White"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center">
+        <ToggleButton.Template>
+            <ControlTemplate TargetType="ToggleButton">
+                <StackPanel Orientation="Horizontal">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="CheckedPointerOver">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Checked">
+                                <VisualState.Setters>
+                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Uniform"/>
+                    <TextBlock Text="{TemplateBinding Content}" Margin="10,0,0,0"/>
+                </StackPanel>
+            </ControlTemplate>
+        </ToggleButton.Template>
+    </ToggleButton>
 </UserControl>

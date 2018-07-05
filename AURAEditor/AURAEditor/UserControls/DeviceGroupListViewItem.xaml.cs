@@ -19,9 +19,12 @@ namespace AuraEditor
 {
     public sealed partial class DeviceGroupListViewItem : UserControl
     {
+        public DeviceGroup MyDeviceGroup { get { return this.DataContext as DeviceGroup; } }
+
         public DeviceGroupListViewItem()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
         }
     }
 }

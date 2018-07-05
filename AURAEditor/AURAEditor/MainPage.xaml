@@ -71,7 +71,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="Transparent">        
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="12*"/>
@@ -300,13 +300,12 @@
                             BorderBrush="Azure" HorizontalAlignment="Center" SelectionChanged="DeviceList_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:DeviceGroup">
-                        <TextBlock Text="{x:Bind GroupName}" FontSize="30" Foreground="White"
-                                   Height="50" HorizontalTextAlignment="Center"/>
+                        <local:DeviceGroupListViewItem HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollViewer>
-        <Image Source="Assets/asus_auraeditor_timeline_ic.png" Canvas.ZIndex="6" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="-7,0,0,0">
+        <Image Source="Assets/asus_auraeditor_timeline_ic.png" Canvas.ZIndex="6" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Left" Margin="-7,0,0,0">
             <Image.RenderTransform>
                 <TranslateTransform x:Name="timelinetransform"/>
             </Image.RenderTransform>

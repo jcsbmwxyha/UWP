@@ -126,6 +126,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimerManager.cs" />
+    <Compile Include="UserControls\EffectLine.xaml.cs">
+      <DependentUpon>EffectLine.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -137,6 +140,17 @@
     <Content Include="Assets\asus_auraeditor_bg.png" />
     <Content Include="Assets\asus_auraeditor_btn.png" />
     <Content Include="Assets\asus_auraeditor_delet_ic.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_s.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_s.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_n.png" />
+    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_s.png" />
+    <Content Include="Assets\asus_auraeditor_eye_off_ic.png" />
+    <Content Include="Assets\asus_auraeditor_eye_on_ic.png" />
+    <Content Include="Assets\asus_auraeditor_layer_bg.png" />
+    <Content Include="Assets\asus_auraeditor_layer_n_btn.png" />
+    <Content Include="Assets\asus_auraeditor_layer_s_btn.png" />
     <Content Include="Assets\asus_auraeditor_redo_ic.png" />
     <Content Include="Assets\asus_auraeditor_save_ic.png" />
     <Content Include="Assets\asus_auraeditor_settings_ic.png" />
@@ -192,6 +206,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\EffectLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

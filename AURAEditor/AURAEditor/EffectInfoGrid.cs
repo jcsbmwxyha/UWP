@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.UserControls;
 using System;
 using Windows.System;
 using Windows.UI;
@@ -25,7 +26,7 @@ namespace AuraEditor
         public void UpdateEffectInfoGrid(Effect effect)
         {
             _selectedEffectLine = effect;
-            Border border = effect.UIBorder;
+            EffectLine border = effect.EffectLineUI;
             ShowEffectGroups(effect.EffectType);
             UpdateEffectGroups(effect.Info);
             
@@ -201,13 +202,13 @@ namespace AuraEditor
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
         {
-            Border border = _selectedEffectLine.UIBorder;
+            EffectLine effectLineUI = _selectedEffectLine.EffectLineUI;
             Color resultColor = ColorPicker.Color;
             SolidColorBrush scb = new SolidColorBrush(resultColor);
 
             _selectedEffectLine.Info.Color = resultColor;
             ColorRect.Fill = scb;
-            border.Background = scb;
+            //border.Background = scb;
             m_flyoutBase.Hide();
         }
 
