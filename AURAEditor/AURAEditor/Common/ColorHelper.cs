@@ -29,7 +29,6 @@ namespace AuraEditor.Common
             lgb.EndPoint = new Point(0, 0);
             return lgb;
         }
-
         public static Brush GetRainbowBrush()
         {
             LinearGradientBrush lgb = new LinearGradientBrush();
@@ -64,7 +63,6 @@ namespace AuraEditor.Common
             lgb.EndPoint = new Point(1, 0);
             return lgb;
         }
-
         public static Brush GetTimeLineBackgroundColor(int colorIndex)
         {
             Color color;
@@ -75,10 +73,11 @@ namespace AuraEditor.Common
                 color = new Color { A = 127, R = 123, G = 211, B = 123 };
             else if (colorIndex == 2)
                 color = new Color { A = 127, R = 93, G = 181, B = 93 };
+            else if (colorIndex == 3)
+                color = new Color { A = 127, R = 53, G = 53, B = 53 };
 
             return new SolidColorBrush(color);
         }
-
         public static Color HslToRgb(double a, double h, double s, double l)
         {
             byte r, g, b;
@@ -126,7 +125,6 @@ namespace AuraEditor.Common
 
             return Color.FromArgb(255, r, g, b);
         }
-
         static private double GetColorComponent(double temp1, double temp2, double temp3)
         {
             if (temp3 < 0.0)
@@ -143,7 +141,6 @@ namespace AuraEditor.Common
             else
                 return temp1;
         }
-
         public static double[] RgbTOHsl(Color RGB)
         {
             double _R = ((int)RGB.R) / 255f;

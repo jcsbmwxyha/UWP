@@ -148,14 +148,17 @@ namespace AuraEditor
         }
         private EffectLine CreateEffectUI(int effectType)
         {
-
+            
             EffectLine el = new EffectLine
             {
-                Height = 50,
+                Height = 34,
                 Width = 100,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 ManipulationMode = ManipulationModes.TranslateX
             };
+
+            CompositeTransform ct = el.RenderTransform as CompositeTransform;
+            ct.TranslateY = 5;
 
             return el;
         }
@@ -552,10 +555,12 @@ namespace AuraEditor
         }
         private Canvas CreateUICanvas()
         {
+            Thickness margin = new Thickness(0, 3, 0, 3);
             Canvas canvas = new Canvas
             {
                 Width = 5000,
-                Height = 50
+                Height = 44,
+                Margin = margin
             };
 
             canvas.DragOver += Canvas_DragOver;
@@ -573,7 +578,10 @@ namespace AuraEditor
             GroupName = "Trigger Effect";
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
+
+
             UICanvas.Background = new SolidColorBrush(Colors.Purple);
+
             _deviceToZonesDictionary = new Dictionary<int, int[]>();
         }
         private void Canvas_DragOver(object sender, DragEventArgs e)
@@ -593,10 +601,12 @@ namespace AuraEditor
         }
         private Canvas CreateUICanvas()
         {
+            Thickness margin = new Thickness(0, 3, 0, 3);
             Canvas canvas = new Canvas
             {
                 Width = 5000,
-                Height = 50
+                Height = 44,
+                Margin = margin
             };
 
             canvas.DragOver += Canvas_DragOver;
@@ -640,9 +650,9 @@ namespace AuraEditor
         public void AddDeviceGroup(DeviceGroup dg)
         {
             if (DeviceGroupCollection.Count % 2 == 0)
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(1);
+                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
             else
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(2);
+                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
 
             DeviceGroupCollection.Add(dg);
             TimeLineStackPanel.Children.Add(dg.UICanvas);

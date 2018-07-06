@@ -137,7 +137,7 @@ namespace AuraEditor.UserControls
 
                 if (ptrPt.Properties.IsLeftButtonPressed)
                 {
-                    if (_cursorSizeRight | _cursorSizeLeft | _cursorMove == false)
+                    if ((_cursorSizeRight | _cursorSizeLeft | _cursorMove) == false)
                     {
                         LightButtonPressed = true;
                         if (position.X > el.Width - 5)

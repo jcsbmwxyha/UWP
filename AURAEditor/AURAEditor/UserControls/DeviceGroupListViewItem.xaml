@@ -11,9 +11,7 @@
 
     <ToggleButton Content="{x:Bind MyDeviceGroup.GroupName}"
                   FontSize="30"
-                  Foreground="White"
-                  VerticalAlignment="Center"
-                  VerticalContentAlignment="Center">
+                  Foreground="White" Height="50" VerticalAlignment="Center">
         <ToggleButton.Template>
             <ControlTemplate TargetType="ToggleButton">
                 <StackPanel Orientation="Horizontal">
@@ -37,8 +35,8 @@
                             </VisualState>
                         </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
-                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Uniform"/>
-                    <TextBlock Text="{TemplateBinding Content}" Margin="10,0,0,0"/>
+                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
+                    <TextBlock Text="{TemplateBinding Content}" FontSize="25" Margin="22,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </ControlTemplate>
         </ToggleButton.Template>

@@ -564,6 +564,7 @@ namespace AuraEditor
         {
             ScrollViewer sv = sender as ScrollViewer;
             LeftScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            TimeLineScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
 
         private async void OpenFileButton_Click(object sender, RoutedEventArgs e)
