@@ -65,12 +65,14 @@
                       BorderBrush="Black"
                       BorderThickness="1"
                       Margin="0,5"
-                      Width="{Binding ElementName=MainGrid, Path=ColumnDefinitions[0].ActualWidth}" >
-                    <RichTextBlock Name="VocabularyRichTextBlock"
-                               FontSize="20"
-                               FontStyle="Italic"
-                               HorizontalAlignment="Left"
-                               Margin="6"/>
+                      Width="{Binding ElementName=MainGrid, Path=ColumnDefinitions[0].ActualWidth}">
+                    <ScrollViewer>
+                        <RichTextBlock Name="VocabularyRichTextBlock"
+                                       FontSize="20"
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Left"
+                                       Margin="6"/>
+                    </ScrollViewer>
                 </Grid>
                 <Grid Name="eventLogGrid"
                       HorizontalAlignment="Left"
@@ -130,6 +132,13 @@
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="TestButton_Click"
+                        Margin="6"
+                        VerticalAlignment="Top"/>
+                <Button Name="StarButton"
+                        Content="&#xE00A;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource ButtonStyle}"
+                        Click="StarButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
             </StackPanel>

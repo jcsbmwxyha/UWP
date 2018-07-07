@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -90,18 +91,83 @@ namespace VocabularyTest.Dialog
             int startIndex, endIndex;
 
             startIndex = content.IndexOf(startString);
-            if (includeStartEnd)
+            if (startIndex == -1)
+                return "";
+            else if (includeStartEnd)
                 content = content.Substring(startIndex);
             else
                 content = content.Substring(startIndex + startString.Length);
 
             endIndex = content.IndexOf(endString);
-            if (includeStartEnd)
+
+            if (endIndex == -1)
+                return "";
+            else if (includeStartEnd)
                 result = content.Substring(0, endIndex + endString.Length);
             else
                 result = content.Substring(0, endIndex);
 
             return result;
+        }
+
+        private async void NoteAuto_Click(object sender, RoutedEventArgs e)
+        {
+            string noteText = "";
+            string httpResponseBody = "";
+            HttpClient httpClient = new HttpClient();
+            Uri requestUri = new Uri(yahooURL + EnglishTextBox.Text);
+
+            //Send the GET request asynchronously and retrieve the response as a string.
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
+
+            //Send the GET request
+            httpResponse = await httpClient.GetAsync(requestUri);
+            httpResponse.EnsureSuccessStatusCode();
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(httpResponseBody);
+
+            var nodes = doc.DocumentNode.SelectNodes("//div");
+
+            // 釋義
+            foreach (var node in nodes)
+            {
+                HtmlAttribute att = node.Attributes["class"];
+                if (att != null && att.Value == "compList")
+                {
+                    var c_doc = new HtmlDocument();
+                    c_doc.LoadHtml(node.InnerHtml);
+
+                    var c_nodes = c_doc.DocumentNode.SelectNodes("//span");
+                    foreach (var c_node in c_nodes)
+                    {
+                        noteText += c_node.InnerText + "\n";
+                    }
+
+                    break;
+                }
+            }
+
+            // 更多解釋
+            if (noteText == "")
+            {
+                foreach (var node in nodes)
+                {
+                    HtmlAttribute att = node.Attributes["class"];
+                    if (att != null && att.Value == "compList mt-5 ")
+                    {
+                        noteText += node.InnerText + "\n";
+                    }
+                }
+            }
+
+
+            noteText = noteText.Replace("&#39;", "'");
+            NoteRichEditBox.Document.SetText(TextSetOptions.None, noteText);
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
         }
     }
 }

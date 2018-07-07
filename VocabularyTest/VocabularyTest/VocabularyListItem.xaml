@@ -16,11 +16,19 @@
             <Setter Property="FontSize" Value="20"/>
         </Style>
     </UserControl.Resources>
-    
+
     <RelativePanel>
+        <Button Name="StarButton"
+                Content="&#xE24A;"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
+                FontFamily="Segoe MDL2 Assets"
+                RelativePanel.AlignLeftWithPanel="True"
+                Click="StarButton_Click"
+                Margin="0,0,2,0"/>
         <TextBlock Text="{x:Bind MyVocabulary.English}"
+                   Margin="20,3,0,0"
                    FontSize="20"
-                   RelativePanel.AlignLeftWithPanel="True"/>
+                   RelativePanel.RightOf="StarButton"/>
         <Button Name="EditButton"
                 Content="&#xE104;"
                 Style="{StaticResource VocabularyListItemButtonStyle}"

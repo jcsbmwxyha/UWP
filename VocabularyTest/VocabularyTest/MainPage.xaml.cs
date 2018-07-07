@@ -88,21 +88,7 @@ namespace VocabularyTest
                         VocabularyListItem newItem = listItem[value];
                         newItem.IsSeleted = true;
                         newItem.UpdateContent();
-
-                        // update text
-                        Vocabulary voc = VocabularyListBox.SelectedItem as Vocabulary;
-                        Paragraph paragraph = new Paragraph();
-                        Run run = new Run();
-                        eventLog.TextWrapping = TextWrapping.Wrap;
-                        run.Text =
-                            voc.English + "\n"
-                            + voc.KK + "\n"
-                            + voc.Chinese + "\n"
-                            + voc.Note;
-                        paragraph.Inlines.Add(run);
-
-                        VocabularyRichTextBlock.Blocks.Clear();
-                        VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
+                        UpdateSelectedVocContent();
                     }
 
                     _selectedItemIndex = value;
@@ -219,7 +205,6 @@ namespace VocabularyTest
                 VocStorageFile = saveFile;
             }
         }
-
         private string CreateFileContent(List<Vocabulary> voclist)
         {
             string result = "";
@@ -235,7 +220,6 @@ namespace VocabularyTest
 
             return result;
         }
-
         private async void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
@@ -322,6 +306,19 @@ namespace VocabularyTest
             StartTestDialog dialog = new StartTestDialog(MyVocsList.ToList());
             await dialog.ShowAsync();
         }
+        private async void StarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocsList == null)
+                return;
+
+            List<Vocabulary> vocs = MyVocsList.ToList().FindAll(x => x.Star == true);
+
+            if (vocs.Count == 0)
+                return;
+
+            StartTestDialog dialog = new StartTestDialog(vocs);
+            await dialog.ShowAsync();
+        }
 
         private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -335,6 +332,23 @@ namespace VocabularyTest
             SelectedItemIndex = -1;
             MyVocsList.Remove(voc);
             VocabularyListBox.ItemsSource = MyVocsList;
+        }
+        public void UpdateSelectedVocContent()
+        {
+            // update text
+            Vocabulary voc = VocabularyListBox.SelectedItem as Vocabulary;
+            Paragraph paragraph = new Paragraph();
+            Run run = new Run();
+            eventLog.TextWrapping = TextWrapping.Wrap;
+            run.Text =
+                voc.English + "\n"
+                + voc.KK + "\n"
+                + voc.Chinese + "\n"
+                + voc.Note;
+            paragraph.Inlines.Add(run);
+
+            VocabularyRichTextBlock.Blocks.Clear();
+            VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
         }
     }
 }

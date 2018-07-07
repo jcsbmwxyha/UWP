@@ -7,6 +7,7 @@ using VocabularyTest.Dialog;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -41,6 +42,7 @@ namespace VocabularyTest
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
             page.SaveBtnEnabled = true;
+            page.UpdateSelectedVocContent();
         }
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -158,6 +160,19 @@ namespace VocabularyTest
                 u = new Uri(googleURL + s.Replace(" ", "%20"));
 
             var success = await Windows.System.Launcher.LaunchUriAsync(u);
+        }
+        private void StarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocabulary.Star == true)
+            {
+                StarButton.Content = "\uE24A";
+                MyVocabulary.Star = false;
+            }
+            else
+            {
+                StarButton.Content = "\uE249";
+                MyVocabulary.Star = true;
+            }
         }
     }
 }
