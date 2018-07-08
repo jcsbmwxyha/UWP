@@ -54,7 +54,7 @@ namespace VocabularyTest.Dialog
         }
         private void SaveText()
         {
-            if (EnglishTextBox.Text != "" && ChineseTextBox.Text != "")
+            if (EnglishTextBox.Text != "")
             {
                 _voc.English = EnglishTextBox.Text;
                 _voc.Chinese = ChineseTextBox.Text;

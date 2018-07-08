@@ -127,6 +127,13 @@
                         Click="AddButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
+                <Button Name="RandomButton"
+                        Content="&#xE895;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource ButtonStyle}"
+                        Click="RandomButton_Click"
+                        Margin="6"
+                        VerticalAlignment="Top"/>
                 <Button Name="TestButton"
                         Content="&#xEF16;"
                         FontFamily="Segoe MDL2 Assets"

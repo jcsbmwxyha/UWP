@@ -158,7 +158,10 @@ namespace VocabularyTest
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (VocStorageFile == null)
+            {
+                SaveAsButton_Click(null, null);
                 return;
+            }
 
             string result = CreateFileContent(MyVocsList.ToList());
 
@@ -203,6 +206,7 @@ namespace VocabularyTest
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
 
                 VocStorageFile = saveFile;
+                SaveBtnEnabled = false;
             }
         }
         private string CreateFileContent(List<Vocabulary> voclist)
@@ -291,7 +295,7 @@ namespace VocabularyTest
             EditDialog dialog = new EditDialog(voc);
             await dialog.ShowAsync();
 
-            if (voc.English != "" && voc.Chinese != "")
+            if (voc.English != "")
             {
                 MyVocsList.Add(voc);
                 VocabularyListBox.ItemsSource = MyVocsList;
@@ -349,6 +353,31 @@ namespace VocabularyTest
 
             VocabularyRichTextBlock.Blocks.Clear();
             VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
+        }
+
+        private void RandomButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedItemIndex = -1;
+            List<Vocabulary> vocs = MyVocsList.ToList();
+
+            int count = vocs.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                // creates a number between 0 and count - 1
+                Random rnd = new Random();
+                int randomIndex = rnd.Next(0, vocs.Count - 2);
+                Swap(vocs, i, randomIndex);
+            }
+
+            MyVocsList = new ObservableCollection<Vocabulary>(vocs);
+            VocabularyListBox.ItemsSource = MyVocsList;
+        }
+        public static void Swap<T>(IList<T> list, int indexA, int indexB)
+        {
+            T tmp = list[indexA];
+            list[indexA] = list[indexB];
+            list[indexB] = tmp;
         }
     }
 }
