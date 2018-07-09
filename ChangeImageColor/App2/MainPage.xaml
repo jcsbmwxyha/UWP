@@ -11,34 +11,70 @@
     <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" xmlns:src="using:App2">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-
-        <!--TitlePanel 包含應用程式的名稱和頁面標題-->
-        <Grid Name="GridRow1" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Top">
-            <Image Name="G704" Source="Assets/g704.png" Stretch="None"/>
+        <Grid BorderBrush="Black" BorderThickness="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                <TextBlock VerticalAlignment="Center">G704 File:</TextBlock>
+                <Button Content="Load Image" Click="Load_Click" Margin="10,0,0,0"/>
+                <Button Content="Save Image" Click="Save_Click" Margin="10,0,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,10,0,10">
+                <TextBlock VerticalAlignment="Center">Background:</TextBlock>
+                <Button Content="Background White" Click="BackgroundTurnWhite_Click" Margin="10,0,0,0"/>
+                <Button Content="Background Black" Click="BackgroundTurnBlack_Click" Margin="10,0,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        VerticalAlignment="Top"
+                        Margin="10,10,0,10">
+                <Button Content="Red(Convert To Premultiplied)" Click="TurnRed_Click" Margin="10,0,0,0"/>
+                <Button Content="Red(No Convert)" Click="TurnRedNoConvert_Click" Margin="10,0,0,0"/>
+                <Button Content="Rainbow" Click="RainbowButton_Click" Margin="10,0,0,0"/>
+                <Button Content="Test Image" Click="Test_Click" Margin="10,0,0,0"/>
+            </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Top">
-            <Button Content="Red Convert Premultiplied" Click="TurnRed_Click" Margin="10,0,0,0"/>
-            <Button Content="Red No Convert" Click="TurnRedNoConvert_Click" Margin="10,0,0,0"/>
-            <Button Content="Rainbow" Click="RainbowButton_Click" Margin="10,0,0,0"/>
-            <Button Content="Background White" Click="BackgroundTurnWhite_Click" Margin="10,0,0,0"/>
-            <Button Content="Background Black" Click="BackgroundTurnBlack_Click" Margin="10,0,0,0"/>
-            <Button Content="Load Image" Click="Load_Click" Margin="10,0,0,0"/>
-            <Button Content="Save Image" Click="Save_Click" Margin="10,0,0,0"/>
-        </StackPanel>
-        <Rectangle Name="ColorRectangle" Grid.Row="2" Width="200" Height="100" Margin="0,10,0,0">
-            <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="White" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <RichTextBlock Name="eventLog" Grid.Row="3"
-                       TextWrapping="Wrap" 
-                       Foreground="Firebrick" Margin="1,1,1,1"/>
+        <Grid  Grid.Row="1"  BorderBrush="Black" BorderThickness="2">
+            <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,20,0,0">
+                <TextBlock Text="ColorRectangle : "
+                       VerticalAlignment="Center"
+                       Foreground="Green"
+                       FontSize="30"
+                       Margin="10,0,10,0"/>
+                <Rectangle Name="ColorRectangle" Grid.Column="1" Width="200" Height="100" Margin="10,0,10,0">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2">
+            <StackPanel Name="GridRow1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,20,0,0">
+                <TextBlock Text="g704_softwareBitmap : "
+                       VerticalAlignment="Center"
+                       Foreground="Green"
+                       FontSize="30"
+                       Margin="10,0,10,0"/>
+                <Image Name="G704"
+                   Source="Assets/g704.png"
+                   Stretch="None"
+                   HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

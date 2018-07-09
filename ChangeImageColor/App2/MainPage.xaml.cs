@@ -20,6 +20,10 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 using Microsoft.Graphics.Canvas;
 using Windows.Graphics.DirectX.Direct3D11;
+using System.Collections.Generic;
+using Windows.Graphics.Display;
+using Microsoft.Graphics.Canvas.Effects;
+using System.Threading.Tasks;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -32,19 +36,19 @@ namespace App2
     {
         void GetBuffer(out byte* buffer, out uint capacity);
     }
-    /// <summary>
-    /// 可以在本身使用或巡覽至框架內的空白頁面。
-    /// </summary>
+
     public sealed partial class MainPage : Page
     {
         SoftwareBitmap g704_softwareBitmap;
-        
+        SoftwareBitmap temp;
+
         public MainPage()
         {
             this.InitializeComponent();
-            InitialG704Bitmap();
+            Task curtask = Task.Run(async() => await InitialG704Bitmap());
+            curtask.Wait();
         }
-        private async void InitialG704Bitmap()
+        private async Task<SoftwareBitmap> InitialG704Bitmap()
         {
             string fname = @"Assets\g704.png";
             Image resultImg = new Image();
@@ -58,17 +62,7 @@ namespace App2
                 BitmapDecoder printingDecoder = await BitmapDecoder.CreateAsync(printingFileStream);
                 softwareBitmap = await printingDecoder.GetSoftwareBitmapAsync();
             }
-            g704_softwareBitmap = softwareBitmap;
-        }
-
-        private void UpdateEventLog(string s)
-        {
-            Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            eventLog.TextWrapping = TextWrapping.Wrap;
-            run.Text = s;
-            paragraph.Inlines.Add(run);
-            eventLog.Blocks.Insert(0, paragraph);
+            return softwareBitmap;
         }
         private void BackgroundTurnWhite_Click(object sender, RoutedEventArgs e)
         {
@@ -245,17 +239,20 @@ namespace App2
             if (g704_softwareBitmap == null)
                 return;
 
-            FileOpenPicker fileOpenPicker = new FileOpenPicker();
-            fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            fileOpenPicker.FileTypeFilter.Add(".png");
-            fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".png" });
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "MyLuaScript";
 
-            var outputFile = await fileOpenPicker.PickSingleFileAsync();
+            StorageFile saveFile = await savePicker.PickSaveFileAsync();
 
-            if (outputFile == null)
+            if (saveFile == null)
                 return;
             
-            SaveSoftwareBitmapToFile(g704_softwareBitmap, outputFile);
+            SaveSoftwareBitmapToFile(temp, saveFile);
         }
         private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
         {
@@ -294,6 +291,79 @@ namespace App2
                 if (encoder.IsThumbnailGenerated == false)
                 {
                     await encoder.FlushAsync();
+                }
+            }
+        }
+
+        public static SoftwareBitmap Resize(SoftwareBitmap softwareBitmap, float newWidth, float newHeight)
+        {
+            using (var resourceCreator = CanvasDevice.GetSharedDevice())
+            using (var canvasBitmap = CanvasBitmap.CreateFromSoftwareBitmap(resourceCreator, softwareBitmap))
+            using (var canvasRenderTarget = new CanvasRenderTarget(resourceCreator, newWidth, newHeight, canvasBitmap.Dpi))
+            using (var drawingSession = canvasRenderTarget.CreateDrawingSession())
+            using (var scaleEffect = new ScaleEffect())
+            {
+                scaleEffect.Source = canvasBitmap;
+                scaleEffect.Scale = new System.Numerics.Vector2(newWidth / softwareBitmap.PixelWidth, newHeight / softwareBitmap.PixelHeight);
+                drawingSession.DrawImage(scaleEffect);
+                drawingSession.Flush();
+                return SoftwareBitmap.CreateCopyFromBuffer(canvasRenderTarget.GetPixelBytes().AsBuffer(), BitmapPixelFormat.Bgra8, (int)newWidth, (int)newHeight, BitmapAlphaMode.Premultiplied);
+            }
+        }
+
+        private async void Test_Click(object sender, RoutedEventArgs e)
+        {
+            int width = 400;
+            int height = 200;
+            float newWidth = 944;
+            float newHeight = 412;
+
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap();
+            ColorRectangle.Fill = GetRainbowBrush();
+            await renderTargetBitmap.RenderAsync(ColorRectangle, width, height);
+
+            IBuffer ib = await renderTargetBitmap.GetPixelsAsync();
+            double d = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            temp = SoftwareBitmap.CreateCopyFromBuffer(ib, BitmapPixelFormat.Bgra8, (int)(width * d), (int)(height * d));
+            temp = SoftwareBitmap.Convert(temp, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            temp = Resize(temp, newWidth, newHeight);
+
+            CopyImageBuffer(g704_softwareBitmap, temp);
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(g704_softwareBitmap);
+            G704.Source = source;
+        }
+        private unsafe void CopyImageBuffer(SoftwareBitmap newSoftwareBitmap, SoftwareBitmap softwareBitmap)
+        {
+            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read))
+            using (BitmapBuffer newBuffer = newSoftwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            using (var reference = buffer.CreateReference())
+            using (var newReference = newBuffer.CreateReference())
+            {
+                byte* dataInBytes;
+                byte* newDataInBytes;
+                uint capacity;
+                ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+                ((IMemoryBufferByteAccess)newReference).GetBuffer(out newDataInBytes, out capacity);
+
+                // Fill-in the BGRA plane
+                BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+
+                for (int i = 0; i < bufferLayout.Height; i++)
+                {
+                    for (int j = 0; j < bufferLayout.Width; j++)
+                    {
+                        int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j;
+                        if (newDataInBytes[pixelIndex + 3] != 0)
+                        {
+                            newDataInBytes[pixelIndex + 0] = dataInBytes[pixelIndex + 0];
+                            newDataInBytes[pixelIndex + 1] = dataInBytes[pixelIndex + 1];
+                            newDataInBytes[pixelIndex + 2] = dataInBytes[pixelIndex + 2];
+                        }
+                    }
+
                 }
             }
         }
