@@ -40,18 +40,24 @@ namespace App2
     public sealed partial class MainPage : Page
     {
         SoftwareBitmap g704_softwareBitmap;
-        SoftwareBitmap temp;
 
         public MainPage()
         {
-            this.InitializeComponent();
-            Task curtask = Task.Run(async() => await InitialG704Bitmap());
-            curtask.Wait();
+            InitializeComponent();
+        }
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            g704_softwareBitmap = await InitialG704Bitmap();
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap,
+                BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(g704_softwareBitmap);
+            G704.Source = source;
         }
         private async Task<SoftwareBitmap> InitialG704Bitmap()
         {
             string fname = @"Assets\g704.png";
-            Image resultImg = new Image();
             SoftwareBitmap softwareBitmap;
 
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
@@ -64,143 +70,17 @@ namespace App2
             }
             return softwareBitmap;
         }
-        private void BackgroundTurnWhite_Click(object sender, RoutedEventArgs e)
+
+        private void ChangeBackgroundColor_Click(object sender, RoutedEventArgs e)
         {
-            GridRow1.Background = new SolidColorBrush(Colors.White);
+            Button b = sender as Button;
+            string content = (string)b.Content;
+
+            if (content == "White")
+                GridRow1.Background = new SolidColorBrush(Colors.White);
+            else if (content == "Black")
+                GridRow1.Background = new SolidColorBrush(Colors.Black);
         }
-        private void BackgroundTurnBlack_Click(object sender, RoutedEventArgs e)
-        {
-            GridRow1.Background = new SolidColorBrush(Colors.Black);
-        }
-
-        private async void TurnRed_Click(object sender, RoutedEventArgs e)
-        {
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
-            SoftwareBitmapChangeColorRed(g704_softwareBitmap);
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(g704_softwareBitmap);
-            G704.Source = source;
-        }
-        private async void TurnRedNoConvert_Click(object sender, RoutedEventArgs e)
-        {
-            SoftwareBitmapChangeColorRed(g704_softwareBitmap);
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(g704_softwareBitmap);
-            G704.Source = source;
-        }
-        private unsafe void SoftwareBitmapChangeColorRed(SoftwareBitmap softwareBitmap)
-        {
-            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
-            {
-                using (var reference = buffer.CreateReference())
-                {
-                    byte* dataInBytes;
-                    uint capacity;
-                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
-
-                    // Fill-in the BGRA plane
-                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-
-                    for (int i = 0; i < bufferLayout.Height; i++)
-                    {
-                        for (int j = 0; j < bufferLayout.Width; j++)
-                        {
-                            int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j;
-                            if (dataInBytes[pixelIndex + 3] != 0)
-                            {
-                                dataInBytes[pixelIndex + 0] = 0;
-                                dataInBytes[pixelIndex + 1] = 0;
-                                dataInBytes[pixelIndex + 2] = 255;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private async void RainbowButton_Click(object sender, RoutedEventArgs e)
-        {
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap();
-            ColorRectangle.Fill = GetRainbowBrush();
-            await renderTargetBitmap.RenderAsync(ColorRectangle, 944, 412);
-
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
-            IBuffer ib = await renderTargetBitmap.GetPixelsAsync();
-            byte[] pixel_array = ib.ToArray();
-            ApplyRainbow(g704_softwareBitmap, pixel_array);
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(g704_softwareBitmap);
-            G704.Source = source;
-        }
-        private unsafe void ApplyRainbow(SoftwareBitmap softwareBitmap, byte[] pixel_array)
-        {
-            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
-            {
-                using (var reference = buffer.CreateReference())
-                {
-                    byte* dataInBytes;
-                    uint capacity;
-                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
-
-                    // Fill-in the BGRA plane
-                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-
-                    for (int i = 0; i < bufferLayout.Height; i++)
-                    {
-                        for (int j = 0; j < bufferLayout.Width; j++)
-                        {
-                            int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j;
-                            if (dataInBytes[pixelIndex + 3] != 0)
-                            {
-                                dataInBytes[pixelIndex + 0] = (byte)pixel_array[pixelIndex + 0];
-                                dataInBytes[pixelIndex + 1] = (byte)pixel_array[pixelIndex + 1];
-                                dataInBytes[pixelIndex + 2] = (byte)pixel_array[pixelIndex + 2];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public static Brush GetRainbowBrush()
-        {
-            LinearGradientBrush lgb = new LinearGradientBrush();
-            GradientStopCollection gradientStops = new GradientStopCollection();
-            GradientStop stop1 = new GradientStop();
-            GradientStop stop2 = new GradientStop();
-            GradientStop stop3 = new GradientStop();
-            GradientStop stop4 = new GradientStop();
-            GradientStop stop5 = new GradientStop();
-            GradientStop stop6 = new GradientStop();
-
-            stop1.Color = Windows.UI.Colors.Red;
-            stop2.Color = Windows.UI.Colors.Yellow;
-            stop3.Color = Windows.UI.Colors.LightGreen;
-            stop4.Color = Windows.UI.Colors.Aqua;
-            stop5.Color = Windows.UI.Colors.Blue;
-            stop6.Color = Windows.UI.Colors.Purple;
-            stop1.Offset = 0.1;
-            stop2.Offset = 0.25;
-            stop3.Offset = 0.4;
-            stop4.Offset = 0.6;
-            stop5.Offset = 0.75;
-            stop6.Offset = 0.9;
-            gradientStops.Add(stop1);
-            gradientStops.Add(stop2);
-            gradientStops.Add(stop3);
-            gradientStops.Add(stop4);
-            gradientStops.Add(stop5);
-            gradientStops.Add(stop6);
-            lgb.GradientStops = gradientStops;
-            lgb.StartPoint = new Point(0, 0);
-            lgb.EndPoint = new Point(1, 0);
-            return lgb;
-        }
-
         private async void Load_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
@@ -251,8 +131,8 @@ namespace App2
 
             if (saveFile == null)
                 return;
-            
-            SaveSoftwareBitmapToFile(temp, saveFile);
+
+            SaveSoftwareBitmapToFile(g704_softwareBitmap, saveFile);
         }
         private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
         {
@@ -295,6 +175,140 @@ namespace App2
             }
         }
 
+        private async void ImageTurnRed_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+
+            if (b.Name == "ConvertToStraightBefore")
+                g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+
+            SoftwareBitmapChangeColorRed(g704_softwareBitmap);
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(g704_softwareBitmap);
+            G704.Source = source;
+        }
+        private unsafe void SoftwareBitmapChangeColorRed(SoftwareBitmap softwareBitmap)
+        {
+            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            {
+                using (var reference = buffer.CreateReference())
+                {
+                    byte* dataInBytes;
+                    uint capacity;
+                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                    // Fill-in the BGRA plane
+                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+
+                    for (int i = 0; i < bufferLayout.Height; i++)
+                    {
+                        for (int j = 0; j < bufferLayout.Width; j++)
+                        {
+                            int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j;
+                            if (dataInBytes[pixelIndex + 3] != 0)
+                            {
+                                dataInBytes[pixelIndex + 0] = 0;
+                                dataInBytes[pixelIndex + 1] = 0;
+                                dataInBytes[pixelIndex + 2] = 255;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void RainbowButton_Click(object sender, RoutedEventArgs e)
+        {
+            int width = g704_softwareBitmap.PixelWidth;
+            int height = g704_softwareBitmap.PixelHeight;
+
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap();
+            ColorRectangle.Fill = MyColorHelper.GetRainbowBrush();
+            await renderTargetBitmap.RenderAsync(ColorRectangle, width, height);
+
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            IBuffer ib = await renderTargetBitmap.GetPixelsAsync();
+            byte[] pixel_array = ib.ToArray();
+            ApplyRainbow(g704_softwareBitmap, pixel_array);
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(g704_softwareBitmap);
+            G704.Source = source;
+        }
+        private unsafe void ApplyRainbow(SoftwareBitmap softwareBitmap, byte[] pixel_array)
+        {
+            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            {
+                using (var reference = buffer.CreateReference())
+                {
+                    byte* dataInBytes;
+                    uint capacity;
+                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                    // Fill-in the BGRA plane
+                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+
+                    for (int i = 0; i < bufferLayout.Height; i++)
+                    {
+                        for (int j = 0; j < bufferLayout.Width; j++)
+                        {
+                            int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j;
+                            if (dataInBytes[pixelIndex + 3] != 0)
+                            {
+                                dataInBytes[pixelIndex + 0] = (byte)pixel_array[pixelIndex + 0];
+                                dataInBytes[pixelIndex + 1] = (byte)pixel_array[pixelIndex + 1];
+                                dataInBytes[pixelIndex + 2] = (byte)pixel_array[pixelIndex + 2];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void ScaleRainbowButton_Click(object sender, RoutedEventArgs e)
+        {
+            SoftwareBitmap tempSB;
+            double scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+            int renderTB_Width = 200;
+            int renderTB_Height = 100;
+            int newWidth = g704_softwareBitmap.PixelWidth;
+            int newHeight = g704_softwareBitmap.PixelHeight;
+
+            // Step 1 :
+            // Create RenderTargetBitmap by ColorRectangle.
+            // Don't worry about both width and height of ColorRectangle.
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap();
+            ColorRectangle.Fill = MyColorHelper.GetRainbowBrush();
+            await renderTargetBitmap.RenderAsync(ColorRectangle, renderTB_Width, renderTB_Height);
+
+            // Step 2 :
+            // Get IBuffer from RenderTargetBitmap,
+            IBuffer ib = await renderTargetBitmap.GetPixelsAsync();
+
+            // Step 3 :
+            // Create a temporary SoftwareBitmap which is based on current scale
+            tempSB = SoftwareBitmap.CreateCopyFromBuffer(ib, BitmapPixelFormat.Bgra8,
+                (int)(renderTB_Width * scale), (int)(renderTB_Height * scale));
+            tempSB = SoftwareBitmap.Convert(tempSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+
+            // Step 4 :
+            // Adjust to the same size as g704 image
+            tempSB = Resize(tempSB, newWidth, newHeight);
+
+            // Step 5 :
+            // Assign this temp image pixels to g704 image
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            AssignPixelValues(g704_softwareBitmap, tempSB);
+            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(g704_softwareBitmap);
+            G704.Source = source;
+        }
         public static SoftwareBitmap Resize(SoftwareBitmap softwareBitmap, float newWidth, float newHeight)
         {
             using (var resourceCreator = CanvasDevice.GetSharedDevice())
@@ -310,32 +324,7 @@ namespace App2
                 return SoftwareBitmap.CreateCopyFromBuffer(canvasRenderTarget.GetPixelBytes().AsBuffer(), BitmapPixelFormat.Bgra8, (int)newWidth, (int)newHeight, BitmapAlphaMode.Premultiplied);
             }
         }
-
-        private async void Test_Click(object sender, RoutedEventArgs e)
-        {
-            int width = 400;
-            int height = 200;
-            float newWidth = 944;
-            float newHeight = 412;
-
-            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap();
-            ColorRectangle.Fill = GetRainbowBrush();
-            await renderTargetBitmap.RenderAsync(ColorRectangle, width, height);
-
-            IBuffer ib = await renderTargetBitmap.GetPixelsAsync();
-            double d = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            temp = SoftwareBitmap.CreateCopyFromBuffer(ib, BitmapPixelFormat.Bgra8, (int)(width * d), (int)(height * d));
-            temp = SoftwareBitmap.Convert(temp, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-            temp = Resize(temp, newWidth, newHeight);
-
-            CopyImageBuffer(g704_softwareBitmap, temp);
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
-            g704_softwareBitmap = SoftwareBitmap.Convert(g704_softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(g704_softwareBitmap);
-            G704.Source = source;
-        }
-        private unsafe void CopyImageBuffer(SoftwareBitmap newSoftwareBitmap, SoftwareBitmap softwareBitmap)
+        private unsafe void AssignPixelValues(SoftwareBitmap newSoftwareBitmap, SoftwareBitmap softwareBitmap)
         {
             using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read))
             using (BitmapBuffer newBuffer = newSoftwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
@@ -363,7 +352,6 @@ namespace App2
                             newDataInBytes[pixelIndex + 2] = dataInBytes[pixelIndex + 2];
                         }
                     }
-
                 }
             }
         }

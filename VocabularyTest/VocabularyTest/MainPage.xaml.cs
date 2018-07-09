@@ -347,7 +347,7 @@ namespace VocabularyTest
             run.Text =
                 voc.English + "\n"
                 + voc.KK + "\n"
-                + voc.Chinese + "\n"
+                + voc.Chinese + "\n\n"
                 + voc.Note;
             paragraph.Inlines.Add(run);
 
