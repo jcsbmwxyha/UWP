@@ -16,6 +16,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" VerticalAlignment="Center">
+            <Button Name="StarButton"
+                Content="&#xE24A;"
+                FontFamily="Segoe MDL2 Assets"
+                RelativePanel.AlignLeftWithPanel="True"
+                Click="StarButton_Click"
+                Margin="0,10,0,0"/>
             <TextBlock Name="EnglishTextBlock"
                        FontSize="24"
                        Margin="0"/>

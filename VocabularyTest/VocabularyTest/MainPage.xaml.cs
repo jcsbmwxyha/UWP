@@ -307,7 +307,7 @@ namespace VocabularyTest
             if (MyVocsList == null)
                 return;
 
-            StartTestDialog dialog = new StartTestDialog(MyVocsList.ToList());
+            StartTestDialog dialog = new StartTestDialog(MyVocsList);
             await dialog.ShowAsync();
         }
         private async void StarButton_Click(object sender, RoutedEventArgs e)
@@ -315,7 +315,12 @@ namespace VocabularyTest
             if (MyVocsList == null)
                 return;
 
-            List<Vocabulary> vocs = MyVocsList.ToList().FindAll(x => x.Star == true);
+            ObservableCollection<Vocabulary> vocs = new ObservableCollection<Vocabulary>();
+            foreach (var v in MyVocsList)
+            {
+                if (v.Star == true)
+                    vocs.Add(v);
+            }
 
             if (vocs.Count == 0)
                 return;
