@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace VocabularyTest
 {
@@ -12,13 +13,18 @@ namespace VocabularyTest
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Vocabulary(string e, string kk, string c, string note)
+        public Vocabulary(string e, string kk, string c, string star, string note)
         {
             English = e;
             KK = kk;
             Chinese = c;
+
+            if (star == "t")
+                Star = true;
+            else
+                Star = false;
+
             Note = note;
-            Star = false;
         }
         public string English { get; set; }
         public string KK { get; set; }
@@ -35,6 +41,10 @@ namespace VocabularyTest
             {
                 star = value;
                 NotifyPropertyChanged("Star");
+
+                var frame = (Frame)Window.Current.Content;
+                var page = (MainPage)frame.Content;
+                page.SaveBtnEnabled = true;
             }
         }
         

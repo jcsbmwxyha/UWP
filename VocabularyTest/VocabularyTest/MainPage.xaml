@@ -27,25 +27,31 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     Margin="0,10">
-            <Button Name="SaveButton"
-                    FontSize="24"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE105;"
-                    Click="SaveButton_Click"
-                    IsEnabled="False"
-                    Margin="5,2,2,2"/>
-            <Button Name="SaveAsButton"
-                    FontSize="24"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE28F;"
-                    Margin="2"
-                    Click="SaveAsButton_Click"/>
             <Button Name="OpenButton"
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xED43;"
                     Margin="2"
                     Click="OpenButton_Click"/>
+            <Button Name="SaveAsButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE28F;"
+                    Margin="2"
+                    Click="SaveAsButton_Click"/>
+            <Button Name="SaveButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE105;"
+                    Click="SaveButton_Click"
+                    IsEnabled="False"
+                    Margin="2"/>
+            <Button Name="SaveStarButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE133;"
+                    Click="SaveStarButton_Click"
+                    Margin="2"/>
             <TextBlock Text="Path:" FontSize="20" Margin="5" VerticalAlignment="Center"/>
             <TextBlock Name="FileNameTextBlock" Text="" Margin="5" VerticalAlignment="Center"/>
         </StackPanel>
