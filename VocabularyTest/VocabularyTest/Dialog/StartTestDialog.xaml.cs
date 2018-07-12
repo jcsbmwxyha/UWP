@@ -48,9 +48,9 @@ namespace VocabularyTest.Dialog
             this.InitializeComponent();
             _vocObCollection = vocs;
 
-            // creates a number between 0 and count
+            // creates a index between 0 and count - 1
             Random rnd = new Random();
-            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count- 1);
+            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count);
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -59,9 +59,9 @@ namespace VocabularyTest.Dialog
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            // creates a number between 0 and count
+            // creates a index between 0 and count - 1
             Random rnd = new Random();
-            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count - 1);
+            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count);
         }
 
         private void AnswerButton_Click(object sender, RoutedEventArgs e)

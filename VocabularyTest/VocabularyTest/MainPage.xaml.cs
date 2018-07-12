@@ -369,9 +369,9 @@ namespace VocabularyTest
 
             for (int i = 0; i < count; i++)
             {
-                // creates a number between 0 and count - 1
+                // creates a index between 0 and count - 1
                 Random rnd = new Random();
-                int randomIndex = rnd.Next(0, vocs.Count - 2);
+                int randomIndex = rnd.Next(0, vocs.Count);
                 Swap(vocs, i, randomIndex);
             }
 

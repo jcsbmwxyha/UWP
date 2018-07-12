@@ -15,11 +15,12 @@
             <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="20"/>
         </Style>
+        <local:BoolToStringConverter x:Key="Converter1"/>
     </UserControl.Resources>
 
     <RelativePanel>
         <Button Name="StarButton"
-                Content="&#xE24A;"
+                Content="{Binding Star, Converter={StaticResource Converter1}}"
                 Style="{StaticResource VocabularyListItemButtonStyle}"
                 FontFamily="Segoe MDL2 Assets"
                 RelativePanel.AlignLeftWithPanel="True"
