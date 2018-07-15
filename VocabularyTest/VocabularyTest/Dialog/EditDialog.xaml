@@ -30,7 +30,7 @@
             <Button Content="Auto"
                     Margin="10,0"
                     Height="30"
-                    Click="KKAuto_Click"/>
+                    Click="AutoButton_Click"/>
         </StackPanel>
         <TextBox x:Name="KKTextBox"
                  Foreground="Gray"
@@ -56,7 +56,7 @@
             <Button Content="Auto"
                     Margin="10,0,0,2"
                     Height="30"
-                    Click="NoteAuto_Click"
+                    Click="AutoButton_Click"
                     VerticalAlignment="Bottom"/>
         </StackPanel>
         <RichEditBox x:Name="NoteRichEditBox"

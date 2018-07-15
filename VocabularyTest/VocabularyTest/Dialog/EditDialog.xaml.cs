@@ -67,24 +67,6 @@ namespace VocabularyTest.Dialog
             }
         }
 
-        private async void KKAuto_Click(object sender, RoutedEventArgs e)
-        {
-            string httpResponseBody = "";
-            HttpClient httpClient = new HttpClient();
-            Uri requestUri = new Uri(yahooURL + EnglishTextBox.Text);
-
-            //Send the GET request asynchronously and retrieve the response as a string.
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-
-            //Send the GET request
-            httpResponse = await httpClient.GetAsync(requestUri);
-            httpResponse.EnsureSuccessStatusCode();
-            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            string startString = "KK[";
-            string endString = "]";
-            KKTextBox.Text = ParseString(httpResponseBody, startString, endString, true);
-        }
         private string ParseString(string content, string startString, string endString, bool includeStartEnd)
         {
             string result = "";
@@ -110,7 +92,7 @@ namespace VocabularyTest.Dialog
             return result;
         }
 
-        private async void NoteAuto_Click(object sender, RoutedEventArgs e)
+        private async void AutoButton_Click(object sender, RoutedEventArgs e)
         {
             string noteText = "";
             string httpResponseBody = "";
@@ -124,6 +106,12 @@ namespace VocabularyTest.Dialog
             httpResponse = await httpClient.GetAsync(requestUri);
             httpResponse.EnsureSuccessStatusCode();
             httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            // KK ++
+            string startString = "KK[";
+            string endString = "]";
+            KKTextBox.Text = ParseString(httpResponseBody, startString, endString, true);
+            // KK --
 
             var doc = new HtmlDocument();
             doc.LoadHtml(httpResponseBody);

@@ -275,6 +275,50 @@ namespace VocabularyTest
 
             return vocs;
         }
+        private async void SaveStarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocsList == null)
+                return;
+
+            List<Vocabulary> vocs = MyVocsList.ToList().FindAll(x => x.Star == true);
+
+            if (vocs.Count == 0)
+                return;
+
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.Desktop;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".vocs" });
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "MyVocs";
+
+            StorageFile saveFile = await savePicker.PickSaveFileAsync();
+
+            if (saveFile != null)
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
+
+                // write to file
+                string result = CreateFileContent(vocs);
+
+                if (!String.IsNullOrEmpty(result))
+                {
+                    await FileIO.WriteTextAsync(saveFile, result);
+                }
+
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
+
+                VocStorageFile = saveFile;
+                SaveBtnEnabled = false;
+            }
+        }
         private string GetElementsByTagName(string text, string tagName)
         {
             string textBeforeTag = "([^\n]*\n+)*<" + tagName + ">";
@@ -316,7 +360,7 @@ namespace VocabularyTest
             StartTestDialog dialog = new StartTestDialog(MyVocsList);
             await dialog.ShowAsync();
         }
-        private async void StarButton_Click(object sender, RoutedEventArgs e)
+        private async void TestStarButton_Click(object sender, RoutedEventArgs e)
         {
             if (MyVocsList == null)
                 return;
@@ -390,50 +434,18 @@ namespace VocabularyTest
             list[indexA] = list[indexB];
             list[indexB] = tmp;
         }
-
-        private async void SaveStarButton_Click(object sender, RoutedEventArgs e)
+        private void StarUpButton_Click(object sender, RoutedEventArgs e)
         {
+            SelectedItemIndex = -1;
+
             if (MyVocsList == null)
                 return;
 
             List<Vocabulary> vocs = MyVocsList.ToList().FindAll(x => x.Star == true);
+            vocs.AddRange(MyVocsList.ToList().FindAll(x => x.Star == false));
 
-            if (vocs.Count == 0)
-                return;
-
-            var savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation =
-                Windows.Storage.Pickers.PickerLocationId.Desktop;
-            // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".vocs" });
-            // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = "MyVocs";
-
-            StorageFile saveFile = await savePicker.PickSaveFileAsync();
-
-            if (saveFile != null)
-            {
-                // Prevent updates to the remote version of the file until
-                // we finish making changes and call CompleteUpdatesAsync.
-                Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
-                
-                // write to file
-                string result = CreateFileContent(vocs);
-                
-                if (!String.IsNullOrEmpty(result))
-                {
-                    await FileIO.WriteTextAsync(saveFile, result);
-                }
-
-                // Let Windows know that we're finished changing the file so
-                // the other app can update the remote version of the file.
-                // Completing updates may require Windows to ask for user input.
-                Windows.Storage.Provider.FileUpdateStatus status =
-                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
-
-                VocStorageFile = saveFile;
-                SaveBtnEnabled = false;
-            }
+            MyVocsList = new ObservableCollection<Vocabulary>(vocs);
+            VocabularyListBox.ItemsSource = MyVocsList;
         }
     }
 }

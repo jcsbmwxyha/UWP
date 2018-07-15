@@ -133,6 +133,13 @@
                         Click="AddButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
+                <Button Name="StarUpButton"
+                        Content="&#xEA5C;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource ButtonStyle}"
+                        Click="StarUpButton_Click"
+                        Margin="6"
+                        VerticalAlignment="Top"/>
                 <Button Name="RandomButton"
                         Content="&#xE895;"
                         FontFamily="Segoe MDL2 Assets"
@@ -140,6 +147,7 @@
                         Click="RandomButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
+                <Line Stroke="Black" StrokeThickness="1" X1="0" X2="40" HorizontalAlignment="Center" Margin="0,10,0,10"/>
                 <Button Name="TestButton"
                         Content="&#xEF16;"
                         FontFamily="Segoe MDL2 Assets"
@@ -147,11 +155,11 @@
                         Click="TestButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
-                <Button Name="StarButton"
+                <Button Name="TestStarButton"
                         Content="&#xE00A;"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
-                        Click="StarButton_Click"
+                        Click="TestStarButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
             </StackPanel>
