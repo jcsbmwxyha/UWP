@@ -11,13 +11,24 @@ namespace AuraEditor
 
         bool EnableLog = true;
 
-        private void TimeLineTimer_Play(object sender, RoutedEventArgs e)
+        private async void TimeLineTimer_Play(object sender, RoutedEventArgs e)
         {
+            await(new ServiceViewModel()).AuraEditorTrigger();
             TimeLineStoryboard.Begin();
             timeLineTimerClock.Tick += Timer_Tick;
             timeLineTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 10);
             baseDateTime = DateTime.Now;
             timeLineTimerClock.Start();
+
+            TimeLineIconCanvas.Height = TimeLineStackPanel.ActualHeight + TimeLineScaleScrollViewer.ActualHeight;
+            TimeLineIconCanvas.Width = TimeLineStackPanel.ActualWidth;
+
+            TimeLineLayerScrollViewer.ChangeView(0, 0, null, true);
+            TimeLineScaleScrollViewer.ChangeView(0, null, null, true);
+            GroupScrollViewer.ChangeView(null, 0, null, true);
+
+            TimeLineIconScrollViewer.ChangeView(0, 0, null, true);
+            TimeLineIconScrollViewer.Visibility = Visibility.Visible;
         }
 
         private async void CreateXML(string xmlstring)
@@ -36,6 +47,8 @@ namespace AuraEditor
             TimeLineStoryboard.Stop();
             SpaceLineStoryboard.Stop();
             timeLineTimerClock.Stop();
+
+            TimeLineIconScrollViewer.Visibility = Visibility.Collapsed;
         }
 
         private void Timer_Click(object sender, RoutedEventArgs e)

@@ -170,8 +170,8 @@ namespace AuraEditor.UserControls
         {
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-            
-            page.UpdateEffectInfoGrid(MyEffect);
+
+            page.SelectedEffectLine = MyEffect;
         }
     }
 }

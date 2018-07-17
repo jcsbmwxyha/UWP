@@ -86,14 +86,11 @@
         </Grid.ColumnDefinitions>
         <Image Source="Assets/asus_auraeditor_bg.png" Grid.ColumnSpan="3" Grid.RowSpan="5" Stretch="Fill"/>
 
-        <Grid x:Name="R0C0" Grid.Column="0" BorderBrush="black" BorderThickness="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="AddDeviceButton" FontSize="19" Content="＋ Add Device" Click="AddDeviceButton_Click" Margin="1,0,0,0" Style="{StaticResource ButtonStyle}"/>
-            </StackPanel>
-        </Grid>
         <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <!--<Button Name="TestButton" FontSize="24" Content="Add Flaire Image" Click="TestButton_Click" Margin="1,0,0,0"/>-->
+                <TextBlock Text="Move Mode" Foreground="White" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                <ToggleButton Name="CanMoveToggleButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE001;" Background="Gray" Margin="0,0,60,0"
+                              Checked="CanMoveToggleButton_Checked" Unchecked="CanMoveToggleButton_Unchecked"/>
                 <Button Name="RedoButton">
                     <Image Source="Assets/asus_auraeditor_redo_ic.png"/>
                 </Button>
@@ -169,16 +166,10 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          Grid.Row="0">
             </RichTextBlock>
-            <Line Name="SpaceLine" Stroke="Red" X1="1" Y1="0" X2="1" Y2="1000" Canvas.ZIndex="5" Visibility="Visible"
-                  Grid.Row="1">
-                <Line.RenderTransform>
-                    <TranslateTransform x:Name="Spacelinetransform" />
-                </Line.RenderTransform>
-            </Line>
             <ScrollViewer MinZoomFactor="1" MaxZoomFactor="100" ZoomMode="Enabled" Grid.Row="1"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <RelativePanel Name="SpacePanel" Width="2136" Height="1424">
-                    <Image Name="GridImage" Source="Assets/grid.png" Stretch="Uniform"/>
+                    <Image Name="GridImage" Source="Assets/grid35.png" Stretch="None"/>
                 </RelativePanel>
             </ScrollViewer>
         </Grid>
@@ -291,13 +282,18 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <ScrollViewer Name="LeftScrollViewer" Grid.Column="0" Grid.Row="3"
+        <ScrollViewer Name="GroupScrollViewer"
+                      Grid.Column="0"
+                      Grid.Row="3"
                       VerticalScrollMode="Disabled"
-                      VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Left" Margin="20,0,0,0">
-            <ListView x:Name="TimeLineDeviceNameListView"
-                            ItemsSource="{x:Bind _deviceGroupManager.DeviceGroupCollection}"
-                            SelectionMode="Extended"
-                            BorderBrush="Azure" HorizontalAlignment="Center" SelectionChanged="DeviceList_SelectionChanged">
+                      VerticalScrollBarVisibility="Hidden"
+                      HorizontalAlignment="Left">
+            <ListView x:Name="GroupListView"
+                      ItemsSource="{x:Bind _deviceGroupManager.DeviceGroupCollection}"
+                      SelectionMode="Extended"
+                      BorderBrush="Azure"
+                      HorizontalAlignment="Left"
+                      SelectionChanged="DeviceList_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:DeviceGroup">
                         <local:DeviceGroupListViewItem HorizontalAlignment="Center"/>
@@ -305,49 +301,65 @@
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollViewer>
-        <Image Source="Assets/asus_auraeditor_timeline_ic.png" Canvas.ZIndex="6" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Left" Margin="-7,0,0,0">
-            <Image.RenderTransform>
-                <TranslateTransform x:Name="timelinetransform"/>
-            </Image.RenderTransform>
-        </Image>
-        <ScrollViewer Name="TimeLineScrollViewer"
+
+        <ScrollViewer Name="TimeLineIconScrollViewer"
+                      Grid.Row="2"
+                      Grid.RowSpan="2"
+                      Grid.Column="1"
+                      Grid.ColumnSpan="2"
+                      Canvas.ZIndex="6"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible"
+                      ViewChanged="TimeLineIconScrollViewer_ViewChanged"
+                      Visibility="Collapsed">
+            <Canvas Name="TimeLineIconCanvas"
+                    VerticalAlignment="Top">
+                <Image Source="Assets/asus_auraeditor_timeline_ic.png"
+                       HorizontalAlignment="Left"
+                       Margin="-7,0,0,0">
+                    <Image.RenderTransform>
+                        <TranslateTransform x:Name="timelinetransform"/>
+                    </Image.RenderTransform>
+                </Image>
+            </Canvas>
+        </ScrollViewer>
+        <ScrollViewer Name="TimeLineScaleScrollViewer"
                       Grid.Row="2"
                       Grid.Column="1"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Hidden"
                       VerticalScrollBarVisibility="Disabled"
                       BorderBrush="Black"
-                      BorderThickness="3">
+                      BorderThickness="1">
             <Canvas Name="TimeLineScaleCanvas"
                     Width="5000"/>
         </ScrollViewer>
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer Name="TimeLineLayerScrollViewer"
+                      Grid.Column="1"
                       Grid.Row="3"
                       Grid.ColumnSpan="2"
                       Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
-                      ViewChanging="ScrollViewer_ViewChanging">
+                      ViewChanged="TimeLineLayerScrollViewer_ViewChanged">
             <StackPanel Name="TimeLineStackPanel"/>
         </ScrollViewer>
 
-        <Grid x:Name="AddDeleteGrid" Grid.Column="0" Grid.Row="4" BorderBrush="black" BorderThickness="1">
-            <StackPanel>
-                <Button x:Name="TrashCanButton" FontSize="24" 
-                           HorizontalAlignment="Right" Click="TrashCanButton_Click" VerticalAlignment="Top">
-                    <Image Source="Assets/asus_auraeditor_delet_ic.png" Width="35"/>
-                </Button>
-                <!--<TextBlock x:Name="Add_Delete_Text" FontSize="30" FontFamily="Segoe MDL2 Assets" Text="&#xE107;"
-                           HorizontalAlignment="Center" Margin="0,5"
-                           AllowDrop="True"
-                           DragEnter="DeleteItem_DragEnter"
-                           Drop="DeleteItem_Drop"/>-->
-            </StackPanel>
+        <Grid Grid.Column="0"
+              Grid.Row="4">
+            <Button x:Name="TrashCanButton"
+                    FontSize="24"
+                    Click="TrashCanButton_Click"
+                    HorizontalAlignment="Center">
+                <Image Source="Assets/asus_auraeditor_delet_ic.png"
+                       Width="35"/>
+            </Button>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="black" BorderThickness="1">
             <TextBlock Name="TimeLineTimerText" Text="00:00.00" Margin="10,0,0,0" FontSize="20" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
             <Slider Name="TimeLineZoomSlider" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignRightWithPanel="True" Width="100"
                     Margin="0,0,20,0" Value="25" ValueChanged="TimeLineZoomSlider_ValueChanged"/>
         </RelativePanel>
+        <TextBox x:Name="txtresult" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168"/>
     </Grid>
 </Page>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomCapabilityDescriptor xmlns="http://schemas.microsoft.com/appx/2016/sccd" 
+                            xmlns:s="http://schemas.microsoft.com/appx/2016/sccd">
+	<CustomCapabilities>
+		<CustomCapability Name="ASUS.ROGAuraLightingService_qmba6cd70vzyy"></CustomCapability>
+	</CustomCapabilities>
+	<AuthorizedEntities>
+		<AuthorizedEntity AppPackageFamilyName="AuraEditor_qmba6cd70vzyy" 
+                      CertificateSignatureHash="508a024e9fed16094fed543e8d9699d71ad0cbc684ec92dbc16eb82a0d370457"/>
+	</AuthorizedEntities>
+	<Catalog>FFFF</Catalog></CustomCapabilityDescriptor>
+
+

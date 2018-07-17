@@ -23,6 +23,9 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Windows.Networking.Sockets;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Input;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -76,10 +79,12 @@ namespace AuraEditor
             EffectListView.ItemsSource = EffectHelper.GetCommonEffectList();
             TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
-            SpaceLine.Visibility = Visibility.Collapsed;
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
             _devicelist = GetCurrentDevices();
+            GetCurrentDevicesTest();
             UpdateSpaceGrid();
+            // for receive cmd form Service
+            socketstart();
         }
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -139,6 +144,16 @@ namespace AuraEditor
 
                 TimeLineScaleCanvas.Children.Add(line);
             }
+
+            // Pre add for debug
+            /*
+            for (int i = 0; i < 6; i++)
+            {
+                DeviceGroup dg = new DeviceGroup();
+                dg.GroupName = "123";
+                _deviceGroupManager.AddDeviceGroup(dg);
+            }
+            */
         }
 
         private ObservableCollection<DeviceItem> GetCurrentDevices()
@@ -150,124 +165,17 @@ namespace AuraEditor
             // NB Example
             d = new DeviceItem("Notebook")
             {
-                Image = "ms-appx:///Assets/asus_gc_aura_customize_keyboard_g703_mask.png",
+                Image = "ms-appx:///Assets/gm501_printing_US.png",
                 LightRegions = new int[,] {
-                    // key 0 ~ 9
-                    { 23, 94, 67, 123} ,
-                    { 116, 94, 160, 123} ,
-                    { 162, 94, 206, 123} ,
-                    { 209, 94, 253, 123} ,
-                    { 255, 94, 299, 123} ,
-                    { 325, 94, 369, 123} ,
-                    { 372, 94, 416, 123} ,
-                    { 418, 94, 462, 123} ,
-                    { 465, 94, 509, 123} ,
-                    { 534, 94, 578, 123} ,
-                    // key 10 ~ 19
-                    { 581, 94, 625, 123} ,
-                    { 627, 94, 671, 123} ,
-                    { 674, 94, 718, 123} ,
-                    { 735, 94, 779, 123} ,
-                    { 781, 94, 825, 123} ,
-                    { 828, 94, 872, 123} ,
-                    { 874, 94, 918, 123} ,
-                    { 23, 125, 67, 168} ,
-                    { 69, 125, 113, 168} ,
-                    { 116, 125, 160, 168} ,
-                    // key 20 ~ 29
-                    { 162, 125, 206, 168} ,
-                    { 209, 125, 253, 168} ,
-                    { 255, 125, 299, 168} ,
-                    { 302, 125, 346, 168} ,
-                    { 348, 125, 392, 168} ,
-                    { 395, 125, 439, 168} ,
-                    { 441, 125, 485, 168} ,
-                    { 488, 125, 532, 168} ,
-                    { 534, 125, 578, 168} ,
-                    { 581, 125, 625, 168} ,
-                    // key 30 ~ 39
-                    { 627, 125, 718, 168} ,
-                    { 735, 125, 779, 168} ,
-                    { 781, 125, 825, 168} ,
-                    { 828, 125, 872, 168} ,
-                    { 874, 125, 918, 168} ,
-                    { 23, 171, 90, 214} ,
-                    { 92, 171, 136, 214} ,
-                    { 139, 171, 183, 214} ,
-                    { 185, 171, 229, 214} ,
-                    { 232, 171, 276, 214} ,
-                    // key 40 ~ 49
-                    { 278, 171, 322, 214} ,
-                    { 325, 171, 369, 214} ,
-                    { 371, 171, 416, 214} ,
-                    { 418, 171, 462, 214} ,
-                    { 464, 171, 509, 214} ,
-                    { 511, 171, 555, 214} ,
-                    { 557, 171, 602, 214} ,
-                    { 604, 171, 648, 214} ,
-                    { 651, 171, 718, 214} ,
-                    { 735, 171, 779, 214} ,
-                    // key 50 ~ 59
-                    { 781, 171, 825, 214} ,
-                    { 828, 171, 872, 214} ,
-                    { 874, 171, 918, 259} ,
-                    { 23, 216, 102, 259} ,
-                    { 104, 216, 148, 259} ,
-                    { 150, 216, 195, 259} ,
-                    { 197, 216, 241, 259} ,
-                    { 243, 216, 288, 259} ,
-                    { 290, 216, 334, 259} ,
-                    { 336, 216, 381, 259} ,
-                    // key 60 ~ 69
-                    { 383, 216, 427, 259} ,
-                    { 429, 216, 474, 259} ,
-                    { 476, 216, 520, 259} ,
-                    { 522, 216, 567, 259} ,
-                    { 569, 216, 613, 259} ,
-                    { 616, 216, 718, 259} ,
-                    { 735, 216, 779, 259} ,
-                    { 781, 216, 825, 259} ,
-                    { 828, 216, 872, 259} ,
-                    { 23, 262, 125, 305} ,
-                    // key 70 ~ 79
-                    { 127, 262, 171, 305} ,
-                    { 174, 262, 218, 305} ,
-                    { 220, 262, 264, 305} ,
-                    { 267, 262, 311, 305} ,
-                    { 313, 262, 357, 305} ,
-                    { 360, 262, 404, 305} ,
-                    { 406, 262, 450, 305} ,
-                    { 453, 262, 497, 305} ,
-                    { 499, 262, 543, 305} ,
-                    { 546, 262, 590, 305} ,
-                    // key 80 ~ 89
-                    { 592, 262, 718, 305} ,
-                    { 735, 262, 779, 305} ,
-                    { 781, 262, 825, 305} ,
-                    { 828, 262, 872, 305} ,
-                    { 874, 262, 918, 350} ,
-                    { 23, 307, 78, 350} ,
-                    { 81, 307, 125, 350} ,
-                    { 127, 307, 171, 350} ,
-                    { 174, 307, 218, 350} ,
-                    { 220, 307, 451, 360} ,
-                    // key 90 ~ 99
-                    { 453, 307, 497, 350} ,
-                    { 499, 307, 543, 350} ,
-                    { 546, 307, 590, 350} ,
-                    { 592, 307, 718, 350} ,
-                    { 735, 307, 779, 350} ,
-                    { 781, 307, 825, 350} ,
-                    { 828, 307, 872, 350} ,
-                    { 688, 352, 732, 395} ,
-                    { 735, 352, 779, 395} ,
-                    { 781, 352, 825, 395} ,
-                    // key 100 ~ 109
-                    { 834, 8, 918, 62} ,
+                    {6,  26, 236, 421},
+                    {246, 26, 476, 421},
+                    {486, 26, 716, 421},
+                    {726, 26, 936, 421},
                 }
             };
             devicelist.Add(d);
 
+            /*
             // Mouse Example
             d = new DeviceItem("Mouse")
             {
@@ -416,21 +324,60 @@ namespace AuraEditor
                     {478, 198, 692, 428},
                 }
             };
-            devicelist.Add(d);
+            devicelist.Add(d);*/
 
             // TODO : combine DeviceItem class and Device class
             device = new Device("Notebook", 0, 0, 0);
             _deviceGroupManager.GlobalDevices.Add(device);
-            device = new Device("Mouse", 1, 0, 1);
-            _deviceGroupManager.GlobalDevices.Add(device);
-            device = new Device("Keyboard", 2, 1, 0);
-            _deviceGroupManager.GlobalDevices.Add(device);
-            device = new Device("Headset", 3, 1, 1);
-            _deviceGroupManager.GlobalDevices.Add(device);
+            //device = new Device("Mouse", 1, 0, 1);
+            //_deviceGroupManager.GlobalDevices.Add(device);
+            //device = new Device("Keyboard", 2, 1, 0);
+            //_deviceGroupManager.GlobalDevices.Add(device);
+            //device = new Device("Headset", 3, 1, 1);
+            //_deviceGroupManager.GlobalDevices.Add(device);
 
             return devicelist;
         }
 
+        private void GetCurrentDevicesTest()
+        {
+            int commonFactor = 35;
+            Device device;
+
+            CompositeTransform ct = new CompositeTransform
+            {
+                TranslateX = commonFactor * X,
+                TranslateY = commonFactor * Y
+            };
+            Image img = new Image
+            {
+                RenderTransform = ct,
+                Source = new BitmapImage(new Uri("ms-appx:///Assets/gm501_printing_US.png")),
+                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
+                Stretch = Stretch.Fill,
+            };
+
+            device = new Device(img)
+            {
+                DeviceName = "GM501GS",
+                DeviceType = 0,
+                X = 0,
+                Y = 0,
+                W = 21,
+                H = 9,
+                DeviceImg = img,
+                //DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png",
+                LightZones = new LightZone[]
+                {
+                    new LightZone( 0, 0,   6, 26, 236, 421),
+                    new LightZone( 0, 0, 246, 26, 476, 421),
+                    new LightZone( 0, 0, 486, 26, 716, 421),
+                    new LightZone( 0, 0, 726, 26, 936, 421)
+                }
+            };
+
+            _deviceGroupManager.GlobalDevices.Add(device);
+        }
         private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {
             RadioButton rb = sender as RadioButton;
@@ -500,7 +447,7 @@ namespace AuraEditor
             var result = await dialog.ShowAsync();
         }
 
-        public async void AddDeviceFinished(ContentDialog sender, ContentDialogClosedEventArgs args)
+        public async void AddGroupFinished(ContentDialog sender, ContentDialogClosedEventArgs args)
         {
             DeviceGroup dg = new DeviceGroup();
             AddDeviceDialog d = AddDeviceDialog.GetInstance();
@@ -557,14 +504,21 @@ namespace AuraEditor
             }
 
             _deviceGroupManager.AddDeviceGroup(dg);
-            TimeLineDeviceNameListView.SelectedIndex = 0;
+            GroupListView.SelectedIndex = 0;
         }
 
-        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        private void TimeLineLayerScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-            LeftScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TimeLineScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
+            GroupScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
+        }
+        private void TimeLineIconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            GroupScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            TimeLineLayerScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
+            TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
 
         private async void OpenFileButton_Click(object sender, RoutedEventArgs e)
@@ -629,7 +583,7 @@ namespace AuraEditor
 
             UpdateSpaceGrid();
             ClearEffectInfoGrid();
-            TimeLineDeviceNameListView.SelectedIndex = 0;
+            GroupListView.SelectedIndex = 0;
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -880,7 +834,79 @@ namespace AuraEditor
 
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            //_deviceGroupManager.CurrentEffect.MyDeviceGroup.de
+            List<DeviceGroupListViewItem> items =
+                Common.ControlHelper.FindAllControl<DeviceGroupListViewItem>(GroupListView, typeof(DeviceGroupListViewItem));
+
+            foreach (var item in items)
+            {
+                if (item.IsSelected == true)
+                {
+                    DeviceGroup dg = item.DataContext as DeviceGroup;
+
+                    if (dg is TriggerDeviceGroup)
+                        continue;
+
+                    if (dg.Effects.Contains(_selectedEffectLine))
+                        SelectedEffectLine = null;
+
+                    _deviceGroupManager.RemoveDeviceGroup(dg);
+                }
+            }
+        }
+
+        async void socketstart()
+        {
+
+            Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
+            socket.MessageReceived += Socket_MessageReceived;
+            string serverPort = "8001";
+            string clientPort = "8002";
+            Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
+
+            await socket.BindServiceNameAsync(clientPort);
+            await socket.ConnectAsync(serverHost, serverPort);
+            Stream streamOut = (await socket.GetOutputStreamAsync(serverHost, serverPort)).AsStreamForWrite();
+            StreamWriter writer = new StreamWriter(streamOut);
+            string message = "client";
+            await writer.WriteLineAsync(message);
+            await writer.FlushAsync();
+        }
+
+        private async void Socket_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
+        {
+            try
+            {
+                Stream streamIn = args.GetDataStream().AsStreamForRead();
+                StreamReader reader = new StreamReader(streamIn);
+                string message = await reader.ReadLineAsync();
+
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    //from Service message
+                    txtresult.Text = "Service : " + message;
+                });
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+            }
+        }
+
+        private void CanMoveToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach(var d in _deviceGroupManager.GlobalDevices)
+            {
+                d.EnableManipulation();
+            }
+        }
+
+        private void CanMoveToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (var d in _deviceGroupManager.GlobalDevices)
+            {
+                d.DisableManipulation();
+            }
         }
     }
 }

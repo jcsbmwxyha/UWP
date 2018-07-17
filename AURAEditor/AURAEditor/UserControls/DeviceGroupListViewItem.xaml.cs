@@ -20,11 +20,32 @@ namespace AuraEditor
     public sealed partial class DeviceGroupListViewItem : UserControl
     {
         public DeviceGroup MyDeviceGroup { get { return this.DataContext as DeviceGroup; } }
+        public bool IsSelected {
+            get {
+                if (GroupToggle.IsChecked == true)
+                    return true;
+                else
+                    return false;
+            }
+        }
 
         public DeviceGroupListViewItem()
         {
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
+        }
+
+        private void EyeToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton tb = Common.ControlHelper.FindControl<ToggleButton>(this, typeof(ToggleButton), "EyeToggleButton");
+
+            if (tb != null)
+            {
+                if (tb.IsChecked == false)
+                    MyDeviceGroup.Eye = false;
+                else
+                    MyDeviceGroup.Eye = true;
+            }
         }
     }
 }

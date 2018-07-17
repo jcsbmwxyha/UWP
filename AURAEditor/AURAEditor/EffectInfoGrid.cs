@@ -15,7 +15,24 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         internal FlyoutBase m_flyoutBase;
-        internal Effect _selectedEffectLine;
+
+        private Effect _selectedEffectLine;
+        public Effect SelectedEffectLine
+        {
+            get
+            {
+                return _selectedEffectLine;
+            }
+            set
+            {
+                if (value == null)
+                    ClearEffectInfoGrid();
+                else
+                    UpdateEffectInfoGrid(value);
+
+                _selectedEffectLine = value;
+            }
+        }
 
         public void ClearEffectInfoGrid()
         {
@@ -25,7 +42,6 @@ namespace AuraEditor
         }
         public void UpdateEffectInfoGrid(Effect effect)
         {
-            _selectedEffectLine = effect;
             EffectLine border = effect.EffectLineUI;
             ShowEffectGroups(effect.EffectType);
             UpdateEffectGroups(effect.Info);
@@ -202,11 +218,11 @@ namespace AuraEditor
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
         {
-            EffectLine effectLineUI = _selectedEffectLine.EffectLineUI;
+            EffectLine effectLineUI = SelectedEffectLine.EffectLineUI;
             Color resultColor = ColorPicker.Color;
             SolidColorBrush scb = new SolidColorBrush(resultColor);
 
-            _selectedEffectLine.Info.Color = resultColor;
+            SelectedEffectLine.Info.Color = resultColor;
             ColorRect.Fill = scb;
             //border.Background = scb;
             m_flyoutBase.Hide();
@@ -236,10 +252,10 @@ namespace AuraEditor
         private void WaveTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Initialization has not been completed
-            if (_selectedEffectLine == null)
+            if (SelectedEffectLine == null)
                 return;
 
-            EffectInfo ei = _selectedEffectLine.Info;
+            EffectInfo ei = SelectedEffectLine.Info;
 
             string waveName = e.AddedItems[0].ToString();
             switch (waveName)
@@ -306,7 +322,7 @@ namespace AuraEditor
                 return;
             }
             
-            EffectInfo ei = _selectedEffectLine.Info;
+            EffectInfo ei = SelectedEffectLine.Info;
             ei.Min = double.Parse(MinTextBox.Text);
             ei.Max = double.Parse(MaxTextBox.Text);
             ei.WaveLength = double.Parse(WaveLenTextBox.Text);
@@ -334,7 +350,7 @@ namespace AuraEditor
                 return;
             }
 
-            EffectInfo ei = _selectedEffectLine.Info;
+            EffectInfo ei = SelectedEffectLine.Info;
             ei.Min = double.Parse(MinTextBox.Text);
             ei.Max = double.Parse(MaxTextBox.Text);
             ei.WaveLength = double.Parse(WaveLenTextBox.Text);

@@ -61,7 +61,6 @@ namespace AuraEditor
         public string EffectName { get; set; }
         public string EffectLuaName { get; set; }
         public int EffectType { get; set; }
-        public Border UIBorder { get; }
         public EffectLine EffectLineUI { get; }
         private int _start;
         public int Start
@@ -99,52 +98,12 @@ namespace AuraEditor
         {
             MyDeviceGroup = dg;
             EffectType = effectType;
-            UIBorder = CreateUIBorder(effectType);
             EffectName = EffectHelper.GetEffectName(effectType);
             EffectLineUI = CreateEffectUI(effectType);
             EffectLineUI.DataContext = this;
             Start = (int)MyDeviceGroup.GetFirstSpaceCanPut();
             Duration = 100;
             Info = new EffectInfo(effectType);
-        }
-        public Border CreateUIBorder(int effectType)
-        {
-            string effectname = EffectHelper.GetEffectName(effectType);
-
-            TextBlock tb = new TextBlock
-            {
-                Text = effectname,
-                FontSize = 22,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-
-            Border border = new Border
-            {
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                Height = 50,
-                BorderThickness = new Thickness(3, 3, 3, 3),
-                Padding = new Thickness(5),
-                CornerRadius = new CornerRadius(15),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Child = tb,
-                ManipulationMode = ManipulationModes.TranslateX
-            };
-
-
-            if (effectType == EffectHelper.GetEffectIndex("Smart"))
-                border.Background = AuraEditorColorHelper.GetSmartBrush();
-            else if (effectType == EffectHelper.GetEffectIndex("Rainbow"))
-                border.Background = AuraEditorColorHelper.GetRainbowBrush();
-            else
-                border.Background = new SolidColorBrush(Windows.UI.Colors.Red);
-
-            CompositeTransform ct = new CompositeTransform
-            {
-                TranslateX = 0
-            };
-            border.RenderTransform = ct;
-
-            return border;
         }
         private EffectLine CreateEffectUI(int effectType)
         {
@@ -162,122 +121,24 @@ namespace AuraEditor
 
             return el;
         }
-        //private void EffectLine_PointerPressed(object sender, PointerRoutedEventArgs e)
-        //{
-        //    var border = sender as Border;
-        //    border.Opacity = 0.5;
-        //
-        //    Point position = e.GetCurrentPoint(border).Position;
-        //    bool _hasCapture = border.CapturePointer(e.Pointer);
-        //
-        //    if (position.X > border.Width - 5)
-        //        _cursorSizeRight = true;
-        //    else if (position.X > 5)
-        //        _cursorMove = true;
-        //    else
-        //        _cursorSizeLeft = true;
-        //
-        //    var frame = (Frame)Window.Current.Content;
-        //    var page = (MainPage)frame.Content;
-        //
-        //    string effectname = ((TextBlock)border.Child).Text;
-        //
-        //    page.UpdateEffectInfoGrid(this);
-        //}
-        //void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        //{
-        //}
-        //void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        //{
-        //    var fe = sender as FrameworkElement;
-        //    CompositeTransform ct = fe.RenderTransform as CompositeTransform;
-        //
-        //    if (_cursorMove)
-        //    {
-        //        if ((ct.TranslateX + e.Delta.Translation.X < 0))
-        //            return;
-        //        ct.TranslateX += e.Delta.Translation.X;
-        //    }
-        //    else if (_cursorSizeRight)
-        //    {
-        //        MyDeviceGroup.OnCursorSizeRight(this, (int)(ct.TranslateX), (int)(fe.Width + e.Delta.Translation.X));
-        //
-        //        if (e.Position.X > 50)
-        //            fe.Width = e.Position.X;
-        //    }
-        //    else if (_cursorSizeLeft)
-        //    {
-        //        if (MyDeviceGroup.IsEffectLineOverlap(this, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(fe.Width - e.Delta.Translation.X)) != null)
-        //            return;
-        //
-        //        if (fe.Width - e.Delta.Translation.X > 50)
-        //        {
-        //            ct.TranslateX += e.Delta.Translation.X;
-        //            fe.Width -= e.Delta.Translation.X;
-        //        }
-        //    }
-        //}
-        //void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
-        //{ }
-        //private void EffectLine_PointerReleased(object sender, PointerRoutedEventArgs e)
-        //{
-        //    int leftPosition, rightPosition, width;
-        //    var fe = sender as FrameworkElement;
-        //    fe.Opacity = 1;
-        //
-        //    CompositeTransform ct = fe.RenderTransform as CompositeTransform;
-        //    leftPosition = (int)ct.TranslateX / 10 * 10;
-        //
-        //    if (_cursorSizeLeft)
-        //    {
-        //        rightPosition = (int)ct.TranslateX + (int)fe.Width;
-        //        width = rightPosition - leftPosition;
-        //    }
-        //    else
-        //    {
-        //        width = (int)fe.Width / 10 * 10;
-        //    }
-        //
-        //    //Point position = e.GetCurrentPoint(MyDeviceGroup.UICanvas).Position;
-        //    //string s = "EffectLine: " + position.X;
-        //    //System.Diagnostics.Debug.WriteLine(s);
-        //    leftPosition = MyDeviceGroup.InsertEffectLine(this, leftPosition, width);
-        //    //if (MyDeviceGroup.InsertEffectLine(this, leftPosition, width))
-        //    //{
-        //    //    return;
-        //    //}
-        //
-        //    //if (MyDeviceGroup.IsEffectLineOverlap(this, leftPosition, width))
-        //    //{
-        //    //    ct.TranslateX = Start;
-        //    //    fe.Width = Duration;
-        //    //    return;
-        //    //}
-        //    //
-        //    Start = leftPosition;
-        //    Duration = width;
-        //
-        //    _cursorMove = false;
-        //    _cursorSizeRight = false;
-        //    _cursorSizeLeft = false;
-        //}
-        //private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
-        //{
-        //    FrameworkElement fe = sender as FrameworkElement;
-        //    if (e.GetCurrentPoint(fe).Position.X > fe.Width - 5 || e.GetCurrentPoint(fe).Position.X < 5)
-        //        Window.Current.CoreWindow.PointerCursor =
-        //            new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeWestEast, 0);
-        //    else
-        //        Window.Current.CoreWindow.PointerCursor =
-        //            new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
-        //}
-        //private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
-        //{
-        //    Window.Current.CoreWindow.PointerCursor =
-        //        new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-        //}
     }
+    public class LightZone
+    {
+        int physicalIndex;
+        int index;
+        Point point1;
+        Point point2;
+        bool selected;
 
+        public LightZone(int p_idx, int idx, int x1, int y1, int x2, int y2)
+        {
+            physicalIndex = p_idx;
+            index = idx;
+            point1 = new Point(x1, y1);
+            point2 = new Point(x2, y2);
+            selected = false;
+        }
+    }
     public class Device
     {
         public string DeviceName { get; set; }
@@ -288,9 +149,19 @@ namespace AuraEditor
         public double H { get; set; }
         public Image DeviceImg { get; set; }
         public string DeviceImgPath { get; set; }
-        //public int[] SelectedZone { get; set; }
+        public LightZone[] LightZones { get; set; }
+        private int commonFactor = 35;
 
-        public Device() { }
+        public Device(Image img)
+        {
+            img.ManipulationStarted += ImageManipulationStarted;
+            img.ManipulationDelta += ImageManipulationDelta;
+            img.ManipulationCompleted += ImageManipulationCompleted;
+            img.PointerEntered += ImagePointerEntered;
+            img.PointerExited += ImagePointerExited;
+
+            DeviceImg = img;
+        }
         public Device(string s, int type, int x, int y)
         {
             DeviceName = s;
@@ -301,9 +172,9 @@ namespace AuraEditor
 
             if (type == 0)
             {
-                DeviceImgPath = "ms-appx:///Assets/device_local.png";
+                DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png";
                 W = 21;
-                H = 6;
+                H = 9;
             }
             else if (type == 1)
                 DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_mouse.png";
@@ -315,51 +186,58 @@ namespace AuraEditor
             }
             else if (type == 3)
                 DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_headset.png";
-
-            int commonFactor = 71;
-
+            
             CompositeTransform ct = new CompositeTransform
             {
                 TranslateX = commonFactor * X,
                 TranslateY = commonFactor * Y
             };
-
             Image img = new Image
             {
                 RenderTransform = ct,
-                Width = commonFactor,
-                Height = commonFactor,
+                Width = commonFactor * W,
+                Height = commonFactor * H,
                 Source = new BitmapImage(new Uri(DeviceImgPath)),
-                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY
+                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
+                Stretch = Stretch.Fill,
             };
-
-            img.ManipulationStarted += DeviceImg_ManipulationStarted;
-            img.ManipulationDelta += DeviceImg_ManipulationDelta;
-            img.ManipulationCompleted += DeviceImg_ManipulationCompleted;
-            img.PointerEntered += DeviceImg_PointerEntered;
-            img.PointerExited += DeviceImg_PointerExited;
-
+            
             DeviceImg = img;
         }
-        private void DeviceImg_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        public void EnableManipulation()
+        {
+            DeviceImg.ManipulationStarted += ImageManipulationStarted;
+            DeviceImg.ManipulationDelta += ImageManipulationDelta;
+            DeviceImg.ManipulationCompleted += ImageManipulationCompleted;
+            DeviceImg.PointerEntered += ImagePointerEntered;
+            DeviceImg.PointerExited += ImagePointerExited;
+        }
+        public void DisableManipulation()
+        {
+            DeviceImg.ManipulationStarted -= ImageManipulationStarted;
+            DeviceImg.ManipulationDelta -= ImageManipulationDelta;
+            DeviceImg.ManipulationCompleted -= ImageManipulationCompleted;
+            DeviceImg.PointerEntered -= ImagePointerEntered;
+            DeviceImg.PointerExited -= ImagePointerExited;
+        }
+        private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             var fe = sender as FrameworkElement;
             fe.Opacity = 0.5;
         }
-        private void DeviceImg_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             Image img = sender as Image;
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
             ct.TranslateX += e.Delta.Translation.X;
             ct.TranslateY += e.Delta.Translation.Y;
         }
-        private void DeviceImg_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             Image img = sender as Image;
             img.Opacity = 1;
 
             BitmapImage bs = img.Source as BitmapImage;
-            int commonFactor = 71;
 
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
             X = (int)ct.TranslateX / commonFactor;
@@ -367,11 +245,11 @@ namespace AuraEditor
             ct.TranslateX = X * commonFactor;
             ct.TranslateY = Y * commonFactor;
         }
-        private void DeviceImg_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
         }
-        private void DeviceImg_PointerExited(object sender, PointerRoutedEventArgs e)
+        private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
         }
@@ -380,9 +258,11 @@ namespace AuraEditor
     public class DeviceGroup
     {
         public string GroupName { get; set; }
-        //List<Device> _devices;
         public List<Effect> Effects;
         public Canvas UICanvas;
+        public bool Eye { get; set; }
+
+
         Dictionary<int, int[]> _deviceToZonesDictionary;
 
         public DeviceGroup(string name = "")
@@ -392,6 +272,7 @@ namespace AuraEditor
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
             _deviceToZonesDictionary = new Dictionary<int, int[]>();
+            Eye = true;
         }
         public Dictionary<int, int[]> GetDeviceToZonesDictionary()
         {
@@ -657,6 +538,11 @@ namespace AuraEditor
             DeviceGroupCollection.Add(dg);
             TimeLineStackPanel.Children.Add(dg.UICanvas);
         }
+        public void RemoveDeviceGroup(DeviceGroup dg)
+        {
+            DeviceGroupCollection.Remove(dg);
+            TimeLineStackPanel.Children.Remove(dg.UICanvas);
+        }
         public void SetGlobalDevices(List<Device> devices)
         {
             GlobalDevices = devices;
@@ -699,31 +585,36 @@ namespace AuraEditor
         {
             Table eventProviderTable = CreateNewTable();
             Table queueTable = CreateNewTable();
-            Table queueItemtable;
+            Table queueItemTable;
 
             int effectCount = 0;
             int queueIndex = 1;
             foreach (DeviceGroup gp in DeviceGroupCollection)
             {
+                if (gp.Eye == false)
+                    continue;
+
                 foreach (Effect eff in gp.Effects)
                 {
-                    queueItemtable = CreateNewTable();
+                    queueItemTable = CreateNewTable();
 
                     // Give uniqle index for all of effect lines
                     eff.EffectLuaName = EffectHelper.GetEffectName(eff.EffectType) + effectCount.ToString();
                     effectCount++;
 
-                    queueItemtable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
-                    queueItemtable.Set("Viewport", DynValue.NewString(gp.GroupName));
+                    queueItemTable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
+                    queueItemTable.Set("Viewport", DynValue.NewString(gp.GroupName));
+
                     if (EffectHelper.GetEffectName(eff.EffectType) == "Comet")
-                        queueItemtable.Set("Trigger", DynValue.NewString("Period"));
+                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
                     else if(EffectHelper.IsTriggerEffects(eff.EffectType))
-                        queueItemtable.Set("Trigger", DynValue.NewString("KeyboardInput"));
+                        queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
                     else
-                        queueItemtable.Set("Trigger", DynValue.NewString("OneTime"));
-                    queueItemtable.Set("Delay", DynValue.NewNumber(eff.Start * 10));
-                    queueItemtable.Set("Duration", DynValue.NewNumber(eff.Duration * 10));
-                    queueTable.Set(queueIndex, DynValue.NewTable(queueItemtable));
+                        queueItemTable.Set("Trigger", DynValue.NewString("OneTime"));
+
+                    queueItemTable.Set("Delay", DynValue.NewNumber(eff.Start * 10));
+                    queueItemTable.Set("Duration", DynValue.NewNumber(eff.Duration * 10));
+                    queueTable.Set(queueIndex, DynValue.NewTable(queueItemTable));
                     queueIndex++;
                 }
             }
@@ -743,16 +634,13 @@ namespace AuraEditor
             Table layoutTable;
             Table locationTable;
             Table usageTable;
-            //Table fromToTable;
 
             int groupIndex = 1;
             foreach (DeviceGroup dg in DeviceGroupCollection)
             {
+                Dictionary<int, int[]> deviceToZonesDictionary = dg.GetDeviceToZonesDictionary();
                 groupTable = CreateNewTable();
 
-                Dictionary<int, int[]> deviceToZonesDictionary = dg.GetDeviceToZonesDictionary();
-
-                //foreach (Device d in devices)
                 foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
                 {
                     Device d = GetGroupDevice(pair.Key);
@@ -777,16 +665,15 @@ namespace AuraEditor
                     else
                         deviceTable.Set("DeviceType", DynValue.NewString("Headset"));
 
-                    //deviceTable.Set("layout", DynValue.NewTable(layoutTable));
                     deviceTable.Set("location", DynValue.NewTable(locationTable));
 
                     usageTable = CreateNewTable();
+
                     if (pair.Value != null && pair.Value[0] != -1)
                     {
                         int count = 1;
                         foreach (int index in pair.Value)
                         {
-                            //fromToTable = CreateNewTable();
                             int i = 0;
 
                             if (d.DeviceType == 0)
@@ -794,8 +681,6 @@ namespace AuraEditor
                             else if (d.DeviceType == 2)
                                 i = KeyRemap.FlairRemap(index);
 
-                            //fromToTable.Set("from", DynValue.NewNumber(i));
-                            //fromToTable.Set("to", DynValue.NewNumber(i));
                             usageTable.Set(count, DynValue.NewNumber(i));
                             count++;
                         };
@@ -822,6 +707,9 @@ namespace AuraEditor
 
             foreach (DeviceGroup gp in DeviceGroupCollection)
             {
+                if (gp.Eye == false)
+                    continue;
+
                 foreach (Effect eff in gp.Effects)
                 {
                     EffectInfo info = eff.Info;

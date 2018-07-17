@@ -41,7 +41,7 @@ namespace AuraEditor
         {
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-            this.Closed += page.AddDeviceFinished;
+            this.Closed += page.AddGroupFinished;
         }
 
         private void AddDeviceDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

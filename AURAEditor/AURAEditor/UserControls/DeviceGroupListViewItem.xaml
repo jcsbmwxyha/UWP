@@ -9,35 +9,88 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <ToggleButton Content="{x:Bind MyDeviceGroup.GroupName}"
+    <ToggleButton Name="GroupToggle"
+                  Content="{x:Bind MyDeviceGroup.GroupName}"
                   FontSize="30"
                   Foreground="White" Height="50" VerticalAlignment="Center">
         <ToggleButton.Template>
             <ControlTemplate TargetType="ToggleButton">
-                <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="250"/>
+                    </Grid.ColumnDefinitions>
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup>
                             <VisualState x:Name="Normal"/>
                             <VisualState x:Name="PointerOver">
                                 <VisualState.Setters>
-                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                    <Setter Target="LayerBg.Source" Value="../Assets/asus_auraeditor_layer_n_btn.png"/>
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="CheckedPointerOver">
                                 <VisualState.Setters>
-                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                    <Setter Target="LayerBg.Source" Value="../Assets/asus_auraeditor_layer_s_btn.png"/>
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Checked">
                                 <VisualState.Setters>
-                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                    <Setter Target="LayerBg.Source" Value="../Assets/asus_auraeditor_layer_s_btn.png"/>
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
-                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_on_ic.png" Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
-                    <TextBlock Text="{TemplateBinding Content}" FontSize="25" Margin="22,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
+
+                    <Image Name="LayerBg"
+                           Grid.ColumnSpan="2"
+                           Stretch="Fill"
+                           VerticalAlignment="Center"/>
+                    <ToggleButton Name="EyeToggleButton"
+                                  Grid.Column="0"
+                                  Margin="20,0,0,0"
+                                  Click="EyeToggleButton_Click"
+                                  IsChecked="True">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <StackPanel Orientation="Horizontal">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup>
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="CheckedPointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Checked">
+                                                <VisualState.Setters>
+                                                    <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <ToggleButton>
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                    <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_off_ic.png" Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                    <TextBlock Text="{TemplateBinding Content}"
+                               Grid.Column="1"
+                               FontSize="25"
+                               Margin="22,0,0,0"
+                               VerticalAlignment="Center"/>
+                </Grid>
             </ControlTemplate>
         </ToggleButton.Template>
     </ToggleButton>
