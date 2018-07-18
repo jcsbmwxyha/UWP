@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using VocabularyTest.Common;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -24,27 +25,47 @@ namespace VocabularyTest.Dialog
 {
     public sealed partial class StartTestDialog : ContentDialog
     {
-        public const string yahooURL = @"https://tw.dictionary.search.yahoo.com/search?p=";
         ObservableCollection<Vocabulary> _vocObCollection;
-        int _currentVocIndex;
-        public int CurrentVocIndex
+        private int[] _randomIndexArray;
+
+        private int _randomArrayPointer;
+        public int RandomArrayPointer
         {
             get
             {
-                return _currentVocIndex;
+                return _randomArrayPointer;
             }
             set
             {
-                _currentVocIndex = value;
+                if (value >= _vocObCollection.Count)
+                    _randomArrayPointer = 0;
+                else
+                    _randomArrayPointer = value;
 
-                EnglishTextBlock.Text = _vocObCollection[_currentVocIndex].English;
+                VocNumberTextBlock.Text = (_randomArrayPointer + 1) + " / " + _vocObCollection.Count;
+                VocIndex = _randomIndexArray[_randomArrayPointer];
+            }
+        }
+
+        private int _vocIndex;
+        public int VocIndex
+        {
+            get
+            {
+                return _vocIndex;
+            }
+            set
+            {
+                EnglishTextBlock.Text = _vocObCollection[value].English;
                 KKTextBlock.Text = "";
                 ChineseTextBlock.Text = "";
 
-                if (_vocObCollection[_currentVocIndex].Star == true)
+                if (_vocObCollection[value].Star == true)
                     StarButton.Content = "\uE249";
                 else
                     StarButton.Content = "\uE24A";
+
+                _vocIndex = value;
             }
         }
 
@@ -53,9 +74,24 @@ namespace VocabularyTest.Dialog
             this.InitializeComponent();
             _vocObCollection = vocs;
 
-            // creates a index between 0 and count - 1
-            Random rnd = new Random();
-            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count);
+            _randomIndexArray = new int[_vocObCollection.Count];
+
+            for (int i = 0; i < _vocObCollection.Count; i++)
+            {
+                _randomIndexArray[i] = i;
+            }
+
+            for (int i = 0; i < _vocObCollection.Count; i++)
+            {
+                int randomInt = 0;
+
+                // creates a index between 0 and count - 1
+                Random rnd = new Random();
+                randomInt = rnd.Next(0, _vocObCollection.Count);
+                CommonHelper.SwapValue<int>(ref _randomIndexArray[i], ref _randomIndexArray[randomInt]);
+            }
+
+            RandomArrayPointer = 0;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -64,22 +100,20 @@ namespace VocabularyTest.Dialog
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            // creates a index between 0 and count - 1
-            Random rnd = new Random();
-            CurrentVocIndex = rnd.Next(0, _vocObCollection.Count);
+            RandomArrayPointer++;
         }
 
         private void AnswerButton_Click(object sender, RoutedEventArgs e)
         {
-            KKTextBlock.Text = _vocObCollection[_currentVocIndex].KK;
-            ChineseTextBlock.Text = _vocObCollection[_currentVocIndex].Chinese;
+            KKTextBlock.Text = _vocObCollection[VocIndex].KK;
+            ChineseTextBlock.Text = _vocObCollection[VocIndex].Chinese;
         }
 
         private void StarButton_Click(object sender, RoutedEventArgs e)
         {
-            _vocObCollection[CurrentVocIndex].Star ^= true;
+            _vocObCollection[VocIndex].Star ^= true;
 
-            if (_vocObCollection[_currentVocIndex].Star == true)
+            if (_vocObCollection[VocIndex].Star == true)
                 StarButton.Content = "\uE249";
             else
                 StarButton.Content = "\uE24A";
@@ -107,7 +141,7 @@ namespace VocabularyTest.Dialog
 
                 HttpClient httpClient = new HttpClient();
 
-                Uri requestUri = new Uri(yahooURL + eng);
+                Uri requestUri = new Uri(CommonHelper.yahooURL + eng);
 
                 //Send the GET request asynchronously and retrieve the response as a string.
                 HttpResponseMessage httpResponse = new HttpResponseMessage();
@@ -173,15 +207,9 @@ namespace VocabularyTest.Dialog
 
         }
 
-        private void YahooButton_Click(object sender, RoutedEventArgs e)
+        private async void YahooButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultLaunch(EnglishTextBlock.Text);
-        }
-        async void DefaultLaunch(string s)
-        {
-            Uri u;
-            u = new Uri(yahooURL + s.Replace(" ", "+"));
-
+            Uri u = new Uri(CommonHelper.yahooURL + EnglishTextBlock.Text.Replace(" ", "+"));
             var success = await Windows.System.Launcher.LaunchUriAsync(u);
         }
     }

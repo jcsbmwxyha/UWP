@@ -162,6 +162,14 @@
                         Click="TestStarButton_Click"
                         Margin="6"
                         VerticalAlignment="Top"/>
+                <Line Stroke="Black" StrokeThickness="1" X1="0" X2="40" HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                <Button Name="AutoFillButton"
+                        Content="&#xF571;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Style="{StaticResource ButtonStyle}"
+                        Click="AutoFillButton_Click"
+                        Margin="6"
+                        VerticalAlignment="Top"/>
             </StackPanel>
         </Grid>
     </Grid>

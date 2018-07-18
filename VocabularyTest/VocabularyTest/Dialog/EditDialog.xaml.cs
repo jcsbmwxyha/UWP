@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using VocabularyTest.Common;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Text;
@@ -24,7 +25,6 @@ namespace VocabularyTest.Dialog
     public sealed partial class EditDialog : ContentDialog
     {
         Vocabulary _voc;
-        public const string yahooURL = @"https://tw.dictionary.search.yahoo.com/search?p=";
 
         public EditDialog(Vocabulary voc)
         {
@@ -67,37 +67,12 @@ namespace VocabularyTest.Dialog
             }
         }
 
-        private string ParseString(string content, string startString, string endString, bool includeStartEnd)
-        {
-            string result = "";
-            int startIndex, endIndex;
-
-            startIndex = content.IndexOf(startString);
-            if (startIndex == -1)
-                return "";
-            else if (includeStartEnd)
-                content = content.Substring(startIndex);
-            else
-                content = content.Substring(startIndex + startString.Length);
-
-            endIndex = content.IndexOf(endString);
-
-            if (endIndex == -1)
-                return "";
-            else if (includeStartEnd)
-                result = content.Substring(0, endIndex + endString.Length);
-            else
-                result = content.Substring(0, endIndex);
-
-            return result;
-        }
-
         private async void AutoButton_Click(object sender, RoutedEventArgs e)
         {
             string noteText = "";
             string httpResponseBody = "";
             HttpClient httpClient = new HttpClient();
-            Uri requestUri = new Uri(yahooURL + EnglishTextBox.Text);
+            Uri requestUri = new Uri(CommonHelper.yahooURL + EnglishTextBox.Text);
 
             //Send the GET request asynchronously and retrieve the response as a string.
             HttpResponseMessage httpResponse = new HttpResponseMessage();
@@ -110,7 +85,7 @@ namespace VocabularyTest.Dialog
             // KK ++
             string startString = "KK[";
             string endString = "]";
-            KKTextBox.Text = ParseString(httpResponseBody, startString, endString, true);
+            KKTextBox.Text = CommonHelper.ParseString(httpResponseBody, startString, endString, true);
             // KK --
 
             var doc = new HtmlDocument();
@@ -153,9 +128,6 @@ namespace VocabularyTest.Dialog
 
             noteText = noteText.Replace("&#39;", "'");
             NoteRichEditBox.Document.SetText(TextSetOptions.None, noteText);
-
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -257,7 +259,7 @@ namespace VocabularyTest
             string[] stringSeparators = new string[] { "<note/>" };
             string[] vocsString = fileContent.Split(stringSeparators, StringSplitOptions.None);
 
-            foreach(string vocString in vocsString)
+            foreach (string vocString in vocsString)
             {
                 Vocabulary voc = new Vocabulary(
                     GetElementsByTagName(vocString, "eg"),
@@ -267,7 +269,7 @@ namespace VocabularyTest
                     GetElementsByTagName(vocString, "note")
                     );
 
-                if (voc.English.Replace("\n","").Replace("\r", "").Replace(" ", "") == "")
+                if (voc.English.Replace("\n", "").Replace("\r", "").Replace(" ", "") == "")
                     continue;
 
                 vocs.Add(voc);
@@ -422,17 +424,11 @@ namespace VocabularyTest
                 // creates a index between 0 and count - 1
                 Random rnd = new Random();
                 int randomIndex = rnd.Next(0, vocs.Count);
-                Swap(vocs, i, randomIndex);
+                CommonHelper.SwapListItem(vocs, i, randomIndex);
             }
 
             MyVocsList = new ObservableCollection<Vocabulary>(vocs);
             VocabularyListBox.ItemsSource = MyVocsList;
-        }
-        public static void Swap<T>(IList<T> list, int indexA, int indexB)
-        {
-            T tmp = list[indexA];
-            list[indexA] = list[indexB];
-            list[indexB] = tmp;
         }
         private void StarUpButton_Click(object sender, RoutedEventArgs e)
         {
@@ -446,6 +442,79 @@ namespace VocabularyTest
 
             MyVocsList = new ObservableCollection<Vocabulary>(vocs);
             VocabularyListBox.ItemsSource = MyVocsList;
+        }
+
+        private async void AutoFillButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocsList == null)
+                return;
+
+            foreach (var v in MyVocsList)
+            {
+                if (v.KK == "")
+                {
+                    string noteText = "";
+                    string httpResponseBody = "";
+                    HttpClient httpClient = new HttpClient();
+                    Uri requestUri = new Uri(CommonHelper.yahooURL + v.English);
+
+                    //Send the GET request asynchronously and retrieve the response as a string.
+                    HttpResponseMessage httpResponse = new HttpResponseMessage();
+
+                    //Send the GET request
+                    httpResponse = await httpClient.GetAsync(requestUri);
+                    httpResponse.EnsureSuccessStatusCode();
+                    httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                    // KK ++
+                    string startString = "KK[";
+                    string endString = "]";
+                    v.KK = CommonHelper.ParseString(httpResponseBody, startString, endString, true);
+                    // KK --
+
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(httpResponseBody);
+
+                    var nodes = doc.DocumentNode.SelectNodes("//div");
+
+                    // 釋義
+                    foreach (var node in nodes)
+                    {
+                        HtmlAttribute att = node.Attributes["class"];
+                        if (att != null && att.Value == "compList")
+                        {
+                            var c_doc = new HtmlDocument();
+                            c_doc.LoadHtml(node.InnerHtml);
+
+                            var c_nodes = c_doc.DocumentNode.SelectNodes("//span");
+                            foreach (var c_node in c_nodes)
+                            {
+                                noteText += c_node.InnerText + "\n";
+                            }
+
+                            break;
+                        }
+                    }
+
+                    // 更多解釋
+                    if (noteText == "")
+                    {
+                        foreach (var node in nodes)
+                        {
+                            HtmlAttribute att = node.Attributes["class"];
+                            if (att != null && att.Value == "compList mt-5 ")
+                            {
+                                noteText += node.InnerText + "\n";
+                            }
+                        }
+                    }
+
+                    noteText = noteText.Replace("&#39;", "'");
+                    v.Note = noteText;
+
+                    await System.Threading.Tasks.Task.Delay(2000);
+                }
+            }
         }
     }
 }

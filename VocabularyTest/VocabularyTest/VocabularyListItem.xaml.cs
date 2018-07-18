@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using VocabularyTest.Common;
 using VocabularyTest.Dialog;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -18,9 +19,6 @@ namespace VocabularyTest
     {
         public Vocabulary MyVocabulary { get { return this.DataContext as Vocabulary; } }
         public bool IsSeleted { get; set; }
-        enum Website { Google = 0, Yahoo };
-        public const string yahooURL = @"https://tw.dictionary.search.yahoo.com/search?p=";
-        public const string googleURL = @"https://translate.google.com.tw/#en/zh-TW/";
 
         public VocabularyListItem()
         {
@@ -76,7 +74,7 @@ namespace VocabularyTest
 
                 HttpClient httpClient = new HttpClient();
 
-                Uri requestUri = new Uri(yahooURL + eng);
+                Uri requestUri = new Uri(CommonHelper.yahooURL + eng);
 
                 //Send the GET request asynchronously and retrieve the response as a string.
                 HttpResponseMessage httpResponse = new HttpResponseMessage();
@@ -142,23 +140,14 @@ namespace VocabularyTest
 
         }
 
-        private void GoogleButton_Click(object sender, RoutedEventArgs e)
+        private async void GoogleButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultLaunch(MyVocabulary.English, Website.Google);
+            Uri u = new Uri(CommonHelper.googleURL + MyVocabulary.English.Replace(" ", "%20"));
+            var success = await Windows.System.Launcher.LaunchUriAsync(u);
         }
-        private void YahooButton_Click(object sender, RoutedEventArgs e)
+        private async void YahooButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultLaunch(MyVocabulary.English, Website.Yahoo);
-        }
-        async void DefaultLaunch(string s, Website web)
-        {
-            Uri u;
-
-            if (web == Website.Yahoo)
-                u = new Uri(yahooURL + s.Replace(" ", "+"));
-            else
-                u = new Uri(googleURL + s.Replace(" ", "%20"));
-
+            Uri u = new Uri(CommonHelper.yahooURL + MyVocabulary.English.Replace(" ", "+"));
             var success = await Windows.System.Launcher.LaunchUriAsync(u);
         }
         private void StarButton_Click(object sender, RoutedEventArgs e)
