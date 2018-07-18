@@ -35,4 +35,36 @@ namespace VocabularyTest
 
         #endregion
     }
+
+    public class BoolToStringConverterForEar : IValueConverter
+    {
+        #region IValueConverter Members
+
+        // Define the Convert method to change a DateTime object to 
+        // a month string.
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            string content = "";
+
+            if ((bool)value)
+            {
+                content = "\uF270";
+            }
+            else
+            {
+                content = "\uE001";
+            }
+
+            return content;
+        }
+
+        // ConvertBack is not implemented for a OneWay binding.
+        public object ConvertBack(object value, Type targetType,
+            object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

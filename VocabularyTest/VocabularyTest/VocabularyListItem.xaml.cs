@@ -163,5 +163,19 @@ namespace VocabularyTest
                 MyVocabulary.Star = true;
             }
         }
+
+        private void EarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocabulary.Ear == true)
+            {
+                EarButton.Content = "\uE001";
+                MyVocabulary.Ear = false;
+            }
+            else
+            {
+                EarButton.Content = "\uF270";
+                MyVocabulary.Ear = true;
+            }
+        }
     }
 }

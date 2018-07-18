@@ -16,6 +16,7 @@
             <Setter Property="FontSize" Value="20"/>
         </Style>
         <local:BoolToStringConverter x:Key="Converter1"/>
+        <local:BoolToStringConverterForEar x:Key="Converter2"/>
     </UserControl.Resources>
 
     <RelativePanel>
@@ -26,10 +27,17 @@
                 RelativePanel.AlignLeftWithPanel="True"
                 Click="StarButton_Click"
                 Margin="0,0,2,0"/>
+        <Button Name="EarButton"
+                Content="{Binding Ear, Converter={StaticResource Converter2}}"
+                Style="{StaticResource VocabularyListItemButtonStyle}"
+                FontFamily="Segoe MDL2 Assets"
+                RelativePanel.RightOf="StarButton"
+                Click="EarButton_Click"
+                Margin="0,0,2,0"/>
         <TextBlock Text="{x:Bind MyVocabulary.English}"
                    Margin="20,3,0,0"
                    FontSize="20"
-                   RelativePanel.RightOf="StarButton"/>
+                   RelativePanel.RightOf="EarButton"/>
         <Button Name="EditButton"
                 Content="&#xE104;"
                 Style="{StaticResource VocabularyListItemButtonStyle}"

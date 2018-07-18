@@ -127,7 +127,7 @@ namespace VocabularyTest
             for (int i = 0; i + 1 < result.Length; i += 2)
             {
                 if (result[i] != "" && result[i] != "")
-                    vocs.Add(new Vocabulary(result[i], "", result[i + 1], "f", ""));
+                    vocs.Add(new Vocabulary(result[i], "", result[i + 1], "f", "f", ""));
             }
 
             return vocs;
@@ -226,6 +226,11 @@ namespace VocabularyTest
                 else
                     result += "<star>" + "f" + "<star/>\r\n";
 
+                if (vd.Ear == true)
+                    result += "<ear>" + "t" + "<ear/>\r\n";
+                else
+                    result += "<ear>" + "f" + "<ear/>\r\n";
+
                 result += "<note>" + vd.Note + "<note/>\r\n";
             }
 
@@ -266,6 +271,7 @@ namespace VocabularyTest
                     GetElementsByTagName(vocString, "kk"),
                     GetElementsByTagName(vocString, "ch"),
                     GetElementsByTagName(vocString, "star"),
+                    GetElementsByTagName(vocString, "ear"),
                     GetElementsByTagName(vocString, "note")
                     );
 
@@ -343,7 +349,7 @@ namespace VocabularyTest
             if (MyVocsList == null)
                 MyVocsList = new ObservableCollection<Vocabulary>();
 
-            Vocabulary voc = new Vocabulary("", "", "", "f", "");
+            Vocabulary voc = new Vocabulary("", "", "", "f", "f", "");
             EditDialog dialog = new EditDialog(voc);
             await dialog.ShowAsync();
 

@@ -13,7 +13,7 @@ namespace VocabularyTest
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Vocabulary(string e, string kk, string c, string star, string note)
+        public Vocabulary(string e, string kk, string c, string star, string ear, string note)
         {
             English = e;
             KK = kk;
@@ -23,6 +23,11 @@ namespace VocabularyTest
                 Star = true;
             else
                 Star = false;
+            
+            if (ear == "t")
+                Ear = true;
+            else
+                Ear = false;
 
             Note = note;
         }
@@ -47,7 +52,25 @@ namespace VocabularyTest
                 page.SaveBtnEnabled = true;
             }
         }
-        
+
+        bool ear;
+        public bool Ear
+        {
+            get
+            {
+                return ear;
+            }
+            set
+            {
+                ear = value;
+                NotifyPropertyChanged("Ear");
+
+                var frame = (Frame)Window.Current.Content;
+                var page = (MainPage)frame.Content;
+                page.SaveBtnEnabled = true;
+            }
+        }
+
         public void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
