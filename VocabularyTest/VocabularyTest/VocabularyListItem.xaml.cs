@@ -168,7 +168,7 @@ namespace VocabularyTest
         {
             if (MyVocabulary.Ear == true)
             {
-                EarButton.Content = "\uE001";
+                EarButton.Content = "";
                 MyVocabulary.Ear = false;
             }
             else

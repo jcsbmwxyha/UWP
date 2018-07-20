@@ -52,7 +52,7 @@ namespace VocabularyTest
             }
             else
             {
-                content = "\uE001";
+                content = "";
             }
 
             return content;
