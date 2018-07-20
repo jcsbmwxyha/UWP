@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Text;
 using MoonSharp.Interpreter;
 using AuraEditor.UserControls;
+using Windows.UI.Xaml.Shapes;
+using Constants = AuraEditor.Common.Constants;
 
 namespace AuraEditor
 {
@@ -124,86 +126,172 @@ namespace AuraEditor
     }
     public class LightZone
     {
+        public Shape Frame;
         int physicalIndex;
-        int index;
-        Point point1;
-        Point point2;
-        bool selected;
+        public int UIindex;
+        public Rect RelativeZoneRect;
+        public Rect AbsoluteZoneRect
+        {
+            get
+            {
+                CompositeTransform ct = Frame.RenderTransform as CompositeTransform;
+                return new Rect(
+                    new Point(ct.TranslateX, ct.TranslateY),
+                    new Point(ct.TranslateX + RelativeZoneRect.Width, ct.TranslateY + RelativeZoneRect.Height)
+                    );
+            }
+        }
+        public bool Selected;
 
-        public LightZone(int p_idx, int idx, int x1, int y1, int x2, int y2)
+        public LightZone(int p_idx, int ui_idx, int parentX, int parentY, int x1, int y1, int x2, int y2)
         {
             physicalIndex = p_idx;
-            index = idx;
-            point1 = new Point(x1, y1);
-            point2 = new Point(x2, y2);
-            selected = false;
+            UIindex = ui_idx;
+            Selected = false;
+
+            RelativeZoneRect = new Rect(new Point(x1, y1), new Point(x2, y2));
+            Frame = CreateRectangle(
+                new Rect(
+                    new Point(x1 + parentX * Constants.GridLen, y1 + parentY * Constants.GridLen),
+                    new Point(x2 + parentX * Constants.GridLen, y2 + parentY * Constants.GridLen))
+                );
+        }
+        private Rectangle CreateRectangle(Windows.Foundation.Rect Rect)
+        {
+            CompositeTransform ct = new CompositeTransform
+            {
+                TranslateX = Rect.X,
+                TranslateY = Rect.Y
+            };
+
+            Rectangle rectangle = new Rectangle
+            {
+                Fill = new SolidColorBrush(Colors.Transparent),
+                StrokeThickness = 3,
+                RenderTransform = ct,
+                Width = Rect.Width,
+                Height = Rect.Height,
+                HorizontalAlignment = 0,
+                VerticalAlignment = 0,
+                RadiusX = 3,
+                RadiusY = 4
+            };
+
+            rectangle.Stroke = new SolidColorBrush(Colors.Black);
+
+            return rectangle;
+        }
+        public void Frame_StatusChanged(int regionIndex, int status)
+        {
+            if (status == RegionStatus.Normal)
+            {
+                Frame.Stroke = new SolidColorBrush(Colors.Black);
+                Frame.Fill = new SolidColorBrush(Colors.Transparent);
+                Selected = false;
+            }
+            else if (status == RegionStatus.NormalHover)
+            {
+                Frame.Stroke = new SolidColorBrush(Colors.Black);
+                Frame.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
+                Selected = false;
+            }
+            else if (status == RegionStatus.Selected)
+            {
+                Frame.Stroke = new SolidColorBrush(Colors.Red);
+                Frame.Fill = new SolidColorBrush(Colors.Transparent);
+                Selected = true;
+            }
+            else
+            {
+                Frame.Stroke = new SolidColorBrush(Colors.Red);
+                Frame.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
+                Selected = true;
+            }
         }
     }
     public class Device
     {
         public string DeviceName { get; set; }
         public int DeviceType { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double X
+        {
+            get
+            {
+                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
+                return ct.TranslateX;
+            }
+            set
+            {
+                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
+                ct.TranslateX = value * Constants.GridLen;
+            }
+        }
+        public double Y
+        {
+            get
+            {
+                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
+                return ct.TranslateY;
+            }
+            set
+            {
+                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
+                ct.TranslateY = value * Constants.GridLen;
+            }
+        }
         public double W { get; set; }
         public double H { get; set; }
         public Image DeviceImg { get; set; }
         public string DeviceImgPath { get; set; }
         public LightZone[] LightZones { get; set; }
-        private int commonFactor = 35;
 
         public Device(Image img)
         {
-            img.ManipulationStarted += ImageManipulationStarted;
-            img.ManipulationDelta += ImageManipulationDelta;
-            img.ManipulationCompleted += ImageManipulationCompleted;
-            img.PointerEntered += ImagePointerEntered;
-            img.PointerExited += ImagePointerExited;
-
             DeviceImg = img;
+            EnableManipulation();
         }
-        public Device(string s, int type, int x, int y)
-        {
-            DeviceName = s;
-            DeviceType = type;
+        //public Device(string s, int type, int x, int y)
+        //{
+        //    DeviceName = s;
+        //    DeviceType = type;
 
-            X = x;
-            Y = y;
+        //    X = x;
+        //    Y = y;
 
-            if (type == 0)
-            {
-                DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png";
-                W = 21;
-                H = 9;
-            }
-            else if (type == 1)
-                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_mouse.png";
-            else if (type == 2)
-            {
-                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_keyboard.png";
-                W = 23;
-                H = 6;
-            }
-            else if (type == 3)
-                DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_headset.png";
+        //    if (type == 0)
+        //    {
+        //        DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png";
+        //        W = 21;
+        //        H = 9;
+        //    }
+        //    else if (type == 1)
+        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_mouse.png";
+        //    else if (type == 2)
+        //    {
+        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_keyboard.png";
+        //        W = 23;
+        //        H = 6;
+        //    }
+        //    else if (type == 3)
+        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_headset.png";
             
-            CompositeTransform ct = new CompositeTransform
-            {
-                TranslateX = commonFactor * X,
-                TranslateY = commonFactor * Y
-            };
-            Image img = new Image
-            {
-                RenderTransform = ct,
-                Width = commonFactor * W,
-                Height = commonFactor * H,
-                Source = new BitmapImage(new Uri(DeviceImgPath)),
-                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-                Stretch = Stretch.Fill,
-            };
+        //    CompositeTransform ct = new CompositeTransform
+        //    {
+        //        TranslateX = commonFactor * X,
+        //        TranslateY = commonFactor * Y
+        //    };
+        //    Image img = new Image
+        //    {
+        //        RenderTransform = ct,
+        //        Width = commonFactor * W,
+        //        Height = commonFactor * H,
+        //        Source = new BitmapImage(new Uri(DeviceImgPath)),
+        //        ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
+        //        Stretch = Stretch.Fill,
+        //    };
             
-            DeviceImg = img;
-        }
+        //    DeviceImg = img;
+        //}
         public void EnableManipulation()
         {
             DeviceImg.ManipulationStarted += ImageManipulationStarted;
@@ -231,27 +319,53 @@ namespace AuraEditor
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
             ct.TranslateX += e.Delta.Translation.X;
             ct.TranslateY += e.Delta.Translation.Y;
+
+            foreach(var zone in LightZones)
+            {
+                ct = zone.Frame.RenderTransform as CompositeTransform;
+
+                ct.TranslateX += e.Delta.Translation.X;
+                ct.TranslateY += e.Delta.Translation.Y;
+            }
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             Image img = sender as Image;
             img.Opacity = 1;
 
-            BitmapImage bs = img.Source as BitmapImage;
-
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
-            X = (int)ct.TranslateX / commonFactor;
-            Y = (int)ct.TranslateY / commonFactor;
-            ct.TranslateX = X * commonFactor;
-            ct.TranslateY = Y * commonFactor;
+            CompositeTransform zone_ct;
+
+            ct.TranslateX = (int)ct.TranslateX / Constants.GridLen * Constants.GridLen;
+            ct.TranslateY = (int)ct.TranslateY / Constants.GridLen * Constants.GridLen;
+
+            foreach (var zone in LightZones)
+            {
+                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
+
+                zone_ct.TranslateX = (int)ct.TranslateX + zone.RelativeZoneRect.Left;
+                zone_ct.TranslateY = (int)ct.TranslateY + zone.RelativeZoneRect.Top;
+            }
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.UpdateSpaceGrid();
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DragingDeviceImage = true;
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DragingDeviceImage = false;
         }
     }
 
@@ -521,9 +635,9 @@ namespace AuraEditor
             tdg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
 
             tdg.AddDeviceZones(0, new int[] { -1 });
-            tdg.AddDeviceZones(1, new int[] { -1 });
-            tdg.AddDeviceZones(2, new int[] { -1 });
-            tdg.AddDeviceZones(3, new int[] { -1 });
+            //tdg.AddDeviceZones(1, new int[] { -1 });
+            //tdg.AddDeviceZones(2, new int[] { -1 });
+            //tdg.AddDeviceZones(3, new int[] { -1 });
 
             DeviceGroupCollection.Add(tdg);
             TimeLineStackPanel.Children.Add(tdg.UICanvas);
@@ -650,8 +764,8 @@ namespace AuraEditor
                     deviceTable = CreateNewTable();
                     usageTable = CreateNewTable();
 
-                    layoutTable.Set("weight", DynValue.NewNumber(d.W));
-                    layoutTable.Set("height", DynValue.NewNumber(d.H));
+                    //layoutTable.Set("weight", DynValue.NewNumber(d.W));
+                    //layoutTable.Set("height", DynValue.NewNumber(d.H));
                     locationTable.Set("x", DynValue.NewNumber(d.X));
                     locationTable.Set("y", DynValue.NewNumber(d.Y));
                     deviceTable.Set("name", DynValue.NewString(d.DeviceName));

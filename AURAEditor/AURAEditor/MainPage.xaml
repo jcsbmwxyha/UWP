@@ -88,15 +88,12 @@
 
         <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock Text="Move Mode" Foreground="White" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                <ToggleButton Name="CanMoveToggleButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE001;" Background="Gray" Margin="0,0,60,0"
-                              Checked="CanMoveToggleButton_Checked" Unchecked="CanMoveToggleButton_Unchecked"/>
-                <Button Name="RedoButton">
-                    <Image Source="Assets/asus_auraeditor_redo_ic.png"/>
-                </Button>
-                <Button Name="UndoButton">
-                    <Image Source="Assets/asus_auraeditor_undo_ic.png"/>
-                </Button>
+                <Button Name="SetLayerButton"
+                        FontSize="24"
+                        Content="Set Layer"
+                        Click="SetLayerButton_Click"
+                        Background="Gray"
+                        Margin="0,0,60,0"/>
                 <Button Name="PlayButton" FontSize="24" Click="TimeLineTimer_Play" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE937;"/>
@@ -155,23 +152,30 @@
             </ScrollViewer>
         </Grid>
         <Grid x:Name="EditAreaGrid" Grid.Column="1" Grid.Row="1" BorderBrush="black" BorderThickness="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="4*"/>
-            </Grid.RowDefinitions>
-            <RichTextBlock Name="eventLog"  
-                         TextWrapping="Wrap" 
-                         Foreground="Firebrick" 
-                         ScrollViewer.VerticalScrollBarVisibility="Visible" 
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         Grid.Row="0">
-            </RichTextBlock>
-            <ScrollViewer MinZoomFactor="1" MaxZoomFactor="100" ZoomMode="Enabled" Grid.Row="1"
-                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <RelativePanel Name="SpacePanel" Width="2136" Height="1424">
+            <ScrollViewer MinZoomFactor="1"
+                          MaxZoomFactor="100"
+                          ZoomMode="Enabled"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <RelativePanel Name="SpacePanel" Width="2136" Height="1424"
+                               PointerPressed="Image_PointerPressed"
+                               PointerReleased="Image_PointerReleased"
+                               PointerMoved="Image_PointerMoved"
+                               RightTapped="Image_RightTapped">
                     <Image Name="GridImage" Source="Assets/grid35.png" Stretch="None"/>
                 </RelativePanel>
             </ScrollViewer>
+            <Rectangle Name="mouseRectangle" Width="0" Height="0"
+                               Fill="Transparent"
+                               Stroke="Red"
+                               StrokeThickness="1"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Canvas.ZIndex="8">
+                <Rectangle.RenderTransform>
+                    <CompositeTransform/>
+                </Rectangle.RenderTransform>
+            </Rectangle>
         </Grid>
         <Image Grid.Row="2"
                Grid.Column="0"

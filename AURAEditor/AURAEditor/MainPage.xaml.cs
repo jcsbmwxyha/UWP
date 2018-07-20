@@ -53,6 +53,7 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         DeviceGroupManager _deviceGroupManager;
+
         int timeLineSliderValue = 25;
         public int TimeLineZoomSliderValue
         {
@@ -80,7 +81,8 @@ namespace AuraEditor
             TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
-            _devicelist = GetCurrentDevices();
+            _mouseEventCtrl = IntializeMouseEventCtrl();
+            //_devicelist = GetCurrentDevices();
             GetCurrentDevicesTest();
             UpdateSpaceGrid();
             // for receive cmd form Service
@@ -156,202 +158,206 @@ namespace AuraEditor
             */
         }
 
-        private ObservableCollection<DeviceItem> GetCurrentDevices()
-        {
-            DeviceItem d;
-            Device device;
-            ObservableCollection<DeviceItem> devicelist = new ObservableCollection<DeviceItem>();
+        
+        //private ObservableCollection<DeviceItem> GetCurrentDevices()
+        //{
+        //    DeviceItem d;
+        //    Device device;
+        //    ObservableCollection<DeviceItem> devicelist = new ObservableCollection<DeviceItem>();
 
-            // NB Example
-            d = new DeviceItem("Notebook")
-            {
-                Image = "ms-appx:///Assets/gm501_printing_US.png",
-                LightRegions = new int[,] {
-                    {6,  26, 236, 421},
-                    {246, 26, 476, 421},
-                    {486, 26, 716, 421},
-                    {726, 26, 936, 421},
-                }
-            };
-            devicelist.Add(d);
+        //    // NB Example
+        //    d = new DeviceItem("Notebook")
+        //    {
+        //        Image = "ms-appx:///Assets/gm501_printing_US.png",
+        //        LightRegions = new int[,] {
+        //            {6,  26, 236, 421},
+        //            {246, 26, 476, 421},
+        //            {486, 26, 716, 421},
+        //            {726, 26, 936, 421},
+        //        }
+        //    };
+        //    devicelist.Add(d);
 
-            /*
-            // Mouse Example
-            d = new DeviceItem("Mouse")
-            {
-                Image = "ms-appx:///Assets/201701050624411245.png",
-                LightRegions = new int[,] {
-                    {286, 229, 433, 462},
-                    {450, 300, 496, 421},
-                    {516, 229, 663, 462},
-                }
-            };
-            devicelist.Add(d);
+        //    /*
+        //    // Mouse Example
+        //    d = new DeviceItem("Mouse")
+        //    {
+        //        Image = "ms-appx:///Assets/201701050624411245.png",
+        //        LightRegions = new int[,] {
+        //            {286, 229, 433, 462},
+        //            {450, 300, 496, 421},
+        //            {516, 229, 663, 462},
+        //        }
+        //    };
+        //    devicelist.Add(d);
 
-            // Keyboard Example
-            d = new DeviceItem("Keyboard")
-            {
-                Image = "ms-appx:///Assets/Flaire.png",
-                LightRegions = new int[,] {
-                    // key 0 ~ 9
-                    { 18 , 89 , 58, 118} ,
-                    { 97 , 89 , 138, 118} ,
-                    { 136, 89 , 177, 118} ,
-                    { 176, 89 , 217, 118} ,
-                    { 215, 89 , 256, 118} ,
-                    { 275, 89 , 315, 118} ,
-                    { 315, 89 , 355, 118} ,
-                    { 354, 89 , 394, 118} ,
-                    { 394, 89 , 434, 118} ,
-                    { 453, 89 , 493, 118} ,
-                    { 492, 89 , 532, 118} ,
-                    { 532, 89 , 571, 118} ,
-                    { 572, 89 , 611, 118} ,
-                    { 625, 87 , 665, 116} ,
-                    { 664, 87 , 704, 116} ,
-                    { 704, 87 , 744, 116} ,
+        //    // Keyboard Example
+        //    d = new DeviceItem("Keyboard")
+        //    {
+        //        Image = "ms-appx:///Assets/Flaire.png",
+        //        LightRegions = new int[,] {
+        //            // key 0 ~ 9
+        //            { 18 , 89 , 58, 118} ,
+        //            { 97 , 89 , 138, 118} ,
+        //            { 136, 89 , 177, 118} ,
+        //            { 176, 89 , 217, 118} ,
+        //            { 215, 89 , 256, 118} ,
+        //            { 275, 89 , 315, 118} ,
+        //            { 315, 89 , 355, 118} ,
+        //            { 354, 89 , 394, 118} ,
+        //            { 394, 89 , 434, 118} ,
+        //            { 453, 89 , 493, 118} ,
+        //            { 492, 89 , 532, 118} ,
+        //            { 532, 89 , 571, 118} ,
+        //            { 572, 89 , 611, 118} ,
+        //            { 625, 87 , 665, 116} ,
+        //            { 664, 87 , 704, 116} ,
+        //            { 704, 87 , 744, 116} ,
 
-                    { 18 , 119, 58, 161} ,
-                    { 57 , 119, 98, 161} ,
-                    { 97 , 119, 138, 161} ,
-                    { 136, 119, 177, 161} ,
-                    { 176, 119, 217, 161} ,
-                    { 215, 119, 256, 161} ,
-                    { 255, 119, 296, 161} ,
-                    { 294, 119, 335, 161} ,
-                    { 334, 119, 375, 161} ,
-                    { 373, 119, 414, 161} ,
-                    { 413, 119, 453, 161} ,
-                    { 453, 119, 493, 161} ,
-                    { 492, 119, 532, 161} ,
-                    { 532, 119, 611, 161} ,
-                    { 625, 119, 665, 161} ,
-                    { 664, 119, 704, 161} ,
-                    { 704, 119, 744, 161} ,
-                    { 749, 117, 789, 159} ,
-                    { 788, 117, 828, 159} ,
-                    { 828, 117, 868, 159} ,
-                    { 868, 117, 907, 159} ,
+        //            { 18 , 119, 58, 161} ,
+        //            { 57 , 119, 98, 161} ,
+        //            { 97 , 119, 138, 161} ,
+        //            { 136, 119, 177, 161} ,
+        //            { 176, 119, 217, 161} ,
+        //            { 215, 119, 256, 161} ,
+        //            { 255, 119, 296, 161} ,
+        //            { 294, 119, 335, 161} ,
+        //            { 334, 119, 375, 161} ,
+        //            { 373, 119, 414, 161} ,
+        //            { 413, 119, 453, 161} ,
+        //            { 453, 119, 493, 161} ,
+        //            { 492, 119, 532, 161} ,
+        //            { 532, 119, 611, 161} ,
+        //            { 625, 119, 665, 161} ,
+        //            { 664, 119, 704, 161} ,
+        //            { 704, 119, 744, 161} ,
+        //            { 749, 117, 789, 159} ,
+        //            { 788, 117, 828, 159} ,
+        //            { 828, 117, 868, 159} ,
+        //            { 868, 117, 907, 159} ,
 
-                    { 18 , 163, 78, 205} ,
-                    { 77 , 163, 117, 205} ,
-                    { 117, 163, 157, 205} ,
-                    { 156, 163, 196, 205} ,
-                    { 196, 163, 236, 205} ,
-                    { 235, 163, 275, 205} ,
-                    { 275, 163, 315, 205} ,
-                    { 314, 163, 354, 205} ,
-                    { 354, 163, 394, 205} ,
-                    { 393, 163, 433, 205} ,
-                    { 433, 163, 473, 205} ,
-                    { 472, 163, 513, 205} ,
-                    { 512, 163, 552, 205} ,
-                    { 552, 163, 611, 205} ,
-                    { 625, 162, 665, 204} ,
-                    { 664, 162, 704, 204} ,
-                    { 704, 162, 744, 204} ,
-                    { 749, 161, 789, 203} ,
-                    { 788, 161, 828, 203} ,
-                    { 828, 161, 868, 203} ,
-                    { 868, 161, 907, 246} ,
+        //            { 18 , 163, 78, 205} ,
+        //            { 77 , 163, 117, 205} ,
+        //            { 117, 163, 157, 205} ,
+        //            { 156, 163, 196, 205} ,
+        //            { 196, 163, 236, 205} ,
+        //            { 235, 163, 275, 205} ,
+        //            { 275, 163, 315, 205} ,
+        //            { 314, 163, 354, 205} ,
+        //            { 354, 163, 394, 205} ,
+        //            { 393, 163, 433, 205} ,
+        //            { 433, 163, 473, 205} ,
+        //            { 472, 163, 513, 205} ,
+        //            { 512, 163, 552, 205} ,
+        //            { 552, 163, 611, 205} ,
+        //            { 625, 162, 665, 204} ,
+        //            { 664, 162, 704, 204} ,
+        //            { 704, 162, 744, 204} ,
+        //            { 749, 161, 789, 203} ,
+        //            { 788, 161, 828, 203} ,
+        //            { 828, 161, 868, 203} ,
+        //            { 868, 161, 907, 246} ,
 
-                    { 18 , 206, 88, 248} ,
-                    { 87 , 206, 127, 248} ,
-                    { 126, 206, 167, 248} ,
-                    { 166, 206, 206, 248} ,
-                    { 205, 206, 246, 248} ,
-                    { 245, 206, 285, 248} ,
-                    { 285, 206, 325, 248} ,
-                    { 325, 206, 364, 248} ,
-                    { 364, 206, 404, 248} ,
-                    { 404, 206, 443, 248} ,
-                    { 443, 206, 483, 248} ,
-                    { 483, 206, 522, 248} ,
-                    { 523, 206, 611, 248} ,
-                    { 749, 204, 789, 246} ,
-                    { 788, 204, 828, 246} ,
-                    { 828, 204, 868, 246} ,
+        //            { 18 , 206, 88, 248} ,
+        //            { 87 , 206, 127, 248} ,
+        //            { 126, 206, 167, 248} ,
+        //            { 166, 206, 206, 248} ,
+        //            { 205, 206, 246, 248} ,
+        //            { 245, 206, 285, 248} ,
+        //            { 285, 206, 325, 248} ,
+        //            { 325, 206, 364, 248} ,
+        //            { 364, 206, 404, 248} ,
+        //            { 404, 206, 443, 248} ,
+        //            { 443, 206, 483, 248} ,
+        //            { 483, 206, 522, 248} ,
+        //            { 523, 206, 611, 248} ,
+        //            { 749, 204, 789, 246} ,
+        //            { 788, 204, 828, 246} ,
+        //            { 828, 204, 868, 246} ,
 
-                    { 18 , 250, 107, 292} ,
-                    { 107, 250, 146, 292} ,
-                    { 147, 250, 186, 292} ,
-                    { 186, 250, 226, 292} ,
-                    { 226, 250, 266, 292} ,
-                    { 265, 250, 305, 292} ,
-                    { 305, 250, 345, 292} ,
-                    { 344, 250, 384, 292} ,
-                    { 384, 250, 424, 292} ,
-                    { 423, 250, 463, 292} ,
-                    { 463, 250, 503, 292} ,
-                    { 502, 250, 611, 292} ,
-                    { 663, 250, 703, 292} ,
-                    { 749, 248, 789, 290} ,
-                    { 788, 248, 828, 290} ,
-                    { 828, 248, 868, 290} ,
-                    { 868, 248, 907, 333} ,
+        //            { 18 , 250, 107, 292} ,
+        //            { 107, 250, 146, 292} ,
+        //            { 147, 250, 186, 292} ,
+        //            { 186, 250, 226, 292} ,
+        //            { 226, 250, 266, 292} ,
+        //            { 265, 250, 305, 292} ,
+        //            { 305, 250, 345, 292} ,
+        //            { 344, 250, 384, 292} ,
+        //            { 384, 250, 424, 292} ,
+        //            { 423, 250, 463, 292} ,
+        //            { 463, 250, 503, 292} ,
+        //            { 502, 250, 611, 292} ,
+        //            { 663, 250, 703, 292} ,
+        //            { 749, 248, 789, 290} ,
+        //            { 788, 248, 828, 290} ,
+        //            { 828, 248, 868, 290} ,
+        //            { 868, 248, 907, 333} ,
 
-                    { 18 , 293, 67, 335} ,
-                    { 68 , 293, 121, 335} ,
-                    { 119, 293, 177, 335} ,
-                    { 175, 293, 385, 345} ,
-                    { 384, 293, 424, 335} ,
-                    { 423, 293, 463, 335} ,
-                    { 463, 293, 503, 335} ,
-                    { 528, 293, 612, 335} ,
-                    { 623, 291, 663, 333} ,
-                    { 663, 291, 703, 333} ,
-                    { 702, 291, 742, 333} ,
-                    { 748, 291, 829, 333} ,
-                    { 828, 291, 868, 333} ,
-                }
-            };
+        //            { 18 , 293, 67, 335} ,
+        //            { 68 , 293, 121, 335} ,
+        //            { 119, 293, 177, 335} ,
+        //            { 175, 293, 385, 345} ,
+        //            { 384, 293, 424, 335} ,
+        //            { 423, 293, 463, 335} ,
+        //            { 463, 293, 503, 335} ,
+        //            { 528, 293, 612, 335} ,
+        //            { 623, 291, 663, 333} ,
+        //            { 663, 291, 703, 333} ,
+        //            { 702, 291, 742, 333} ,
+        //            { 748, 291, 829, 333} ,
+        //            { 828, 291, 868, 333} ,
+        //        }
+        //    };
 
-            for (int i = 0; i < d.LightRegions.GetLength(0); i++)
-            {
-                d.LightRegions[i, 0] += 8;
-                d.LightRegions[i, 1] += 42;
-                d.LightRegions[i, 2] += 8;
-                d.LightRegions[i, 3] += 42;
-            }
-            devicelist.Add(d);
+        //    for (int i = 0; i < d.LightRegions.GetLength(0); i++)
+        //    {
+        //        d.LightRegions[i, 0] += 8;
+        //        d.LightRegions[i, 1] += 42;
+        //        d.LightRegions[i, 2] += 8;
+        //        d.LightRegions[i, 3] += 42;
+        //    }
+        //    devicelist.Add(d);
 
-            // HeadSet Example
-            d = new DeviceItem("Headset")
-            {
-                Image = "ms-appx:///Assets/ROG-Strix-Wireless-front.png",
-                LightRegions = new int[,] {
-                    {234, 198, 448, 428},
-                    {478, 198, 692, 428},
-                }
-            };
-            devicelist.Add(d);*/
+        //    // HeadSet Example
+        //    d = new DeviceItem("Headset")
+        //    {
+        //        Image = "ms-appx:///Assets/ROG-Strix-Wireless-front.png",
+        //        LightRegions = new int[,] {
+        //            {234, 198, 448, 428},
+        //            {478, 198, 692, 428},
+        //        }
+        //    };
+        //    devicelist.Add(d);*/
 
-            // TODO : combine DeviceItem class and Device class
-            device = new Device("Notebook", 0, 0, 0);
-            _deviceGroupManager.GlobalDevices.Add(device);
-            //device = new Device("Mouse", 1, 0, 1);
-            //_deviceGroupManager.GlobalDevices.Add(device);
-            //device = new Device("Keyboard", 2, 1, 0);
-            //_deviceGroupManager.GlobalDevices.Add(device);
-            //device = new Device("Headset", 3, 1, 1);
-            //_deviceGroupManager.GlobalDevices.Add(device);
+        //    // TODO : combine DeviceItem class and Device class
+        //    device = new Device("Notebook", 0, 0, 0);
+        //    _deviceGroupManager.GlobalDevices.Add(device);
+        //    //device = new Device("Mouse", 1, 0, 1);
+        //    //_deviceGroupManager.GlobalDevices.Add(device);
+        //    //device = new Device("Keyboard", 2, 1, 0);
+        //    //_deviceGroupManager.GlobalDevices.Add(device);
+        //    //device = new Device("Headset", 3, 1, 1);
+        //    //_deviceGroupManager.GlobalDevices.Add(device);
 
-            return devicelist;
-        }
+        //    return devicelist;
+        //}
 
         private void GetCurrentDevicesTest()
         {
-            int commonFactor = 35;
             Device device;
+            int locationX = 2;
+            int locationY = 2;
 
             CompositeTransform ct = new CompositeTransform
             {
-                TranslateX = commonFactor * X,
-                TranslateY = commonFactor * Y
+                TranslateX = Constants.GridLen * 1,
+                TranslateY = Constants.GridLen * 1
             };
             Image img = new Image
             {
                 RenderTransform = ct,
+                Width = Constants.GridLen * 21,
+                Height = Constants.GridLen * 9,
                 Source = new BitmapImage(new Uri("ms-appx:///Assets/gm501_printing_US.png")),
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,
@@ -361,18 +367,18 @@ namespace AuraEditor
             {
                 DeviceName = "GM501GS",
                 DeviceType = 0,
-                X = 0,
-                Y = 0,
+                X = locationX,
+                Y = locationY,
                 W = 21,
                 H = 9,
                 DeviceImg = img,
                 //DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png",
                 LightZones = new LightZone[]
                 {
-                    new LightZone( 0, 0,   6, 26, 236, 421),
-                    new LightZone( 0, 0, 246, 26, 476, 421),
-                    new LightZone( 0, 0, 486, 26, 716, 421),
-                    new LightZone( 0, 0, 726, 26, 936, 421)
+                    new LightZone( 5, 0, locationX, locationY,   6, 26, 156, 255),
+                    new LightZone( 7, 1, locationX, locationY, 166, 26, 356, 255),
+                    new LightZone( 6, 2, locationX, locationY, 366, 26, 570, 255),
+                    new LightZone( 4, 3, locationX, locationY, 580, 26, 726, 255)
                 }
             };
 
@@ -410,15 +416,6 @@ namespace AuraEditor
         {
             var messDialog = new MessageDialog(res);
             await messDialog.ShowAsync();
-        }
-        public void UpdateEventLog(string s)
-        {
-            Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            eventLog.TextWrapping = TextWrapping.Wrap;
-            run.Text = s;
-            paragraph.Inlines.Add(run);
-            eventLog.Blocks.Insert(0, paragraph);
         }
 
         private void DeleteItem_DragEnter(object sender, DragEventArgs e)
@@ -764,8 +761,8 @@ namespace AuraEditor
                 int x = (int)locationTable.Get("x").Number;
                 int y = (int)locationTable.Get("y").Number;
 
-                Device d = new Device(deviceKey.String, type, x, y);
-                devices.Add(d);
+                //Device d = new Device(deviceKey.String, type, x, y);
+                //devices.Add(d);
             }
 
             return devices;
@@ -783,17 +780,6 @@ namespace AuraEditor
 
             //if (index >= 0)
             //    UpdateSpaceGrid(_deviceGroupManager.DeviceGroupCollection[index]);
-        }
-        private void UpdateSpaceGrid()
-        {
-            SpacePanel.Children.Clear();
-            SpacePanel.Children.Add(GridImage);
-            List<Device> devices = _deviceGroupManager.GlobalDevices;
-
-            foreach (Device d in devices)
-            {
-                SpacePanel.Children.Add(d.DeviceImg);
-            }
         }
         //private void UpdateSpaceGrid(DeviceGroup dg)
         //{
@@ -890,22 +876,6 @@ namespace AuraEditor
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.ToString());
-            }
-        }
-
-        private void CanMoveToggleButton_Checked(object sender, RoutedEventArgs e)
-        {
-            foreach(var d in _deviceGroupManager.GlobalDevices)
-            {
-                d.EnableManipulation();
-            }
-        }
-
-        private void CanMoveToggleButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            foreach (var d in _deviceGroupManager.GlobalDevices)
-            {
-                d.DisableManipulation();
             }
         }
     }

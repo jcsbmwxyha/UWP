@@ -54,16 +54,16 @@ namespace AuraEditor
 
             int[,] lightRegions = _deviceItem.LightRegions;
 
-            List<Region> regions = new List<Region>();
+            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
             for (int i = 0; i < lightRegions.GetLength(0); i++)
             {
                 Point p1 = new Point(lightRegions[i, 0], lightRegions[i, 1]);
                 Point p2 = new Point(lightRegions[i, 2], lightRegions[i, 3]);
                 Rect rect = new Rect(p1, p2);
-                Region r = new Region()
+                MouseDetectionRegion r = new MouseDetectionRegion()
                 {
                     Index = i,
-                    MyRect = new Rect(p1, p2),
+                    DetectionRect = new Rect(p1, p2),
                     Hover = false,
                     Selected = false,
                     Callback = statusChangedCallBack
@@ -90,7 +90,7 @@ namespace AuraEditor
             MouseEventCtrl mec = new MouseEventCtrl
             {
                 MonitorMaxRect = new Rect(new Point(0, 0), new Point(942, 471)),
-                MyRegions = regions.ToArray()
+                DetectionRegions = regions.ToArray()
             };
 
             return mec;
@@ -154,7 +154,6 @@ namespace AuraEditor
         private void Image_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             Rect r = myMouseEventCtrl.MouseRect;
-            UpdateEventLog(r.X.ToString() + "," + r.Y.ToString() + "," + (r.X + r.Width).ToString() + "," + (r.Y + r.Height).ToString());
             myMouseEventCtrl.OnMouseReleased();
             mouseRectangle.Width = 0;
             mouseRectangle.Height = 0;

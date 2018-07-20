@@ -109,6 +109,7 @@
     <Compile Include="Common\KeyRemap.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="DeviceGroup.cs" />
+    <Compile Include="SpaceManager.cs" />
     <Compile Include="UserControls\DeviceGroupListViewItem.xaml.cs">
       <DependentUpon>DeviceGroupListViewItem.xaml</DependentUpon>
     </Compile>

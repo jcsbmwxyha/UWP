@@ -56,5 +56,8 @@ namespace AuraEditor.Common
                global.PeriodDone = true
            end
     end";
+
+
+        public const int GridLen = 35;
     }
 }
