@@ -89,7 +89,7 @@
         <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="SetLayerButton"
-                        FontSize="24"
+                        FontSize="20"
                         Content="Set Layer"
                         Click="SetLayerButton_Click"
                         Background="Gray"
@@ -151,8 +151,9 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <Grid x:Name="EditAreaGrid" Grid.Column="1" Grid.Row="1" BorderBrush="black" BorderThickness="1">
-            <ScrollViewer MinZoomFactor="1"
+        <Grid x:Name="SpaceAreaGrid" Grid.Column="1" Grid.Row="1" BorderBrush="black" BorderThickness="1">
+            <ScrollViewer Name="SpaceAreaScrollViewer"
+                          MinZoomFactor="1"
                           MaxZoomFactor="100"
                           ZoomMode="Enabled"
                           HorizontalScrollBarVisibility="Auto"

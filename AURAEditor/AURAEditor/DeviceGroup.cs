@@ -152,8 +152,8 @@ namespace AuraEditor
             RelativeZoneRect = new Rect(new Point(x1, y1), new Point(x2, y2));
             Frame = CreateRectangle(
                 new Rect(
-                    new Point(x1 + parentX * Constants.GridLen, y1 + parentY * Constants.GridLen),
-                    new Point(x2 + parentX * Constants.GridLen, y2 + parentY * Constants.GridLen))
+                    new Point(x1 + parentX * Constants.GridLength, y1 + parentY * Constants.GridLength),
+                    new Point(x2 + parentX * Constants.GridLength, y2 + parentY * Constants.GridLength))
                 );
         }
         private Rectangle CreateRectangle(Windows.Foundation.Rect Rect)
@@ -223,7 +223,7 @@ namespace AuraEditor
             set
             {
                 CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                ct.TranslateX = value * Constants.GridLen;
+                ct.TranslateX = value * Constants.GridLength;
             }
         }
         public double Y
@@ -236,7 +236,7 @@ namespace AuraEditor
             set
             {
                 CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                ct.TranslateY = value * Constants.GridLen;
+                ct.TranslateY = value * Constants.GridLength;
             }
         }
         public double W { get; set; }
@@ -336,8 +336,8 @@ namespace AuraEditor
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
             CompositeTransform zone_ct;
 
-            ct.TranslateX = (int)ct.TranslateX / Constants.GridLen * Constants.GridLen;
-            ct.TranslateY = (int)ct.TranslateY / Constants.GridLen * Constants.GridLen;
+            ct.TranslateX = (int)ct.TranslateX / Constants.GridLength * Constants.GridLength;
+            ct.TranslateY = (int)ct.TranslateY / Constants.GridLength * Constants.GridLength;
 
             foreach (var zone in LightZones)
             {

@@ -58,6 +58,6 @@ namespace AuraEditor.Common
     end";
 
 
-        public const int GridLen = 35;
+        public const int GridLength = 35;
     }
 }

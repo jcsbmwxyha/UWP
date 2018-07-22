@@ -34,7 +34,28 @@ namespace AuraEditor
     /// <summary>
     /// 可以在本身使用或巡覽至框架內的空白頁面。
     /// </summary>
-    
+
+    public class LedUI
+    {
+        public int PhyIndex;
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+    }
+    public class DeviceUIINFO
+    {
+        public string DeviceName;
+        public int DeviceType;
+        public int Width;
+        public int Height;
+        public List<LedUI> Leds;
+
+        public DeviceUIINFO()
+        {
+            Leds = new List<LedUI>();
+        }
+    }
     public class DeviceItem
     {
         public string DeviceName { get; set; }
@@ -82,14 +103,14 @@ namespace AuraEditor
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
             _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
             _mouseEventCtrl = IntializeMouseEventCtrl();
-            //_devicelist = GetCurrentDevices();
-            GetCurrentDevicesTest();
+        }
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            await GetCurrentDevicesTest();
             UpdateSpaceGrid();
             // for receive cmd form Service
             socketstart();
-        }
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
+
             // TimeUnit : the seconds between two number(long line)
             int secondsPerTimeUnit = 3;
             int minimumScaleUnitLength = 100;
@@ -157,7 +178,6 @@ namespace AuraEditor
             }
             */
         }
-
         
         //private ObservableCollection<DeviceItem> GetCurrentDevices()
         //{
@@ -342,22 +362,78 @@ namespace AuraEditor
         //    return devicelist;
         //}
 
-        private void GetCurrentDevicesTest()
+        private async Task GetCurrentDevicesTest()
         {
             Device device;
+
+            device = await GetGM501GS();
+            _deviceGroupManager.GlobalDevices.Add(device);
+        }
+        private async Task<Device> GetGM501GS()
+        {
+            DeviceUIINFO uiInfo = new DeviceUIINFO();
+            string gm501script;
+            Script script = new Script();
+            DynValue script_dv;
+            Table GM501GS_table;
+            Table leds_table;
+            Table led_table;
+            Table leftTop_table;
+            Table rightBottom_table;
+            List<LedUI> ledUIs = new List<LedUI>();
+
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\RogAuraEditor\\");
+            StorageFile sf = await folder.GetFileAsync("GM501GS.lua");
+
+            gm501script = await Windows.Storage.FileIO.ReadTextAsync(sf);
+            script_dv = script.DoString(gm501script + "\nreturn GM501GS");
+            GM501GS_table = script_dv.Table;
+
+            uiInfo.Width= (int)GM501GS_table.Get("width").Number;
+            uiInfo.Height = (int)GM501GS_table.Get("height").Number;
+            leds_table = GM501GS_table.Get("leds").Table;
+
+            foreach (var deviceKey in leds_table.Keys)
+            {
+                led_table = leds_table.Get(deviceKey.Number).Table;
+
+                leftTop_table = led_table.Get("leftTop").Table;
+                rightBottom_table = led_table.Get("rightBottom").Table;
+
+                uiInfo.Leds.Add(
+                    new LedUI(){
+                        PhyIndex = (int)deviceKey.Number,
+                        left = (int)leftTop_table.Get("x").Number,
+                        top = (int)leftTop_table.Get("y").Number,
+                        right = (int)rightBottom_table.Get("x").Number,
+                        bottom = (int)rightBottom_table.Get("y").Number,
+                    }
+                );
+            }
+
+            return CreateDeviceFromUIINFO(uiInfo, "");
+        }
+        private Device CreateDeviceFromUIINFO(DeviceUIINFO uiInfo, string imagePath)
+        {
+            Device device;
+            CompositeTransform ct;
+            Image img;
+            List<LightZone> zones = new List<LightZone>();
+
             int locationX = 2;
             int locationY = 2;
 
-            CompositeTransform ct = new CompositeTransform
+            ct = new CompositeTransform
             {
-                TranslateX = Constants.GridLen * 1,
-                TranslateY = Constants.GridLen * 1
+                TranslateX = Constants.GridLength * locationX,
+                TranslateY = Constants.GridLength * locationY
             };
-            Image img = new Image
+
+            img = new Image
             {
                 RenderTransform = ct,
-                Width = Constants.GridLen * 21,
-                Height = Constants.GridLen * 9,
+                Width = Constants.GridLength * uiInfo.Width,
+                Height = Constants.GridLength * uiInfo.Height,
                 Source = new BitmapImage(new Uri("ms-appx:///Assets/gm501_printing_US.png")),
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,
@@ -365,24 +441,28 @@ namespace AuraEditor
 
             device = new Device(img)
             {
-                DeviceName = "GM501GS",
-                DeviceType = 0,
+                DeviceName = uiInfo.DeviceName,
+                DeviceType = uiInfo.DeviceType,
                 X = locationX,
                 Y = locationY,
-                W = 21,
-                H = 9,
+                W = uiInfo.Width,
+                H = uiInfo.Height,
                 DeviceImg = img,
                 //DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png",
-                LightZones = new LightZone[]
-                {
-                    new LightZone( 5, 0, locationX, locationY,   6, 26, 156, 255),
-                    new LightZone( 7, 1, locationX, locationY, 166, 26, 356, 255),
-                    new LightZone( 6, 2, locationX, locationY, 366, 26, 570, 255),
-                    new LightZone( 4, 3, locationX, locationY, 580, 26, 726, 255)
-                }
             };
 
-            _deviceGroupManager.GlobalDevices.Add(device);
+            for (int idx = 0; idx < uiInfo.Leds.Count; idx++)
+            {
+                LedUI led = uiInfo.Leds[idx];
+                zones.Add(
+                    new LightZone(
+                        led.PhyIndex, idx,
+                        locationX, locationY,
+                        led.left, led.top, led.right, led.bottom));
+            }
+
+            device.LightZones = zones.ToArray();
+            return device;
         }
         private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {

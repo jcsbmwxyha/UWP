@@ -137,8 +137,8 @@ namespace AuraEditor
             Rect r = _mouseEventCtrl.MouseRect;
             CompositeTransform ct = mouseRectangle.RenderTransform as CompositeTransform;
 
-            ct.TranslateX = r.X;
-            ct.TranslateY = r.Y;
+            ct.TranslateX = r.X - SpaceAreaScrollViewer.HorizontalOffset;
+            ct.TranslateY = r.Y - SpaceAreaScrollViewer.VerticalOffset;
             mouseRectangle.Width = r.Width;
             mouseRectangle.Height = r.Height;
         }
