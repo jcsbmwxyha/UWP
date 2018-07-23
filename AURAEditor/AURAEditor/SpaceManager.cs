@@ -81,6 +81,17 @@ namespace AuraEditor
             List<Device> devices = _deviceGroupManager.GlobalDevices;
             Dictionary<int, int[]> dictionary = dg.GetDeviceToZonesDictionary();
 
+            // turn all black
+            foreach (var d in _deviceGroupManager.GlobalDevices)
+            {
+                foreach (var zone in d.LightZones)
+                {
+                    Shape shape = zone.Frame;
+                    shape.Stroke = new SolidColorBrush(Colors.Black);
+                    shape.Fill = new SolidColorBrush(Colors.Transparent);
+                }
+            }
+
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
                 Device d = _deviceGroupManager.GetGlobalDevice(pair.Key);
@@ -93,11 +104,6 @@ namespace AuraEditor
                     if (Array.Find(phyIndexes, x => x == zone.PhysicalIndex) > 0)
                     {
                         shape.Stroke = new SolidColorBrush(Colors.Yellow);
-                        shape.Fill = new SolidColorBrush(Colors.Transparent);
-                    }
-                    else
-                    {
-                        shape.Stroke = new SolidColorBrush(Colors.Black);
                         shape.Fill = new SolidColorBrush(Colors.Transparent);
                     }
                 }

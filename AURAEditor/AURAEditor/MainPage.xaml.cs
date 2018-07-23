@@ -366,13 +366,13 @@ namespace AuraEditor
 
         private async Task GetCurrentDevicesTest()
         {
-            DeviceContent deviceContent = await GetDeviceContent("GM501GS");
+            DeviceContent deviceContent = await GetDeviceContent("GL504");
             Device device = CreateDeviceFromContent(deviceContent, 1, 1);
             _deviceGroupManager.GlobalDevices.Add(device);
 
-            //deviceContent = await GetDeviceContent("GLADIUS II");
-            //device = CreateDeviceFromContent(deviceContent, 2, 10);
-            //_deviceGroupManager.GlobalDevices.Add(device);
+            deviceContent = await GetDeviceContent("GLADIUS II");
+            device = CreateDeviceFromContent(deviceContent, 2, 16);
+            _deviceGroupManager.GlobalDevices.Add(device);
         }
         private async Task<DeviceContent> GetDeviceContent(string modelName)
         {
@@ -980,12 +980,14 @@ namespace AuraEditor
 
                 if (message == "GLADIUS II")
                 {
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>                    {
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    {
                         DeviceContent deviceContent = await GetDeviceContent("GLADIUS II");
                         Device device = CreateDeviceFromContent(deviceContent, 2, 10);
                         _deviceGroupManager.GlobalDevices.Add(device);
 
-                        UpdateSpaceGrid();                    });
+                        UpdateSpaceGrid();
+                    });
                 }
             }
             catch (Exception e)
