@@ -22,7 +22,7 @@ namespace AuraEditor
         public DeviceGroup MyDeviceGroup { get { return this.DataContext as DeviceGroup; } }
         public bool IsSelected {
             get {
-                if (GroupToggle.IsChecked == true)
+                if (GroupLayerRadioButton.IsChecked == true)
                     return true;
                 else
                     return false;
@@ -46,6 +46,13 @@ namespace AuraEditor
                 else
                     MyDeviceGroup.Eye = true;
             }
+        }
+
+        private void GroupLayerRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.UpdateSpaceGrid(MyDeviceGroup);
         }
     }
 }

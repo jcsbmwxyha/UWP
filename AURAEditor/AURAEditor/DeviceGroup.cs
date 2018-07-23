@@ -127,7 +127,7 @@ namespace AuraEditor
     public class LightZone
     {
         public Shape Frame;
-        int physicalIndex;
+        public int PhysicalIndex;
         public int UIindex;
         public Rect RelativeZoneRect;
         public Rect AbsoluteZoneRect
@@ -145,7 +145,7 @@ namespace AuraEditor
 
         public LightZone(int p_idx, int ui_idx, int parentX, int parentY, int x1, int y1, int x2, int y2)
         {
-            physicalIndex = p_idx;
+            PhysicalIndex = p_idx;
             UIindex = ui_idx;
             Selected = false;
 
@@ -218,7 +218,7 @@ namespace AuraEditor
             get
             {
                 CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                return ct.TranslateX;
+                return ct.TranslateX / Constants.GridLength;
             }
             set
             {
@@ -231,7 +231,7 @@ namespace AuraEditor
             get
             {
                 CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                return ct.TranslateY;
+                return ct.TranslateY / Constants.GridLength;
             }
             set
             {
@@ -312,6 +312,10 @@ namespace AuraEditor
         {
             var fe = sender as FrameworkElement;
             fe.Opacity = 0.5;
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DragingDeviceImage = true;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -349,23 +353,17 @@ namespace AuraEditor
 
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
+
+            page.DragingDeviceImage = false;
             page.UpdateSpaceGrid();
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
-
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.DragingDeviceImage = true;
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.DragingDeviceImage = false;
         }
     }
 
@@ -375,8 +373,6 @@ namespace AuraEditor
         public List<Effect> Effects;
         public Canvas UICanvas;
         public bool Eye { get; set; }
-
-
         Dictionary<int, int[]> _deviceToZonesDictionary;
 
         public DeviceGroup(string name = "")
@@ -566,7 +562,7 @@ namespace AuraEditor
     }
     public class TriggerDeviceGroup : DeviceGroup
     {
-        Dictionary<int, int[]> _deviceToZonesDictionary;
+        Dictionary<int, int[]> deviceToZonesDictionary;
 
         public TriggerDeviceGroup()
         {
@@ -577,7 +573,7 @@ namespace AuraEditor
 
             UICanvas.Background = new SolidColorBrush(Colors.Purple);
 
-            _deviceToZonesDictionary = new Dictionary<int, int[]>();
+            deviceToZonesDictionary = new Dictionary<int, int[]>();
         }
         private void Canvas_DragOver(object sender, DragEventArgs e)
         {
@@ -666,7 +662,7 @@ namespace AuraEditor
             TimeLineStackPanel.Children.Clear();
             DeviceGroupCollection.Clear();
         }
-        public Device GetGroupDevice(int type)
+        public Device GetGlobalDevice(int type)
         {
             return GlobalDevices.Find(x => x.DeviceType == type);
         }
@@ -757,7 +753,7 @@ namespace AuraEditor
 
                 foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
                 {
-                    Device d = GetGroupDevice(pair.Key);
+                    Device d = GetGlobalDevice(pair.Key);
 
                     layoutTable = CreateNewTable();
                     locationTable = CreateNewTable();
@@ -786,16 +782,16 @@ namespace AuraEditor
                     if (pair.Value != null && pair.Value[0] != -1)
                     {
                         int count = 1;
-                        foreach (int index in pair.Value)
+                        foreach (int phyIndex in pair.Value)
                         {
-                            int i = 0;
+                            //int i = 0;
+                            //
+                            //if (d.DeviceType == 0)
+                            //    i = KeyRemap.G703Remap(index);
+                            //else if (d.DeviceType == 2)
+                            //    i = KeyRemap.FlairRemap(index);
 
-                            if (d.DeviceType == 0)
-                                i = KeyRemap.G703Remap(index);
-                            else if (d.DeviceType == 2)
-                                i = KeyRemap.FlairRemap(index);
-
-                            usageTable.Set(count, DynValue.NewNumber(i));
+                            usageTable.Set(count, DynValue.NewNumber(phyIndex));
                             count++;
                         };
                     }
@@ -877,7 +873,6 @@ namespace AuraEditor
             }
             return eventTable;
         }
-
         private Table GetGlobalSpaceTable()
         {
             Table globalSpace = CreateNewTable();

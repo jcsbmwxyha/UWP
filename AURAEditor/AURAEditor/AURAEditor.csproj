@@ -140,6 +140,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\GLADIUS.png" />
+    <Content Include="Assets\grid35-2.png" />
     <Content Include="Assets\grid35.png" />
     <Content Include="AURAEditor.sccd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

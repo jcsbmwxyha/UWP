@@ -158,12 +158,12 @@
                           ZoomMode="Enabled"
                           HorizontalScrollBarVisibility="Auto"
                           VerticalScrollBarVisibility="Auto">
-                <RelativePanel Name="SpacePanel" Width="2136" Height="1424"
+                <RelativePanel Name="SpacePanel" Width="1400" Height="824"
                                PointerPressed="Image_PointerPressed"
                                PointerReleased="Image_PointerReleased"
                                PointerMoved="Image_PointerMoved"
                                RightTapped="Image_RightTapped">
-                    <Image Name="GridImage" Source="Assets/grid35.png" Stretch="None"/>
+                    <Image Name="GridImage" Source="Assets/grid35-2.png" Stretch="None"/>
                 </RelativePanel>
             </ScrollViewer>
             <Rectangle Name="mouseRectangle" Width="0" Height="0"

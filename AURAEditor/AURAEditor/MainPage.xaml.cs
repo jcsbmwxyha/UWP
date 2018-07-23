@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.Networking.Sockets;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
+using Windows.ApplicationModel.Core;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -43,15 +44,16 @@ namespace AuraEditor
         public int right;
         public int bottom;
     }
-    public class DeviceUIINFO
+    public class DeviceContent
     {
         public string DeviceName;
         public int DeviceType;
         public int Width;
         public int Height;
         public List<LedUI> Leds;
+        public BitmapImage Image;
 
-        public DeviceUIINFO()
+        public DeviceContent()
         {
             Leds = new List<LedUI>();
         }
@@ -178,7 +180,7 @@ namespace AuraEditor
             }
             */
         }
-        
+
         //private ObservableCollection<DeviceItem> GetCurrentDevices()
         //{
         //    DeviceItem d;
@@ -364,34 +366,43 @@ namespace AuraEditor
 
         private async Task GetCurrentDevicesTest()
         {
-            Device device;
-
-            device = await GetGM501GS();
+            DeviceContent deviceContent = await GetDeviceContent("GM501GS");
+            Device device = CreateDeviceFromContent(deviceContent, 1, 1);
             _deviceGroupManager.GlobalDevices.Add(device);
+
+            //deviceContent = await GetDeviceContent("GLADIUS II");
+            //device = CreateDeviceFromContent(deviceContent, 2, 10);
+            //_deviceGroupManager.GlobalDevices.Add(device);
         }
-        private async Task<Device> GetGM501GS()
+        private async Task<DeviceContent> GetDeviceContent(string modelName)
         {
-            DeviceUIINFO uiInfo = new DeviceUIINFO();
-            string gm501script;
+            DeviceContent deviceContent = new DeviceContent();
             Script script = new Script();
-            DynValue script_dv;
-            Table GM501GS_table;
+            string scriptText;
+            Table deviceContent_table;
             Table leds_table;
             Table led_table;
             Table leftTop_table;
             Table rightBottom_table;
             List<LedUI> ledUIs = new List<LedUI>();
+            string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
 
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\RogAuraEditor\\");
-            StorageFile sf = await folder.GetFileAsync("GM501GS.lua");
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+            StorageFile txtFile = await folder.GetFileAsync(modelName + ".txt");
+            StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
 
-            gm501script = await Windows.Storage.FileIO.ReadTextAsync(sf);
-            script_dv = script.DoString(gm501script + "\nreturn GM501GS");
-            GM501GS_table = script_dv.Table;
+            deviceContent.DeviceName = modelName;
+            if (modelName == "GLADIUS II")
+                deviceContent.DeviceType = 1;
+            else
+                deviceContent.DeviceType = 0;
 
-            uiInfo.Width= (int)GM501GS_table.Get("width").Number;
-            uiInfo.Height = (int)GM501GS_table.Get("height").Number;
-            leds_table = GM501GS_table.Get("leds").Table;
+            scriptText = await Windows.Storage.FileIO.ReadTextAsync(txtFile);
+            deviceContent_table = script.DoString(scriptText).Table;
+
+            deviceContent.Width = (int)deviceContent_table.Get("width").Number;
+            deviceContent.Height = (int)deviceContent_table.Get("height").Number;
+            leds_table = deviceContent_table.Get("leds").Table;
 
             foreach (var deviceKey in leds_table.Keys)
             {
@@ -400,8 +411,9 @@ namespace AuraEditor
                 leftTop_table = led_table.Get("leftTop").Table;
                 rightBottom_table = led_table.Get("rightBottom").Table;
 
-                uiInfo.Leds.Add(
-                    new LedUI(){
+                deviceContent.Leds.Add(
+                    new LedUI()
+                    {
                         PhyIndex = (int)deviceKey.Number,
                         left = (int)leftTop_table.Get("x").Number,
                         top = (int)leftTop_table.Get("y").Number,
@@ -411,53 +423,67 @@ namespace AuraEditor
                 );
             }
 
-            return CreateDeviceFromUIINFO(uiInfo, "");
+            if (pngFile != null)
+            {
+                // Open a stream for the selected file.
+                // The 'using' block ensures the stream is disposed
+                // after the image is loaded.
+                using (Windows.Storage.Streams.IRandomAccessStream fileStream =
+                    await pngFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                {
+                    // Set the image source to the selected bitmap.
+                    Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
+                        new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+
+                    bitmapImage.SetSource(fileStream);
+                    deviceContent.Image = bitmapImage;
+                }
+            }
+
+            return deviceContent;
         }
-        private Device CreateDeviceFromUIINFO(DeviceUIINFO uiInfo, string imagePath)
+        private Device CreateDeviceFromContent(DeviceContent deviceContent, int grid_x, int grid_y)
         {
             Device device;
             CompositeTransform ct;
             Image img;
             List<LightZone> zones = new List<LightZone>();
 
-            int locationX = 2;
-            int locationY = 2;
-
             ct = new CompositeTransform
             {
-                TranslateX = Constants.GridLength * locationX,
-                TranslateY = Constants.GridLength * locationY
+                TranslateX = Constants.GridLength * grid_x,
+                TranslateY = Constants.GridLength * grid_y
             };
 
             img = new Image
             {
                 RenderTransform = ct,
-                Width = Constants.GridLength * uiInfo.Width,
-                Height = Constants.GridLength * uiInfo.Height,
-                Source = new BitmapImage(new Uri("ms-appx:///Assets/gm501_printing_US.png")),
+                Width = Constants.GridLength * deviceContent.Width,
+                Height = Constants.GridLength * deviceContent.Height,
+                Source = deviceContent.Image,
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,
             };
 
             device = new Device(img)
             {
-                DeviceName = uiInfo.DeviceName,
-                DeviceType = uiInfo.DeviceType,
-                X = locationX,
-                Y = locationY,
-                W = uiInfo.Width,
-                H = uiInfo.Height,
+                DeviceName = deviceContent.DeviceName,
+                DeviceType = deviceContent.DeviceType,
+                X = grid_x,
+                Y = grid_y,
+                W = deviceContent.Width,
+                H = deviceContent.Height,
                 DeviceImg = img,
                 //DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png",
             };
 
-            for (int idx = 0; idx < uiInfo.Leds.Count; idx++)
+            for (int idx = 0; idx < deviceContent.Leds.Count; idx++)
             {
-                LedUI led = uiInfo.Leds[idx];
+                LedUI led = deviceContent.Leds[idx];
                 zones.Add(
                     new LightZone(
                         led.PhyIndex, idx,
-                        locationX, locationY,
+                        grid_x, grid_y,
                         led.left, led.top, led.right, led.bottom));
             }
 
@@ -857,7 +883,7 @@ namespace AuraEditor
         {
             //ListView lv = sender as ListView;
             //int index = lv.SelectedIndex;
-
+            //
             //if (index >= 0)
             //    UpdateSpaceGrid(_deviceGroupManager.DeviceGroupCollection[index]);
         }
@@ -925,7 +951,7 @@ namespace AuraEditor
 
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
             socket.MessageReceived += Socket_MessageReceived;
-            string serverPort = "8001";
+            string serverPort = "6666";
             string clientPort = "8002";
             Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
 
@@ -952,6 +978,15 @@ namespace AuraEditor
                     txtresult.Text = "Service : " + message;
                 });
 
+                if (message == "GLADIUS II")
+                {
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>                    {
+                        DeviceContent deviceContent = await GetDeviceContent("GLADIUS II");
+                        Device device = CreateDeviceFromContent(deviceContent, 2, 10);
+                        _deviceGroupManager.GlobalDevices.Add(device);
+
+                        UpdateSpaceGrid();                    });
+                }
             }
             catch (Exception e)
             {

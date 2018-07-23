@@ -9,10 +9,13 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <ToggleButton Name="GroupToggle"
-                  Content="{x:Bind MyDeviceGroup.GroupName}"
-                  FontSize="30"
-                  Foreground="White" Height="50" VerticalAlignment="Center">
+    <RadioButton Name="GroupLayerRadioButton" GroupName="GroupLayer"
+                 Content="{x:Bind MyDeviceGroup.GroupName}"
+                 FontSize="30"
+                 Foreground="White"
+                 Height="50"
+                 VerticalAlignment="Center"
+                 Checked="GroupLayerRadioButton_Checked">
         <ToggleButton.Template>
             <ControlTemplate TargetType="ToggleButton">
                 <Grid>
@@ -93,5 +96,5 @@
                 </Grid>
             </ControlTemplate>
         </ToggleButton.Template>
-    </ToggleButton>
+    </RadioButton>
 </UserControl>

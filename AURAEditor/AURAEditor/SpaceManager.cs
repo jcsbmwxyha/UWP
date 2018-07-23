@@ -7,6 +7,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI;
 
 namespace AuraEditor
 {
@@ -74,6 +76,33 @@ namespace AuraEditor
 
             _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+        public void UpdateSpaceGrid(DeviceGroup dg)
+        {
+            List<Device> devices = _deviceGroupManager.GlobalDevices;
+            Dictionary<int, int[]> dictionary = dg.GetDeviceToZonesDictionary();
+
+            foreach (KeyValuePair<int, int[]> pair in dictionary)
+            {
+                Device d = _deviceGroupManager.GetGlobalDevice(pair.Key);
+                int[] phyIndexes = pair.Value;
+
+                foreach (var zone in d.LightZones)
+                {
+                    Shape shape = zone.Frame;
+
+                    if (Array.Find(phyIndexes, x => x == zone.PhysicalIndex) > 0)
+                    {
+                        shape.Stroke = new SolidColorBrush(Colors.Yellow);
+                        shape.Fill = new SolidColorBrush(Colors.Transparent);
+                    }
+                    else
+                    {
+                        shape.Stroke = new SolidColorBrush(Colors.Black);
+                        shape.Fill = new SolidColorBrush(Colors.Transparent);
+                    }
+                }
+            }
+        }
         private async void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             NamedDialog namedDialog = new NamedDialog(null);
@@ -90,7 +119,7 @@ namespace AuraEditor
                 {
                     if (zone.Selected == true)
                     {
-                        selectedIndex.Add(zone.UIindex);
+                        selectedIndex.Add(zone.PhysicalIndex);
                     }
                 }
 
