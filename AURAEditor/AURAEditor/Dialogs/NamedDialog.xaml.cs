@@ -24,39 +24,19 @@ namespace AuraEditor
     public sealed partial class NamedDialog : ContentDialog
     {
         public string CustomizeName { get; set; }
-        //ZoneItem customizingZone;
-        DeviceListViewItem customizingItem;
 
-        public NamedDialog(DeviceListViewItem dlvi)
+        public NamedDialog()
         {
             this.InitializeComponent();
-            //customizingZone = z;
-            customizingItem = dlvi;
             CustomizeName = "";
         }
 
         private void NamedDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            //this.Closed += ShowAddDeviceDialog;
-        }
-
-        private async void ShowAddDeviceDialog(ContentDialog sender, ContentDialogClosedEventArgs args)
-        {
-            AddDeviceDialog addDeviceDialog = AddDeviceDialog.GetInstance();
-            //customizingZone.Name = CustomizeName;
-            //customizingItem.MyDevice.Zones.Add(customizingZone);
-            var result = await addDeviceDialog.ShowAsync();
         }
 
         private void NamedDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            //this.Closed += ShowAddDeviceDialogWithCancel;
-        }
-
-        private async void ShowAddDeviceDialogWithCancel(ContentDialog sender, ContentDialogClosedEventArgs args)
-        {
-            AddDeviceDialog addDeviceDialog = AddDeviceDialog.GetInstance();
-            var result = await addDeviceDialog.ShowAsync();
         }
     }
 }

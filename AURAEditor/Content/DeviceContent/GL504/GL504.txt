@@ -1,6 +1,6 @@
 GL504 = {
-	width=21,
-	height=13,
+	width = 21,
+	height = 13,
 	leds = {
 		[28] = { x = 5, y = 3, leftTop = { x = 345, y = 30 }, rightBottom = { x = 405, y = 80 }},
 		[35] = { x = 5, y = 3, leftTop = { x = 76, y = 120 }, rightBottom = { x = 226, y = 330 }},

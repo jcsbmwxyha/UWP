@@ -158,7 +158,7 @@ namespace AuraEditor
 
         private async void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
-            NamedDialog namedDialog = new NamedDialog(null);
+            NamedDialog namedDialog = new NamedDialog();
             List<Device> devices = _deviceGroupManager.GlobalDevices;
             DeviceGroup dg = new DeviceGroup();
             dg.GroupName = namedDialog.CustomizeName;

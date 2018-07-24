@@ -250,48 +250,6 @@ namespace AuraEditor
             DeviceImg = img;
             EnableManipulation();
         }
-        //public Device(string s, int type, int x, int y)
-        //{
-        //    DeviceName = s;
-        //    DeviceType = type;
-
-        //    X = x;
-        //    Y = y;
-
-        //    if (type == 0)
-        //    {
-        //        DeviceImgPath = "ms-appx:///Assets/gm501_printing_US.png";
-        //        W = 21;
-        //        H = 9;
-        //    }
-        //    else if (type == 1)
-        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_mouse.png";
-        //    else if (type == 2)
-        //    {
-        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_keyboard.png";
-        //        W = 23;
-        //        H = 6;
-        //    }
-        //    else if (type == 3)
-        //        DeviceImgPath = "ms-appx:///Assets/asus_aura_sync_headset.png";
-            
-        //    CompositeTransform ct = new CompositeTransform
-        //    {
-        //        TranslateX = commonFactor * X,
-        //        TranslateY = commonFactor * Y
-        //    };
-        //    Image img = new Image
-        //    {
-        //        RenderTransform = ct,
-        //        Width = commonFactor * W,
-        //        Height = commonFactor * H,
-        //        Source = new BitmapImage(new Uri(DeviceImgPath)),
-        //        ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-        //        Stretch = Stretch.Fill,
-        //    };
-            
-        //    DeviceImg = img;
-        //}
         public void EnableManipulation()
         {
             DeviceImg.ManipulationStarted += ImageManipulationStarted;
@@ -765,9 +723,7 @@ namespace AuraEditor
                     locationTable = CreateNewTable();
                     deviceTable = CreateNewTable();
                     usageTable = CreateNewTable();
-
-                    //layoutTable.Set("weight", DynValue.NewNumber(d.W));
-                    //layoutTable.Set("height", DynValue.NewNumber(d.H));
+                    
                     locationTable.Set("x", DynValue.NewNumber(d.X));
                     locationTable.Set("y", DynValue.NewNumber(d.Y));
                     deviceTable.Set("name", DynValue.NewString(d.DeviceName));

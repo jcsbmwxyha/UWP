@@ -189,14 +189,6 @@
                Grid.ColumnSpan="3"
                Source="Assets/asus_auraeditor_time_bg.png"
                Stretch="Fill"/>
-        <Button Name="AddGroupButton"
-                FontSize="19"
-                Content="＋ Add Group"
-                Grid.Row="2"
-                Click="AddGroupButton_Click"
-                HorizontalAlignment="Center"
-                Margin="1,0,0,0"
-                Style="{StaticResource ButtonStyle}"/>
 
         <Grid x:Name="AuraBlockGrid" Grid.Column="2" Grid.Row="1" BorderBrush="black" BorderThickness="1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
