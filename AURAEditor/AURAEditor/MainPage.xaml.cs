@@ -371,7 +371,7 @@ namespace AuraEditor
             _deviceGroupManager.GlobalDevices.Add(device);
 
             deviceContent = await GetDeviceContent("GLADIUS II");
-            device = CreateDeviceFromContent(deviceContent, 2, 16);
+            device = CreateDeviceFromContent(deviceContent, 25, 3);
             _deviceGroupManager.GlobalDevices.Add(device);
         }
         private async Task<DeviceContent> GetDeviceContent(string modelName)

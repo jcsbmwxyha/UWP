@@ -18,7 +18,7 @@ namespace AuraEditor
         public bool DragingDeviceImage {
             set
             {
-                if (value == true)
+                if (value)
                 {
                     SpacePanel.PointerPressed -= Image_PointerPressed;
                     SpacePanel.PointerMoved -= Image_PointerMoved;
@@ -67,7 +67,7 @@ namespace AuraEditor
                         Index = -1,
                         DetectionRect = zone.AbsoluteZoneRect,
                         Hover = false,
-                        Selected = false,
+                        Selected = zone.Selected,
                         Callback = zone.Frame_StatusChanged
                     };
                     regions.Add(r);
@@ -80,8 +80,9 @@ namespace AuraEditor
         {
             List<Device> devices = _deviceGroupManager.GlobalDevices;
             Dictionary<int, int[]> dictionary = dg.GetDeviceToZonesDictionary();
+            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
 
-            // turn all black
+            // 1. Reset all zones
             foreach (var d in _deviceGroupManager.GlobalDevices)
             {
                 foreach (var zone in d.LightZones)
@@ -89,9 +90,11 @@ namespace AuraEditor
                     Shape shape = zone.Frame;
                     shape.Stroke = new SolidColorBrush(Colors.Black);
                     shape.Fill = new SolidColorBrush(Colors.Transparent);
+                    zone.Selected = false;
                 }
             }
 
+            // 2. According to the dg, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
                 Device d = _deviceGroupManager.GetGlobalDevice(pair.Key);
@@ -105,10 +108,54 @@ namespace AuraEditor
                     {
                         shape.Stroke = new SolidColorBrush(Colors.Yellow);
                         shape.Fill = new SolidColorBrush(Colors.Transparent);
+                        zone.Selected = true;
                     }
                 }
             }
+
+            // 3. Update mouse regions
+            foreach (Device d in devices)
+            {
+                foreach (var zone in d.LightZones)
+                {
+                    MouseDetectionRegion r = new MouseDetectionRegion()
+                    {
+                        Index = -1,
+                        DetectionRect = zone.AbsoluteZoneRect,
+                        Hover = false,
+                        Selected = zone.Selected,
+                        Callback = zone.Frame_StatusChanged
+                    };
+                    regions.Add(r);
+                }
+            }
+
+            _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+        public void UpdateDeviceZoneRegions()
+        {
+            List<Device> devices = _deviceGroupManager.GlobalDevices;
+            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
+
+            foreach (Device d in devices)
+            {
+                foreach (var zone in d.LightZones)
+                {
+                    MouseDetectionRegion r = new MouseDetectionRegion()
+                    {
+                        Index = -1,
+                        DetectionRect = zone.AbsoluteZoneRect,
+                        Hover = false,
+                        Selected = zone.Selected,
+                        Callback = zone.Frame_StatusChanged
+                    };
+                    regions.Add(r);
+                }
+            }
+
+            _mouseEventCtrl.DetectionRegions = regions.ToArray();
+        }
+
         private async void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             NamedDialog namedDialog = new NamedDialog(null);

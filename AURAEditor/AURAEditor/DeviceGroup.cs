@@ -353,17 +353,23 @@ namespace AuraEditor
 
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-
-            page.DragingDeviceImage = false;
-            page.UpdateSpaceGrid();
+            page.UpdateDeviceZoneRegions();
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DragingDeviceImage = true;
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.DragingDeviceImage = false;
         }
     }
 
@@ -631,7 +637,7 @@ namespace AuraEditor
             tdg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
 
             tdg.AddDeviceZones(0, new int[] { -1 });
-            //tdg.AddDeviceZones(1, new int[] { -1 });
+            tdg.AddDeviceZones(1, new int[] { -1 });
             //tdg.AddDeviceZones(2, new int[] { -1 });
             //tdg.AddDeviceZones(3, new int[] { -1 });
 
@@ -779,27 +785,32 @@ namespace AuraEditor
 
                     usageTable = CreateNewTable();
 
-                    if (pair.Value != null && pair.Value[0] != -1)
+                    if (dg is TriggerDeviceGroup)
+                    {
+                        int count = 1;
+                        foreach (var gd in GlobalDevices)
+                        {
+                            foreach (var zone in gd.LightZones)
+                            {
+                                usageTable.Set(count, DynValue.NewNumber(zone.PhysicalIndex));
+                                count++;
+                            }
+                        }
+                    }
+                    else if (pair.Value != null)
                     {
                         int count = 1;
                         foreach (int phyIndex in pair.Value)
                         {
-                            //int i = 0;
-                            //
-                            //if (d.DeviceType == 0)
-                            //    i = KeyRemap.G703Remap(index);
-                            //else if (d.DeviceType == 2)
-                            //    i = KeyRemap.FlairRemap(index);
-
                             usageTable.Set(count, DynValue.NewNumber(phyIndex));
                             count++;
                         };
                     }
-                    else
-                    {
-                        for (int count = 0; count < 169; count++)
-                            usageTable.Set(count, DynValue.NewNumber(count));
-                    }
+                    //else
+                    //{
+                    //    for (int count = 0; count < 169; count++)
+                    //        usageTable.Set(count, DynValue.NewNumber(count));
+                    //}
                     deviceTable.Set("usage", DynValue.NewTable(usageTable));
 
                     groupTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
