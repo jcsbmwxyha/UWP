@@ -17,19 +17,19 @@ using Windows.UI.Xaml.Navigation;
 
 namespace AuraEditor
 {
-    public sealed partial class DeviceGroupListViewItem : UserControl
+    public sealed partial class DeviceLayerListViewItem : UserControl
     {
-        public DeviceGroup MyDeviceGroup { get { return this.DataContext as DeviceGroup; } }
+        public DeviceLayer MyDeviceLayer { get { return this.DataContext as DeviceLayer; } }
         public bool IsSelected {
             get {
-                if (GroupLayerRadioButton.IsChecked == true)
+                if (DeviceLayerRadioButton.IsChecked == true)
                     return true;
                 else
                     return false;
             }
         }
 
-        public DeviceGroupListViewItem()
+        public DeviceLayerListViewItem()
         {
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
@@ -42,17 +42,17 @@ namespace AuraEditor
             if (tb != null)
             {
                 if (tb.IsChecked == false)
-                    MyDeviceGroup.Eye = false;
+                    MyDeviceLayer.Eye = false;
                 else
-                    MyDeviceGroup.Eye = true;
+                    MyDeviceLayer.Eye = true;
             }
         }
 
-        private void GroupLayerRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-            page.UpdateSpaceGrid(MyDeviceGroup);
+            page.UpdateSpaceGrid(MyDeviceLayer);
         }
     }
 }

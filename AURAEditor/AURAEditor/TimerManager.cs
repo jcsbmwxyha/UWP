@@ -25,7 +25,7 @@ namespace AuraEditor
 
             TimeLineLayerScrollViewer.ChangeView(0, 0, null, true);
             TimeLineScaleScrollViewer.ChangeView(0, null, null, true);
-            GroupScrollViewer.ChangeView(null, 0, null, true);
+            LayerScrollViewer.ChangeView(null, 0, null, true);
 
             TimeLineIconScrollViewer.ChangeView(0, 0, null, true);
             TimeLineIconScrollViewer.Visibility = Visibility.Visible;

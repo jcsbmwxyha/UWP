@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="AuraEditor.DeviceGroupListViewItem"
+    x:Class="AuraEditor.DeviceLayerListViewItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor"
@@ -9,13 +9,13 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <RadioButton Name="GroupLayerRadioButton" GroupName="GroupLayer"
-                 Content="{x:Bind MyDeviceGroup.GroupName}"
+    <RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
+                 Content="{x:Bind MyDeviceLayer.LayerName}"
                  FontSize="30"
                  Foreground="White"
                  Height="50"
                  VerticalAlignment="Center"
-                 Checked="GroupLayerRadioButton_Checked">
+                 Checked="DeviceLayerRadioButton_Checked">
         <ToggleButton.Template>
             <ControlTemplate TargetType="ToggleButton">
                 <Grid>

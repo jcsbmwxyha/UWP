@@ -59,7 +59,7 @@ namespace AuraEditor
 
     public class Effect
     {
-        public DeviceGroup MyDeviceGroup { get; set; }
+        public DeviceLayer MyDeviceLayer { get; set; }
         public string EffectName { get; set; }
         public string EffectLuaName { get; set; }
         public int EffectType { get; set; }
@@ -96,14 +96,14 @@ namespace AuraEditor
             }
         }
 
-        public Effect(DeviceGroup dg, int effectType)
+        public Effect(DeviceLayer dg, int effectType)
         {
-            MyDeviceGroup = dg;
+            MyDeviceLayer = dg;
             EffectType = effectType;
             EffectName = EffectHelper.GetEffectName(effectType);
             EffectLineUI = CreateEffectUI(effectType);
             EffectLineUI.DataContext = this;
-            Start = (int)MyDeviceGroup.GetFirstSpaceCanPut();
+            Start = (int)MyDeviceLayer.GetFirstSpaceCanPut();
             Duration = 100;
             Info = new EffectInfo(effectType);
         }
@@ -331,17 +331,17 @@ namespace AuraEditor
         }
     }
 
-    public class DeviceGroup
+    public class DeviceLayer
     {
-        public string GroupName { get; set; }
+        public string LayerName { get; set; }
         public List<Effect> Effects;
         public Canvas UICanvas;
         public bool Eye { get; set; }
         Dictionary<int, int[]> _deviceToZonesDictionary;
 
-        public DeviceGroup(string name = "")
+        public DeviceLayer(string name = "")
         {
-            GroupName = name;
+            LayerName = name;
             //_devices = new List<Device>();
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
@@ -524,13 +524,13 @@ namespace AuraEditor
             return canvas;
         }
     }
-    public class TriggerDeviceGroup : DeviceGroup
+    public class TriggerDeviceLayer : DeviceLayer
     {
         Dictionary<int, int[]> deviceToZonesDictionary;
 
-        public TriggerDeviceGroup()
+        public TriggerDeviceLayer()
         {
-            GroupName = "Trigger Effect";
+            LayerName = "Trigger Effect";
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
 
@@ -571,27 +571,27 @@ namespace AuraEditor
         }
     }
 
-    public class DeviceGroupManager
+    public class AuraCreatorManager
     {
-        public ObservableCollection<DeviceGroup> DeviceGroupCollection { get; set; }
+        public ObservableCollection<DeviceLayer> DeviceLayerCollection { get; set; }
         static StackPanel TimeLineStackPanel;
         Script script;
         Dictionary<DynValue, string> _functionDictionary;
         public List<Device> GlobalDevices;
 
-        public DeviceGroupManager(StackPanel sp)
+        public AuraCreatorManager(StackPanel sp)
         {
             script = new Script();
             TimeLineStackPanel = sp;
-            DeviceGroupCollection = new ObservableCollection<DeviceGroup>();
+            DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
             _functionDictionary = new Dictionary<DynValue, string>();
             GlobalDevices = new List<Device>();
-            AddTriggerDeviceGroup();
+            AddTriggerDeviceLayer();
         }
-        private void AddTriggerDeviceGroup()
+        private void AddTriggerDeviceLayer()
         {
-            TriggerDeviceGroup tdg = new TriggerDeviceGroup();
-            tdg.GroupName = "Trigger Effect";
+            TriggerDeviceLayer tdg = new TriggerDeviceLayer();
+            tdg.LayerName = "Trigger Effect";
             tdg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
 
             tdg.AddDeviceZones(0, new int[] { -1 });
@@ -599,32 +599,32 @@ namespace AuraEditor
             //tdg.AddDeviceZones(2, new int[] { -1 });
             //tdg.AddDeviceZones(3, new int[] { -1 });
 
-            DeviceGroupCollection.Add(tdg);
+            DeviceLayerCollection.Add(tdg);
             TimeLineStackPanel.Children.Add(tdg.UICanvas);
         }
-        public void AddDeviceGroup(DeviceGroup dg)
+        public void AddDeviceLayer(DeviceLayer dg)
         {
-            if (DeviceGroupCollection.Count % 2 == 0)
+            if (DeviceLayerCollection.Count % 2 == 0)
                 dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
             else
                 dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
 
-            DeviceGroupCollection.Add(dg);
+            DeviceLayerCollection.Add(dg);
             TimeLineStackPanel.Children.Add(dg.UICanvas);
         }
-        public void RemoveDeviceGroup(DeviceGroup dg)
+        public void RemoveDeviceLayer(DeviceLayer dg)
         {
-            DeviceGroupCollection.Remove(dg);
+            DeviceLayerCollection.Remove(dg);
             TimeLineStackPanel.Children.Remove(dg.UICanvas);
         }
         public void SetGlobalDevices(List<Device> devices)
         {
             GlobalDevices = devices;
         }
-        public void ClearAllGroup()
+        public void ClearAllLayer()
         {
             TimeLineStackPanel.Children.Clear();
-            DeviceGroupCollection.Clear();
+            DeviceLayerCollection.Clear();
         }
         public Device GetGlobalDevice(int type)
         {
@@ -663,7 +663,7 @@ namespace AuraEditor
 
             int effectCount = 0;
             int queueIndex = 1;
-            foreach (DeviceGroup gp in DeviceGroupCollection)
+            foreach (DeviceLayer gp in DeviceLayerCollection)
             {
                 if (gp.Eye == false)
                     continue;
@@ -677,7 +677,7 @@ namespace AuraEditor
                     effectCount++;
 
                     queueItemTable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
-                    queueItemTable.Set("Viewport", DynValue.NewString(gp.GroupName));
+                    queueItemTable.Set("Viewport", DynValue.NewString(gp.LayerName));
 
                     if (EffectHelper.GetEffectName(eff.EffectType) == "Comet")
                         queueItemTable.Set("Trigger", DynValue.NewString("Period"));
@@ -703,17 +703,17 @@ namespace AuraEditor
         }
         private Table GetViewportTable() {
             Table viewPortTable = CreateNewTable();
-            Table groupTable;
+            Table layerTable;
             Table deviceTable;
             Table layoutTable;
             Table locationTable;
             Table usageTable;
 
-            int groupIndex = 1;
-            foreach (DeviceGroup dg in DeviceGroupCollection)
+            int layerIndex = 1;
+            foreach (DeviceLayer dg in DeviceLayerCollection)
             {
                 Dictionary<int, int[]> deviceToZonesDictionary = dg.GetDeviceToZonesDictionary();
-                groupTable = CreateNewTable();
+                layerTable = CreateNewTable();
 
                 foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
                 {
@@ -741,7 +741,7 @@ namespace AuraEditor
 
                     usageTable = CreateNewTable();
 
-                    if (dg is TriggerDeviceGroup)
+                    if (dg is TriggerDeviceLayer)
                     {
                         int count = 1;
                         foreach (var gd in GlobalDevices)
@@ -769,10 +769,10 @@ namespace AuraEditor
                     //}
                     deviceTable.Set("usage", DynValue.NewTable(usageTable));
 
-                    groupTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
+                    layerTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
                 }
-                viewPortTable.Set(dg.GroupName, DynValue.NewTable(groupTable));
-                groupIndex++;
+                viewPortTable.Set(dg.LayerName, DynValue.NewTable(layerTable));
+                layerIndex++;
             }
             return viewPortTable;
         }
@@ -782,7 +782,7 @@ namespace AuraEditor
             Table initColorTable;
             Table waveTable;
 
-            foreach (DeviceGroup gp in DeviceGroupCollection)
+            foreach (DeviceLayer gp in DeviceLayerCollection)
             {
                 if (gp.Eye == false)
                     continue;

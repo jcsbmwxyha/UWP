@@ -51,7 +51,7 @@ namespace AuraEditor
         {
             SpacePanel.Children.Clear();
             SpacePanel.Children.Add(GridImage);
-            List<Device> devices = _deviceGroupManager.GlobalDevices;
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
             
             foreach (Device d in devices)
@@ -76,14 +76,14 @@ namespace AuraEditor
 
             _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
-        public void UpdateSpaceGrid(DeviceGroup dg)
+        public void UpdateSpaceGrid(DeviceLayer dg)
         {
-            List<Device> devices = _deviceGroupManager.GlobalDevices;
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
             Dictionary<int, int[]> dictionary = dg.GetDeviceToZonesDictionary();
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
 
             // 1. Reset all zones
-            foreach (var d in _deviceGroupManager.GlobalDevices)
+            foreach (var d in _auraCreatorManager.GlobalDevices)
             {
                 foreach (var zone in d.LightZones)
                 {
@@ -97,7 +97,7 @@ namespace AuraEditor
             // 2. According to the dg, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
-                Device d = _deviceGroupManager.GetGlobalDevice(pair.Key);
+                Device d = _auraCreatorManager.GetGlobalDevice(pair.Key);
                 int[] phyIndexes = pair.Value;
 
                 foreach (var zone in d.LightZones)
@@ -134,7 +134,7 @@ namespace AuraEditor
         }
         public void UpdateDeviceZoneRegions()
         {
-            List<Device> devices = _deviceGroupManager.GlobalDevices;
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
 
             foreach (Device d in devices)
@@ -159,9 +159,9 @@ namespace AuraEditor
         private async void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             NamedDialog namedDialog = new NamedDialog();
-            List<Device> devices = _deviceGroupManager.GlobalDevices;
-            DeviceGroup dg = new DeviceGroup();
-            dg.GroupName = namedDialog.CustomizeName;
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
+            DeviceLayer dg = new DeviceLayer();
+            dg.LayerName = namedDialog.CustomizeName;
             List<int> selectedIndex;
 
             foreach (Device d in devices)
@@ -183,12 +183,12 @@ namespace AuraEditor
             if (result == ContentDialogResult.None)
                 return;
 
-            dg.GroupName = namedDialog.CustomizeName;
-            if (dg.GroupName == "")
+            dg.LayerName = namedDialog.CustomizeName;
+            if (dg.LayerName == "")
                 return;
             
-            _deviceGroupManager.AddDeviceGroup(dg);
-            GroupListView.SelectedIndex = 0;
+            _auraCreatorManager.AddDeviceLayer(dg);
+            LayerListView.SelectedIndex = 0;
         }
 
         private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)

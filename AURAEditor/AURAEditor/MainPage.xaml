@@ -279,21 +279,21 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <ScrollViewer Name="GroupScrollViewer"
+        <ScrollViewer Name="LayerScrollViewer"
                       Grid.Column="0"
                       Grid.Row="3"
                       VerticalScrollMode="Disabled"
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalAlignment="Left">
-            <ListView x:Name="GroupListView"
-                      ItemsSource="{x:Bind _deviceGroupManager.DeviceGroupCollection}"
+            <ListView x:Name="LayerListView"
+                      ItemsSource="{x:Bind _auraCreatorManager.DeviceLayerCollection}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
                       HorizontalAlignment="Left"
                       SelectionChanged="DeviceList_SelectionChanged">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:DeviceGroup">
-                        <local:DeviceGroupListViewItem HorizontalAlignment="Center"/>
+                    <DataTemplate x:DataType="local:DeviceLayer">
+                        <local:DeviceLayerListViewItem HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

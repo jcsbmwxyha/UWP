@@ -61,7 +61,7 @@ namespace AuraEditor
     
     public sealed partial class MainPage : Page
     {
-        DeviceGroupManager _deviceGroupManager;
+        AuraCreatorManager _auraCreatorManager;
 
         int timeLineSliderValue = 25;
         public int TimeLineZoomSliderValue
@@ -88,7 +88,7 @@ namespace AuraEditor
             EffectListView.ItemsSource = EffectHelper.GetCommonEffectList();
             TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
-            _deviceGroupManager = new DeviceGroupManager(TimeLineStackPanel);
+            _auraCreatorManager = new AuraCreatorManager(TimeLineStackPanel);
             _mouseEventCtrl = IntializeMouseEventCtrl();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -159,9 +159,9 @@ namespace AuraEditor
             /*
             for (int i = 0; i < 6; i++)
             {
-                DeviceGroup dg = new DeviceGroup();
-                dg.GroupName = "123";
-                _deviceGroupManager.AddDeviceGroup(dg);
+                DeviceLayer dg = new DeviceLayer();
+                dg.LayerName = "123";
+                _deviceLayerManager.AddDeviceLayer(dg);
             }
             */
         }
@@ -170,11 +170,11 @@ namespace AuraEditor
         {
             DeviceContent deviceContent = await GetDeviceContent("GL504");
             Device device = CreateDeviceFromContent(deviceContent, 1, 1);
-            _deviceGroupManager.GlobalDevices.Add(device);
+            _auraCreatorManager.GlobalDevices.Add(device);
 
             deviceContent = await GetDeviceContent("GLADIUS II");
             device = CreateDeviceFromContent(deviceContent, 25, 3);
-            _deviceGroupManager.GlobalDevices.Add(device);
+            _auraCreatorManager.GlobalDevices.Add(device);
         }
         private async Task<DeviceContent> GetDeviceContent(string modelName)
         {
@@ -344,13 +344,13 @@ namespace AuraEditor
         private void TimeLineLayerScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-            GroupScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
         private void TimeLineIconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-            GroupScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             TimeLineLayerScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
             TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
@@ -390,21 +390,21 @@ namespace AuraEditor
             script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
             globalspace_table = script_dv.Table;
 
-            _deviceGroupManager.ClearAllGroup();
+            _auraCreatorManager.ClearAllLayer();
 
-            // Step 1 : Get global devices from GlobalSpace table and set to deviceGroupManager
+            // Step 1 : Get global devices from GlobalSpace table and set to deviceLayerManager
             List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
-            _deviceGroupManager.SetGlobalDevices(globaldevices);
+            _auraCreatorManager.SetGlobalDevices(globaldevices);
 
-            // Step 2 : Get all device groups from EventProvider table
-            List<DeviceGroup> devicegroups = ParsingEventProviderTable(eventprovider_table);
-            if (devicegroups.Count == 0)
+            // Step 2 : Get all device layers from EventProvider table
+            List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
+            if (deviceLayers.Count == 0)
                 return;
 
-            // Step 3 : According to device group name, get all device zones from Viewport table
-            foreach (var dg in devicegroups)
+            // Step 3 : According to device layer name, get all device zones from Viewport table
+            foreach (var dg in deviceLayers)
             {
-                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, dg.GroupName);
+                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, dg.LayerName);
                 dg.AddDeviceZones(dictionary);
 
                 foreach (var effect in dg.Effects)
@@ -412,12 +412,12 @@ namespace AuraEditor
                     EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.EffectLuaName);
                     effect.Info = ei;
                 }
-                _deviceGroupManager.AddDeviceGroup(dg);
+                _auraCreatorManager.AddDeviceLayer(dg);
             }
 
             UpdateSpaceGrid();
             ClearEffectInfoGrid();
-            GroupListView.SelectedIndex = 0;
+            LayerListView.SelectedIndex = 0;
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -426,7 +426,7 @@ namespace AuraEditor
             StorageFile sf =
                 await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
-            await Windows.Storage.FileIO.WriteTextAsync(sf, _deviceGroupManager.PrintLuaScript());
+            await Windows.Storage.FileIO.WriteTextAsync(sf, _auraCreatorManager.PrintLuaScript());
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -446,7 +446,7 @@ namespace AuraEditor
                 // we finish making changes and call CompleteUpdatesAsync.
                 Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
                 // write to file
-                await Windows.Storage.FileIO.WriteTextAsync(saveFile, _deviceGroupManager.PrintLuaScript());
+                await Windows.Storage.FileIO.WriteTextAsync(saveFile, _auraCreatorManager.PrintLuaScript());
                 // Let Windows know that we're finished changing the file so
                 // the other app can update the remote version of the file.
                 // Completing updates may require Windows to ask for user input.
@@ -466,15 +466,15 @@ namespace AuraEditor
 
             return await sf.CreateFolderAsync(folderName);
         }
-        private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string groupName)
+        private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string layerName)
         {
             Dictionary<int, int[]> zoneDictionary = new Dictionary<int, int[]>();
             List<Device> devices = new List<Device>();
-            Table groupTable = viewport_table.Get(groupName).Table;
+            Table layerTable = viewport_table.Get(layerName).Table;
 
-            foreach (var deviceKey in groupTable.Keys)
+            foreach (var deviceKey in layerTable.Keys)
             {
-                Table deviceTable = groupTable.Get(deviceKey.String).Table;
+                Table deviceTable = layerTable.Get(deviceKey.String).Table;
                 //string deviceName = deviceTable.Get("name").String;
                 int type = 0;
                 List<int> zones = new List<int>();
@@ -505,22 +505,22 @@ namespace AuraEditor
 
             return zoneDictionary;
         }
-        private List<DeviceGroup> ParsingEventProviderTable(Table eventProviderTable)
+        private List<DeviceLayer> ParsingEventProviderTable(Table eventProviderTable)
         {
-            List<DeviceGroup> groups = new List<DeviceGroup>();
+            List<DeviceLayer> layers = new List<DeviceLayer>();
             Table queueTable = eventProviderTable.Get("queue").Table;
 
             for (int queueIndex = 1; queueIndex <= queueTable.Length; queueIndex++)
             {
                 Table t = queueTable.Get(queueIndex).Table;
-                string groupName = t.Get("Viewport").String;
+                string layerName = t.Get("Viewport").String;
 
-                DeviceGroup dg = groups.Find(x => x.GroupName == groupName);
+                DeviceLayer dg = layers.Find(x => x.LayerName == layerName);
 
                 if (dg == null)
                 {
-                    dg = new DeviceGroup(groupName);
-                    groups.Add(dg);
+                    dg = new DeviceLayer(layerName);
+                    layers.Add(dg);
                 }
 
                 string effectLuaName = t.Get("Effect").String;
@@ -537,7 +537,7 @@ namespace AuraEditor
                 dg.AddEffect(effect);
             }
 
-            return groups;
+            return layers;
         }
         private EffectInfo GetEffectInfoFromEventTable(Table eventTable, string effectLuaName)
         {
@@ -612,11 +612,6 @@ namespace AuraEditor
 
         private void DeviceList_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            //ListView lv = sender as ListView;
-            //int index = lv.SelectedIndex;
-            //
-            //if (index >= 0)
-            //    UpdateSpaceGrid(_deviceGroupManager.DeviceGroupCollection[index]);
         }
 
         private async void TestButton_Click(object sender, RoutedEventArgs e)
@@ -646,22 +641,22 @@ namespace AuraEditor
 
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            List<DeviceGroupListViewItem> items =
-                Common.ControlHelper.FindAllControl<DeviceGroupListViewItem>(GroupListView, typeof(DeviceGroupListViewItem));
+            List<DeviceLayerListViewItem> items =
+                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
 
             foreach (var item in items)
             {
                 if (item.IsSelected == true)
                 {
-                    DeviceGroup dg = item.DataContext as DeviceGroup;
+                    DeviceLayer dg = item.DataContext as DeviceLayer;
 
-                    if (dg is TriggerDeviceGroup)
+                    if (dg is TriggerDeviceLayer)
                         continue;
 
                     if (dg.Effects.Contains(_selectedEffectLine))
                         SelectedEffectLine = null;
 
-                    _deviceGroupManager.RemoveDeviceGroup(dg);
+                    _auraCreatorManager.RemoveDeviceLayer(dg);
                 }
             }
         }
@@ -704,7 +699,7 @@ namespace AuraEditor
                     {
                         DeviceContent deviceContent = await GetDeviceContent("GLADIUS II");
                         Device device = CreateDeviceFromContent(deviceContent, 2, 10);
-                        _deviceGroupManager.GlobalDevices.Add(device);
+                        _auraCreatorManager.GlobalDevices.Add(device);
 
                         UpdateSpaceGrid();
                     });

@@ -67,14 +67,14 @@ namespace AuraEditor.UserControls
             }
             else if (_cursorSizeRight)
             {
-                MyEffect.MyDeviceGroup.OnCursorSizeRight(MyEffect, (int)(ct.TranslateX), (int)(el.Width + e.Delta.Translation.X));
+                MyEffect.MyDeviceLayer.OnCursorSizeRight(MyEffect, (int)(ct.TranslateX), (int)(el.Width + e.Delta.Translation.X));
 
                 if (e.Position.X > 50)
                     el.Width = e.Position.X;
             }
             else if (_cursorSizeLeft)
             {
-                if (MyEffect.MyDeviceGroup.IsEffectLineOverlap(MyEffect, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(el.Width - e.Delta.Translation.X)) != null)
+                if (MyEffect.MyDeviceLayer.IsEffectLineOverlap(MyEffect, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(el.Width - e.Delta.Translation.X)) != null)
                     return;
 
                 if (el.Width - e.Delta.Translation.X > 50)
@@ -104,7 +104,7 @@ namespace AuraEditor.UserControls
                 width = (int)el.Width / 10 * 10;
             }
 
-            leftPosition = MyEffect.MyDeviceGroup.InsertEffectLine(MyEffect, leftPosition, width);
+            leftPosition = MyEffect.MyDeviceLayer.InsertEffectLine(MyEffect, leftPosition, width);
             MyEffect.Start = leftPosition;
             MyEffect.Duration = width;
         }
