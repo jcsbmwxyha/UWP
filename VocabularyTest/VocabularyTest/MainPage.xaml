@@ -31,18 +31,21 @@
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xED43;"
+                    ToolTipService.ToolTip="Open file"
                     Margin="2"
                     Click="OpenButton_Click"/>
             <Button Name="SaveAsButton"
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE28F;"
+                    ToolTipService.ToolTip="Save as file"
                     Margin="2"
                     Click="SaveAsButton_Click"/>
             <Button Name="SaveButton"
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE105;"
+                    ToolTipService.ToolTip="Save file"
                     Click="SaveButton_Click"
                     IsEnabled="False"
                     Margin="2"/>
@@ -50,7 +53,15 @@
                     FontSize="24"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE133;"
+                    ToolTipService.ToolTip="Save star vocs only"
                     Click="SaveStarButton_Click"
+                    Margin="2"/>
+            <Button Name="SimpleSaveStarButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE164;"
+                    ToolTipService.ToolTip="Use simple content to save star vocs"
+                    Click="SimpleSaveStarButton_Click"
                     Margin="2"/>
             <TextBlock Text="Path:" FontSize="20" Margin="5" VerticalAlignment="Center"/>
             <TextBlock Name="FileNameTextBlock" Text="" Margin="5" VerticalAlignment="Center"/>
@@ -128,6 +139,7 @@
                         Margin="5">
                 <Button Name="AddButton"
                         Content="&#xE710;"
+                        ToolTipService.ToolTip="Add voc"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="AddButton_Click"
@@ -135,6 +147,7 @@
                         VerticalAlignment="Top"/>
                 <Button Name="StarUpButton"
                         Content="&#xEA5C;"
+                        ToolTipService.ToolTip="Bring all star vocs up"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="StarUpButton_Click"
@@ -142,6 +155,7 @@
                         VerticalAlignment="Top"/>
                 <Button Name="RandomButton"
                         Content="&#xE895;"
+                        ToolTipService.ToolTip="Disrupt the order of vocs"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="RandomButton_Click"
@@ -150,6 +164,7 @@
                 <Line Stroke="Black" StrokeThickness="1" X1="0" X2="40" HorizontalAlignment="Center" Margin="0,10,0,10"/>
                 <Button Name="TestButton"
                         Content="&#xEF16;"
+                        ToolTipService.ToolTip="Start the test for all vocs"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="TestButton_Click"
@@ -157,6 +172,7 @@
                         VerticalAlignment="Top"/>
                 <Button Name="TestStarButton"
                         Content="&#xE00A;"
+                        ToolTipService.ToolTip="Start the test for star vocs only"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="TestStarButton_Click"
@@ -165,6 +181,7 @@
                 <Line Stroke="Black" StrokeThickness="1" X1="0" X2="40" HorizontalAlignment="Center" Margin="0,10,0,10"/>
                 <Button Name="AutoFillButton"
                         Content="&#xF571;"
+                        ToolTipService.ToolTip="Auto fill content"
                         FontFamily="Segoe MDL2 Assets"
                         Style="{StaticResource ButtonStyle}"
                         Click="AutoFillButton_Click"

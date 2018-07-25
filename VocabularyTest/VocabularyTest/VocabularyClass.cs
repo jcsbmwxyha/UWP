@@ -79,5 +79,47 @@ namespace VocabularyTest
                     new PropertyChangedEventArgs(propertyName));
             }
         }
+        static public string CreateSimpleContent(List<Vocabulary> voclist)
+        {
+            string result = "";
+
+            foreach (Vocabulary vd in voclist)
+            {
+                result += vd.English + "\r\n";
+
+                if (vd.KK != "")
+                    result += vd.KK + "\r\n";
+
+                result += vd.Chinese + "\r\n\r\n";
+            }
+
+            return result;
+        }
+        static public string CreateFormatContent(List<Vocabulary> voclist)
+        {
+            string result = "";
+
+            foreach (Vocabulary vd in voclist)
+            {
+                result +=
+                    "<eg>" + vd.English + "<eg/>\r\n" +
+                    "<kk>" + vd.KK + "<kk/>\r\n" +
+                    "<ch>" + vd.Chinese + "<ch/>\r\n";
+
+                if (vd.Star == true)
+                    result += "<star>" + "t" + "<star/>\r\n";
+                else
+                    result += "<star>" + "f" + "<star/>\r\n";
+
+                if (vd.Ear == true)
+                    result += "<ear>" + "t" + "<ear/>\r\n";
+                else
+                    result += "<ear>" + "f" + "<ear/>\r\n";
+
+                result += "<note>" + vd.Note + "<note/>\r\n";
+            }
+
+            return result;
+        }
     }
 }

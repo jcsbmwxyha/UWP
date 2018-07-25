@@ -133,7 +133,6 @@ namespace VocabularyTest
             return vocs;
         }
 
-
         private void VocabularyListBox_LostFocus(object sender, RoutedEventArgs e)
         {
             //SelectedItemIndex = -1;
@@ -165,7 +164,7 @@ namespace VocabularyTest
                 return;
             }
 
-            string result = CreateFileContent(MyVocsList.ToList());
+            string result = Vocabulary.CreateFormatContent(MyVocsList.ToList());
 
             if (!String.IsNullOrEmpty(result))
             {
@@ -193,7 +192,7 @@ namespace VocabularyTest
                 Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
 
                 // write to file
-                string result = CreateFileContent(MyVocsList.ToList());
+                string result = Vocabulary.CreateFormatContent(MyVocsList.ToList());
 
                 if (!String.IsNullOrEmpty(result))
                 {
@@ -209,33 +208,7 @@ namespace VocabularyTest
                 VocStorageFile = saveFile;
                 SaveBtnEnabled = false;
             }
-        }
-        private string CreateFileContent(List<Vocabulary> voclist)
-        {
-            string result = "";
-
-            foreach (Vocabulary vd in voclist)
-            {
-                result +=
-                    "<eg>" + vd.English + "<eg/>\r\n" +
-                    "<kk>" + vd.KK + "<kk/>\r\n" +
-                    "<ch>" + vd.Chinese + "<ch/>\r\n";
-
-                if (vd.Star == true)
-                    result += "<star>" + "t" + "<star/>\r\n";
-                else
-                    result += "<star>" + "f" + "<star/>\r\n";
-
-                if (vd.Ear == true)
-                    result += "<ear>" + "t" + "<ear/>\r\n";
-                else
-                    result += "<ear>" + "f" + "<ear/>\r\n";
-
-                result += "<note>" + vd.Note + "<note/>\r\n";
-            }
-
-            return result;
-        }
+        }       
         private async void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
@@ -310,7 +283,7 @@ namespace VocabularyTest
                 Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
 
                 // write to file
-                string result = CreateFileContent(vocs);
+                string result = Vocabulary.CreateFormatContent(vocs);
 
                 if (!String.IsNullOrEmpty(result))
                 {
@@ -323,7 +296,13 @@ namespace VocabularyTest
                 Windows.Storage.Provider.FileUpdateStatus status =
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
 
+                // Load the file again
+                string fileContent = await FileIO.ReadTextAsync(saveFile);
+                List<Vocabulary> results = ParsingVocabularies(fileContent);
+                MyVocsList = new ObservableCollection<Vocabulary>(results);
+                SelectedItemIndex = -1;
                 VocStorageFile = saveFile;
+                VocabularyListBox.ItemsSource = MyVocsList;
                 SaveBtnEnabled = false;
             }
         }
@@ -343,7 +322,48 @@ namespace VocabularyTest
 
             return text;
         }
+        private async void SimpleSaveStarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyVocsList == null)
+                return;
 
+            List<Vocabulary> vocs = MyVocsList.ToList().FindAll(x => x.Star == true);
+
+            if (vocs.Count == 0)
+                return;
+
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.Desktop;
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".vocs" });
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.SuggestedFileName = "MyVocs";
+
+            StorageFile saveFile = await savePicker.PickSaveFileAsync();
+
+            if (saveFile != null)
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
+
+                // write to file
+                string result = Vocabulary.CreateSimpleContent(vocs);
+
+                if (!String.IsNullOrEmpty(result))
+                {
+                    await FileIO.WriteTextAsync(saveFile, result);
+                }
+
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
+            }
+        }
+        
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (MyVocsList == null)
@@ -386,38 +406,6 @@ namespace VocabularyTest
             StartTestDialog dialog = new StartTestDialog(vocs);
             await dialog.ShowAsync();
         }
-
-        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            VocabularyRichTextBlockGrid.Width = Row1.ColumnDefinitions[0].ActualWidth;
-            eventLogGrid.Width = Row1.ColumnDefinitions[0].ActualWidth;
-            VocabularyListBox.Width = Row1.ColumnDefinitions[1].ActualWidth - 10;
-        }
-
-        public void DeleteVocabulary(Vocabulary voc)
-        {
-            SelectedItemIndex = -1;
-            MyVocsList.Remove(voc);
-            VocabularyListBox.ItemsSource = MyVocsList;
-        }
-        public void UpdateSelectedVocContent()
-        {
-            // update text
-            Vocabulary voc = VocabularyListBox.SelectedItem as Vocabulary;
-            Paragraph paragraph = new Paragraph();
-            Run run = new Run();
-            eventLog.TextWrapping = TextWrapping.Wrap;
-            run.Text =
-                voc.English + "\n"
-                + voc.KK + "\n"
-                + voc.Chinese + "\n\n"
-                + voc.Note;
-            paragraph.Inlines.Add(run);
-
-            VocabularyRichTextBlock.Blocks.Clear();
-            VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
-        }
-
         private void RandomButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedItemIndex = -1;
@@ -449,7 +437,6 @@ namespace VocabularyTest
             MyVocsList = new ObservableCollection<Vocabulary>(vocs);
             VocabularyListBox.ItemsSource = MyVocsList;
         }
-
         private async void AutoFillButton_Click(object sender, RoutedEventArgs e)
         {
             if (MyVocsList == null)
@@ -521,6 +508,36 @@ namespace VocabularyTest
                     await System.Threading.Tasks.Task.Delay(2000);
                 }
             }
+        }
+
+        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            VocabularyRichTextBlockGrid.Width = Row1.ColumnDefinitions[0].ActualWidth;
+            eventLogGrid.Width = Row1.ColumnDefinitions[0].ActualWidth;
+            VocabularyListBox.Width = Row1.ColumnDefinitions[1].ActualWidth - 10;
+        }
+        public void DeleteVocabulary(Vocabulary voc)
+        {
+            SelectedItemIndex = -1;
+            MyVocsList.Remove(voc);
+            VocabularyListBox.ItemsSource = MyVocsList;
+        }
+        public void UpdateSelectedVocContent()
+        {
+            // update text
+            Vocabulary voc = VocabularyListBox.SelectedItem as Vocabulary;
+            Paragraph paragraph = new Paragraph();
+            Run run = new Run();
+            eventLog.TextWrapping = TextWrapping.Wrap;
+            run.Text =
+                voc.English + "\n"
+                + voc.KK + "\n"
+                + voc.Chinese + "\n\n"
+                + voc.Note;
+            paragraph.Inlines.Add(run);
+
+            VocabularyRichTextBlock.Blocks.Clear();
+            VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
         }
     }
 }
