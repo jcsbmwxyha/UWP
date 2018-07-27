@@ -20,12 +20,17 @@ namespace AuraEditor
     public sealed partial class DeviceLayerListViewItem : UserControl
     {
         public DeviceLayer MyDeviceLayer { get { return this.DataContext as DeviceLayer; } }
-        public bool IsSelected {
+        
+        public bool IsChecked {
             get {
                 if (DeviceLayerRadioButton.IsChecked == true)
                     return true;
                 else
                     return false;
+            }
+            set
+            {
+                DeviceLayerRadioButton.IsChecked = value;
             }
         }
 
@@ -52,7 +57,8 @@ namespace AuraEditor
         {
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-            page.UpdateSpaceGrid(MyDeviceLayer);
+            
+            page.WatchLayer(MyDeviceLayer);
         }
     }
 }

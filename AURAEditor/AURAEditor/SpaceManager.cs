@@ -12,28 +12,83 @@ using Windows.UI;
 
 namespace AuraEditor
 {
+    public enum SpaceStatus
+    {
+        None = 0,
+        Normal = 1,
+        DragingDevice = 2,
+        WatchingLayer = 3,
+    }
+
     public sealed partial class MainPage : Page
     {
         MouseEventCtrl _mouseEventCtrl;
-        public bool DragingDeviceImage {
-            set
+
+        private SpaceStatus spaceGridStatus;
+        public SpaceStatus GetSpaceGridCurrentStatus()
+        {
+            return spaceGridStatus;
+        }
+        public void UpdateSpaceGridOperations(SpaceStatus value)
+        {
+            if (value == spaceGridStatus)
+                return;
+
+            spaceGridStatus = value;
+
+            if (value == SpaceStatus.Normal)
             {
-                if (value)
-                {
-                    SpacePanel.PointerPressed -= Image_PointerPressed;
-                    SpacePanel.PointerMoved -= Image_PointerMoved;
-                    SpacePanel.PointerReleased -= Image_PointerReleased;
-                    SpacePanel.RightTapped -= Image_RightTapped;
-                }
-                else
-                {
-                    SpacePanel.PointerPressed += Image_PointerPressed;
-                    SpacePanel.PointerMoved += Image_PointerMoved;
-                    SpacePanel.PointerReleased += Image_PointerReleased;
-                    SpacePanel.RightTapped += Image_RightTapped;
-                }
+                DisableAllDevicesOperation();
+                SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+                SpaceAreaCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+                SpaceAreaCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
+
+                SpaceAreaCanvas.PointerPressed += SpaceGrid_PointerPressed;
+                SpaceAreaCanvas.PointerMoved += SpaceGrid_PointerMoved;
+                SpaceAreaCanvas.PointerReleased += SpaceGrid_PointerReleased;
+                SpaceAreaCanvas.RightTapped += SpaceGrid_RightTapped;
+                SetLayerButton.IsEnabled = true;
+            }
+            else if (value == SpaceStatus.WatchingLayer)
+            {
+                DisableAllDevicesOperation();
+                SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+                SpaceAreaCanvas.PointerPressed += SpaceGrid_PointerPressed;
+
+                SpaceAreaCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+                SpaceAreaCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
+                SetLayerButton.IsEnabled = false;
+            }
+            else if (value == SpaceStatus.DragingDevice)
+            {
+                EableAllDevicesOperation();
+                SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+                SpaceAreaCanvas.PointerPressed += SpaceGrid_PointerPressed;
+
+                SpaceAreaCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+                SpaceAreaCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
+                SetLayerButton.IsEnabled = true;
             }
         }
+
+        private void EableAllDevicesOperation()
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                d.EnableManipulation();
+            }
+        }
+        private void DisableAllDevicesOperation()
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                d.DisableManipulation();
+            }
+        }
+
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
@@ -46,29 +101,30 @@ namespace AuraEditor
 
             return mec;
         }
-
         public void UpdateSpaceGrid()
         {
-            SpacePanel.Children.Clear();
-            SpacePanel.Children.Add(GridImage);
+            SpaceAreaCanvas.Children.Clear();
+            SpaceAreaCanvas.Children.Add(GridImage);
+            SpaceAreaCanvas.Children.Add(mouseRectangle);
             List<Device> devices = _auraCreatorManager.GlobalDevices;
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
             
             foreach (Device d in devices)
             {
-                SpacePanel.Children.Add(d.DeviceImg);
+                SpaceAreaCanvas.Children.Add(d.DeviceImg);
 
                 foreach (var zone in d.LightZones)
                 {
-                    SpacePanel.Children.Add(zone.Frame);
+                    SpaceAreaCanvas.Children.Add(zone.Frame);
 
                     MouseDetectionRegion r = new MouseDetectionRegion()
                     {
-                        Index = -1,
+                        RegionIndex = -1,
                         DetectionRect = zone.AbsoluteZoneRect,
                         Hover = false,
                         Selected = zone.Selected,
-                        Callback = zone.Frame_StatusChanged
+                        Callback = zone.Frame_StatusChanged,
+                        GroupIndex = d.DeviceType
                     };
                     regions.Add(r);
                 }
@@ -76,25 +132,14 @@ namespace AuraEditor
 
             _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
-        public void UpdateSpaceGrid(DeviceLayer dg)
+        public void WatchLayer(DeviceLayer layer)
         {
-            List<Device> devices = _auraCreatorManager.GlobalDevices;
-            Dictionary<int, int[]> dictionary = dg.GetDeviceToZonesDictionary();
-            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
+            Dictionary<int, int[]> dictionary = layer.GetDeviceToZonesDictionary();
 
-            // 1. Reset all zones
-            foreach (var d in _auraCreatorManager.GlobalDevices)
-            {
-                foreach (var zone in d.LightZones)
-                {
-                    Shape shape = zone.Frame;
-                    shape.Stroke = new SolidColorBrush(Colors.Black);
-                    shape.Fill = new SolidColorBrush(Colors.Transparent);
-                    zone.Selected = false;
-                }
-            }
+            UpdateSpaceGridOperations(SpaceStatus.WatchingLayer);
+            ResetAllZones();
 
-            // 2. According to the dg, assign selection status for every zone
+            // According to the layer, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
                 Device d = _auraCreatorManager.GetGlobalDevice(pair.Key);
@@ -108,61 +153,48 @@ namespace AuraEditor
                     {
                         shape.Stroke = new SolidColorBrush(Colors.Yellow);
                         shape.Fill = new SolidColorBrush(Colors.Transparent);
-                        zone.Selected = true;
                     }
                 }
             }
+        }
+        public void UpdateDevicePosition(Device device, int offsetX, int offsetY)
+        {
+            _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
+        }
+        private void UnselectAllLayers()
+        {
+            LayerSelected = false;
+            List<DeviceLayerListViewItem> items =
+                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
 
-            // 3. Update mouse regions
-            foreach (Device d in devices)
+            foreach (var item in items)
+            {
+                item.IsChecked = false;
+            }
+        }
+        private void ResetAllZones()
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
             {
                 foreach (var zone in d.LightZones)
                 {
-                    MouseDetectionRegion r = new MouseDetectionRegion()
-                    {
-                        Index = -1,
-                        DetectionRect = zone.AbsoluteZoneRect,
-                        Hover = false,
-                        Selected = zone.Selected,
-                        Callback = zone.Frame_StatusChanged
-                    };
-                    regions.Add(r);
+                    Shape shape = zone.Frame;
+                    shape.Stroke = new SolidColorBrush(Colors.Black);
+                    shape.Fill = new SolidColorBrush(Colors.Transparent);
                 }
             }
 
-            _mouseEventCtrl.DetectionRegions = regions.ToArray();
-        }
-        public void UpdateDeviceZoneRegions()
-        {
-            List<Device> devices = _auraCreatorManager.GlobalDevices;
-            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
-
-            foreach (Device d in devices)
-            {
-                foreach (var zone in d.LightZones)
-                {
-                    MouseDetectionRegion r = new MouseDetectionRegion()
-                    {
-                        Index = -1,
-                        DetectionRect = zone.AbsoluteZoneRect,
-                        Hover = false,
-                        Selected = zone.Selected,
-                        Callback = zone.Frame_StatusChanged
-                    };
-                    regions.Add(r);
-                }
-            }
-
-            _mouseEventCtrl.DetectionRegions = regions.ToArray();
+            _mouseEventCtrl.SetAllRegionsStatus(RegionStatus.Normal);
         }
 
-        private async void SetLayerButton_Click(object sender, RoutedEventArgs e)
+        private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
-            NamedDialog namedDialog = new NamedDialog();
+            //NamedDialog namedDialog = new NamedDialog();
             List<Device> devices = _auraCreatorManager.GlobalDevices;
-            DeviceLayer dg = new DeviceLayer();
-            dg.LayerName = namedDialog.CustomizeName;
+            DeviceLayer layer = new DeviceLayer();
             List<int> selectedIndex;
+
+            layer.LayerName = "Layer " + (_auraCreatorManager.GetLayerCount());
 
             foreach (Device d in devices)
             {
@@ -176,30 +208,32 @@ namespace AuraEditor
                     }
                 }
 
-                dg.AddDeviceZones(d.DeviceType, selectedIndex.ToArray());
+                layer.AddDeviceZones(d.DeviceType, selectedIndex.ToArray());
             }
             
-            var result = await namedDialog.ShowAsync();
-            if (result == ContentDialogResult.None)
-                return;
-
-            dg.LayerName = namedDialog.CustomizeName;
-            if (dg.LayerName == "")
-                return;
-            
-            _auraCreatorManager.AddDeviceLayer(dg);
+            _auraCreatorManager.AddDeviceLayer(layer);
             LayerListView.SelectedIndex = 0;
         }
 
-        private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void SpaceGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            if (GetSpaceGridCurrentStatus() == SpaceStatus.WatchingLayer)
+            {
+                UnselectAllLayers();
+                ResetAllZones();
+                UpdateSpaceGridOperations(SpaceStatus.Normal);
+            }
+
             var fe = sender as FrameworkElement;
             Point Position = e.GetCurrentPoint(fe).Position;
             _mouseEventCtrl.OnMousePressed(Position);
             bool _hasCapture = fe.CapturePointer(e.Pointer);
         }
-        private void Image_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
+            if (GetSpaceGridCurrentStatus() != SpaceStatus.Normal)
+                return;
+
             var fe = sender as FrameworkElement;
             PointerPoint ptrPt = e.GetCurrentPoint(fe);
             Point Position = ptrPt.Position;
@@ -219,22 +253,32 @@ namespace AuraEditor
             Rect r = _mouseEventCtrl.MouseRect;
             CompositeTransform ct = mouseRectangle.RenderTransform as CompositeTransform;
 
-            ct.TranslateX = r.X - SpaceAreaScrollViewer.HorizontalOffset;
-            ct.TranslateY = r.Y - SpaceAreaScrollViewer.VerticalOffset;
+            ct.TranslateX = r.X;
+            ct.TranslateY = r.Y;
             mouseRectangle.Width = r.Width;
             mouseRectangle.Height = r.Height;
         }
-        private void Image_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private void SpaceGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             Rect r = _mouseEventCtrl.MouseRect;
             _mouseEventCtrl.OnMouseReleased();
             mouseRectangle.Width = 0;
             mouseRectangle.Height = 0;
         }
-        private void Image_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        private void SpaceGrid_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             _mouseEventCtrl.OnRightTapped();
         }
 
+
+        private void DragToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
+        }
+
+        private void DragToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UpdateSpaceGridOperations(SpaceStatus.Normal);
+        }
     }
 }

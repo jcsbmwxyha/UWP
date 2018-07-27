@@ -96,9 +96,9 @@ namespace AuraEditor
             }
         }
 
-        public Effect(DeviceLayer dg, int effectType)
+        public Effect(DeviceLayer layer, int effectType)
         {
-            MyDeviceLayer = dg;
+            MyDeviceLayer = layer;
             EffectType = effectType;
             EffectName = EffectHelper.GetEffectName(effectType);
             EffectLineUI = CreateEffectUI(effectType);
@@ -181,7 +181,7 @@ namespace AuraEditor
 
             return rectangle;
         }
-        public void Frame_StatusChanged(int regionIndex, int status)
+        public void Frame_StatusChanged(int regionIndex, RegionStatus status)
         {
             if (status == RegionStatus.Normal)
             {
@@ -213,6 +213,7 @@ namespace AuraEditor
     {
         public string DeviceName { get; set; }
         public int DeviceType { get; set; }
+        private double _oldX;
         public double X
         {
             get
@@ -226,6 +227,7 @@ namespace AuraEditor
                 ct.TranslateX = value * Constants.GridLength;
             }
         }
+        private double _oldY;
         public double Y
         {
             get
@@ -248,10 +250,19 @@ namespace AuraEditor
         public Device(Image img)
         {
             DeviceImg = img;
-            EnableManipulation();
+
+            DeviceImg.PointerPressed += Image_PointerPressed;
+            DeviceImg.PointerReleased += Image_PointerReleased;
+            DeviceImg.Tapped += DeviceImg_Tapped;
         }
         public void EnableManipulation()
         {
+            DeviceImg.ManipulationStarted -= ImageManipulationStarted;
+            DeviceImg.ManipulationDelta -= ImageManipulationDelta;
+            DeviceImg.ManipulationCompleted -= ImageManipulationCompleted;
+            DeviceImg.PointerEntered -= ImagePointerEntered;
+            DeviceImg.PointerExited -= ImagePointerExited;
+
             DeviceImg.ManipulationStarted += ImageManipulationStarted;
             DeviceImg.ManipulationDelta += ImageManipulationDelta;
             DeviceImg.ManipulationCompleted += ImageManipulationCompleted;
@@ -266,14 +277,32 @@ namespace AuraEditor
             DeviceImg.PointerEntered -= ImagePointerEntered;
             DeviceImg.PointerExited -= ImagePointerExited;
         }
+
+        private void DeviceImg_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            page.UpdateSpaceGridOperations(SpaceStatus.Normal);
+        }
+        private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            //page.UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
+        }
+        private void Image_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            //page.UpdateSpaceGridOperations(SpaceStatus.Normal);
+        }
         private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             var fe = sender as FrameworkElement;
             fe.Opacity = 0.5;
 
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.DragingDeviceImage = true;
+            _oldX = X;
+            _oldY = Y;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -293,41 +322,45 @@ namespace AuraEditor
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             Image img = sender as Image;
-            img.Opacity = 1;
-
             CompositeTransform ct = img.RenderTransform as CompositeTransform;
             CompositeTransform zone_ct;
 
+            // TODO : ++ functionalized  this part
+            img.Opacity = 1;
             ct.TranslateX = (int)ct.TranslateX / Constants.GridLength * Constants.GridLength;
             ct.TranslateY = (int)ct.TranslateY / Constants.GridLength * Constants.GridLength;
 
             foreach (var zone in LightZones)
             {
                 zone_ct = zone.Frame.RenderTransform as CompositeTransform;
-
                 zone_ct.TranslateX = (int)ct.TranslateX + zone.RelativeZoneRect.Left;
                 zone_ct.TranslateY = (int)ct.TranslateY + zone.RelativeZoneRect.Top;
             }
+            // TODO : --
 
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
-            page.UpdateDeviceZoneRegions();
+            page.UpdateDevicePosition(this,
+                (int)(X - _oldX) * Constants.GridLength,
+                (int)(Y - _oldY) * Constants.GridLength);
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
+            Window.Current.CoreWindow.PointerCursor 
+                = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
 
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.DragingDeviceImage = true;
+            //var frame = (Frame)Window.Current.Content;
+            //var page = (MainPage)frame.Content;
+            //page.UpdateSpaceGridStatus(SpaceStatus.DragingDevice);
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+            Window.Current.CoreWindow.PointerCursor 
+                = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.DragingDeviceImage = false;
+            //var frame = (Frame)Window.Current.Content;
+            //var page = (MainPage)frame.Content;
+            //page.UpdateSpaceGridStatus(SpaceStatus.Normal);
         }
     }
 
@@ -590,32 +623,32 @@ namespace AuraEditor
         }
         private void AddTriggerDeviceLayer()
         {
-            TriggerDeviceLayer tdg = new TriggerDeviceLayer();
-            tdg.LayerName = "Trigger Effect";
-            tdg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
+            TriggerDeviceLayer tlayer = new TriggerDeviceLayer();
+            tlayer.LayerName = "Trigger Effect";
+            tlayer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
 
-            tdg.AddDeviceZones(0, new int[] { -1 });
-            tdg.AddDeviceZones(1, new int[] { -1 });
+            tlayer.AddDeviceZones(0, new int[] { -1 });
+            tlayer.AddDeviceZones(1, new int[] { -1 });
             //tdg.AddDeviceZones(2, new int[] { -1 });
             //tdg.AddDeviceZones(3, new int[] { -1 });
 
-            DeviceLayerCollection.Add(tdg);
-            TimeLineStackPanel.Children.Add(tdg.UICanvas);
+            DeviceLayerCollection.Add(tlayer);
+            TimeLineStackPanel.Children.Add(tlayer.UICanvas);
         }
-        public void AddDeviceLayer(DeviceLayer dg)
+        public void AddDeviceLayer(DeviceLayer layer)
         {
             if (DeviceLayerCollection.Count % 2 == 0)
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
             else
-                dg.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
 
-            DeviceLayerCollection.Add(dg);
-            TimeLineStackPanel.Children.Add(dg.UICanvas);
+            DeviceLayerCollection.Add(layer);
+            TimeLineStackPanel.Children.Add(layer.UICanvas);
         }
-        public void RemoveDeviceLayer(DeviceLayer dg)
+        public void RemoveDeviceLayer(DeviceLayer layer)
         {
-            DeviceLayerCollection.Remove(dg);
-            TimeLineStackPanel.Children.Remove(dg.UICanvas);
+            DeviceLayerCollection.Remove(layer);
+            TimeLineStackPanel.Children.Remove(layer.UICanvas);
         }
         public void SetGlobalDevices(List<Device> devices)
         {
@@ -630,6 +663,11 @@ namespace AuraEditor
         {
             return GlobalDevices.Find(x => x.DeviceType == type);
         }
+        public int GetLayerCount()
+        {
+            return DeviceLayerCollection.Count;
+        }
+
         public string PrintLuaScript()
         {
             StringBuilder sb = new StringBuilder();
@@ -710,9 +748,9 @@ namespace AuraEditor
             Table usageTable;
 
             int layerIndex = 1;
-            foreach (DeviceLayer dg in DeviceLayerCollection)
+            foreach (DeviceLayer layer in DeviceLayerCollection)
             {
-                Dictionary<int, int[]> deviceToZonesDictionary = dg.GetDeviceToZonesDictionary();
+                Dictionary<int, int[]> deviceToZonesDictionary = layer.GetDeviceToZonesDictionary();
                 layerTable = CreateNewTable();
 
                 foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
@@ -741,7 +779,7 @@ namespace AuraEditor
 
                     usageTable = CreateNewTable();
 
-                    if (dg is TriggerDeviceLayer)
+                    if (layer is TriggerDeviceLayer)
                     {
                         int count = 1;
                         foreach (var gd in GlobalDevices)
@@ -771,7 +809,7 @@ namespace AuraEditor
 
                     layerTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
                 }
-                viewPortTable.Set(dg.LayerName, DynValue.NewTable(layerTable));
+                viewPortTable.Set(layer.LayerName, DynValue.NewTable(layerTable));
                 layerIndex++;
             }
             return viewPortTable;

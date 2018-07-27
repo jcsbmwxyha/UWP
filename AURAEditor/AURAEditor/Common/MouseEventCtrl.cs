@@ -7,19 +7,20 @@ using Windows.Foundation;
 
 namespace AuraEditor.Common
 {
-    static class RegionStatus
+    public enum RegionStatus
     {
-        public const int Normal = 0;
-        public const int NormalHover = 1;
-        public const int Selected = 2;
-        public const int SelectedHover = 3;
+        Normal = 0,
+        NormalHover,
+        Selected,
+        SelectedHover
     }
 
     class MouseDetectionRegion
     {
         public MouseEventCtrl.StatusChangedCallBack Callback { get; set; }
         public Rect DetectionRect { get; set; }
-        public int Index { get; set; }
+        public int RegionIndex { get; set; }
+        public int GroupIndex { get; set; }
 
         bool hover;
         public bool IsHover => hover;
@@ -49,22 +50,32 @@ namespace AuraEditor.Common
             }
         }
 
+        public void UpdateRect(int moveXOffset, int moveYOffset)
+        {
+            Rect r = new Rect(
+                DetectionRect.X + moveXOffset,
+                DetectionRect.Y + moveYOffset,
+                DetectionRect.Width,
+                DetectionRect.Height);
+
+            DetectionRect = r;
+        }
         public void OnStatusChanged()
         {
-            int status;
+            RegionStatus status;
 
             if (!hover && !selected) status = RegionStatus.Normal;
             else if (hover && !selected) status = RegionStatus.NormalHover;
             else if (!hover && selected) status = RegionStatus.Selected;
             else status = RegionStatus.SelectedHover;
 
-            Callback?.Invoke(Index, status);
+            Callback?.Invoke(RegionIndex, status);
         }
     }
 
     class MouseEventCtrl
     {
-        public delegate void StatusChangedCallBack(int regionIndex, int status);
+        public delegate void StatusChangedCallBack(int regionIndex, RegionStatus status);
         Point _pressPoint;
         List<int> _beforeMouseSelectedIndexes;
         List<int> _currentMouseSelectedIndexes;
@@ -237,10 +248,40 @@ namespace AuraEditor.Common
             foreach (var r in DetectionRegions)
             {
                 if (r.IsSelected == true)
-                    selectedIndex.Add(r.Index);
+                    selectedIndex.Add(r.RegionIndex);
             }
 
             return selectedIndex.ToArray();
+        }
+        public void UpdateGroupRects(int groupIndex, int moveXOffset, int moveYOffset)
+        {
+            foreach(var reg in DetectionRegions)
+            {
+                if (reg.GroupIndex == groupIndex)
+                {
+                    reg.UpdateRect(moveXOffset, moveYOffset);
+                }
+            }
+        }
+        public void SetAllRegionsStatus(RegionStatus status)
+        {
+            bool hover;
+            bool selected;
+
+            if (status == RegionStatus.Normal)
+            { hover = false; selected = false; }
+            else if (status == RegionStatus.NormalHover)
+            { hover = true; selected = false; }
+            else if (status == RegionStatus.Selected)
+            { hover = false; selected = true; }
+            else
+            { hover = true; selected = true; }
+
+            foreach (var reg in DetectionRegions)
+            {
+                reg.Hover = hover;
+                reg.Selected = selected;
+            }
         }
     }
 }

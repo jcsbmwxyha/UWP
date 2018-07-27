@@ -62,6 +62,7 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         AuraCreatorManager _auraCreatorManager;
+        public bool LayerSelected;
 
         int timeLineSliderValue = 25;
         public int TimeLineZoomSliderValue
@@ -90,6 +91,8 @@ namespace AuraEditor
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
             _auraCreatorManager = new AuraCreatorManager(TimeLineStackPanel);
             _mouseEventCtrl = IntializeMouseEventCtrl();
+            LayerSelected = false;
+            UpdateSpaceGridOperations(SpaceStatus.Normal);
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -402,17 +405,17 @@ namespace AuraEditor
                 return;
 
             // Step 3 : According to device layer name, get all device zones from Viewport table
-            foreach (var dg in deviceLayers)
+            foreach (var layer in deviceLayers)
             {
-                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, dg.LayerName);
-                dg.AddDeviceZones(dictionary);
+                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.LayerName);
+                layer.AddDeviceZones(dictionary);
 
-                foreach (var effect in dg.Effects)
+                foreach (var effect in layer.Effects)
                 {
                     EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.EffectLuaName);
                     effect.Info = ei;
                 }
-                _auraCreatorManager.AddDeviceLayer(dg);
+                _auraCreatorManager.AddDeviceLayer(layer);
             }
 
             UpdateSpaceGrid();
@@ -515,12 +518,12 @@ namespace AuraEditor
                 Table t = queueTable.Get(queueIndex).Table;
                 string layerName = t.Get("Viewport").String;
 
-                DeviceLayer dg = layers.Find(x => x.LayerName == layerName);
+                DeviceLayer layer = layers.Find(x => x.LayerName == layerName);
 
-                if (dg == null)
+                if (layer == null)
                 {
-                    dg = new DeviceLayer(layerName);
-                    layers.Add(dg);
+                    layer = new DeviceLayer(layerName);
+                    layers.Add(layer);
                 }
 
                 string effectLuaName = t.Get("Effect").String;
@@ -528,13 +531,13 @@ namespace AuraEditor
                 double duration = t.Get("Duration").Number;
                 int type = EffectHelper.GetEffectIndex(effectLuaName);
 
-                Effect effect = new Effect(dg, type)
+                Effect effect = new Effect(layer, type)
                 {
                     EffectLuaName = effectLuaName,
                     Start = (int)start / 10,
                     Duration = (int)duration / 10
                 };
-                dg.AddEffect(effect);
+                layer.AddEffect(effect);
             }
 
             return layers;
@@ -635,7 +638,7 @@ namespace AuraEditor
                     img.Source = bitmapImage;
                 }
 
-                SpacePanel.Children.Add(img);
+                SpaceAreaCanvas.Children.Add(img);
             }
         }
 
@@ -646,17 +649,17 @@ namespace AuraEditor
 
             foreach (var item in items)
             {
-                if (item.IsSelected == true)
+                if (item.IsChecked == true)
                 {
-                    DeviceLayer dg = item.DataContext as DeviceLayer;
+                    DeviceLayer layer = item.DataContext as DeviceLayer;
 
-                    if (dg is TriggerDeviceLayer)
+                    if (layer is TriggerDeviceLayer)
                         continue;
 
-                    if (dg.Effects.Contains(_selectedEffectLine))
+                    if (layer.Effects.Contains(_selectedEffectLine))
                         SelectedEffectLine = null;
 
-                    _auraCreatorManager.RemoveDeviceLayer(dg);
+                    _auraCreatorManager.RemoveDeviceLayer(layer);
                 }
             }
         }
@@ -710,6 +713,22 @@ namespace AuraEditor
                 System.Diagnostics.Debug.WriteLine(e.ToString());
             }
         }
+
+        private void HideEffectList_Click(object sender, RoutedEventArgs e)
+        {
+            if (OptionsBlockGrid.ColumnDefinitions[0].ActualWidth < 100)
+                OptionsBlockGrid.ColumnDefinitions[0].Width = new GridLength(LayerScrollViewer.ActualWidth);
+            else
+                OptionsBlockGrid.ColumnDefinitions[0].Width = new GridLength(10);
+        }
+        private void HideEffectInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (OptionsBlockGrid.ColumnDefinitions[2].ActualWidth < 100)
+                OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(200);
+            else
+                OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(10);
+        }
+
     }
 }
 
