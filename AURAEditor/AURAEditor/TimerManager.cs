@@ -6,29 +6,29 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        DispatcherTimer timeLineTimerClock = new DispatcherTimer();
+        DispatcherTimer timelineTimerClock = new DispatcherTimer();
         DateTime baseDateTime;
 
         bool EnableLog = true;
 
-        private async void TimeLineTimer_Play(object sender, RoutedEventArgs e)
+        private async void TimelineTimer_Play(object sender, RoutedEventArgs e)
         {
             await(new ServiceViewModel()).AuraEditorTrigger();
-            TimeLineStoryboard.Begin();
-            timeLineTimerClock.Tick += Timer_Tick;
-            timeLineTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            TimelineStoryboard.Begin();
+            timelineTimerClock.Tick += Timer_Tick;
+            timelineTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 10);
             baseDateTime = DateTime.Now;
-            timeLineTimerClock.Start();
+            timelineTimerClock.Start();
 
-            TimeLineIconCanvas.Height = TimeLineStackPanel.ActualHeight + TimeLineScaleScrollViewer.ActualHeight;
-            TimeLineIconCanvas.Width = TimeLineStackPanel.ActualWidth;
+            TimelineIconCanvas.Height = TimelineStackPanel.ActualHeight + TimelineScaleScrollViewer.ActualHeight;
+            TimelineIconCanvas.Width = TimelineStackPanel.ActualWidth;
 
-            TimeLineLayerScrollViewer.ChangeView(0, 0, null, true);
-            TimeLineScaleScrollViewer.ChangeView(0, null, null, true);
+            TimelineLayerScrollViewer.ChangeView(0, 0, null, true);
+            TimelineScaleScrollViewer.ChangeView(0, null, null, true);
             LayerScrollViewer.ChangeView(null, 0, null, true);
 
-            TimeLineIconScrollViewer.ChangeView(0, 0, null, true);
-            TimeLineIconScrollViewer.Visibility = Visibility.Visible;
+            TimelineIconScrollViewer.ChangeView(0, 0, null, true);
+            TimelineIconScrollViewer.Visibility = Visibility.Visible;
         }
 
         private async void CreateXML(string xmlstring)
@@ -42,25 +42,25 @@ namespace AuraEditor
             await doc2.SaveToFileAsync(file);
         }
 
-        private void TimeLineTimer_Stop(object sender, RoutedEventArgs e)
+        private void TimelineTimer_Stop(object sender, RoutedEventArgs e)
         {
-            TimeLineStoryboard.Stop();
+            TimelineStoryboard.Stop();
             SpaceLineStoryboard.Stop();
-            timeLineTimerClock.Stop();
+            timelineTimerClock.Stop();
 
-            TimeLineIconScrollViewer.Visibility = Visibility.Collapsed;
+            TimelineIconScrollViewer.Visibility = Visibility.Collapsed;
         }
 
         private void Timer_Click(object sender, RoutedEventArgs e)
         {
-            timeLineTimerClock.Tick += Timer_Tick;
-            timeLineTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            timeLineTimerClock.Start();
+            timelineTimerClock.Tick += Timer_Tick;
+            timelineTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            timelineTimerClock.Start();
         }
 
         private void Timer_Tick(object sender, object e)
         {
-            TimeLineTimerText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
+            TimelineTimerText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
         }
     }
 }

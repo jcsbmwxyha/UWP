@@ -42,7 +42,7 @@ namespace AuraEditor
         }
         public void UpdateEffectInfoGrid(Effect effect)
         {
-            EffectLine border = effect.EffectLineUI;
+            EffectLine border = effect.UI;
             ShowEffectGroups(effect.EffectType);
             UpdateEffectGroups(effect.Info);
             
@@ -218,7 +218,7 @@ namespace AuraEditor
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
         {
-            EffectLine effectLineUI = SelectedEffectLine.EffectLineUI;
+            EffectLine effectLineUI = SelectedEffectLine.UI;
             Color resultColor = ColorPicker.Color;
             SolidColorBrush scb = new SolidColorBrush(resultColor);
 

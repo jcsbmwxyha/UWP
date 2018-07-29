@@ -63,7 +63,7 @@ namespace AuraEditor.Common
             lgb.EndPoint = new Point(1, 0);
             return lgb;
         }
-        public static Brush GetTimeLineBackgroundColor(int colorIndex)
+        public static Brush GetTimelineBackgroundColor(int colorIndex)
         {
             Color color;
 

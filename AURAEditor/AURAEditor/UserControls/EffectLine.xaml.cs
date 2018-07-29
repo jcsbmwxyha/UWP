@@ -52,61 +52,65 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
-        
+
         void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            var fe = sender as FrameworkElement;
-            EffectLine el = fe.Parent as EffectLine;
-            CompositeTransform ct = el.RenderTransform as CompositeTransform;
-
             if (_cursorMove)
             {
-                if ((ct.TranslateX + e.Delta.Translation.X < 0))
+                if (MyEffect.UI_X + e.Delta.Translation.X < 0)
                     return;
-                ct.TranslateX += e.Delta.Translation.X;
+                MyEffect.UI_X += e.Delta.Translation.X;
             }
             else if (_cursorSizeRight)
             {
-                MyEffect.MyDeviceLayer.OnCursorSizeRight(MyEffect, (int)(ct.TranslateX), (int)(el.Width + e.Delta.Translation.X));
-
                 if (e.Position.X > 50)
-                    el.Width = e.Position.X;
+                    MyEffect.UI_Width = e.Position.X;
+
+                if (e.Delta.Translation.X > 0)
+                    MyEffect.Layer.OnCursorSizeRight(MyEffect);
             }
             else if (_cursorSizeLeft)
             {
-                if (MyEffect.MyDeviceLayer.IsEffectLineOverlap(MyEffect, (int)(ct.TranslateX + e.Delta.Translation.X), (int)(el.Width - e.Delta.Translation.X)) != null)
+                // Not null means overlap
+                if (MyEffect.Layer.FindEffectByPosition(MyEffect.UI_X + e.Delta.Translation.X) != null)
                     return;
 
-                if (el.Width - e.Delta.Translation.X > 50)
+                if (MyEffect.UI_Width - e.Delta.Translation.X > 50)
                 {
-                    ct.TranslateX += e.Delta.Translation.X;
-                    el.Width -= e.Delta.Translation.X;
+                    MyEffect.UI_X += e.Delta.Translation.X;
+                    MyEffect.UI_Width -= e.Delta.Translation.X;
                 }
             }
         }
         void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            int leftPosition, rightPosition, width;
-            var fe = sender as FrameworkElement;
-            EffectLine el = fe.Parent as EffectLine;
+            double left;
+            double right;
+            double width;
             //fe.Opacity = 1;
 
-            CompositeTransform ct = el.RenderTransform as CompositeTransform;
-            leftPosition = (int)ct.TranslateX / 10 * 10;
+            left = MyEffect.UI_X;
+            right = MyEffect.UI_X + MyEffect.UI_Width;
 
             if (_cursorSizeLeft)
             {
-                rightPosition = (int)ct.TranslateX + (int)el.Width;
-                width = rightPosition - leftPosition;
+                left = left / 10 * 10;
+                width = right - left;
             }
-            else
+            else if (_cursorSizeRight)
             {
-                width = (int)el.Width / 10 * 10;
+                right = right / 10 * 10;
+                width = right - left;
+            }
+            else // move
+            {
+                width = right - left;
+                left = left / 10 * 10;
             }
 
-            leftPosition = MyEffect.MyDeviceLayer.InsertEffectLine(MyEffect, leftPosition, width);
-            MyEffect.Start = leftPosition;
-            MyEffect.Duration = width;
+            MyEffect.UI_X = left;
+            MyEffect.UI_Width = width;
+            MyEffect.UI_X = MyEffect.Layer.InsertEffectLine(MyEffect);
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {

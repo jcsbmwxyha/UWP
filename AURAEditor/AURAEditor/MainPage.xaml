@@ -13,7 +13,7 @@
             <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
             <Setter Property="Stretch" Value="Fill"/>
         </Style>
-        <Storyboard x:Name="TimeLineStoryboard">
+        <Storyboard x:Name="TimelineStoryboard">
             <DoubleAnimation From="0" To="3000" Duration="00:00:30"
                              Storyboard.TargetName="timelinetransform"
                              Storyboard.TargetProperty="X">
@@ -102,13 +102,13 @@
                         Click="SetLayerButton_Click"
                         Background="Gray"
                         Margin="0,0,60,0"/>
-                <Button Name="PlayButton" FontSize="24" Click="TimeLineTimer_Play" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ButtonStyle}">
+                <Button Name="PlayButton" FontSize="24" Click="TimelineTimer_Play" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE937;"/>
                         <TextBlock Text="Preview" Margin="10,0,0,0"/>
                     </StackPanel>
                 </Button>
-                <Button Name="StopButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE002;" Click="TimeLineTimer_Stop" Margin="1,0,0,0" Foreground="White"/>
+                <Button Name="StopButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE002;" Click="TimelineTimer_Stop" Margin="1,0,0,0" Foreground="White"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
@@ -333,7 +333,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollViewer>
-        <ScrollViewer Name="TimeLineIconScrollViewer"
+        <ScrollViewer Name="TimelineIconScrollViewer"
                       Grid.Row="2"
                       Grid.RowSpan="2"
                       Grid.Column="1"
@@ -341,9 +341,9 @@
                       Canvas.ZIndex="6"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TimeLineIconScrollViewer_ViewChanged"
+                      ViewChanged="TimelineIconScrollViewer_ViewChanged"
                       Visibility="Collapsed">
-            <Canvas Name="TimeLineIconCanvas"
+            <Canvas Name="TimelineIconCanvas"
                     VerticalAlignment="Top">
                 <Image Source="Assets/asus_auraeditor_timeline_ic.png"
                        HorizontalAlignment="Left"
@@ -354,7 +354,7 @@
                 </Image>
             </Canvas>
         </ScrollViewer>
-        <ScrollViewer Name="TimeLineScaleScrollViewer"
+        <ScrollViewer Name="TimelineScaleScrollViewer"
                       Grid.Row="2"
                       Grid.Column="1"
                       Grid.ColumnSpan="2"
@@ -362,18 +362,18 @@
                       VerticalScrollBarVisibility="Disabled"
                       BorderBrush="Black"
                       BorderThickness="1">
-            <Canvas Name="TimeLineScaleCanvas"
+            <Canvas Name="TimelineScaleCanvas"
                     Width="5000"/>
         </ScrollViewer>
-        <ScrollViewer Name="TimeLineLayerScrollViewer"
+        <ScrollViewer Name="TimelineLayerScrollViewer"
                       Grid.Column="1"
                       Grid.Row="3"
                       Grid.ColumnSpan="2"
                       Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TimeLineLayerScrollViewer_ViewChanged">
-            <StackPanel Name="TimeLineStackPanel"/>
+                      ViewChanged="TimelineLayerScrollViewer_ViewChanged">
+            <StackPanel Name="TimelineStackPanel"/>
         </ScrollViewer>
 
         <Grid Grid.Column="0"
@@ -387,9 +387,15 @@
             </Button>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="black" BorderThickness="1">
-            <TextBlock Name="TimeLineTimerText" Text="00:00.00" Margin="10,0,0,0" FontSize="20" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
-            <Slider Name="TimeLineZoomSlider" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignRightWithPanel="True" Width="100"
-                    Margin="0,0,20,0" Value="25" ValueChanged="TimeLineZoomSlider_ValueChanged"/>
+            <TextBlock Name="TimelineTimerText" Text="00:00.00" Margin="10,0,0,0" FontSize="20" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
+            <Slider Name="TimelineZoomSlider"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    RelativePanel.AlignRightWithPanel="True"
+                    Width="100"
+                    Margin="0,0,20,0"
+                    Value="25"
+                    ValueChanged="TimelineZoomSlider_ValueChanged"/>
         </RelativePanel>
         <TextBox x:Name="txtresult" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168"/>
     </Grid>

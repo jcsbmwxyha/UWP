@@ -64,22 +64,28 @@ namespace AuraEditor
         AuraCreatorManager _auraCreatorManager;
         public bool LayerSelected;
 
-        int timeLineSliderValue = 25;
-        public int TimeLineZoomSliderValue
+        private int timelineZoomLevel = -1;
+        public int TimelineZoom
         {
-            get { return timeLineSliderValue; }
             set
             {
-                if (value >= 50 && timeLineSliderValue == 25)
-                {
-                    timeLineSliderValue = 75;
-                }
-                else if ((value < 50 && timeLineSliderValue == 75))
-                {
-                    timeLineSliderValue = 25;
-                }
+                int level;
+                if (value >= 80)
+                    level = 5;
+                else if (value >= 60)
+                    level = 4;
+                else if (value >= 40)
+                    level = 3;
+                else if (value >= 20)
+                    level = 1;
                 else
-                    return;
+                    level = 0;
+
+                if (timelineZoomLevel != level)
+                {
+                    timelineZoomLevel = level;
+                    _auraCreatorManager.SetTimelineZoomLevel(timelineZoomLevel);
+                }
             }
         }
 
@@ -89,7 +95,7 @@ namespace AuraEditor
             EffectListView.ItemsSource = EffectHelper.GetCommonEffectList();
             TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
-            _auraCreatorManager = new AuraCreatorManager(TimeLineStackPanel);
+            _auraCreatorManager = new AuraCreatorManager(TimelineStackPanel, TimelineScaleCanvas);
             _mouseEventCtrl = IntializeMouseEventCtrl();
             LayerSelected = false;
             UpdateSpaceGridOperations(SpaceStatus.Normal);
@@ -98,66 +104,11 @@ namespace AuraEditor
         {
             await GetCurrentDevicesTest();
             UpdateSpaceGrid();
+            TimelineZoom = 50;
+
             // for receive cmd form Service
             socketstart();
-
-            // TimeUnit : the seconds between two number(long line)
-            int secondsPerTimeUnit = 3;
-            int minimumScaleUnitLength = 100;
-            int timeUnitLength = 300;
-
-            TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
-            TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
-
-            int width = (int)TimeLineScaleCanvas.ActualWidth;
-            int height = (int)TimeLineScaleCanvas.ActualHeight;
-            int y1_short = (int)(height / 1.5);
-            int y1_long = height / 2;
-            double y2 = height;
-
-            int linePerTimeUnit = timeUnitLength / minimumScaleUnitLength;
-            int totalLineCount = width / minimumScaleUnitLength;
-
-            for (int i = 1; i < totalLineCount; i++)
-            {
-                int x = minimumScaleUnitLength * i;
-                int y1;
-
-                if (i % linePerTimeUnit == 0)
-                {
-                    y1 = y1_long;
-
-                    CompositeTransform ct = new CompositeTransform
-                    {
-                        TranslateX = x + 10,
-                        TranslateY = 5
-                    };
-
-                    TextBlock tb = new TextBlock
-                    {
-                        Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = ct,
-                        Foreground = new SolidColorBrush(Colors.White)
-                    };
-
-                    TimeLineScaleCanvas.Children.Add(tb);
-                    ts = ts.Add(interval);
-                }
-                else
-                    y1 = y1_short;
-
-                Line line = new Line
-                {
-                    X1 = x,
-                    Y1 = y1,
-                    X2 = x,
-                    Y2 = y2,
-                    Stroke = new SolidColorBrush(Colors.White)
-                };
-
-                TimeLineScaleCanvas.Children.Add(line);
-            }
-
+            
             // Pre add for debug
             /*
             for (int i = 0; i < 6; i++)
@@ -344,18 +295,18 @@ namespace AuraEditor
             //}
         }
         
-        private void TimeLineLayerScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private void TimelineLayerScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
             LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
+            TimelineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
-        private void TimeLineIconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private void TimelineIconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
             LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TimeLineLayerScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
-            TimeLineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
+            TimelineLayerScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
+            TimelineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
 
         private async void OpenFileButton_Click(object sender, RoutedEventArgs e)
@@ -527,15 +478,15 @@ namespace AuraEditor
                 }
 
                 string effectLuaName = t.Get("Effect").String;
-                double start = t.Get("Delay").Number;
-                double duration = t.Get("Duration").Number;
+                double startTime = t.Get("Delay").Number;
+                double durationTime = t.Get("Duration").Number;
                 int type = EffectHelper.GetEffectIndex(effectLuaName);
 
                 Effect effect = new Effect(layer, type)
                 {
                     EffectLuaName = effectLuaName,
-                    Start = (int)start / 10,
-                    Duration = (int)duration / 10
+                    StartTime = startTime,
+                    DurationTime = durationTime
                 };
                 layer.AddEffect(effect);
             }
@@ -608,9 +559,10 @@ namespace AuraEditor
             return devices;
         }
 
-        private void TimeLineZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        private void TimelineZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            TimeLineZoomSliderValue = (int)TimeLineZoomSlider.Value;
+            if (_auraCreatorManager != null)
+                TimelineZoom = (int)TimelineZoomSlider.Value;
         }
 
         private void DeviceList_SelectionChanged(object sender, RoutedEventArgs e)
@@ -666,7 +618,6 @@ namespace AuraEditor
 
         async void socketstart()
         {
-
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
             socket.MessageReceived += Socket_MessageReceived;
             string serverPort = "6666";
@@ -728,7 +679,6 @@ namespace AuraEditor
             else
                 OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(10);
         }
-
     }
 }
 

@@ -59,31 +59,68 @@ namespace AuraEditor
 
     public class Effect
     {
-        public DeviceLayer MyDeviceLayer { get; set; }
+        public DeviceLayer Layer { get; set; }
         public string EffectName { get; set; }
         public string EffectLuaName { get; set; }
         public int EffectType { get; set; }
-        public EffectLine EffectLineUI { get; }
-        private int _start;
-        public int Start
+        public EffectLine UI { get; }
+        public double UI_X
         {
-            get { return _start; }
+            get
+            {
+                CompositeTransform ct = UI.RenderTransform as CompositeTransform;
+                return ct.TranslateX;
+            }
             set
             {
-                CompositeTransform ct = EffectLineUI.RenderTransform as CompositeTransform;
+                CompositeTransform ct = UI.RenderTransform as CompositeTransform;
                 ct.TranslateX = value;
-                _start = value;
             }
         }
-        private int _duration;
-        public int Duration {
-            get { return _duration; }
+        public double UI_Width {
+            get { return UI.Width; }
             set
             {
-                _duration = value;
-                EffectLineUI.Width = value;
+                UI.Width = value;
+            }
+        }  
+        public double StartTime
+        {
+            get
+            {
+                CompositeTransform ct = UI.RenderTransform as CompositeTransform;
+                double timeUnits = ct.TranslateX / AuraCreatorManager.pixelsPerTimeUnit;
+                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
+
+                return seconds * 1000;
+            }
+            set
+            {
+                CompositeTransform ct = UI.RenderTransform as CompositeTransform;
+                double seconds = value / 1000;
+                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
+
+                ct.TranslateX = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
             }
         }
+        public double DurationTime
+        {
+            get
+            {
+                double timeUnits = UI.Width / AuraCreatorManager.pixelsPerTimeUnit;
+                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
+
+                return seconds * 1000;
+            }
+            set
+            {
+                double seconds = value / 1000;
+                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
+
+                UI.Width = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
+            }
+        }
+
         private EffectInfo _info;
         public EffectInfo Info
         {
@@ -91,29 +128,28 @@ namespace AuraEditor
             set
             {
                 if ((EffectType != 3) && (EffectType != 6) && (EffectType != 2))
-                    EffectLineUI.Background = new SolidColorBrush(value.Color);
+                    UI.Background = new SolidColorBrush(value.Color);
                 _info = value;
             }
         }
 
         public Effect(DeviceLayer layer, int effectType)
         {
-            MyDeviceLayer = layer;
+            Layer = layer;
             EffectType = effectType;
             EffectName = EffectHelper.GetEffectName(effectType);
-            EffectLineUI = CreateEffectUI(effectType);
-            EffectLineUI.DataContext = this;
-            Start = (int)MyDeviceLayer.GetFirstSpaceCanPut();
-            Duration = 100;
+            UI = CreateEffectUI(effectType);
+            UI.DataContext = this;
+            UI_X = (int)Layer.GetFirstFreeRoomPosition();
+            DurationTime = 1000; // 1s
             Info = new EffectInfo(effectType);
         }
         private EffectLine CreateEffectUI(int effectType)
         {
-            
             EffectLine el = new EffectLine
             {
                 Height = 34,
-                Width = 100,
+                Width = AuraCreatorManager.GetPixelsOfOneSecond(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 ManipulationMode = ManipulationModes.TranslateX
             };
@@ -405,7 +441,7 @@ namespace AuraEditor
         public void AddEffect(Effect effect)
         {
             Effects.Add(effect);
-            UICanvas.Children.Add(effect.EffectLineUI);
+            UICanvas.Children.Add(effect.UI);
         }
         private async void Canvas_DragOver(object sender, DragEventArgs e)
         {
@@ -430,41 +466,41 @@ namespace AuraEditor
                 AddEffect(effect);
             }
         }
-        public int InsertEffectLine(Effect selectedEffect, int leftposition, int w)
+        public double InsertEffectLine(Effect selectedEffect)
         {
-            int oldStart = selectedEffect.Start;
+            double oldLeft = selectedEffect.UI_X;
+            double width = selectedEffect.UI_Width;
+            double newLeft = oldLeft;
+            Effect coveredEffect = null;
+            bool needToAdjustPosition = false;
+            double distanceToMove = 0;
 
-            Effect coveredEffectLine = null;
-            int newLeftposition = leftposition;
-
-            // Step 1 : Determine if the leftpoint on someone effectline
+            // Step 1 : Determine if X of selectedEffect on someone effectline
             foreach (Effect e in Effects)
             {
-                if (e != selectedEffect && e.Start <= leftposition && e.Start + e.Duration > leftposition)
+                if (e != selectedEffect && e.UI_X <= oldLeft && e.UI_X + e.UI_Width > oldLeft)
                 {
-                    coveredEffectLine = e;
+                    coveredEffect = e;
                     break;
                 }
             }
 
             // Step 2 : Calculate leftpoint position
-            if (coveredEffectLine != null)
+            if (coveredEffect != null)
             {
-                // if have same Start, move coveredEffectLine to back
-                if (coveredEffectLine.Start != leftposition)
-                    newLeftposition = coveredEffectLine.Start + coveredEffectLine.Duration;
+                // if have same Start, move coveredEffectLine behind selectedEffect
+                if (coveredEffect.UI_X != oldLeft)
+                    newLeft = coveredEffect.UI_X + coveredEffect.UI_Width;
             }
 
             // Step 3 : determine all effectlines position on the right hand side
-            bool needToAdjustPosition = false;
-            int distanceToMove = 0;
             foreach (Effect e in Effects)
             {
                 // if there is overlap to selected effectline
-                if (e != selectedEffect && e.Start >= newLeftposition && e.Start < newLeftposition + w)
+                if (e != selectedEffect && e.UI_X >= newLeft && e.UI_X < newLeft + width)
                 {
                     needToAdjustPosition = true;
-                    int len = selectedEffect.Duration - (e.Start - newLeftposition);
+                    double len = selectedEffect.UI_Width - (e.UI_X - newLeft);
 
                     // There may be many e which is overlap to selected effectline.
                     // We should find the longgest distance.
@@ -475,71 +511,88 @@ namespace AuraEditor
 
             if (needToAdjustPosition == true)
             {
-                if (newLeftposition < oldStart)
+                if (newLeft < oldLeft)
                     foreach (Effect e in Effects)
                     {
-                        if (e != selectedEffect && e.Start >= newLeftposition && e.Start < oldStart)
+                        if (e != selectedEffect && e.UI_X >= newLeft && e.UI_X < oldLeft)
                         {
-                            e.Start += distanceToMove;
+                            e.UI_X += distanceToMove;
                         }
                     }
                 else
                     foreach (Effect e in Effects)
                     {
-                        if (e != selectedEffect && e.Start >= newLeftposition/* && e.Start < newLeftposition + w*/)
+                        if (e != selectedEffect && e.UI_X >= newLeft/* && e.Start < newLeftposition + w*/)
                         {
-                            e.Start += distanceToMove;
+                            e.UI_X += distanceToMove;
                         }
                     }
             }
 
-            return newLeftposition;
+            return newLeft;
         }
-        public void OnCursorSizeRight(Effect effect, int x, int w)
+        public void OnCursorSizeRight(Effect effect)
         {
-            Effect overlapEff = IsEffectLineOverlap(effect, x, w);
-            int moveLength = 0;
+            Effect overlapEff = TestOverlap(effect);
+            double left = effect.UI_X;
+            double width = effect.UI_Width;
+            double moveLength = 0;
 
             if (overlapEff != null)
             {
-                moveLength = (x + w) - overlapEff.Start;
+                moveLength = (left + width) - overlapEff.UI_X;
                 foreach (Effect e in Effects)
                 {
                     if (!e.Equals(effect))
                     {
-                        if (x < e.Start)
-                            e.Start += moveLength;
+                        if (left < e.UI_X)
+                            e.UI_X += moveLength;
                     }
                 }
             }
         }
-        public Effect IsEffectLineOverlap(Effect effect, int x, int w)
+        public Effect TestOverlap(Effect effect)
         {
+            double left = effect.UI_X;
+            double width = effect.UI_Width;
+
             foreach (Effect e in Effects)
             {
                 if (!e.Equals(effect))
                 {
-                    if ((x < e.Start + e.Duration) && (x + w > e.Start))
+                    if ((left < e.UI_X + e.UI_Width) && (left + width > e.UI_X))
                         return e;
                 }
             }
             return null;
         }
-        public double GetFirstSpaceCanPut()
+        public Effect FindEffectByPosition(double x)
         {
-            int spaceX = 0;
+            foreach (Effect e in Effects)
+            {
+                double left = e.UI_X;
+                double width = e.UI_Width;
+
+                if ((left <= x) && (left + width >= x))
+                    return e;
+            }
+            return null;
+        }
+        public double GetFirstFreeRoomPosition()
+        {
+            double RoomX = 0;
 
             for (int i = 0; i < Effects.Count; i++)
             {
                 Effect effect = Effects[i];
-                if (spaceX <= effect.Start && effect.Start < spaceX + 100)
+                if (RoomX <= effect.UI_X && effect.UI_X < RoomX + AuraCreatorManager.GetPixelsOfOneSecond())
                 {
-                    spaceX = effect.Start + effect.Duration;
+                    RoomX = effect.UI_X + effect.UI_Width;
                     i = -1; // rescan every effect line
                 }
             }
             
-            return spaceX;
+            return RoomX;
         }
         private Canvas CreateUICanvas()
         {
@@ -607,15 +660,25 @@ namespace AuraEditor
     public class AuraCreatorManager
     {
         public ObservableCollection<DeviceLayer> DeviceLayerCollection { get; set; }
-        static StackPanel TimeLineStackPanel;
+        static StackPanel TimelineStackPanel;
+        static Canvas TimelineScaleCanvas;
         Script script;
         Dictionary<DynValue, string> _functionDictionary;
         public List<Device> GlobalDevices;
 
-        public AuraCreatorManager(StackPanel sp)
+        // TimeUnit : the seconds between two number(long line)
+        static public int secondsPerTimeUnit;
+        static public double pixelsPerTimeUnit = 200;
+        static public double GetPixelsOfOneSecond()
+        {
+            return (int)pixelsPerTimeUnit / secondsPerTimeUnit;
+        }
+
+        public AuraCreatorManager(StackPanel sp, Canvas cv)
         {
             script = new Script();
-            TimeLineStackPanel = sp;
+            TimelineStackPanel = sp;
+            TimelineScaleCanvas = cv;
             DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
             _functionDictionary = new Dictionary<DynValue, string>();
             GlobalDevices = new List<Device>();
@@ -625,7 +688,7 @@ namespace AuraEditor
         {
             TriggerDeviceLayer tlayer = new TriggerDeviceLayer();
             tlayer.LayerName = "Trigger Effect";
-            tlayer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(0);
+            tlayer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
 
             tlayer.AddDeviceZones(0, new int[] { -1 });
             tlayer.AddDeviceZones(1, new int[] { -1 });
@@ -633,22 +696,22 @@ namespace AuraEditor
             //tdg.AddDeviceZones(3, new int[] { -1 });
 
             DeviceLayerCollection.Add(tlayer);
-            TimeLineStackPanel.Children.Add(tlayer.UICanvas);
+            TimelineStackPanel.Children.Add(tlayer.UICanvas);
         }
         public void AddDeviceLayer(DeviceLayer layer)
         {
             if (DeviceLayerCollection.Count % 2 == 0)
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
             else
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimeLineBackgroundColor(3);
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
 
             DeviceLayerCollection.Add(layer);
-            TimeLineStackPanel.Children.Add(layer.UICanvas);
+            TimelineStackPanel.Children.Add(layer.UICanvas);
         }
         public void RemoveDeviceLayer(DeviceLayer layer)
         {
             DeviceLayerCollection.Remove(layer);
-            TimeLineStackPanel.Children.Remove(layer.UICanvas);
+            TimelineStackPanel.Children.Remove(layer.UICanvas);
         }
         public void SetGlobalDevices(List<Device> devices)
         {
@@ -656,7 +719,7 @@ namespace AuraEditor
         }
         public void ClearAllLayer()
         {
-            TimeLineStackPanel.Children.Clear();
+            TimelineStackPanel.Children.Clear();
             DeviceLayerCollection.Clear();
         }
         public Device GetGlobalDevice(int type)
@@ -666,6 +729,94 @@ namespace AuraEditor
         public int GetLayerCount()
         {
             return DeviceLayerCollection.Count;
+        }
+
+        public void SetTimelineZoomLevel(int level)
+        {
+            double rate;
+            double oldSecondsPerTimeUnit = secondsPerTimeUnit;
+
+            if (level == 0)
+                secondsPerTimeUnit = 1;
+            else if (level == 1)
+                secondsPerTimeUnit = 2;
+            else if (level == 2)
+                secondsPerTimeUnit = 5;
+            else if (level == 3)
+                secondsPerTimeUnit = 15;
+            else if (level == 4)
+                secondsPerTimeUnit = 30;
+            else
+                secondsPerTimeUnit = 60;
+
+            rate = oldSecondsPerTimeUnit / secondsPerTimeUnit;
+            DrawTimelineScale();
+
+            foreach (var layer in DeviceLayerCollection)
+            {
+                foreach (var effect in layer.Effects)
+                {
+                    effect.UI_X = effect.UI_X * rate;
+                    effect.UI_Width = effect.UI_Width * rate;
+                }
+            }
+        }
+        private void DrawTimelineScale()
+        {
+            int minimumScaleUnitLength = (int)(pixelsPerTimeUnit / 2);
+            TimelineScaleCanvas.Children.Clear();
+            
+            TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
+            TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
+            
+            int width = (int)TimelineScaleCanvas.ActualWidth;
+            int height = (int)TimelineScaleCanvas.ActualHeight;
+            int y1_short = (int)(height / 1.5);
+            int y1_long = height / 2;
+            double y2 = height;
+
+            int linePerTimeUnit = (int)(pixelsPerTimeUnit / minimumScaleUnitLength);
+            int totalLineCount = width / minimumScaleUnitLength;
+
+            for (int i = 1; i < totalLineCount; i++)
+            {
+                int x = minimumScaleUnitLength * i;
+                int y1;
+
+                if (i % linePerTimeUnit == 0)
+                {
+                    y1 = y1_long;
+
+                    CompositeTransform ct = new CompositeTransform
+                    {
+                        TranslateX = x + 10,
+                        TranslateY = 5
+                    };
+
+                    TextBlock tb = new TextBlock
+                    {
+                        Text = ts.ToString("mm\\:ss"),
+                        RenderTransform = ct,
+                        Foreground = new SolidColorBrush(Colors.White)
+                    };
+
+                    TimelineScaleCanvas.Children.Add(tb);
+                    ts = ts.Add(interval);
+                }
+                else
+                    y1 = y1_short;
+
+                Line line = new Line
+                {
+                    X1 = x,
+                    Y1 = y1,
+                    X2 = x,
+                    Y2 = y2,
+                    Stroke = new SolidColorBrush(Colors.White)
+                };
+
+                TimelineScaleCanvas.Children.Add(line);
+            }
         }
 
         public string PrintLuaScript()
@@ -724,8 +875,8 @@ namespace AuraEditor
                     else
                         queueItemTable.Set("Trigger", DynValue.NewString("OneTime"));
 
-                    queueItemTable.Set("Delay", DynValue.NewNumber(eff.Start * 10));
-                    queueItemTable.Set("Duration", DynValue.NewNumber(eff.Duration * 10));
+                    queueItemTable.Set("Delay", DynValue.NewNumber(eff.StartTime));
+                    queueItemTable.Set("Duration", DynValue.NewNumber(eff.DurationTime));
                     queueTable.Set(queueIndex, DynValue.NewTable(queueItemTable));
                     queueIndex++;
                 }
