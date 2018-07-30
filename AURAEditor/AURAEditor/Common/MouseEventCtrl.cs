@@ -129,6 +129,7 @@ namespace AuraEditor.Common
                 if (DetectionRegions[i].DetectionRect.Contains(p))
                 {
                     DetectionRegions[i].Selected = !DetectionRegions[i].IsSelected;
+                    break;
                 }
             }
 

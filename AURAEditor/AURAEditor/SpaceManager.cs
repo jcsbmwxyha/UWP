@@ -65,8 +65,6 @@ namespace AuraEditor
             {
                 EableAllDevicesOperation();
                 SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
-                SpaceAreaCanvas.PointerPressed += SpaceGrid_PointerPressed;
-
                 SpaceAreaCanvas.PointerMoved -= SpaceGrid_PointerMoved;
                 SpaceAreaCanvas.PointerReleased -= SpaceGrid_PointerReleased;
                 SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
