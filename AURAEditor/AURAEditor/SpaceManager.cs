@@ -132,10 +132,17 @@ namespace AuraEditor
         }
         public void WatchLayer(DeviceLayer layer)
         {
-            Dictionary<int, int[]> dictionary = layer.GetDeviceToZonesDictionary();
-
             UpdateSpaceGridOperations(SpaceStatus.WatchingLayer);
             ResetAllZones();
+
+            if (layer is TriggerDeviceLayer)
+                WatchTriggerLayer(layer);
+            else
+                WatchNormalLayer(layer);
+        }
+        private void WatchNormalLayer(DeviceLayer layer)
+        {
+            Dictionary<int, int[]> dictionary = layer.GetDeviceToZonesDictionary();
 
             // According to the layer, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
@@ -155,6 +162,24 @@ namespace AuraEditor
                 }
             }
         }
+        private void WatchTriggerLayer(DeviceLayer layer)
+        {
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
+
+            foreach (var device in devices)
+            {
+                LightZone[] zones = device.LightZones;
+
+                foreach (var zone in zones)
+                {
+                    Shape shape = zone.Frame;
+
+                    shape.Stroke = new SolidColorBrush(Colors.Yellow);
+                    shape.Fill = new SolidColorBrush(Colors.Transparent);
+                }
+            }
+        }
+
         public void UpdateDevicePosition(Device device, int offsetX, int offsetY)
         {
             _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
@@ -169,6 +194,8 @@ namespace AuraEditor
             {
                 item.IsChecked = false;
             }
+
+            LayerListView.SelectedIndex = -1;
         }
         private void ResetAllZones()
         {
@@ -210,7 +237,7 @@ namespace AuraEditor
             }
             
             _auraCreatorManager.AddDeviceLayer(layer);
-            LayerListView.SelectedIndex = 0;
+            ResetAllZones();
         }
 
         private void SpaceGrid_PointerPressed(object sender, PointerRoutedEventArgs e)

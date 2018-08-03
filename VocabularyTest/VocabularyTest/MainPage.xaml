@@ -118,7 +118,8 @@
                          HorizontalAlignment="Left"
                          ScrollViewer.VerticalScrollBarVisibility="Visible"
                          LostFocus="VocabularyListBox_LostFocus"
-                         SelectionChanged="VocabularyListBox_SelectionChanged">
+                         SelectionChanged="VocabularyListBox_SelectionChanged"
+                         DragStarting="VocabularyListBox_DragStarting">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel/>
@@ -127,8 +128,9 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <local:VocabularyListItem
-                                Width="{Binding ElementName=VocabularyListBox, Path=ActualWidth}"/>
+                            <local:VocabularyListItem CanDrag="True" DragStarting="VocabularyListItem_DragStarting"
+                                Width="{Binding ElementName=VocabularyListBox, Path=ActualWidth}"
+                                                      Background="Red"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

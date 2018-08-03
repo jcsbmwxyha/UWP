@@ -71,14 +71,16 @@ namespace AuraEditor.UserControls
             }
             else if (_cursorSizeLeft)
             {
-                // Not null means overlap
-                if (MyEffect.Layer.FindEffectByPosition(MyEffect.UI_X + e.Delta.Translation.X) != null)
+                double move = e.Delta.Translation.X;
+
+                // If effectline expand to the left, we should check if it will overlap others?
+                if (move < 0 && MyEffect.Layer.FindEffectByPosition(MyEffect.UI_X + move) != null)
                     return;
 
-                if (MyEffect.UI_Width - e.Delta.Translation.X > 50)
+                if (MyEffect.UI_Width - move > 50)
                 {
-                    MyEffect.UI_X += e.Delta.Translation.X;
-                    MyEffect.UI_Width -= e.Delta.Translation.X;
+                    MyEffect.UI_X += move;
+                    MyEffect.UI_Width -= move;
                 }
             }
         }

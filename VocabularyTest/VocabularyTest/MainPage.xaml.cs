@@ -539,5 +539,15 @@ namespace VocabularyTest
             VocabularyRichTextBlock.Blocks.Clear();
             VocabularyRichTextBlock.Blocks.Insert(0, paragraph);
         }
+
+        private void VocabularyListItem_DragStarting(UIElement sender, DragStartingEventArgs args)
+        {
+
+        }
+
+        private void VocabularyListBox_DragStarting(UIElement sender, DragStartingEventArgs args)
+        {
+
+        }
     }
 }

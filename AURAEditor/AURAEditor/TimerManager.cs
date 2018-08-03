@@ -6,10 +6,18 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
+        public bool RepeatMode
+        {
+            get
+            {
+                if (RepeatButton.IsChecked == true)
+                    return true;
+                else
+                    return false;
+            }
+        }
         DispatcherTimer timelineTimerClock = new DispatcherTimer();
         DateTime baseDateTime;
-
-        bool EnableLog = true;
 
         private async void TimelineTimer_Play(object sender, RoutedEventArgs e)
         {

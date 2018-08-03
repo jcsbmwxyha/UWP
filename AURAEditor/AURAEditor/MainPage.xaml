@@ -170,6 +170,17 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <ComboBox x:Name="SpaceZoomComboxBox"
+                          SelectionChanged="SpaceZoomComboxBox_SelectionChanged"
+                          PlaceholderText="0 %"
+                          Width="100"
+                          Grid.ColumnSpan="3"
+                          Background="Gray"
+                          Canvas.ZIndex="6">
+                    <x:String>0 %</x:String>
+                    <x:String>50 %</x:String>
+                    <x:String>100 %</x:String>
+                </ComboBox>
                 <Button Content="-"
                         VerticalAlignment="Center"
                         Grid.Column="0"
@@ -303,6 +314,14 @@
             </ScrollViewer>
         </Grid>
 
+        <ToggleButton Name="RepeatButton"
+                      Grid.Row="2" Grid.Column="0"
+                      FontSize="20" FontFamily="Segoe MDL2 Assets" Content="&#xE117;"
+                      IsChecked="True"
+                      HorizontalAlignment="Right"
+                      Background="Gray"
+                      Margin="5,0,0,0"
+                      Canvas.ZIndex="7"/>
         <Image Grid.Row="2"
                Grid.Column="0"
                Grid.RowSpan="3"
@@ -394,7 +413,7 @@
                     RelativePanel.AlignRightWithPanel="True"
                     Width="100"
                     Margin="0,0,20,0"
-                    Value="25"
+                    Value="20"
                     ValueChanged="TimelineZoomSlider_ValueChanged"/>
         </RelativePanel>
         <TextBox x:Name="txtresult" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168"/>

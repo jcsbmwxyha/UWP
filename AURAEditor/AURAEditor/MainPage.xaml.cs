@@ -70,13 +70,15 @@ namespace AuraEditor
             set
             {
                 int level;
-                if (value >= 80)
+                if (value >= 84)
                     level = 5;
-                else if (value >= 60)
+                else if (value >= 67)
                     level = 4;
-                else if (value >= 40)
+                else if (value >= 51)
                     level = 3;
-                else if (value >= 20)
+                else if (value >= 34)
+                    level = 2;
+                else if (value >= 18)
                     level = 1;
                 else
                     level = 0;
@@ -104,11 +106,11 @@ namespace AuraEditor
         {
             await GetCurrentDevicesTest();
             UpdateSpaceGrid();
-            TimelineZoom = 50;
+            TimelineZoom = 20;
 
             // for receive cmd form Service
             socketstart();
-            
+
             // Pre add for debug
             /*
             for (int i = 0; i < 6; i++)
@@ -678,6 +680,27 @@ namespace AuraEditor
                 OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(200);
             else
                 OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(10);
+        }
+
+        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string content = e.AddedItems[0].ToString();
+            switch (content)
+            {
+                case "0 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1, true);
+                    break;
+                case "50 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1.5f, true);
+                    break;
+                case "100 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 2, true);
+                    break;
+            }
+
         }
     }
 }

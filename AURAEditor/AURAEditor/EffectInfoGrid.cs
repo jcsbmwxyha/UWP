@@ -28,9 +28,10 @@ namespace AuraEditor
                 if (value == null)
                     ClearEffectInfoGrid();
                 else
+                {
+                    _selectedEffectLine = value;
                     UpdateEffectInfoGrid(value);
-
-                _selectedEffectLine = value;
+                }
             }
         }
 
@@ -40,19 +41,20 @@ namespace AuraEditor
             ColorRect.Visibility = Visibility.Collapsed;
             EffectInfoGroup.Visibility = Visibility.Collapsed;
         }
-        public void UpdateEffectInfoGrid(Effect effect)
+        private void UpdateEffectInfoGrid(Effect effect)
         {
-            EffectLine border = effect.UI;
-            ShowEffectGroups(effect.EffectType);
-            UpdateEffectGroups(effect.Info);
+            //EffectLine border = effect.UI;
+
+            ShowEffectInfoGroupsByType(effect.EffectType);
+            UpdateGroupContents(effect.Info);
             
-            if (border.Background is SolidColorBrush)
-            {
-                ColorRect.Fill = (SolidColorBrush)border.Background;
-            }
+            //if (border.Background is SolidColorBrush)
+            //{
+            //    ColorRect.Fill = (SolidColorBrush)border.Background;
+            //}
         }
 
-        private void ShowEffectGroups(int effectType)
+        private void ShowEffectInfoGroupsByType(int effectType)
         {
             EffectInfoGroup.Visibility = Visibility.Visible;
             Title.Text = EffectHelper.GetEffectName(effectType);
@@ -204,8 +206,9 @@ namespace AuraEditor
             DirectionGroup.Visibility = Visibility.Collapsed;
         }
 
-        private void UpdateEffectGroups(EffectInfo info)
+        private void UpdateGroupContents(EffectInfo info)
         {
+            ColorRect.Fill = new SolidColorBrush(info.Color);
             WaveTypeComboBox.SelectedIndex = info.WaveType;
             MinTextBox.Text = info.Min.ToString();
             MaxTextBox.Text = info.Max.ToString();
@@ -213,7 +216,7 @@ namespace AuraEditor
             FreqTextBox.Text = info.Freq.ToString();
             PhaseTextBox.Text = info.Phase.ToString();
             StartTextBox.Text = info.Start.ToString();
-            VelocityTextBox.Text = info.Start.ToString();
+            VelocityTextBox.Text = info.Velocity.ToString();
         }
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)

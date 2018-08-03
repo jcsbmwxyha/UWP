@@ -83,7 +83,7 @@ namespace AuraEditor
             {
                 UI.Width = value;
             }
-        }  
+        }
         public double StartTime
         {
             get
@@ -280,7 +280,6 @@ namespace AuraEditor
         public double W { get; set; }
         public double H { get; set; }
         public Image DeviceImg { get; set; }
-        public string DeviceImgPath { get; set; }
         public LightZone[] LightZones { get; set; }
 
         public Device(Image img)
@@ -665,6 +664,28 @@ namespace AuraEditor
         Script script;
         Dictionary<DynValue, string> _functionDictionary;
         public List<Device> GlobalDevices;
+        public double PlayTime
+        {
+            get
+            {
+                double maxTime = 0;
+
+                foreach (DeviceLayer layer in DeviceLayerCollection)
+                {
+                    foreach (var effect in layer.Effects)
+                    {
+                        double time = effect.StartTime + effect.DurationTime;
+
+                        if (time > maxTime)
+                        {
+                            maxTime = time;
+                        }
+
+                    }
+                }
+                return maxTime;
+            }
+        }
 
         // TimeUnit : the seconds between two number(long line)
         static public int secondsPerTimeUnit;
@@ -763,20 +784,18 @@ namespace AuraEditor
         }
         private void DrawTimelineScale()
         {
-            int minimumScaleUnitLength = (int)(pixelsPerTimeUnit / 2);
-            TimelineScaleCanvas.Children.Clear();
-            
             TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
             TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
-            
+            int minimumScaleUnitLength = (int)(pixelsPerTimeUnit / 2);
             int width = (int)TimelineScaleCanvas.ActualWidth;
             int height = (int)TimelineScaleCanvas.ActualHeight;
             int y1_short = (int)(height / 1.5);
             int y1_long = height / 2;
             double y2 = height;
-
             int linePerTimeUnit = (int)(pixelsPerTimeUnit / minimumScaleUnitLength);
             int totalLineCount = width / minimumScaleUnitLength;
+
+            TimelineScaleCanvas.Children.Clear();
 
             for (int i = 1; i < totalLineCount; i++)
             {
@@ -850,8 +869,13 @@ namespace AuraEditor
             Table queueTable = CreateNewTable();
             Table queueItemTable;
 
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            bool repeat = page.RepeatMode;
+
             int effectCount = 0;
             int queueIndex = 1;
+
             foreach (DeviceLayer gp in DeviceLayerCollection)
             {
                 if (gp.Eye == false)
@@ -868,10 +892,10 @@ namespace AuraEditor
                     queueItemTable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
                     queueItemTable.Set("Viewport", DynValue.NewString(gp.LayerName));
 
-                    if (EffectHelper.GetEffectName(eff.EffectType) == "Comet")
-                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
-                    else if(EffectHelper.IsTriggerEffects(eff.EffectType))
+                    if (EffectHelper.IsTriggerEffects(eff.EffectType))
                         queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
+                    else if (repeat == true)
+                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
                     else
                         queueItemTable.Set("Trigger", DynValue.NewString("OneTime"));
 
@@ -886,7 +910,7 @@ namespace AuraEditor
             DynValue generate_dv = script.LoadFunction(Constants.GenerateEventFunctionString);
             _functionDictionary.Add(generate_dv, Constants.GenerateEventFunctionString);
             
-            eventProviderTable.Set("period", DynValue.NewNumber(4000));
+            eventProviderTable.Set("period", DynValue.NewNumber(PlayTime));
             eventProviderTable.Set("generateEvent", generate_dv);
             return eventProviderTable;
         }
