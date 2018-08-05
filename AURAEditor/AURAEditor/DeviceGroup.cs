@@ -664,6 +664,7 @@ namespace AuraEditor
         Script script;
         Dictionary<DynValue, string> _functionDictionary;
         public List<Device> GlobalDevices;
+        TriggerDeviceLayer _triggerlayer;
         public double PlayTime
         {
             get
@@ -703,31 +704,46 @@ namespace AuraEditor
             DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
             _functionDictionary = new Dictionary<DynValue, string>();
             GlobalDevices = new List<Device>();
-            AddTriggerDeviceLayer();
+            InitialTriggerDeviceLayer();
         }
-        private void AddTriggerDeviceLayer()
+        private void InitialTriggerDeviceLayer()
         {
-            TriggerDeviceLayer tlayer = new TriggerDeviceLayer();
-            tlayer.LayerName = "Trigger Effect";
-            tlayer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
+            _triggerlayer = new TriggerDeviceLayer();
 
-            tlayer.AddDeviceZones(0, new int[] { -1 });
-            tlayer.AddDeviceZones(1, new int[] { -1 });
-            //tdg.AddDeviceZones(2, new int[] { -1 });
-            //tdg.AddDeviceZones(3, new int[] { -1 });
-
-            DeviceLayerCollection.Add(tlayer);
-            TimelineStackPanel.Children.Add(tlayer.UICanvas);
+            _triggerlayer.LayerName = "Trigger Effect";
+            _triggerlayer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
+            _triggerlayer.AddDeviceZones(0, new int[] { -1 });
+            _triggerlayer.AddDeviceZones(1, new int[] { -1 });
+        }
+        public void ShowTriggerDeviceLayer()
+        {
+            InsertDeviceLayer(_triggerlayer, 0);
+        }
+        public void HideTriggerDeviceLayer()
+        {
+            if (DeviceLayerCollection.Count > 0 && DeviceLayerCollection[0] is TriggerDeviceLayer)
+                RemoveDeviceLayer(0);
         }
         public void AddDeviceLayer(DeviceLayer layer)
         {
-            if (DeviceLayerCollection.Count % 2 == 0)
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
-            else
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
-
+            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
             DeviceLayerCollection.Add(layer);
             TimelineStackPanel.Children.Add(layer.UICanvas);
+        }
+        public void InsertDeviceLayer(DeviceLayer layer, int index)
+        {
+            if (layer is TriggerDeviceLayer)
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
+            else if (DeviceLayerCollection.Count % 2 == 0)
+                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
+
+            DeviceLayerCollection.Insert(index, layer);
+            TimelineStackPanel.Children.Insert(index, layer.UICanvas);
+        }
+        public void RemoveDeviceLayer(int index)
+        {
+            DeviceLayerCollection.RemoveAt(index);
+            TimelineStackPanel.Children.RemoveAt(index);
         }
         public void RemoveDeviceLayer(DeviceLayer layer)
         {

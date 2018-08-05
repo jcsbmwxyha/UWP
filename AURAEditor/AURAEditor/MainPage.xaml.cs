@@ -90,6 +90,7 @@ namespace AuraEditor
                 }
             }
         }
+        public BitmapImage tempEffectUIBitmap;
 
         public MainPage()
         {
@@ -101,7 +102,24 @@ namespace AuraEditor
             _mouseEventCtrl = IntializeMouseEventCtrl();
             LayerSelected = false;
             UpdateSpaceGridOperations(SpaceStatus.Normal);
+            InitializeTempEffectUI();
         }
+
+        private async void InitializeTempEffectUI()
+        {
+            tempEffectUIBitmap = new BitmapImage();
+
+            string CountriesFile = @"Assets\effectUI.png";
+            StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            StorageFile file = await InstallationFolder.GetFileAsync(CountriesFile);
+
+            using (Windows.Storage.Streams.IRandomAccessStream fileStream =
+                    await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
+            {
+                tempEffectUIBitmap.SetSource(fileStream);
+            }
+        }
+
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await GetCurrentDevicesTest();
@@ -270,9 +288,18 @@ namespace AuraEditor
         }
         private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
         {
+            UpdateSpaceGridOperations(SpaceStatus.DragingEffectListItem);
             var item = e.Items[0] as string;
             e.Data.SetText(item);
             e.Data.RequestedOperation = DataPackageOperation.Copy;
+
+            if (EffectHelper.IsTriggerEffects(item))
+                _auraCreatorManager.ShowTriggerDeviceLayer();
+        }
+        private void EffectListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            UpdateSpaceGridOperations(SpaceStatus.Normal);
+            _auraCreatorManager.HideTriggerDeviceLayer();
         }
 
         async private void ShowMess(string res)

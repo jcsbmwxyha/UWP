@@ -18,6 +18,7 @@ namespace AuraEditor
         Normal = 1,
         DragingDevice = 2,
         WatchingLayer = 3,
+        DragingEffectListItem = 4,
     }
 
     public sealed partial class MainPage : Page
@@ -33,6 +34,11 @@ namespace AuraEditor
         {
             if (value == spaceGridStatus)
                 return;
+
+            if(spaceGridStatus==SpaceStatus.WatchingLayer)
+            {
+                OnLeavingWatchingLayerMode();
+            }
 
             spaceGridStatus = value;
 
@@ -50,7 +56,7 @@ namespace AuraEditor
                 SpaceAreaCanvas.RightTapped += SpaceGrid_RightTapped;
                 SetLayerButton.IsEnabled = true;
             }
-            else if (value == SpaceStatus.WatchingLayer)
+            else if (value == SpaceStatus.WatchingLayer || value == SpaceStatus.DragingEffectListItem)
             {
                 DisableAllDevicesOperation();
                 SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
@@ -61,7 +67,7 @@ namespace AuraEditor
                 SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
                 SetLayerButton.IsEnabled = false;
             }
-            else if (value == SpaceStatus.DragingDevice)
+            else if (value == SpaceStatus.DragingDevice )
             {
                 EableAllDevicesOperation();
                 SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
@@ -70,6 +76,12 @@ namespace AuraEditor
                 SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
                 SetLayerButton.IsEnabled = true;
             }
+        }
+
+        private void OnLeavingWatchingLayerMode()
+        {
+            UnselectAllLayers();
+            ResetAllZones();
         }
 
         private void EableAllDevicesOperation()
@@ -244,8 +256,6 @@ namespace AuraEditor
         {
             if (GetSpaceGridCurrentStatus() == SpaceStatus.WatchingLayer)
             {
-                UnselectAllLayers();
-                ResetAllZones();
                 UpdateSpaceGridOperations(SpaceStatus.Normal);
             }
 

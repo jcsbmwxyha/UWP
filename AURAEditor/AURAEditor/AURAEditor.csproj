@@ -126,11 +126,15 @@
     <Compile Include="UserControls\EffectLine.xaml.cs">
       <DependentUpon>EffectLine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\EffectListItem.xaml.cs">
+      <DependentUpon>EffectListItem.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\effectUI.png" />
     <Content Include="Assets\GLADIUS.png" />
     <Content Include="Assets\grid35-2.png" />
     <Content Include="Assets\grid35.png" />
@@ -195,6 +199,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\EffectLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\EffectListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

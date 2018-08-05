@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor"
+    xmlns:usercontrol="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -139,9 +140,13 @@
                                  FontSize="20" Foreground="White"/>
                     <ListView x:Name="EffectListView"
                               Grid.Row="2" Margin="22,4"
-                              SelectionMode="Extended"
-                              CanDragItems="True"
-                              DragItemsStarting="EffectListView_DragStarting"/>
+                              SelectionMode="Extended">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <usercontrol:EffectListItem/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                     <RadioButton x:Name="EventRadioButton" Content="Event Trigger"
                                  HorizontalAlignment="Stretch" GroupName="EffectOption" FontSize="20"
                                  Foreground="White" Click="EffectRadioButton_Click" IsChecked="True"/>
@@ -152,7 +157,8 @@
                                   Grid.Row="2" Margin="44,0"
                                   SelectionMode="Extended"
                                   CanDragItems="True"
-                                  DragItemsStarting="EffectListView_DragStarting"/>
+                                  DragItemsStarting="EffectListView_DragStarting"
+                                  DragItemsCompleted="EffectListView_DragItemsCompleted"/>
                         <RadioButton x:Name="OtherTriggerEventRadioButton" Content="Other trigger events"
                                      Click="EffectRadioButton_Click" IsChecked="True" Margin="20,0,0,0" Foreground="White"/>
                         <ListView x:Name="OtherTriggerEventListView"
