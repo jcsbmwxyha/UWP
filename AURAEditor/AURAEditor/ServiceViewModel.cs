@@ -28,7 +28,7 @@ namespace AuraEditor
         static extern long SendEffectXml(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string xmlString);
 
         [DllImport("RpcClient.dll")]
-        static extern long EditorTrigger(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString);
+        static extern long CreatorTrigger(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString);
 
         IntPtr rpcClient;
         long error = 0L;
@@ -55,7 +55,7 @@ namespace AuraEditor
                 Debug.WriteLine("SendTTriggerString");
                 rpcClient = IntPtr.Zero;
                 if (NotifyIfAnyError(RpcClientInitialize(out rpcClient))) return;
-                error = EditorTrigger(rpcClient, cmd);
+                error = CreatorTrigger(rpcClient, cmd);
             });
         }
 

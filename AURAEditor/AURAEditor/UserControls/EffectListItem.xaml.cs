@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,9 +33,14 @@ namespace AuraEditor.UserControls
             var frame = (Frame)Window.Current.Content;
             var page = (MainPage)frame.Content;
 
-            args.DragUI.SetContentFromBitmapImage(page.tempEffectUIBitmap);
+            args.DragUI.SetContentFromBitmapImage(page.DragEffectIcon);
             args.Data.RequestedOperation = DataPackageOperation.Copy;
             args.Data.SetText(MyText);
+
+            if (EffectHelper.IsTriggerEffects(MyText))
+                page._auraCreatorManager.ShowTriggerDeviceLayer();
+            else
+                page._auraCreatorManager.HideTriggerDeviceLayer();
 
             page.UpdateSpaceGridOperations(SpaceStatus.DragingEffectListItem);
         }

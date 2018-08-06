@@ -27,6 +27,7 @@ using Windows.Networking.Sockets;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.ApplicationModel.Core;
+using Windows.UI.Xaml.Media.Animation;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -61,7 +62,7 @@ namespace AuraEditor
     
     public sealed partial class MainPage : Page
     {
-        AuraCreatorManager _auraCreatorManager;
+        public AuraCreatorManager _auraCreatorManager;
         public bool LayerSelected;
 
         private int timelineZoomLevel = -1;
@@ -90,7 +91,7 @@ namespace AuraEditor
                 }
             }
         }
-        public BitmapImage tempEffectUIBitmap;
+        public BitmapImage DragEffectIcon;
 
         public MainPage()
         {
@@ -102,12 +103,12 @@ namespace AuraEditor
             _mouseEventCtrl = IntializeMouseEventCtrl();
             LayerSelected = false;
             UpdateSpaceGridOperations(SpaceStatus.Normal);
-            InitializeTempEffectUI();
+            InitializeDragEffectIcon();
         }
 
-        private async void InitializeTempEffectUI()
+        private async void InitializeDragEffectIcon()
         {
-            tempEffectUIBitmap = new BitmapImage();
+            DragEffectIcon = new BitmapImage();
 
             string CountriesFile = @"Assets\effectUI.png";
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
@@ -116,7 +117,7 @@ namespace AuraEditor
             using (Windows.Storage.Streams.IRandomAccessStream fileStream =
                     await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
             {
-                tempEffectUIBitmap.SetSource(fileStream);
+                DragEffectIcon.SetSource(fileStream);
             }
         }
 
@@ -142,81 +143,97 @@ namespace AuraEditor
 
         private async Task GetCurrentDevicesTest()
         {
-            DeviceContent deviceContent = await GetDeviceContent("GL504");
-            Device device = CreateDeviceFromContent(deviceContent, 1, 1);
-            _auraCreatorManager.GlobalDevices.Add(device);
+            try
+            {
+                DeviceContent deviceContent = await GetDeviceContent("GL504");
+                Device device = CreateDeviceFromContent(deviceContent, 1, 1);
+                _auraCreatorManager.GlobalDevices.Add(device);
 
-            deviceContent = await GetDeviceContent("GLADIUS II");
-            device = CreateDeviceFromContent(deviceContent, 25, 3);
-            _auraCreatorManager.GlobalDevices.Add(device);
+                //deviceContent = await GetDeviceContent("GLADIUS II");
+                //device = CreateDeviceFromContent(deviceContent, 25, 3);
+                //_auraCreatorManager.GlobalDevices.Add(device);
+            }
+            catch
+            {
+
+            }
         }
         private async Task<DeviceContent> GetDeviceContent(string modelName)
         {
-            DeviceContent deviceContent = new DeviceContent();
-            Script script = new Script();
-            string scriptText;
-            Table deviceContent_table;
-            Table leds_table;
-            Table led_table;
-            Table leftTop_table;
-            Table rightBottom_table;
-            List<LedUI> ledUIs = new List<LedUI>();
-            string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
-            StorageFile txtFile = await folder.GetFileAsync(modelName + ".txt");
-            StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
-
-            deviceContent.DeviceName = modelName;
-            if (modelName == "GLADIUS II")
-                deviceContent.DeviceType = 1;
-            else
-                deviceContent.DeviceType = 0;
-
-            scriptText = await Windows.Storage.FileIO.ReadTextAsync(txtFile);
-            deviceContent_table = script.DoString(scriptText).Table;
-
-            deviceContent.Width = (int)deviceContent_table.Get("width").Number;
-            deviceContent.Height = (int)deviceContent_table.Get("height").Number;
-            leds_table = deviceContent_table.Get("leds").Table;
-
-            foreach (var deviceKey in leds_table.Keys)
+            try
             {
-                led_table = leds_table.Get(deviceKey.Number).Table;
+                DeviceContent deviceContent = new DeviceContent();
+                Script script = new Script();
+                string scriptText;
+                Table deviceContent_table;
+                Table leds_table;
+                Table led_table;
+                Table leftTop_table;
+                Table rightBottom_table;
+                List<LedUI> ledUIs = new List<LedUI>();
+                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
 
-                leftTop_table = led_table.Get("leftTop").Table;
-                rightBottom_table = led_table.Get("rightBottom").Table;
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+                System.Diagnostics.Debug.WriteLine("Get " + auraCreatorFolderPath + " folder successfully");
+                StorageFile txtFile = await folder.GetFileAsync(modelName + ".txt");
+                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+                System.Diagnostics.Debug.WriteLine("Get " + modelName + " StorageFile successfully");
 
-                deviceContent.Leds.Add(
-                    new LedUI()
-                    {
-                        PhyIndex = (int)deviceKey.Number,
-                        left = (int)leftTop_table.Get("x").Number,
-                        top = (int)leftTop_table.Get("y").Number,
-                        right = (int)rightBottom_table.Get("x").Number,
-                        bottom = (int)rightBottom_table.Get("y").Number,
-                    }
-                );
-            }
+                deviceContent.DeviceName = modelName;
+                if (modelName == "GLADIUS II")
+                    deviceContent.DeviceType = 1;
+                else
+                    deviceContent.DeviceType = 0;
 
-            if (pngFile != null)
-            {
-                // Open a stream for the selected file.
-                // The 'using' block ensures the stream is disposed
-                // after the image is loaded.
-                using (Windows.Storage.Streams.IRandomAccessStream fileStream =
-                    await pngFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                scriptText = await Windows.Storage.FileIO.ReadTextAsync(txtFile);
+                deviceContent_table = script.DoString(scriptText).Table;
+
+                deviceContent.Width = (int)deviceContent_table.Get("width").Number;
+                deviceContent.Height = (int)deviceContent_table.Get("height").Number;
+                leds_table = deviceContent_table.Get("leds").Table;
+
+                foreach (var deviceKey in leds_table.Keys)
                 {
-                    // Set the image source to the selected bitmap.
-                    Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
-                        new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+                    led_table = leds_table.Get(deviceKey.Number).Table;
 
-                    bitmapImage.SetSource(fileStream);
-                    deviceContent.Image = bitmapImage;
+                    leftTop_table = led_table.Get("leftTop").Table;
+                    rightBottom_table = led_table.Get("rightBottom").Table;
+
+                    deviceContent.Leds.Add(
+                        new LedUI()
+                        {
+                            PhyIndex = (int)deviceKey.Number,
+                            left = (int)leftTop_table.Get("x").Number,
+                            top = (int)leftTop_table.Get("y").Number,
+                            right = (int)rightBottom_table.Get("x").Number,
+                            bottom = (int)rightBottom_table.Get("y").Number,
+                        }
+                    );
                 }
-            }
 
-            return deviceContent;
+                if (pngFile != null)
+                {
+                    // Open a stream for the selected file.
+                    // The 'using' block ensures the stream is disposed
+                    // after the image is loaded.
+                    using (Windows.Storage.Streams.IRandomAccessStream fileStream =
+                        await pngFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                    {
+                        // Set the image source to the selected bitmap.
+                        Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
+                            new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+
+                        bitmapImage.SetSource(fileStream);
+                        deviceContent.Image = bitmapImage;
+                    }
+                }
+
+                return deviceContent;
+            }
+            catch
+            {
+                return null;
+            }
         }
         private Device CreateDeviceFromContent(DeviceContent deviceContent, int grid_x, int grid_y)
         {
@@ -286,21 +303,21 @@ namespace AuraEditor
             else
                 fe.Visibility = Visibility.Visible;
         }
-        private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
-        {
-            UpdateSpaceGridOperations(SpaceStatus.DragingEffectListItem);
-            var item = e.Items[0] as string;
-            e.Data.SetText(item);
-            e.Data.RequestedOperation = DataPackageOperation.Copy;
-
-            if (EffectHelper.IsTriggerEffects(item))
-                _auraCreatorManager.ShowTriggerDeviceLayer();
-        }
-        private void EffectListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
-        {
-            UpdateSpaceGridOperations(SpaceStatus.Normal);
-            _auraCreatorManager.HideTriggerDeviceLayer();
-        }
+        //private void EffectListView_DragStarting(object sender, DragItemsStartingEventArgs e)
+        //{
+        //    UpdateSpaceGridOperations(SpaceStatus.DragingEffectListItem);
+        //    var item = e.Items[0] as string;
+        //    e.Data.SetText(item);
+        //    e.Data.RequestedOperation = DataPackageOperation.Copy;
+        //
+        //    if (EffectHelper.IsTriggerEffects(item))
+        //        _auraCreatorManager.ShowTriggerDeviceLayer();
+        //}
+        //private void EffectListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        //{
+        //    UpdateSpaceGridOperations(SpaceStatus.Normal);
+        //    _auraCreatorManager.HideTriggerDeviceLayer();
+        //}
 
         async private void ShowMess(string res)
         {
@@ -405,7 +422,8 @@ namespace AuraEditor
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-            folder = await CheckOrCreateFolder(folder, "RogAuraEditor");
+            folder = await CheckOrCreateFolder(folder, "AURA Creator");
+            folder = await CheckOrCreateFolder(folder, "script");
             StorageFile sf =
                 await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
@@ -649,7 +667,7 @@ namespace AuraEditor
         {
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
             socket.MessageReceived += Socket_MessageReceived;
-            string serverPort = "6666";
+            string serverPort = "6667";
             string clientPort = "8002";
             Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
 
@@ -676,15 +694,28 @@ namespace AuraEditor
                     txtresult.Text = "Service : " + message;
                 });
 
-                if (message == "GLADIUS II")
+                if (message == "1 : GLADIUS II")
                 {
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         DeviceContent deviceContent = await GetDeviceContent("GLADIUS II");
-                        Device device = CreateDeviceFromContent(deviceContent, 2, 10);
-                        _auraCreatorManager.GlobalDevices.Add(device);
+                        Device device = CreateDeviceFromContent(deviceContent, 25, 3);
 
+                        _auraCreatorManager.GlobalDevices.Add(device);
                         UpdateSpaceGrid();
+                    });
+                }
+                else if (message == "0 : GLADIUS II")
+                {
+                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    {
+                        Device device = _auraCreatorManager.GlobalDevices.Find(x => x.DeviceType == 1);
+
+                        if (device != null)
+                        {
+                            _auraCreatorManager.GlobalDevices.Remove(device);
+                            UpdateSpaceGrid();
+                        }
                     });
                 }
             }
@@ -696,17 +727,32 @@ namespace AuraEditor
 
         private void HideEffectList_Click(object sender, RoutedEventArgs e)
         {
-            if (OptionsBlockGrid.ColumnDefinitions[0].ActualWidth < 100)
-                OptionsBlockGrid.ColumnDefinitions[0].Width = new GridLength(LayerScrollViewer.ActualWidth);
+            if (MainWindowRow1.ColumnDefinitions[0].ActualWidth < 100)
+                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(300);
             else
-                OptionsBlockGrid.ColumnDefinitions[0].Width = new GridLength(10);
+                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(10);
         }
         private void HideEffectInfo_Click(object sender, RoutedEventArgs e)
         {
-            if (OptionsBlockGrid.ColumnDefinitions[2].ActualWidth < 100)
-                OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(200);
+            if (MainWindowRow1.ColumnDefinitions[2].ActualWidth < 100)
+                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(200);
             else
-                OptionsBlockGrid.ColumnDefinitions[2].Width = new GridLength(10);
+                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(10);
+
+            var storyboard = new Storyboard();
+            var timelineIconAnimation = new DoubleAnimation();
+
+            TimelineIconScrollViewer.Visibility = Visibility.Visible;
+            // triangle
+            timelineIconAnimation.Duration = TimeSpan.FromMilliseconds(20000);
+            timelineIconAnimation.EnableDependentAnimation = true;
+            timelineIconAnimation.From = 100;
+            timelineIconAnimation.To = 3000;
+            Storyboard.SetTargetProperty(timelineIconAnimation, "X");
+            Storyboard.SetTarget(timelineIconAnimation, timelinetransform);
+            storyboard.Children.Add(timelineIconAnimation);
+            storyboard.Begin();
+            storyboard.GetCurrentTime();
         }
 
         private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -717,6 +717,9 @@ namespace AuraEditor
         }
         public void ShowTriggerDeviceLayer()
         {
+            if (DeviceLayerCollection.Count > 0 && DeviceLayerCollection[0] is TriggerDeviceLayer)
+                return;
+
             InsertDeviceLayer(_triggerlayer, 0);
         }
         public void HideTriggerDeviceLayer()
@@ -958,7 +961,7 @@ namespace AuraEditor
                     deviceTable.Set("name", DynValue.NewString(d.DeviceName));
 
                     if (d.DeviceType == 0)
-                        deviceTable.Set("DeviceType", DynValue.NewString("Notebook"));
+                        deviceTable.Set("DeviceType", DynValue.NewString("Notebook_Lite"));
                     else if (d.DeviceType == 1)
                         deviceTable.Set("DeviceType", DynValue.NewString("Mouse"));
                     else if (d.DeviceType == 2)
@@ -1086,7 +1089,7 @@ namespace AuraEditor
 
                 switch (d.DeviceType)
                 {
-                    case 0: deviceTypeName = "Notebook"; break;
+                    case 0: deviceTypeName = "Notebook_Lite"; break;
                     case 1: deviceTypeName = "Mouse"; break;
                     case 2: deviceTypeName = "Keyboard"; break;
                     case 3: deviceTypeName = "Headset"; break;

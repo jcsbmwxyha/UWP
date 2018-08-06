@@ -168,6 +168,7 @@ namespace AuraEditor.Common
         {
             Table viewportTransformTable = CreateNewTable(script);
             Table usageTable = CreateNewTable(script);
+            Table rotateTable = CreateNewTable(script);
             string usage = "";
             string func = "";
 
@@ -187,6 +188,12 @@ namespace AuraEditor.Common
 
             usageTable.Set(1, DynValue.NewString(usage));
             viewportTransformTable.Set("usage", DynValue.NewTable(usageTable));
+
+            rotateTable.Set("x", DynValue.NewNumber(0));
+            rotateTable.Set("y", DynValue.NewNumber(0));
+            rotateTable.Set("angle", DynValue.NewNumber(0));
+            viewportTransformTable.Set("rotate", DynValue.NewTable(rotateTable));
+
             DynValue dv = script.LoadFunction(func);
             viewportTransformTable.Set("func", dv);
             dictionary.Add(dv, func);

@@ -126,7 +126,7 @@
                         Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
             </StackPanel>
         </Grid>
-        <Grid x:Name="OptionsBlockGrid" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
+        <Grid x:Name="MainWindowRow1" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="*"/>
@@ -135,38 +135,58 @@
 
             <ScrollViewer Name="EffectListScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0">
                 <StackPanel>
-                    <RadioButton x:Name="EffectRadioButton" Content="Effects" GroupName="EffectOption"
-                                 Click="EffectRadioButton_Click" IsChecked="True"
-                                 FontSize="20" Foreground="White"/>
+                    <RadioButton x:Name="EffectRadioButton"
+                                 Content="Effects"
+                                 GroupName="EffectOption"
+                                 Click="EffectRadioButton_Click"
+                                 IsChecked="True"
+                                 FontSize="20"
+                                 Foreground="White"/>
                     <ListView x:Name="EffectListView"
-                              Grid.Row="2" Margin="22,4"
-                              SelectionMode="Extended">
+                              Margin="22,4">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <usercontrol:EffectListItem/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <RadioButton x:Name="EventRadioButton" Content="Event Trigger"
-                                 HorizontalAlignment="Stretch" GroupName="EffectOption" FontSize="20"
-                                 Foreground="White" Click="EffectRadioButton_Click" IsChecked="True"/>
+                    <RadioButton x:Name="EventRadioButton"
+                                 Content="Event Trigger"
+                                 HorizontalAlignment="Stretch"
+                                 GroupName="EffectOption" FontSize="20"
+                                 Foreground="White"
+                                 Click="EffectRadioButton_Click"
+                                 IsChecked="True"/>
                     <StackPanel Name="EventStackPanel">
                         <RadioButton x:Name="TriggerEventRadioButton" Content="Event Trigger"
-                                     Click="EffectRadioButton_Click" IsChecked="True" GroupName="123" Margin="20,0,0,0" Foreground="White"/>
+                                     Click="EffectRadioButton_Click"
+                                     IsChecked="True"
+                                     GroupName="123"
+                                     Margin="20,0,0,0"
+                                     Foreground="White"/>
                         <ListView x:Name="TriggerEventListView"
-                                  Grid.Row="2" Margin="44,0"
-                                  SelectionMode="Extended"
-                                  CanDragItems="True"
-                                  DragItemsStarting="EffectListView_DragStarting"
-                                  DragItemsCompleted="EffectListView_DragItemsCompleted"/>
-                        <RadioButton x:Name="OtherTriggerEventRadioButton" Content="Other trigger events"
-                                     Click="EffectRadioButton_Click" IsChecked="True" Margin="20,0,0,0" Foreground="White"/>
+                                  Margin="44,0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <usercontrol:EffectListItem/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <RadioButton x:Name="OtherTriggerEventRadioButton"
+                                     Content="Other trigger events"
+                                     Click="EffectRadioButton_Click"
+                                     IsChecked="True"
+                                     Margin="20,0,0,0"
+                                     Foreground="White"/>
                         <ListView x:Name="OtherTriggerEventListView"
-                                  Grid.Row="2" Margin="44,0"
-                                  SelectionMode="Extended"
-                                  Foreground="White"
-                                  CanDragItems="True"
-                                  DragItemsStarting="EffectListView_DragStarting"/>
+                                  Margin="44,0"
+                                  Foreground="White">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <usercontrol:EffectListItem/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

@@ -19,9 +19,9 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>AuraEditor_TemporaryKey.pfx</PackageCertificateKeyFile>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <PackageCertificateThumbprint>57D0791331C85A43CE6BE11760D296B9FA48C9ED</PackageCertificateThumbprint>
@@ -110,8 +110,8 @@
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="DeviceGroup.cs" />
     <Compile Include="SpaceManager.cs" />
-    <Compile Include="UserControls\DeviceGroupListViewItem.xaml.cs">
-      <DependentUpon>DeviceGroupListViewItem.xaml</DependentUpon>
+    <Compile Include="UserControls\DeviceLayerListViewItem.xaml.cs">
+      <DependentUpon>DeviceLayerListViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\NamedDialog.xaml.cs">
       <DependentUpon>NamedDialog.xaml</DependentUpon>
@@ -186,7 +186,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="UserControls\DeviceGroupListViewItem.xaml">
+    <Page Include="UserControls\DeviceLayerListViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -35,7 +35,7 @@ namespace AuraEditor
             if (value == spaceGridStatus)
                 return;
 
-            if(spaceGridStatus==SpaceStatus.WatchingLayer)
+            if (spaceGridStatus == SpaceStatus.WatchingLayer)
             {
                 OnLeavingWatchingLayerMode();
             }
@@ -67,7 +67,7 @@ namespace AuraEditor
                 SpaceAreaCanvas.RightTapped -= SpaceGrid_RightTapped;
                 SetLayerButton.IsEnabled = false;
             }
-            else if (value == SpaceStatus.DragingDevice )
+            else if (value == SpaceStatus.DragingDevice)
             {
                 EableAllDevicesOperation();
                 SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
