@@ -24,13 +24,12 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         MouseEventCtrl _mouseEventCtrl;
-
         private SpaceStatus spaceGridStatus;
         public SpaceStatus GetSpaceGridCurrentStatus()
         {
             return spaceGridStatus;
         }
-        public void UpdateSpaceGridOperations(SpaceStatus value)
+        public void SetSpaceStatus(SpaceStatus value)
         {
             if (value == spaceGridStatus)
                 return;
@@ -77,28 +76,7 @@ namespace AuraEditor
                 SetLayerButton.IsEnabled = true;
             }
         }
-
-        private void OnLeavingWatchingLayerMode()
-        {
-            UnselectAllLayers();
-            ResetAllZones();
-        }
-
-        private void EableAllDevicesOperation()
-        {
-            foreach (var d in _auraCreatorManager.GlobalDevices)
-            {
-                d.EnableManipulation();
-            }
-        }
-        private void DisableAllDevicesOperation()
-        {
-            foreach (var d in _auraCreatorManager.GlobalDevices)
-            {
-                d.DisableManipulation();
-            }
-        }
-
+        
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
@@ -142,10 +120,41 @@ namespace AuraEditor
 
             _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+        public void SetDevicePosition(Device device, int offsetX, int offsetY)
+        {
+            _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
+        }
+        private void UnselectAllLayers()
+        {
+            List<DeviceLayerListViewItem> layers =
+                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
+
+            foreach (var layer in layers)
+            {
+                layer.IsChecked = false;
+            }
+
+            LayerListView.SelectedIndex = -1;
+        }
+        private void UnselectAllZones()
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                foreach (var zone in d.LightZones)
+                {
+                    Shape shape = zone.Frame;
+                    shape.Stroke = new SolidColorBrush(Colors.Black);
+                    shape.Fill = new SolidColorBrush(Colors.Transparent);
+                }
+            }
+
+            _mouseEventCtrl.SetAllRegionsStatus(RegionStatus.Normal);
+        }
+
         public void WatchLayer(DeviceLayer layer)
         {
-            UpdateSpaceGridOperations(SpaceStatus.WatchingLayer);
-            ResetAllZones();
+            SetSpaceStatus(SpaceStatus.WatchingLayer);
+            UnselectAllZones();
 
             if (layer is TriggerDeviceLayer)
                 WatchTriggerLayer(layer);
@@ -159,7 +168,7 @@ namespace AuraEditor
             // According to the layer, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
-                Device d = _auraCreatorManager.GetGlobalDevice(pair.Key);
+                Device d = _auraCreatorManager.GetGlobalDeviceByType(pair.Key);
                 int[] phyIndexes = pair.Value;
 
                 foreach (var zone in d.LightZones)
@@ -191,39 +200,13 @@ namespace AuraEditor
                 }
             }
         }
-
-        public void UpdateDevicePosition(Device device, int offsetX, int offsetY)
+        private void OnLeavingWatchingLayerMode()
         {
-            _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
-        }
-        private void UnselectAllLayers()
-        {
-            LayerSelected = false;
-            List<DeviceLayerListViewItem> items =
-                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
-
-            foreach (var item in items)
-            {
-                item.IsChecked = false;
-            }
-
-            LayerListView.SelectedIndex = -1;
-        }
-        private void ResetAllZones()
-        {
-            foreach (var d in _auraCreatorManager.GlobalDevices)
-            {
-                foreach (var zone in d.LightZones)
-                {
-                    Shape shape = zone.Frame;
-                    shape.Stroke = new SolidColorBrush(Colors.Black);
-                    shape.Fill = new SolidColorBrush(Colors.Transparent);
-                }
-            }
-
-            _mouseEventCtrl.SetAllRegionsStatus(RegionStatus.Normal);
+            UnselectAllLayers();
+            UnselectAllZones();
         }
 
+        #region UI Element
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             //NamedDialog namedDialog = new NamedDialog();
@@ -249,14 +232,24 @@ namespace AuraEditor
             }
             
             _auraCreatorManager.AddDeviceLayer(layer);
-            ResetAllZones();
+            UnselectAllZones();
         }
+        private void DragDevImgToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            SetSpaceStatus(SpaceStatus.DragingDevice);
+        }
+        private void DragDevImgToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SetSpaceStatus(SpaceStatus.Normal);
+        }
+        #endregion
 
+        #region Mouse Operations
         private void SpaceGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (GetSpaceGridCurrentStatus() == SpaceStatus.WatchingLayer)
             {
-                UpdateSpaceGridOperations(SpaceStatus.Normal);
+                SetSpaceStatus(SpaceStatus.Normal);
             }
 
             var fe = sender as FrameworkElement;
@@ -304,16 +297,21 @@ namespace AuraEditor
         {
             _mouseEventCtrl.OnRightTapped();
         }
+        #endregion
 
-
-        private void DragToggleButton_Checked(object sender, RoutedEventArgs e)
+        private void EableAllDevicesOperation()
         {
-            UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                d.EnableManipulation();
+            }
         }
-
-        private void DragToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        private void DisableAllDevicesOperation()
         {
-            UpdateSpaceGridOperations(SpaceStatus.Normal);
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                d.DisableManipulation();
+            }
         }
     }
 }

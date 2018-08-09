@@ -16,6 +16,7 @@ using MoonSharp.Interpreter;
 using AuraEditor.UserControls;
 using Windows.UI.Xaml.Shapes;
 using Constants = AuraEditor.Common.Constants;
+using static AuraEditor.MainPage;
 
 namespace AuraEditor
 {
@@ -149,7 +150,7 @@ namespace AuraEditor
             EffectLine el = new EffectLine
             {
                 Height = 34,
-                Width = AuraCreatorManager.GetPixelsOfOneSecond(),
+                Width = AuraCreatorManager.GetPixelsPerSecond(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 ManipulationMode = ManipulationModes.TranslateX
             };
@@ -315,21 +316,15 @@ namespace AuraEditor
 
         private void DeviceImg_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.UpdateSpaceGridOperations(SpaceStatus.Normal);
+            MainPageInstance.SetSpaceStatus(SpaceStatus.Normal);
         }
         private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            //page.UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
+            //MainPageInstance.UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
         }
         private void Image_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            //page.UpdateSpaceGridOperations(SpaceStatus.Normal);
+            //MainPageInstance.UpdateSpaceGridOperations(SpaceStatus.Normal);
         }
         private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
@@ -373,9 +368,7 @@ namespace AuraEditor
             }
             // TODO : --
 
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            page.UpdateDevicePosition(this,
+            MainPageInstance.SetDevicePosition(this,
                 (int)(X - _oldX) * Constants.GridLength,
                 (int)(Y - _oldY) * Constants.GridLength);
         }
@@ -384,18 +377,14 @@ namespace AuraEditor
             Window.Current.CoreWindow.PointerCursor 
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
 
-            //var frame = (Frame)Window.Current.Content;
-            //var page = (MainPage)frame.Content;
-            //page.UpdateSpaceGridStatus(SpaceStatus.DragingDevice);
+            //MainPageInstance.UpdateSpaceGridStatus(SpaceStatus.DragingDevice);
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor 
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-
-            //var frame = (Frame)Window.Current.Content;
-            //var page = (MainPage)frame.Content;
-            //page.UpdateSpaceGridStatus(SpaceStatus.Normal);
+            
+            //MainPageInstance.UpdateSpaceGridStatus(SpaceStatus.Normal);
         }
     }
 
@@ -584,7 +573,7 @@ namespace AuraEditor
             for (int i = 0; i < Effects.Count; i++)
             {
                 Effect effect = Effects[i];
-                if (RoomX <= effect.UI_X && effect.UI_X < RoomX + AuraCreatorManager.GetPixelsOfOneSecond())
+                if (RoomX <= effect.UI_X && effect.UI_X < RoomX + AuraCreatorManager.GetPixelsPerSecond())
                 {
                     RoomX = effect.UI_X + effect.UI_Width;
                     i = -1; // rescan every effect line
@@ -653,513 +642,6 @@ namespace AuraEditor
             canvas.Drop += Canvas_Drop;
 
             return canvas;
-        }
-    }
-
-    public class AuraCreatorManager
-    {
-        public ObservableCollection<DeviceLayer> DeviceLayerCollection { get; set; }
-        static StackPanel TimelineStackPanel;
-        static Canvas TimelineScaleCanvas;
-        Script script;
-        Dictionary<DynValue, string> _functionDictionary;
-        public List<Device> GlobalDevices;
-        TriggerDeviceLayer _triggerlayer;
-        public double PlayTime
-        {
-            get
-            {
-                double maxTime = 0;
-
-                foreach (DeviceLayer layer in DeviceLayerCollection)
-                {
-                    foreach (var effect in layer.Effects)
-                    {
-                        double time = effect.StartTime + effect.DurationTime;
-
-                        if (time > maxTime)
-                        {
-                            maxTime = time;
-                        }
-
-                    }
-                }
-                return maxTime;
-            }
-        }
-
-        // TimeUnit : the seconds between two number(long line)
-        static public int secondsPerTimeUnit;
-        static public double pixelsPerTimeUnit = 200;
-        static public double GetPixelsOfOneSecond()
-        {
-            return (int)pixelsPerTimeUnit / secondsPerTimeUnit;
-        }
-
-        public AuraCreatorManager(StackPanel sp, Canvas cv)
-        {
-            script = new Script();
-            TimelineStackPanel = sp;
-            TimelineScaleCanvas = cv;
-            DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
-            _functionDictionary = new Dictionary<DynValue, string>();
-            GlobalDevices = new List<Device>();
-            InitialTriggerDeviceLayer();
-        }
-        private void InitialTriggerDeviceLayer()
-        {
-            _triggerlayer = new TriggerDeviceLayer();
-
-            _triggerlayer.LayerName = "Trigger Effect";
-            _triggerlayer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
-            _triggerlayer.AddDeviceZones(0, new int[] { -1 });
-            _triggerlayer.AddDeviceZones(1, new int[] { -1 });
-        }
-        public void ShowTriggerDeviceLayer()
-        {
-            if (DeviceLayerCollection.Count > 0 && DeviceLayerCollection[0] is TriggerDeviceLayer)
-                return;
-
-            InsertDeviceLayer(_triggerlayer, 0);
-        }
-        public void HideTriggerDeviceLayer()
-        {
-            if (DeviceLayerCollection.Count > 0 && DeviceLayerCollection[0] is TriggerDeviceLayer)
-                RemoveDeviceLayer(0);
-        }
-        public void AddDeviceLayer(DeviceLayer layer)
-        {
-            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
-            DeviceLayerCollection.Add(layer);
-            TimelineStackPanel.Children.Add(layer.UICanvas);
-        }
-        public void InsertDeviceLayer(DeviceLayer layer, int index)
-        {
-            if (layer is TriggerDeviceLayer)
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
-            else if (DeviceLayerCollection.Count % 2 == 0)
-                layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
-
-            DeviceLayerCollection.Insert(index, layer);
-            TimelineStackPanel.Children.Insert(index, layer.UICanvas);
-        }
-        public void RemoveDeviceLayer(int index)
-        {
-            DeviceLayerCollection.RemoveAt(index);
-            TimelineStackPanel.Children.RemoveAt(index);
-        }
-        public void RemoveDeviceLayer(DeviceLayer layer)
-        {
-            DeviceLayerCollection.Remove(layer);
-            TimelineStackPanel.Children.Remove(layer.UICanvas);
-        }
-        public void SetGlobalDevices(List<Device> devices)
-        {
-            GlobalDevices = devices;
-        }
-        public void ClearAllLayer()
-        {
-            TimelineStackPanel.Children.Clear();
-            DeviceLayerCollection.Clear();
-        }
-        public Device GetGlobalDevice(int type)
-        {
-            return GlobalDevices.Find(x => x.DeviceType == type);
-        }
-        public int GetLayerCount()
-        {
-            return DeviceLayerCollection.Count;
-        }
-
-        public void SetTimelineZoomLevel(int level)
-        {
-            double rate;
-            double oldSecondsPerTimeUnit = secondsPerTimeUnit;
-
-            if (level == 0)
-                secondsPerTimeUnit = 1;
-            else if (level == 1)
-                secondsPerTimeUnit = 2;
-            else if (level == 2)
-                secondsPerTimeUnit = 5;
-            else if (level == 3)
-                secondsPerTimeUnit = 15;
-            else if (level == 4)
-                secondsPerTimeUnit = 30;
-            else
-                secondsPerTimeUnit = 60;
-
-            rate = oldSecondsPerTimeUnit / secondsPerTimeUnit;
-            DrawTimelineScale();
-
-            foreach (var layer in DeviceLayerCollection)
-            {
-                foreach (var effect in layer.Effects)
-                {
-                    effect.UI_X = effect.UI_X * rate;
-                    effect.UI_Width = effect.UI_Width * rate;
-                }
-            }
-        }
-        private void DrawTimelineScale()
-        {
-            TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
-            TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
-            int minimumScaleUnitLength = (int)(pixelsPerTimeUnit / 2);
-            int width = (int)TimelineScaleCanvas.ActualWidth;
-            int height = (int)TimelineScaleCanvas.ActualHeight;
-            int y1_short = (int)(height / 1.5);
-            int y1_long = height / 2;
-            double y2 = height;
-            int linePerTimeUnit = (int)(pixelsPerTimeUnit / minimumScaleUnitLength);
-            int totalLineCount = width / minimumScaleUnitLength;
-
-            TimelineScaleCanvas.Children.Clear();
-
-            for (int i = 1; i < totalLineCount; i++)
-            {
-                int x = minimumScaleUnitLength * i;
-                int y1;
-
-                if (i % linePerTimeUnit == 0)
-                {
-                    y1 = y1_long;
-
-                    CompositeTransform ct = new CompositeTransform
-                    {
-                        TranslateX = x + 10,
-                        TranslateY = 5
-                    };
-
-                    TextBlock tb = new TextBlock
-                    {
-                        Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = ct,
-                        Foreground = new SolidColorBrush(Colors.White)
-                    };
-
-                    TimelineScaleCanvas.Children.Add(tb);
-                    ts = ts.Add(interval);
-                }
-                else
-                    y1 = y1_short;
-
-                Line line = new Line
-                {
-                    X1 = x,
-                    Y1 = y1,
-                    X2 = x,
-                    Y2 = y2,
-                    Stroke = new SolidColorBrush(Colors.White)
-                };
-
-                TimelineScaleCanvas.Children.Add(line);
-            }
-        }
-
-        public string PrintLuaScript()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("require(\"script//global\")\n\n");
-            sb.Append("EventProvider = ");
-            sb.Append(PrintTable(GetEventProviderTable()));
-            sb.Append("\n");
-            sb.Append("Viewport = ");
-            sb.Append(PrintTable(GetViewportTable()));
-            sb.Append("\n");
-            sb.Append("Event = ");
-            sb.Append(PrintTable(GetEventTable()));
-            sb.Append("\n");
-            sb.Append("GlobalSpace = ");
-            sb.Append(PrintTable(GetGlobalSpaceTable()));
-            sb.Append("\n");
-            return sb.ToString();
-        }
-        private Table CreateNewTable()
-        {
-            string s = "table={}";
-            Table table = script.DoString(s + "\nreturn table").Table;
-
-            return table;
-        }
-        private Table GetEventProviderTable()
-        {
-            Table eventProviderTable = CreateNewTable();
-            Table queueTable = CreateNewTable();
-            Table queueItemTable;
-
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            bool repeat = page.RepeatMode;
-
-            int effectCount = 0;
-            int queueIndex = 1;
-
-            foreach (DeviceLayer gp in DeviceLayerCollection)
-            {
-                if (gp.Eye == false)
-                    continue;
-
-                foreach (Effect eff in gp.Effects)
-                {
-                    queueItemTable = CreateNewTable();
-
-                    // Give uniqle index for all of effect lines
-                    eff.EffectLuaName = EffectHelper.GetEffectName(eff.EffectType) + effectCount.ToString();
-                    effectCount++;
-
-                    queueItemTable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
-                    queueItemTable.Set("Viewport", DynValue.NewString(gp.LayerName));
-
-                    if (EffectHelper.IsTriggerEffects(eff.EffectType))
-                        queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
-                    else if (repeat == true)
-                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
-                    else
-                        queueItemTable.Set("Trigger", DynValue.NewString("OneTime"));
-
-                    queueItemTable.Set("Delay", DynValue.NewNumber(eff.StartTime));
-                    queueItemTable.Set("Duration", DynValue.NewNumber(eff.DurationTime));
-                    queueTable.Set(queueIndex, DynValue.NewTable(queueItemTable));
-                    queueIndex++;
-                }
-            }
-            eventProviderTable.Set("queue", DynValue.NewTable(queueTable));
-
-            DynValue generate_dv = script.LoadFunction(Constants.GenerateEventFunctionString);
-            _functionDictionary.Add(generate_dv, Constants.GenerateEventFunctionString);
-            
-            eventProviderTable.Set("period", DynValue.NewNumber(PlayTime));
-            eventProviderTable.Set("generateEvent", generate_dv);
-            return eventProviderTable;
-        }
-        private Table GetViewportTable() {
-            Table viewPortTable = CreateNewTable();
-            Table layerTable;
-            Table deviceTable;
-            Table layoutTable;
-            Table locationTable;
-            Table usageTable;
-
-            int layerIndex = 1;
-            foreach (DeviceLayer layer in DeviceLayerCollection)
-            {
-                Dictionary<int, int[]> deviceToZonesDictionary = layer.GetDeviceToZonesDictionary();
-                layerTable = CreateNewTable();
-
-                foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
-                {
-                    Device d = GetGlobalDevice(pair.Key);
-
-                    layoutTable = CreateNewTable();
-                    locationTable = CreateNewTable();
-                    deviceTable = CreateNewTable();
-                    usageTable = CreateNewTable();
-                    
-                    locationTable.Set("x", DynValue.NewNumber(d.X));
-                    locationTable.Set("y", DynValue.NewNumber(d.Y));
-                    deviceTable.Set("name", DynValue.NewString(d.DeviceName));
-
-                    if (d.DeviceType == 0)
-                        deviceTable.Set("DeviceType", DynValue.NewString("Notebook_Lite"));
-                    else if (d.DeviceType == 1)
-                        deviceTable.Set("DeviceType", DynValue.NewString("Mouse"));
-                    else if (d.DeviceType == 2)
-                        deviceTable.Set("DeviceType", DynValue.NewString("Keyboard"));
-                    else
-                        deviceTable.Set("DeviceType", DynValue.NewString("Headset"));
-
-                    deviceTable.Set("location", DynValue.NewTable(locationTable));
-
-                    usageTable = CreateNewTable();
-
-                    if (layer is TriggerDeviceLayer)
-                    {
-                        int count = 1;
-                        foreach (var gd in GlobalDevices)
-                        {
-                            foreach (var zone in gd.LightZones)
-                            {
-                                usageTable.Set(count, DynValue.NewNumber(zone.PhysicalIndex));
-                                count++;
-                            }
-                        }
-                    }
-                    else if (pair.Value != null)
-                    {
-                        int count = 1;
-                        foreach (int phyIndex in pair.Value)
-                        {
-                            usageTable.Set(count, DynValue.NewNumber(phyIndex));
-                            count++;
-                        };
-                    }
-                    //else
-                    //{
-                    //    for (int count = 0; count < 169; count++)
-                    //        usageTable.Set(count, DynValue.NewNumber(count));
-                    //}
-                    deviceTable.Set("usage", DynValue.NewTable(usageTable));
-
-                    layerTable.Set(d.DeviceName, DynValue.NewTable(deviceTable));
-                }
-                viewPortTable.Set(layer.LayerName, DynValue.NewTable(layerTable));
-                layerIndex++;
-            }
-            return viewPortTable;
-        }
-        private Table GetEventTable() {
-            Table eventTable = CreateNewTable();
-            Table effectTable;
-            Table initColorTable;
-            Table waveTable;
-
-            foreach (DeviceLayer gp in DeviceLayerCollection)
-            {
-                if (gp.Eye == false)
-                    continue;
-
-                foreach (Effect eff in gp.Effects)
-                {
-                    EffectInfo info = eff.Info;
-
-                    effectTable = CreateNewTable();
-                    initColorTable = CreateNewTable();
-                    waveTable = CreateNewTable();
-
-                    Color c = eff.Info.Color;
-                    double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
-                    if (EffectHelper.GetEffectName(eff.EffectType) == "Star")
-                    {
-                        DynValue randomHue_dv = script.LoadFunction(Constants.RandomHueString);
-                        _functionDictionary.Add(randomHue_dv, Constants.RandomHueString);
-                        initColorTable.Set("hue", randomHue_dv);
-                    }
-                    else
-                        initColorTable.Set("hue", DynValue.NewNumber(hsl[0]));
-                    initColorTable.Set("saturation", DynValue.NewNumber(hsl[1]));
-                    initColorTable.Set("lightness", DynValue.NewNumber(hsl[2]));
-                    initColorTable.Set("alpha", DynValue.NewNumber(c.A / 255));
-                    effectTable.Set("initColor", DynValue.NewTable(initColorTable));
-                    effectTable.Set("viewportTransform", DynValue.NewTable(
-                        EffectHelper.GetViewportTransformTable(_functionDictionary, script, eff.EffectType))
-                        );
-                    effectTable.Set("bindToSlot", DynValue.NewTable(EffectHelper.GetBindToSlotTable(script, eff.EffectType)));
-
-                    string waveTypeString = "";
-                    switch(info.WaveType)
-                    {
-                        case 0: waveTypeString = "SineWave"; break;
-                        case 1: waveTypeString = "HalfSineWave"; break;
-                        case 2: waveTypeString = "QuarterSineWave"; break;
-                        case 3: waveTypeString = "SquareWave"; break;
-                        case 4: waveTypeString = "TriangleWave"; break;
-                        case 5: waveTypeString = "SawToothleWave"; break;
-                    }
-
-                    waveTable.Set("waveType", DynValue.NewString(waveTypeString));
-                    waveTable.Set("min", DynValue.NewNumber(info.Min));
-                    waveTable.Set("max", DynValue.NewNumber(info.Max));
-                    waveTable.Set("waveLength", DynValue.NewNumber(info.WaveLength));
-                    waveTable.Set("freq", DynValue.NewNumber(info.Freq));
-                    waveTable.Set("phase", DynValue.NewNumber(info.Phase));
-                    waveTable.Set("start", DynValue.NewNumber(info.Start));
-                    waveTable.Set("velocity", DynValue.NewNumber(info.Velocity));
-                    effectTable.Set("wave", DynValue.NewTable(waveTable));
-
-                    eventTable.Set(eff.EffectLuaName, DynValue.NewTable(effectTable));
-                }
-            }
-            return eventTable;
-        }
-        private Table GetGlobalSpaceTable()
-        {
-            Table globalSpace = CreateNewTable();
-            Table deviceTable;
-            Table locationTable;
-            string deviceTypeName = "";
-
-            foreach (Device d in GlobalDevices)
-            {
-                deviceTable = CreateNewTable();
-                locationTable = CreateNewTable();
-
-                locationTable.Set("x", DynValue.NewNumber(d.X));
-                locationTable.Set("y", DynValue.NewNumber(d.Y));
-
-                switch (d.DeviceType)
-                {
-                    case 0: deviceTypeName = "Notebook_Lite"; break;
-                    case 1: deviceTypeName = "Mouse"; break;
-                    case 2: deviceTypeName = "Keyboard"; break;
-                    case 3: deviceTypeName = "Headset"; break;
-                }
-                deviceTable.Set("DeviceType", DynValue.NewString(deviceTypeName));
-                deviceTable.Set("location", DynValue.NewTable(locationTable));
-
-                globalSpace.Set(d.DeviceName, DynValue.NewTable(deviceTable));
-            }
-
-            return globalSpace;
-        }
-        private string PrintTable(Table tb, int tab = 0)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            string paranthesesTabString = "";
-            string otherTabString = "";
-
-            for (int i = 0; i < tab; i++)
-            {
-                paranthesesTabString += "\t";
-            }
-            otherTabString = paranthesesTabString + "\t";
-
-            sb.Append(paranthesesTabString + "{\n");
-            foreach (var key in tb.Keys)
-            {
-                DynValue keyDV;
-                string keyName = "";
-                string keyValue = "";
-
-                // key name
-                if (key.Type.ToString() == "String")
-                {
-                    keyName = "[\"" + key.String + "\"]";
-                    keyDV = tb.Get(key.String);
-                }
-                else
-                {
-                    keyName = "[" + key.Number.ToString() + "]";
-                    keyDV = tb.Get(key.Number);
-                }
-
-                // key value
-                if (keyDV.Table != null)
-                {
-                    keyValue = PrintTable(keyDV.Table, tab + 1);
-                    sb.Append(otherTabString + keyName + " =\n" + keyValue + ",\n");
-                }
-                else
-                {
-                    if (keyDV.String != null)
-                    {
-                        keyValue = "\"" + keyDV.String + "\"";
-                    }
-                    else if (keyDV.Function != null)
-                    {
-                        keyValue = _functionDictionary[keyDV];
-                    }
-                    else
-                    {
-                        keyValue = keyDV.Number.ToString();
-                    }
-                    sb.Append(otherTabString + keyName + " = " + keyValue + ",\n");
-                }
-            }
-
-            sb.Append(paranthesesTabString + "}");
-            return sb.ToString();
         }
     }
 }

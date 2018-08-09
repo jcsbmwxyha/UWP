@@ -28,6 +28,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.Storage.Streams;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -40,10 +41,11 @@ namespace AuraEditor
     public class LedUI
     {
         public int PhyIndex;
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+        public int Zindex;
     }
     public class DeviceContent
     {
@@ -62,50 +64,26 @@ namespace AuraEditor
     
     public sealed partial class MainPage : Page
     {
-        public AuraCreatorManager _auraCreatorManager;
-        public bool LayerSelected;
-
-        private int timelineZoomLevel = -1;
-        public int TimelineZoom
+        static MainPage _instance;
+        static public MainPage MainPageInstance
         {
-            set
-            {
-                int level;
-                if (value >= 84)
-                    level = 5;
-                else if (value >= 67)
-                    level = 4;
-                else if (value >= 51)
-                    level = 3;
-                else if (value >= 34)
-                    level = 2;
-                else if (value >= 18)
-                    level = 1;
-                else
-                    level = 0;
-
-                if (timelineZoomLevel != level)
-                {
-                    timelineZoomLevel = level;
-                    _auraCreatorManager.SetTimelineZoomLevel(timelineZoomLevel);
-                }
-            }
+            get { return _instance; }
         }
+        public AuraCreatorManager _auraCreatorManager;
         public BitmapImage DragEffectIcon;
 
         public MainPage()
         {
+            _instance = this;
             this.InitializeComponent();
             EffectListView.ItemsSource = EffectHelper.GetCommonEffectList();
             TriggerEventListView.ItemsSource = EffectHelper.GetTriggerEffectList();
             OtherTriggerEventListView.ItemsSource = EffectHelper.GetOtherTriggerEffectList();
-            _auraCreatorManager = new AuraCreatorManager(TimelineStackPanel, TimelineScaleCanvas);
+            _auraCreatorManager = AuraCreatorManager.Instance;
             _mouseEventCtrl = IntializeMouseEventCtrl();
-            LayerSelected = false;
-            UpdateSpaceGridOperations(SpaceStatus.Normal);
+            SetSpaceStatus(SpaceStatus.Normal);
             InitializeDragEffectIcon();
         }
-
         private async void InitializeDragEffectIcon()
         {
             DragEffectIcon = new BitmapImage();
@@ -120,16 +98,15 @@ namespace AuraEditor
                 DragEffectIcon.SetSource(fileStream);
             }
         }
-
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            InitializeTimelineStructure();
             await GetCurrentDevicesTest();
             UpdateSpaceGrid();
-            TimelineZoom = 20;
 
             // for receive cmd form Service
             socketstart();
-
+            CsvTest();
             // Pre add for debug
             /*
             for (int i = 0; i < 6; i++)
@@ -140,12 +117,28 @@ namespace AuraEditor
             }
             */
         }
+        private async void CsvTest()
+        {
+            string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
 
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + "GL504");
+            StorageFile csvFile = await folder.GetFileAsync("GL504.csv");
+
+            using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
+            {
+                CsvRow row = new CsvRow();
+                while (csvReader.ReadRow(row))
+                {
+                    string temp = row[2].ToString();
+                    //use row[i] to reference a given column from the row
+                }
+            }
+        }
         private async Task GetCurrentDevicesTest()
         {
             try
             {
-                DeviceContent deviceContent = await GetDeviceContent("GL504");
+                DeviceContent deviceContent = await GetDeviceContent2("GL504");
                 Device device = CreateDeviceFromContent(deviceContent, 1, 1);
                 _auraCreatorManager.GlobalDevices.Add(device);
 
@@ -170,7 +163,6 @@ namespace AuraEditor
                 Table led_table;
                 Table leftTop_table;
                 Table rightBottom_table;
-                List<LedUI> ledUIs = new List<LedUI>();
                 string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
 
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
@@ -203,10 +195,10 @@ namespace AuraEditor
                         new LedUI()
                         {
                             PhyIndex = (int)deviceKey.Number,
-                            left = (int)leftTop_table.Get("x").Number,
-                            top = (int)leftTop_table.Get("y").Number,
-                            right = (int)rightBottom_table.Get("x").Number,
-                            bottom = (int)rightBottom_table.Get("y").Number,
+                            Left = (int)leftTop_table.Get("x").Number,
+                            Top = (int)leftTop_table.Get("y").Number,
+                            Right = (int)rightBottom_table.Get("x").Number,
+                            Bottom = (int)rightBottom_table.Get("y").Number,
                         }
                     );
                 }
@@ -222,6 +214,71 @@ namespace AuraEditor
                         // Set the image source to the selected bitmap.
                         Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
                             new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+
+                        bitmapImage.SetSource(fileStream);
+                        deviceContent.Image = bitmapImage;
+                    }
+                }
+
+                return deviceContent;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        private async Task<DeviceContent> GetDeviceContent2(string modelName)
+        {
+            try
+            {
+                DeviceContent deviceContent = new DeviceContent();
+                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
+                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+
+                deviceContent.DeviceName = modelName;
+                if (modelName == "GLADIUS II")
+                    deviceContent.DeviceType = 1;
+                else
+                    deviceContent.DeviceType = 0;
+
+
+                if (csvFile != null)
+                {
+                    using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
+                    {
+                        CsvRow row = new CsvRow();
+                        while (csvReader.ReadRow(row))
+                        {
+                            if (row[0] == "Weight")
+                                deviceContent.Width = Int32.Parse(row[1]);
+
+                            else if (row[0] == "Height")
+                                deviceContent.Height = Int32.Parse(row[1]);
+
+                            else if (row[0].Contains("LED"))
+                            {
+                                deviceContent.Leds.Add(
+                                    new LedUI(){
+                                        PhyIndex = Int32.Parse(row[1]),
+                                        Left = Int32.Parse(row[4]),
+                                        Top = Int32.Parse(row[5]),
+                                        Right = Int32.Parse(row[6]),
+                                        Bottom = Int32.Parse(row[7]),
+                                        Zindex = Int32.Parse(row[8]),
+                                    });
+                            }
+                        }
+                    }
+                }
+
+                if (pngFile != null)
+                {
+                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
 
                         bitmapImage.SetSource(fileStream);
                         deviceContent.Image = bitmapImage;
@@ -276,12 +333,14 @@ namespace AuraEditor
                     new LightZone(
                         led.PhyIndex, idx,
                         grid_x, grid_y,
-                        led.left, led.top, led.right, led.bottom));
+                        led.Left, led.Top, led.Right, led.Bottom));
             }
 
             device.LightZones = zones.ToArray();
             return device;
         }
+
+        #region Framework Element
         private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {
             RadioButton rb = sender as RadioButton;
@@ -318,13 +377,40 @@ namespace AuraEditor
         //    UpdateSpaceGridOperations(SpaceStatus.Normal);
         //    _auraCreatorManager.HideTriggerDeviceLayer();
         //}
-
-        async private void ShowMess(string res)
+        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var messDialog = new MessageDialog(res);
-            await messDialog.ShowAsync();
-        }
+            string content = e.AddedItems[0].ToString();
+            switch (content)
+            {
+                case "0 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1, true);
+                    break;
+                case "50 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1.5f, true);
+                    break;
+                case "100 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 2, true);
+                    break;
+            }
 
+        }
+        private void HideEffectList_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindowRow1.ColumnDefinitions[0].ActualWidth < 100)
+                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(300);
+            else
+                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(10);
+        }
+        private void HideEffectInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindowRow1.ColumnDefinitions[2].ActualWidth < 100)
+                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(200);
+            else
+                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(10);
+        }
         private void DeleteItem_DragEnter(object sender, DragEventArgs e)
         {
             // Trash only accepts text
@@ -340,21 +426,30 @@ namespace AuraEditor
             //    canDelete = true;
             //}
         }
-        
-        private void TimelineLayerScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            ScrollViewer sv = sender as ScrollViewer;
-            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TimelineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
-        }
-        private void TimelineIconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            ScrollViewer sv = sender as ScrollViewer;
-            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TimelineLayerScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
-            TimelineScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
-        }
+            List<DeviceLayerListViewItem> items =
+                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
 
+            foreach (var item in items)
+            {
+                if (item.IsChecked == true)
+                {
+                    DeviceLayer layer = item.DataContext as DeviceLayer;
+
+                    if (layer is TriggerDeviceLayer)
+                        continue;
+
+                    if (layer.Effects.Contains(_selectedEffectLine))
+                        SelectedEffectLine = null;
+
+                    _auraCreatorManager.RemoveDeviceLayer(layer);
+                }
+            }
+        }
+        #endregion
+
+        #region Lua script
         private async void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
@@ -493,12 +588,7 @@ namespace AuraEditor
                 {
                     int physicalIndex = (int)usageTable.Get(index.Number).Number;
 
-                    if (type == 0)
-                        zones.Add(KeyRemap.G703ReRemap(physicalIndex));
-                    else if (type == 2)
-                        zones.Add(KeyRemap.FlairReRemap(physicalIndex));
-                    else
-                        zones.Add(physicalIndex);
+                    zones.Add(physicalIndex);
                 }
 
                 zoneDictionary.Add(type, zones.ToArray());
@@ -605,64 +695,8 @@ namespace AuraEditor
 
             return devices;
         }
-
-        private void TimelineZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (_auraCreatorManager != null)
-                TimelineZoom = (int)TimelineZoomSlider.Value;
-        }
-
-        private void DeviceList_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private async void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            StorageFile sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\RogAuraEditor\\Flaire.jpg");
-            Image img = new Image();
-
-            if (sf != null)
-            {
-                // Open a stream for the selected file.
-                // The 'using' block ensures the stream is disposed
-                // after the image is loaded.
-                using (Windows.Storage.Streams.IRandomAccessStream fileStream =
-                    await sf.OpenAsync(Windows.Storage.FileAccessMode.Read))
-                {
-                    // Set the image source to the selected bitmap.
-                    Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
-                        new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-
-                    bitmapImage.SetSource(fileStream);
-                    img.Source = bitmapImage;
-                }
-
-                SpaceAreaCanvas.Children.Add(img);
-            }
-        }
-
-        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<DeviceLayerListViewItem> items =
-                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
-
-            foreach (var item in items)
-            {
-                if (item.IsChecked == true)
-                {
-                    DeviceLayer layer = item.DataContext as DeviceLayer;
-
-                    if (layer is TriggerDeviceLayer)
-                        continue;
-
-                    if (layer.Effects.Contains(_selectedEffectLine))
-                        SelectedEffectLine = null;
-
-                    _auraCreatorManager.RemoveDeviceLayer(layer);
-                }
-            }
-        }
-
+        #endregion
+        
         async void socketstart()
         {
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
@@ -679,7 +713,6 @@ namespace AuraEditor
             await writer.WriteLineAsync(message);
             await writer.FlushAsync();
         }
-
         private async void Socket_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
         {
             try
@@ -723,57 +756,6 @@ namespace AuraEditor
             {
                 System.Diagnostics.Debug.WriteLine(e.ToString());
             }
-        }
-
-        private void HideEffectList_Click(object sender, RoutedEventArgs e)
-        {
-            if (MainWindowRow1.ColumnDefinitions[0].ActualWidth < 100)
-                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(300);
-            else
-                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(10);
-        }
-        private void HideEffectInfo_Click(object sender, RoutedEventArgs e)
-        {
-            if (MainWindowRow1.ColumnDefinitions[2].ActualWidth < 100)
-                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(200);
-            else
-                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(10);
-
-            var storyboard = new Storyboard();
-            var timelineIconAnimation = new DoubleAnimation();
-
-            TimelineIconScrollViewer.Visibility = Visibility.Visible;
-            // triangle
-            timelineIconAnimation.Duration = TimeSpan.FromMilliseconds(20000);
-            timelineIconAnimation.EnableDependentAnimation = true;
-            timelineIconAnimation.From = 100;
-            timelineIconAnimation.To = 3000;
-            Storyboard.SetTargetProperty(timelineIconAnimation, "X");
-            Storyboard.SetTarget(timelineIconAnimation, timelinetransform);
-            storyboard.Children.Add(timelineIconAnimation);
-            storyboard.Begin();
-            storyboard.GetCurrentTime();
-        }
-
-        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string content = e.AddedItems[0].ToString();
-            switch (content)
-            {
-                case "0 %":
-                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
-                        SpaceAreaScrollViewer.VerticalOffset, 1, true);
-                    break;
-                case "50 %":
-                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
-                        SpaceAreaScrollViewer.VerticalOffset, 1.5f, true);
-                    break;
-                case "100 %":
-                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
-                        SpaceAreaScrollViewer.VerticalOffset, 2, true);
-                    break;
-            }
-
         }
     }
 }

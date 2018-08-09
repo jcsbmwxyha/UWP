@@ -14,18 +14,6 @@
             <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
             <Setter Property="Stretch" Value="Fill"/>
         </Style>
-        <Storyboard x:Name="TimelineStoryboard">
-            <DoubleAnimation From="0" To="3000" Duration="00:00:30"
-                             Storyboard.TargetName="timelinetransform"
-                             Storyboard.TargetProperty="X">
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Name="SpaceLineStoryboard">
-            <DoubleAnimation From="0" To="3000" Duration="00:00:30"
-                             Storyboard.TargetName="Spacelinetransform"
-                             Storyboard.TargetProperty="X">
-            </DoubleAnimation>
-        </Storyboard>
         <Style TargetType="Canvas">
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Width" Value="2500" />
@@ -85,40 +73,45 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="Assets/asus_auraeditor_bg.png" Grid.ColumnSpan="3" Grid.RowSpan="5" Stretch="Fill"/>
+        
+        <!--Backgroud image-->
+        <Image Source="Assets/asus_auraeditor_bg.png"
+               Grid.ColumnSpan="3"
+               Grid.RowSpan="5"
+               Stretch="Fill"/>
+        <Image Grid.Row="2"
+               Grid.Column="0"
+               Grid.RowSpan="3"
+               Grid.ColumnSpan="3"
+               Source="Assets/asus_auraeditor_timeline_bg.png"
+               Stretch="Fill"/>
+        <Image Grid.Row="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="3"
+               Source="Assets/asus_auraeditor_time_bg.png"
+               Stretch="Fill"/>
 
         <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ToggleButton Name="DragToggleButton"
-                              FontSize="20"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <ToggleButton Name="DragDevImgToggleButton"
+                              FontSize="20" Height="40"
                               FontFamily="Segoe MDL2 Assets"
                               Content="&#xECE9;"
-                              Checked="DragToggleButton_Checked"
-                              Unchecked="DragToggleButton_Unchecked"
+                              Checked="DragDevImgToggleButton_Checked"
+                              Unchecked="DragDevImgToggleButton_Unchecked"
                               Background="Gray"
-                              Margin="0,0,30,0"/>
+                              Margin="0,0,5,0"/>
                 <Button Name="SetLayerButton"
-                        FontSize="20"
+                        FontSize="20" Height="40"
                         Content="Set Layer"
                         Click="SetLayerButton_Click"
-                        Background="Gray"
-                        Margin="0,0,60,0"/>
-                <Button Name="PlayButton" FontSize="24" Click="TimelineTimer_Play" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource ButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE937;"/>
-                        <TextBlock Text="Preview" Margin="10,0,0,0"/>
-                    </StackPanel>
-                </Button>
-                <Button Name="StopButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE002;" Click="TimelineTimer_Stop" Margin="1,0,0,0" Foreground="White"/>
+                        Background="Gray"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="SaveButton" Margin="1,0,0,0" Click="SaveButton_Click">
                     <Image Source="Assets/asus_auraeditor_save_ic.png"/>
-                </Button>
-                <Button Name="SettingsButton">
-                    <Image Source="Assets/asus_auraeditor_settings_ic.png"/>
                 </Button>
                 <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
                         Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
@@ -339,26 +332,38 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-
-        <ToggleButton Name="RepeatButton"
-                      Grid.Row="2" Grid.Column="0"
-                      FontSize="20" FontFamily="Segoe MDL2 Assets" Content="&#xE117;"
-                      IsChecked="True"
-                      HorizontalAlignment="Right"
-                      Background="Gray"
-                      Margin="5,0,0,0"
-                      Canvas.ZIndex="7"/>
-        <Image Grid.Row="2"
-               Grid.Column="0"
-               Grid.RowSpan="3"
-               Grid.ColumnSpan="3"
-               Source="Assets/asus_auraeditor_timeline_bg.png"
-               Stretch="Fill"/>
-        <Image Grid.Row="2"
-               Grid.Column="0"
-               Grid.ColumnSpan="3"
-               Source="Assets/asus_auraeditor_time_bg.png"
-               Stretch="Fill"/>
+        <RelativePanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
+            <Button Name="StopButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE002;"
+                    Click="StopButton_Click"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    Margin="1,0,0,0"
+                    Foreground="White"/>
+            <Button Name="PlayButton"
+                    FontSize="24"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xF5B0;"
+                    Click="PlayButton_Click"
+                    Foreground="White"
+                    RelativePanel.RightOf="StopButton"/>
+            <ToggleButton Name="RepeatButton"
+                          FontSize="20" FontFamily="Segoe MDL2 Assets" Content="&#xE117;"
+                          IsChecked="True"
+                          HorizontalAlignment="Right"
+                          Background="Gray"
+                          Margin="5,0,0,0"
+                          RelativePanel.RightOf="PlayButton"/>
+            <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
+                       Text="00:00.00"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       FontSize="20"
+                       Margin="0,0,10,0"
+                       RelativePanel.AlignRightWithPanel="True"
+                       Foreground="White"/>
+        </RelativePanel>
         <ScrollViewer Name="LayerScrollViewer"
                       Grid.Column="0"
                       Grid.Row="3"
@@ -369,8 +374,7 @@
                       ItemsSource="{x:Bind _auraCreatorManager.DeviceLayerCollection}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
-                      HorizontalAlignment="Left"
-                      SelectionChanged="DeviceList_SelectionChanged">
+                      HorizontalAlignment="Left">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:DeviceLayer">
                         <local:DeviceLayerListViewItem HorizontalAlignment="Center"/>
@@ -378,7 +382,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollViewer>
-        <ScrollViewer Name="TimelineIconScrollViewer"
+        <ScrollViewer Name="IconScrollViewer"
                       Grid.Row="2"
                       Grid.RowSpan="2"
                       Grid.Column="1"
@@ -386,20 +390,20 @@
                       Canvas.ZIndex="6"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TimelineIconScrollViewer_ViewChanged"
+                      ViewChanged="IconScrollViewer_ViewChanged"
                       Visibility="Collapsed">
-            <Canvas Name="TimelineIconCanvas"
+            <Canvas Name="IconCanvas"
                     VerticalAlignment="Top">
                 <Image Source="Assets/asus_auraeditor_timeline_ic.png"
                        HorizontalAlignment="Left"
                        Margin="-7,0,0,0">
                     <Image.RenderTransform>
-                        <TranslateTransform x:Name="timelinetransform"/>
+                        <TranslateTransform x:Name="IconTranslateTransform"/>
                     </Image.RenderTransform>
                 </Image>
             </Canvas>
         </ScrollViewer>
-        <ScrollViewer Name="TimelineScaleScrollViewer"
+        <ScrollViewer Name="ScaleScrollViewer"
                       Grid.Row="2"
                       Grid.Column="1"
                       Grid.ColumnSpan="2"
@@ -407,18 +411,18 @@
                       VerticalScrollBarVisibility="Disabled"
                       BorderBrush="Black"
                       BorderThickness="1">
-            <Canvas Name="TimelineScaleCanvas"
+            <Canvas Name="ScaleCanvas"
                     Width="5000"/>
         </ScrollViewer>
-        <ScrollViewer Name="TimelineLayerScrollViewer"
+        <ScrollViewer Name="TrackScrollViewer"
                       Grid.Column="1"
                       Grid.Row="3"
                       Grid.ColumnSpan="2"
                       Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TimelineLayerScrollViewer_ViewChanged">
-            <StackPanel Name="TimelineStackPanel"/>
+                      ViewChanged="TrackScrollViewer_ViewChanged">
+            <StackPanel Name="TrackStackPanel"/>
         </ScrollViewer>
 
         <Grid Grid.Column="0"
@@ -431,16 +435,17 @@
                        Width="35"/>
             </Button>
         </Grid>
-        <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="black" BorderThickness="1">
-            <TextBlock Name="TimelineTimerText" Text="00:00.00" Margin="10,0,0,0" FontSize="20" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
-            <Slider Name="TimelineZoomSlider"
+        <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+            <Slider Name="ZoomSlider"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
+                    Maximum="6"
+                    Minimum="1"
                     RelativePanel.AlignRightWithPanel="True"
                     Width="100"
                     Margin="0,0,20,0"
-                    Value="20"
-                    ValueChanged="TimelineZoomSlider_ValueChanged"/>
+                    Value="2"
+                    ValueChanged="ZoomSlider_ValueChanged"/>
         </RelativePanel>
         <TextBox x:Name="txtresult" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168"/>
     </Grid>

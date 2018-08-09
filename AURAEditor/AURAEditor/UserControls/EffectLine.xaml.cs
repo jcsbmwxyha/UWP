@@ -174,10 +174,7 @@ namespace AuraEditor.UserControls
 
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-
-            page.SelectedEffectLine = MyEffect;
+            MainPage.MainPageInstance.SelectedEffectLine = MyEffect;
         }
     }
 }

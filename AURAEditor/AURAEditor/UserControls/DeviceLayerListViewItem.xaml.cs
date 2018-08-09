@@ -55,10 +55,7 @@ namespace AuraEditor
 
         private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            
-            page.WatchLayer(MyDeviceLayer);
+            MainPage.MainPageInstance.WatchLayer(MyDeviceLayer);
         }
     }
 }

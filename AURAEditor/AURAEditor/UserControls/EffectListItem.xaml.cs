@@ -30,8 +30,7 @@ namespace AuraEditor.UserControls
 
         private void Grid_DragStarting(UIElement sender, DragStartingEventArgs args)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
+            var page = MainPage.MainPageInstance;
 
             args.DragUI.SetContentFromBitmapImage(page.DragEffectIcon);
             args.Data.RequestedOperation = DataPackageOperation.Copy;
@@ -42,15 +41,12 @@ namespace AuraEditor.UserControls
             else
                 page._auraCreatorManager.HideTriggerDeviceLayer();
 
-            page.UpdateSpaceGridOperations(SpaceStatus.DragingEffectListItem);
+            page.SetSpaceStatus(SpaceStatus.DragingEffectListItem);
         }
 
         private void Grid_DropCompleted(UIElement sender, DropCompletedEventArgs args)
         {
-            var frame = (Frame)Window.Current.Content;
-            var page = (MainPage)frame.Content;
-            
-            page.UpdateSpaceGridOperations(SpaceStatus.Normal);
+            MainPage.MainPageInstance.SetSpaceStatus(SpaceStatus.Normal);
         }
     }
 }

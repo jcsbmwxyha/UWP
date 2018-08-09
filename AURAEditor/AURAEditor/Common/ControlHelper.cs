@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -33,7 +34,6 @@ namespace AuraEditor.Common
             }
             return result;
         }
-
         public static List<T> FindAllControl<T>(UIElement parent, Type targetType) where T : FrameworkElement
         {
             List<T> ResultCollection = new List<T>();
@@ -59,6 +59,11 @@ namespace AuraEditor.Common
             }
 
             return ResultCollection;
+        }
+        public static async void ShowMess(string res)
+        {
+            var messDialog = new MessageDialog(res);
+            await messDialog.ShowAsync();
         }
     }
 }
