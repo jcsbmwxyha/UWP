@@ -113,6 +113,8 @@ namespace AuraEditor.UserControls
             MyEffect.UI_X = left;
             MyEffect.UI_Width = width;
             MyEffect.UI_X = MyEffect.Layer.InsertEffectLine(MyEffect);
+            Window.Current.CoreWindow.PointerCursor =
+                new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {

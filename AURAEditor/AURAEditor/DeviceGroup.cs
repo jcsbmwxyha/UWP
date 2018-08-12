@@ -179,8 +179,9 @@ namespace AuraEditor
             }
         }
         public bool Selected;
+        public int Zindex;
 
-        public LightZone(int p_idx, int ui_idx, int parentX, int parentY, int x1, int y1, int x2, int y2)
+        public LightZone(int p_idx, int ui_idx, int parentX, int parentY, int x1, int y1, int x2, int y2, int zindex)
         {
             PhysicalIndex = p_idx;
             UIindex = ui_idx;
@@ -192,6 +193,8 @@ namespace AuraEditor
                     new Point(x1 + parentX * Constants.GridLength, y1 + parentY * Constants.GridLength),
                     new Point(x2 + parentX * Constants.GridLength, y2 + parentY * Constants.GridLength))
                 );
+
+            Zindex = zindex;
         }
         private Rectangle CreateRectangle(Windows.Foundation.Rect Rect)
         {

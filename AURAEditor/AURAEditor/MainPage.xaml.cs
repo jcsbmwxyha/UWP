@@ -102,7 +102,7 @@ namespace AuraEditor
         {
             InitializeTimelineStructure();
             await GetCurrentDevicesTest();
-            UpdateSpaceGrid();
+            RefreshSpaceGrid();
 
             // for receive cmd form Service
             socketstart();
@@ -333,7 +333,7 @@ namespace AuraEditor
                     new LightZone(
                         led.PhyIndex, idx,
                         grid_x, grid_y,
-                        led.Left, led.Top, led.Right, led.Bottom));
+                        led.Left, led.Top, led.Right, led.Bottom, led.Zindex));
             }
 
             device.LightZones = zones.ToArray();
@@ -510,7 +510,7 @@ namespace AuraEditor
                 _auraCreatorManager.AddDeviceLayer(layer);
             }
 
-            UpdateSpaceGrid();
+            RefreshSpaceGrid();
             ClearEffectInfoGrid();
             LayerListView.SelectedIndex = 0;
         }
@@ -735,7 +735,7 @@ namespace AuraEditor
                         Device device = CreateDeviceFromContent(deviceContent, 25, 3);
 
                         _auraCreatorManager.GlobalDevices.Add(device);
-                        UpdateSpaceGrid();
+                        RefreshSpaceGrid();
                     });
                 }
                 else if (message == "0 : GLADIUS II")
@@ -747,7 +747,7 @@ namespace AuraEditor
                         if (device != null)
                         {
                             _auraCreatorManager.GlobalDevices.Remove(device);
-                            UpdateSpaceGrid();
+                            RefreshSpaceGrid();
                         }
                     });
                 }

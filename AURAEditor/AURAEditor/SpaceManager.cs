@@ -89,7 +89,7 @@ namespace AuraEditor
 
             return mec;
         }
-        public void UpdateSpaceGrid()
+        public void RefreshSpaceGrid()
         {
             SpaceAreaCanvas.Children.Clear();
             SpaceAreaCanvas.Children.Add(GridImage);
@@ -103,6 +103,7 @@ namespace AuraEditor
 
                 foreach (var zone in d.LightZones)
                 {
+                    zone.Frame.SetValue(Canvas.ZIndexProperty, zone.Zindex);
                     SpaceAreaCanvas.Children.Add(zone.Frame);
 
                     MouseDetectionRegion r = new MouseDetectionRegion()
@@ -255,7 +256,7 @@ namespace AuraEditor
             var fe = sender as FrameworkElement;
             Point Position = e.GetCurrentPoint(fe).Position;
             _mouseEventCtrl.OnMousePressed(Position);
-            bool _hasCapture = fe.CapturePointer(e.Pointer);
+            //bool _hasCapture = fe.CapturePointer(e.Pointer);
         }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
