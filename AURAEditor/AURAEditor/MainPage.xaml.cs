@@ -45,14 +45,14 @@ namespace AuraEditor
         public int Top;
         public int Right;
         public int Bottom;
-        public int Zindex;
+        public int ZIndex;
     }
     public class DeviceContent
     {
         public string DeviceName;
         public int DeviceType;
-        public int Width;
-        public int Height;
+        public int UI_Width;
+        public int UI_Height;
         public List<LedUI> Leds;
         public BitmapImage Image;
 
@@ -106,7 +106,7 @@ namespace AuraEditor
 
             // for receive cmd form Service
             socketstart();
-            CsvTest();
+
             // Pre add for debug
             /*
             for (int i = 0; i < 6; i++)
@@ -117,117 +117,96 @@ namespace AuraEditor
             }
             */
         }
-        private async void CsvTest()
-        {
-            string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + "GL504");
-            StorageFile csvFile = await folder.GetFileAsync("GL504.csv");
-
-            using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
-            {
-                CsvRow row = new CsvRow();
-                while (csvReader.ReadRow(row))
-                {
-                    string temp = row[2].ToString();
-                    //use row[i] to reference a given column from the row
-                }
-            }
-        }
         private async Task GetCurrentDevicesTest()
         {
             try
             {
-                DeviceContent deviceContent = await GetDeviceContent2("GL504");
-                Device device = CreateDeviceFromContent(deviceContent, 1, 1);
+                DeviceContent deviceContent = await GetDeviceContent("GL504");
+                Device device = CreateDeviceFromContent(deviceContent, new Point(1, 1));
                 _auraCreatorManager.GlobalDevices.Add(device);
-
-                //deviceContent = await GetDeviceContent("GLADIUS II");
-                //device = CreateDeviceFromContent(deviceContent, 25, 3);
-                //_auraCreatorManager.GlobalDevices.Add(device);
             }
             catch
             {
 
             }
         }
+        //private async Task<DeviceContent> GetDeviceContent(string modelName)
+        //{
+        //    try
+        //    {
+        //        DeviceContent deviceContent = new DeviceContent();
+        //        Script script = new Script();
+        //        string scriptText;
+        //        Table deviceContent_table;
+        //        Table leds_table;
+        //        Table led_table;
+        //        Table leftTop_table;
+        //        Table rightBottom_table;
+        //        string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+
+        //        StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+        //        System.Diagnostics.Debug.WriteLine("Get " + auraCreatorFolderPath + " folder successfully");
+        //        StorageFile txtFile = await folder.GetFileAsync(modelName + ".txt");
+        //        StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+        //        System.Diagnostics.Debug.WriteLine("Get " + modelName + " StorageFile successfully");
+
+        //        deviceContent.DeviceName = modelName;
+        //        if (modelName == "GLADIUS II")
+        //            deviceContent.DeviceType = 1;
+        //        else
+        //            deviceContent.DeviceType = 0;
+
+        //        scriptText = await Windows.Storage.FileIO.ReadTextAsync(txtFile);
+        //        deviceContent_table = script.DoString(scriptText).Table;
+
+        //        deviceContent.UI_Width = (int)deviceContent_table.Get("width").Number;
+        //        deviceContent.UI_Height = (int)deviceContent_table.Get("height").Number;
+        //        leds_table = deviceContent_table.Get("leds").Table;
+
+        //        foreach (var deviceKey in leds_table.Keys)
+        //        {
+        //            led_table = leds_table.Get(deviceKey.Number).Table;
+
+        //            leftTop_table = led_table.Get("leftTop").Table;
+        //            rightBottom_table = led_table.Get("rightBottom").Table;
+
+        //            deviceContent.Leds.Add(
+        //                new LedUI()
+        //                {
+        //                    PhyIndex = (int)deviceKey.Number,
+        //                    Left = (int)leftTop_table.Get("x").Number,
+        //                    Top = (int)leftTop_table.Get("y").Number,
+        //                    Right = (int)rightBottom_table.Get("x").Number,
+        //                    Bottom = (int)rightBottom_table.Get("y").Number,
+        //                }
+        //            );
+        //        }
+
+        //        if (pngFile != null)
+        //        {
+        //            // Open a stream for the selected file.
+        //            // The 'using' block ensures the stream is disposed
+        //            // after the image is loaded.
+        //            using (Windows.Storage.Streams.IRandomAccessStream fileStream =
+        //                await pngFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+        //            {
+        //                // Set the image source to the selected bitmap.
+        //                Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
+        //                    new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+
+        //                bitmapImage.SetSource(fileStream);
+        //                deviceContent.Image = bitmapImage;
+        //            }
+        //        }
+
+        //        return deviceContent;
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
         private async Task<DeviceContent> GetDeviceContent(string modelName)
-        {
-            try
-            {
-                DeviceContent deviceContent = new DeviceContent();
-                Script script = new Script();
-                string scriptText;
-                Table deviceContent_table;
-                Table leds_table;
-                Table led_table;
-                Table leftTop_table;
-                Table rightBottom_table;
-                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
-                System.Diagnostics.Debug.WriteLine("Get " + auraCreatorFolderPath + " folder successfully");
-                StorageFile txtFile = await folder.GetFileAsync(modelName + ".txt");
-                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
-                System.Diagnostics.Debug.WriteLine("Get " + modelName + " StorageFile successfully");
-
-                deviceContent.DeviceName = modelName;
-                if (modelName == "GLADIUS II")
-                    deviceContent.DeviceType = 1;
-                else
-                    deviceContent.DeviceType = 0;
-
-                scriptText = await Windows.Storage.FileIO.ReadTextAsync(txtFile);
-                deviceContent_table = script.DoString(scriptText).Table;
-
-                deviceContent.Width = (int)deviceContent_table.Get("width").Number;
-                deviceContent.Height = (int)deviceContent_table.Get("height").Number;
-                leds_table = deviceContent_table.Get("leds").Table;
-
-                foreach (var deviceKey in leds_table.Keys)
-                {
-                    led_table = leds_table.Get(deviceKey.Number).Table;
-
-                    leftTop_table = led_table.Get("leftTop").Table;
-                    rightBottom_table = led_table.Get("rightBottom").Table;
-
-                    deviceContent.Leds.Add(
-                        new LedUI()
-                        {
-                            PhyIndex = (int)deviceKey.Number,
-                            Left = (int)leftTop_table.Get("x").Number,
-                            Top = (int)leftTop_table.Get("y").Number,
-                            Right = (int)rightBottom_table.Get("x").Number,
-                            Bottom = (int)rightBottom_table.Get("y").Number,
-                        }
-                    );
-                }
-
-                if (pngFile != null)
-                {
-                    // Open a stream for the selected file.
-                    // The 'using' block ensures the stream is disposed
-                    // after the image is loaded.
-                    using (Windows.Storage.Streams.IRandomAccessStream fileStream =
-                        await pngFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
-                    {
-                        // Set the image source to the selected bitmap.
-                        Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapImage =
-                            new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-
-                        bitmapImage.SetSource(fileStream);
-                        deviceContent.Image = bitmapImage;
-                    }
-                }
-
-                return deviceContent;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        private async Task<DeviceContent> GetDeviceContent2(string modelName)
         {
             try
             {
@@ -252,11 +231,11 @@ namespace AuraEditor
                         CsvRow row = new CsvRow();
                         while (csvReader.ReadRow(row))
                         {
-                            if (row[0] == "Weight")
-                                deviceContent.Width = Int32.Parse(row[1]);
+                            if (row[0] == "Width")
+                                deviceContent.UI_Width = Int32.Parse(row[1]);
 
                             else if (row[0] == "Height")
-                                deviceContent.Height = Int32.Parse(row[1]);
+                                deviceContent.UI_Height = Int32.Parse(row[1]);
 
                             else if (row[0].Contains("LED"))
                             {
@@ -267,7 +246,7 @@ namespace AuraEditor
                                         Top = Int32.Parse(row[5]),
                                         Right = Int32.Parse(row[6]),
                                         Bottom = Int32.Parse(row[7]),
-                                        Zindex = Int32.Parse(row[8]),
+                                        ZIndex = Int32.Parse(row[8]),
                                     });
                             }
                         }
@@ -292,7 +271,7 @@ namespace AuraEditor
                 return null;
             }
         }
-        private Device CreateDeviceFromContent(DeviceContent deviceContent, int grid_x, int grid_y)
+        private Device CreateDeviceFromContent(DeviceContent deviceContent, Point devicePosition)
         {
             Device device;
             CompositeTransform ct;
@@ -301,15 +280,15 @@ namespace AuraEditor
 
             ct = new CompositeTransform
             {
-                TranslateX = Constants.GridLength * grid_x,
-                TranslateY = Constants.GridLength * grid_y
+                TranslateX = Constants.GridLength * devicePosition.X,
+                TranslateY = Constants.GridLength * devicePosition.Y
             };
 
             img = new Image
             {
                 RenderTransform = ct,
-                Width = Constants.GridLength * deviceContent.Width,
-                Height = Constants.GridLength * deviceContent.Height,
+                Width = Constants.GridLength * deviceContent.UI_Width,
+                Height = Constants.GridLength * deviceContent.UI_Height,
                 Source = deviceContent.Image,
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,
@@ -319,10 +298,10 @@ namespace AuraEditor
             {
                 DeviceName = deviceContent.DeviceName,
                 DeviceType = deviceContent.DeviceType,
-                X = grid_x,
-                Y = grid_y,
-                W = deviceContent.Width,
-                H = deviceContent.Height,
+                X = devicePosition.X,
+                Y = devicePosition.Y,
+                W = deviceContent.UI_Width,
+                H = deviceContent.UI_Height,
                 DeviceImg = img,
             };
 
@@ -330,10 +309,8 @@ namespace AuraEditor
             {
                 LedUI led = deviceContent.Leds[idx];
                 zones.Add(
-                    new LightZone(
-                        led.PhyIndex, idx,
-                        grid_x, grid_y,
-                        led.Left, led.Top, led.Right, led.Bottom, led.Zindex));
+                    new LightZone(idx, devicePosition, led)
+                    );
             }
 
             device.LightZones = zones.ToArray();
@@ -732,7 +709,7 @@ namespace AuraEditor
                     await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         DeviceContent deviceContent = await GetDeviceContent("GLADIUS II");
-                        Device device = CreateDeviceFromContent(deviceContent, 25, 3);
+                        Device device = CreateDeviceFromContent(deviceContent, new Point(25, 3));
 
                         _auraCreatorManager.GlobalDevices.Add(device);
                         RefreshSpaceGrid();

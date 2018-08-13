@@ -110,8 +110,13 @@
     <Compile Include="Common\EffectHelper.cs" />
     <Compile Include="Common\Definitions.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
-    <Compile Include="DeviceGroup.cs" />
+    <Compile Include="Device.cs" />
+    <Compile Include="DeviceLayer.cs" />
+    <Compile Include="Effect.cs" />
+    <Compile Include="EffectInfo.cs" />
+    <Compile Include="LightZone.cs" />
     <Compile Include="SpaceManager.cs" />
+    <Compile Include="TriggerDeviceLayer.cs" />
     <Compile Include="UserControls\DeviceLayerListViewItem.xaml.cs">
       <DependentUpon>DeviceLayerListViewItem.xaml</DependentUpon>
     </Compile>

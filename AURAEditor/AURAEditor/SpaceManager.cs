@@ -91,19 +91,20 @@ namespace AuraEditor
         }
         public void RefreshSpaceGrid()
         {
+            List<Device> devices = _auraCreatorManager.GlobalDevices;
+            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
+
             SpaceAreaCanvas.Children.Clear();
             SpaceAreaCanvas.Children.Add(GridImage);
             SpaceAreaCanvas.Children.Add(mouseRectangle);
-            List<Device> devices = _auraCreatorManager.GlobalDevices;
-            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
             
             foreach (Device d in devices)
             {
                 SpaceAreaCanvas.Children.Add(d.DeviceImg);
+                SortByZIndex(d.LightZones);
 
                 foreach (var zone in d.LightZones)
                 {
-                    zone.Frame.SetValue(Canvas.ZIndexProperty, zone.Zindex);
                     SpaceAreaCanvas.Children.Add(zone.Frame);
 
                     MouseDetectionRegion r = new MouseDetectionRegion()
@@ -121,6 +122,26 @@ namespace AuraEditor
 
             _mouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+
+        private void SortByZIndex(LightZone[] zones)
+        {
+            int count = zones.Length;
+
+            // Bubble sort
+            for (int i = 0; i < count - 1; i++)
+            {
+                for (int j = 0; j < count - 1 - i; j++)
+                {
+                    if (zones[j].ZIndex < zones[j + 1].ZIndex)
+                    {
+                        LightZone z = zones[j];
+                        zones[j] = zones[j + 1];
+                        zones[j + 1] = z;
+                    }
+                }
+            }
+        }
+
         public void SetDevicePosition(Device device, int offsetX, int offsetY)
         {
             _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
