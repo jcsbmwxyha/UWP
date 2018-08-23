@@ -34,16 +34,21 @@ namespace KeyDetector
         void GetBuffer(out byte* buffer, out uint capacity);
     }
 
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    class ImageInfo
+    {
+        public SoftwareBitmap SoftwareBitmap { get; set; }
+        public List<Rect> KeyRects { get; set; }
+        public bool[,] HasPixelArray { get; set; }
+
+        public ImageInfo()
+        {
+            KeyRects = new List<Rect>();
+        }
+    }
+
     public sealed partial class MainPage : Page
     {
-        SoftwareBitmap g_softwareBitmap;
-        List<Rect> keyRects = new List<Rect>();
-        bool[,] HasPixelArray;
-        int PngWidth;
-        int PngHeight;
+        ImageInfo g_CurrentImageInfo = new ImageInfo();
 
         public MainPage()
         {
@@ -60,13 +65,8 @@ namespace KeyDetector
             var inputFile = await fileOpenPicker.PickSingleFileAsync();
 
             if (inputFile == null)
-            {
-                // The user cancelled the picking operation
                 return;
-            }
 
-            MainGrid.Children.Clear();
-            keyRects.Clear();
             SoftwareBitmap softwareBitmap;
 
             using (IRandomAccessStream stream = await inputFile.OpenAsync(FileAccessMode.Read))
@@ -82,11 +82,14 @@ namespace KeyDetector
             {
                 softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
             }
-            
-            g_softwareBitmap = softwareBitmap;
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(g_softwareBitmap);
 
+            g_CurrentImageInfo.SoftwareBitmap = softwareBitmap;
+            await SetMainGridImage(softwareBitmap);
+        }
+        private async Task SetMainGridImage(SoftwareBitmap softwareBitmap)
+        {
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(softwareBitmap);
             Image keyboardImg = new Image
             {
                 Stretch = 0,
@@ -94,57 +97,27 @@ namespace KeyDetector
                 VerticalAlignment = 0,
                 Source = source
             };
+
+            MainGrid.Children.Clear();
             MainGrid.Children.Add(keyboardImg);
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_softwareBitmap == null)
+            if (g_CurrentImageInfo.SoftwareBitmap == null)
                 return;
 
-            GetPixelArray(g_softwareBitmap);
+            GetHasPixelArray();
             FindKeys();
-            DrawRectangle();
+            ShowResultOfKeys();
         }
-
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        private unsafe void GetHasPixelArray()
         {
-            if (keyRects.Count == 0)
-                return;
+            SoftwareBitmap softwareBitmap = g_CurrentImageInfo.SoftwareBitmap;
+            int widthPixels;
+            int heightPixels;
+            bool[,] hasPixelArray;
 
-            string filename = "keys.txt";
-            StorageFolder picturesLibrary = await KnownFolders.GetFolderForUserAsync(null /* current user */, KnownFolderId.PicturesLibrary);
-            StorageFile outputFile = (StorageFile)await picturesLibrary.TryGetItemAsync(filename);
-
-            if (outputFile == null)
-            {
-                outputFile = await picturesLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
-            }
-            outputFile = await picturesLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
-            string result = "";
-
-            int expandValue = 2;
-            for (int i = 0; i < keyRects.Count; i++)
-            {
-                Rect r = keyRects[i];
-
-                if (i % 10 == 0) // comment
-                    result += "// key " + i + " ~ " + (i + 9).ToString() + "\r\n";
-
-                result += "{ " + (r.Left - expandValue) + ", " + (r.Top - expandValue) + ", "
-                    + (r.Right + expandValue) + ", " + (r.Bottom + expandValue) + "} ,\r\n";
-            }
-
-            if (!String.IsNullOrEmpty(result))
-            {
-                await FileIO.WriteTextAsync(outputFile, result);
-            }
-
-            PathTextBlock.Text = "Path: Pictures/" + filename;
-        }
-
-        private unsafe void GetPixelArray(SoftwareBitmap softwareBitmap)
-        {
             using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
             {
                 using (var reference = buffer.CreateReference())
@@ -156,80 +129,90 @@ namespace KeyDetector
                     // Fill-in the BGRA plane
                     BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
 
-                    PngWidth = bufferLayout.Width;
-                    PngHeight = bufferLayout.Height;
-                    HasPixelArray = new bool[PngHeight, PngWidth];
+                    widthPixels = bufferLayout.Width;
+                    heightPixels = bufferLayout.Height;
+                    hasPixelArray = new bool[heightPixels, widthPixels];
 
-                    for (int y = 0; y < PngHeight; y++)
+                    for (int y = 0; y < heightPixels; y++)
                     {
-                        for (int x = 0; x < PngWidth; x++)
+                        for (int x = 0; x < widthPixels; x++)
                         {
                             int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x;
+
                             if (dataInBytes[pixelIndex + 3] != 0)
                             {
-                                HasPixelArray[y, x] = true;
+                                hasPixelArray[y, x] = true;
                             }
                             else
                             {
-                                HasPixelArray[y, x] = false;
+                                hasPixelArray[y, x] = false;
                             }
                         }
                     }
                 }
             }
-        }
 
+            g_CurrentImageInfo.HasPixelArray = hasPixelArray;
+        }
         private void FindKeys()
         {
-            for (int y = 0; y < PngHeight; y++)
+            List<Rect> keyRects = g_CurrentImageInfo.KeyRects;
+            bool[,] hasPixelArray = g_CurrentImageInfo.HasPixelArray;
+            int widthPixels = hasPixelArray.GetLength(1);
+            int heightPixels = hasPixelArray.GetLength(0);
+
+            for (int y = 0; y < heightPixels; y++)
             {
-                for (int x = 0; x < PngWidth; x++)
+                for (int x = 0; x < widthPixels; x++)
                 {
-                    if ((HasPixelArray[y, x] == true))
+                    if ((hasPixelArray[y, x] == true))
                     {
-                        bool needfindkey = true;
+                        Point pixel = new Point(x, y);
 
-                        for (int index = 0; index < keyRects.Count; index++)
+                        if (!OnOneOfKeyRects(pixel))
                         {
-                            if (keyRects[index].Contains(new Point(x, y)))
-                            {
-                                needfindkey = false;
-                                break;
-                            }
-                        }
-
-                        if (needfindkey == true)
-                        {
-                            Point pixel = new Point(x, y);
-                            FindKeyPoint(pixel, out Point lefttop, out Point rightbottom);
-                            rightbottom = new Point(rightbottom.X + 1, rightbottom.Y + 1);
-                            keyRects.Add(new Rect(lefttop, rightbottom));
+                            FindKeyPoint(pixel, out Point leftTop, out Point rightBottom);
+                            //rightBottom = new Point(rightBottom.X + 1, rightBottom.Y + 1);
+                            keyRects.Add(new Rect(leftTop, rightBottom));
                         }
                     }
                 }
             }
         }
-    
-        private void FindKeyPoint(Point pixel, out Point lefttop, out Point rightbottom)
+        private bool OnOneOfKeyRects(Point p)
         {
-            int left = (int)FindLeftmostPoint(pixel).X;
-            int top = (int)FindTopPoint(pixel).Y;
-            Point rightMostPoint = FindRightmostPoint(pixel);
-            int right = (int)rightMostPoint.X;
-            int bottom = (int)FindBottomPoint(rightMostPoint).Y;
+            List<Rect> keyRects = g_CurrentImageInfo.KeyRects;
 
-            lefttop = new Point(left, top);
-            rightbottom = new Point(right, bottom);
-        }
-
-        private Point FindLeftmostPoint(Point p)
-        {
-            int x = (int)p.X;
-            int y = (int)p.Y;
-
-            while (HasPixelArray[y, x] == true)
+            for (int index = 0; index < keyRects.Count; index++)
             {
-                if (HasPixelArray[y, x - 1] == true)
+                if (keyRects[index].Contains(p))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void FindKeyPoint(Point firstPixel, out Point leftTop, out Point rightBottom)
+        {
+            int left = (int)FindLeftmostPoint(firstPixel).X;
+            int top = (int)FindTopPoint(firstPixel).Y;
+
+            Point rightmostPoint = FindRightmostPoint(firstPixel);
+            int right = (int)rightmostPoint.X;
+            int bottom = (int)FindBottomPoint(rightmostPoint).Y;
+
+            leftTop = new Point(left, top);
+            rightBottom = new Point(right, bottom);
+        }
+        private Point FindLeftmostPoint(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+            bool[,] hasPixelArray = g_CurrentImageInfo.HasPixelArray;
+
+            while (hasPixelArray[y, x] == true)
+            {
+                if (hasPixelArray[y, x - 1] == true)
                     x--;
                 else
                     y++;
@@ -237,20 +220,19 @@ namespace KeyDetector
 
             return new Point(x, y - 1);
         }
-
-        private Point FindTopPoint(Point p)
+        private Point FindTopPoint(Point firstPixel)
         {
-            return p;
+            return firstPixel;
         }
-
-        private Point FindRightmostPoint(Point p)
+        private Point FindRightmostPoint(Point firstPixel)
         {
-            int x = (int)p.X;
-            int y = (int)p.Y;
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+            bool[,] hasPixelArray = g_CurrentImageInfo.HasPixelArray;
 
-            while (HasPixelArray[y, x] == true)
+            while (hasPixelArray[y, x] == true)
             {
-                if (HasPixelArray[y, x + 1] == true)
+                if (hasPixelArray[y, x + 1] == true)
                     x++;
                 else
                     y++;
@@ -258,16 +240,16 @@ namespace KeyDetector
 
             return new Point(x, y - 1);
         }
-
-        private Point FindBottomPoint(Point p)
+        private Point FindBottomPoint(Point rightmostPixel)
         {
-            // p is the rightmost point
-            int x = (int)p.X;
-            int y = (int)p.Y;
+            int x = (int)rightmostPixel.X;
+            int y = (int)rightmostPixel.Y;
+            bool[,] hasPixelArray = g_CurrentImageInfo.HasPixelArray;
 
-            while (HasPixelArray[y, x] == true)
+            // Start from rightmost point
+            while (hasPixelArray[y, x] == true)
             {
-                if (HasPixelArray[y + 1, x] == true)
+                if (hasPixelArray[y + 1, x] == true)
                     y++;
                 else
                     x--;
@@ -275,16 +257,16 @@ namespace KeyDetector
 
             return new Point(x + 1, y);
         }
-
-        private void DrawRectangle()
+        private void ShowResultOfKeys()
         {
+            List<Rect> keyRects = g_CurrentImageInfo.KeyRects;
+
             for (int i = 0; i < keyRects.Count; i++)
             {
                 Rectangle rectangle = CreateRectangle(keyRects[i]);
                 MainGrid.Children.Add(rectangle);
             }
         }
-
         private Rectangle CreateRectangle(Windows.Foundation.Rect Rect)
         {
             CompositeTransform ct = new CompositeTransform
@@ -298,8 +280,8 @@ namespace KeyDetector
                 Fill = new SolidColorBrush(Colors.Transparent),
                 StrokeThickness = 1,
                 RenderTransform = ct,
-                Width = Rect.Width,
-                Height = Rect.Height,
+                Width = Rect.Width + 1,
+                Height = Rect.Height + 1,
                 HorizontalAlignment = 0,
                 VerticalAlignment = 0,
             };
@@ -307,6 +289,80 @@ namespace KeyDetector
             rectangle.Stroke = new SolidColorBrush(Colors.Red);
 
             return rectangle;
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (g_CurrentImageInfo.KeyRects.Count == 0)
+                return;
+
+            string result = GetCodingResultString();
+            var savePicker = new FileSavePicker();
+            StorageFile saveFile;
+
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".csv" });
+            savePicker.SuggestedFileName = "MyCsv";
+            saveFile = await savePicker.PickSaveFileAsync();
+
+            if (saveFile != null)
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(saveFile);
+
+                // write to file
+                await Windows.Storage.FileIO.WriteTextAsync(saveFile, result);
+
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
+            }
+
+            PathTextBlock.Text = saveFile.Path;
+        }
+        private string GetCodingResultString()
+        {
+            List<Rect> keyRects = g_CurrentImageInfo.KeyRects;
+            string result = "";
+
+            for (int i = 0; i < keyRects.Count; i++)
+            {
+                Rect r = AddPaddingValue(keyRects[i]);
+
+                // comment
+                if (i % 10 == 0)
+                {
+                    result += "// key " + i + " ~ " + (i + 9).ToString() + "\r\n";
+                }
+
+                result +=
+                    "{ " + r.Left +
+                    ", " + r.Top +
+                    ", " + r.Right +
+                    ", " + r.Bottom + "} ,\r\n";
+            }
+
+            return result;
+        }
+        private Rect AddPaddingValue(Rect r)
+        {
+            int paddingValue = 2;
+
+            return new Rect(
+                new Point(r.Left - paddingValue, r.Top - paddingValue),
+                new Point(r.Right + paddingValue, r.Bottom + paddingValue)
+                );
+        }
+        private string GetCsvResultString()
+        {
+            string result = "";
+
+            // TODO
+
+            return result;
         }
     }
 }

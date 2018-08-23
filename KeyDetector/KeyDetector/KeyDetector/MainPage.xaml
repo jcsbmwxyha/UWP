@@ -9,18 +9,26 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="600"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <Button Content="Load" Click="LoadButton_Click"/>
-            <Button Content="Start" Click="StartButton_Click"/>
-            <Button Content="Save" Click="SaveButton_Click"/>
-            <TextBlock Name="PathTextBlock" Text="Path: "/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,0,0">
+            <Button Content="Load" Click="LoadButton_Click" Margin="5,0,0,0"/>
+            <Button Content="Start" Click="StartButton_Click" Margin="5,0,0,0"/>
+            <Button Content="Save" Click="SaveButton_Click" Margin="5,0,0,0"/>
         </StackPanel>
-        <ScrollViewer 
-              VerticalScrollBarVisibility="Visible"
-              HorizontalScrollBarVisibility="Visible" Grid.Row="1">
+        <TextBlock Name="PathTextBlock"
+                   Margin="5,10,0,0"
+                   Grid.Row="1"
+                   Text="Save Path: "/>
+        <ScrollViewer Grid.Row="2"
+                      Margin="5,10,0,0"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Visible"
+                      MinZoomFactor="1"
+                      MaxZoomFactor="100"
+                      ZoomMode="Enabled">
             <Grid Name="MainGrid"/>
         </ScrollViewer>
     </Grid>
