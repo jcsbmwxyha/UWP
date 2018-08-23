@@ -171,9 +171,7 @@ namespace KeyDetector
 
                         if (!OnOneOfKeyRects(pixel))
                         {
-                            FindKeyPoint(pixel, out Point leftTop, out Point rightBottom);
-                            //rightBottom = new Point(rightBottom.X + 1, rightBottom.Y + 1);
-                            keyRects.Add(new Rect(leftTop, rightBottom));
+                            keyRects.Add(FindKeyPoint(pixel));
                         }
                     }
                 }
@@ -192,7 +190,7 @@ namespace KeyDetector
             }
             return false;
         }
-        private void FindKeyPoint(Point firstPixel, out Point leftTop, out Point rightBottom)
+        private Rect FindKeyPoint(Point firstPixel)
         {
             int left = (int)FindLeftmostPoint(firstPixel).X;
             int top = (int)FindTopPoint(firstPixel).Y;
@@ -201,8 +199,10 @@ namespace KeyDetector
             int right = (int)rightmostPoint.X;
             int bottom = (int)FindBottomPoint(rightmostPoint).Y;
 
-            leftTop = new Point(left, top);
-            rightBottom = new Point(right, bottom);
+            return new Rect(
+                new Point(left, top),
+                new Point(right, bottom)
+                );
         }
         private Point FindLeftmostPoint(Point firstPixel)
         {
@@ -301,8 +301,8 @@ namespace KeyDetector
             StorageFile saveFile;
 
             savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".csv" });
-            savePicker.SuggestedFileName = "MyCsv";
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt" });
+            savePicker.SuggestedFileName = "MyTxt";
             saveFile = await savePicker.PickSaveFileAsync();
 
             if (saveFile != null)
@@ -319,9 +319,9 @@ namespace KeyDetector
                 // Completing updates may require Windows to ask for user input.
                 Windows.Storage.Provider.FileUpdateStatus status =
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
-            }
 
-            PathTextBlock.Text = saveFile.Path;
+                PathTextBlock.Text = saveFile.Path;
+            }
         }
         private string GetCodingResultString()
         {
