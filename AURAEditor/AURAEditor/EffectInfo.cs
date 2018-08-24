@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -35,14 +36,14 @@ namespace AuraEditor
         public EffectInfo(int type)
         {
             Color = Colors.Red;
-            WaveType = EffectHelper.GetSuggestedWaveTypeValue(type);
-            Min = EffectHelper.GetSuggestedMinValue(type);
-            Max = EffectHelper.GetSuggestedMaxValue(type);
-            WaveLength = EffectHelper.GetSuggestedWaveLenValue(type);
-            Freq = EffectHelper.GetSuggestedFreqValue(type);
-            Phase = EffectHelper.GetSuggestedPhaseValue(type);
+            WaveType = GetSuggestedWaveTypeValue(type);
+            Min = GetSuggestedMinValue(type);
+            Max = GetSuggestedMaxValue(type);
+            WaveLength = GetSuggestedWaveLenValue(type);
+            Freq = GetSuggestedFreqValue(type);
+            Phase = GetSuggestedPhaseValue(type);
             Start = 0;
-            Velocity = EffectHelper.GetSuggestedVelocityValue(type);
+            Velocity = GetSuggestedVelocityValue(type);
         }
     }
 }

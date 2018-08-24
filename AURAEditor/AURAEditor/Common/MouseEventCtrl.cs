@@ -50,7 +50,7 @@ namespace AuraEditor.Common
             }
         }
 
-        public void UpdateRect(int moveXOffset, int moveYOffset)
+        public void MoveRect(double moveXOffset, double moveYOffset)
         {
             Rect r = new Rect(
                 DetectionRect.X + moveXOffset,
@@ -254,13 +254,13 @@ namespace AuraEditor.Common
 
             return selectedIndex.ToArray();
         }
-        public void UpdateGroupRects(int groupIndex, int moveXOffset, int moveYOffset)
+        public void MoveGroupRects(int groupIndex, double moveXOffset, double moveYOffset)
         {
             foreach(var reg in DetectionRegions)
             {
                 if (reg.GroupIndex == groupIndex)
                 {
-                    reg.UpdateRect(moveXOffset, moveYOffset);
+                    reg.MoveRect(moveXOffset, moveYOffset);
                 }
             }
         }

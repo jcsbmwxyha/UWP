@@ -8,6 +8,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.MainPage;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -22,11 +23,25 @@ namespace AuraEditor
         public DeviceLayer(string name = "")
         {
             LayerName = name;
-            //_devices = new List<Device>();
             Effects = new List<Effect>();
             UICanvas = CreateUICanvas();
             _deviceToZonesDictionary = new Dictionary<int, int[]>();
             Eye = true;
+        }
+        private Canvas CreateUICanvas()
+        {
+            Thickness margin = new Thickness(0, 3, 0, 3);
+            Canvas canvas = new Canvas
+            {
+                Width = 5000,
+                Height = 44,
+                Margin = margin
+            };
+
+            canvas.DragOver += Canvas_DragOver;
+            canvas.Drop += Canvas_Drop;
+
+            return canvas;
         }
         public Dictionary<int, int[]> GetDeviceToZonesDictionary()
         {
@@ -54,13 +69,120 @@ namespace AuraEditor
             Effects.Add(effect);
             UICanvas.Children.Add(effect.UI);
         }
+        public void InsertEffectLine(Effect insertedEL)
+        {
+            Effect overlappedEL = null;
+
+            overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
+
+            if (overlappedEL != null)
+            {
+                if (insertedEL.UI_X <= overlappedEL.UI_X)
+                {
+                    double move = insertedEL.UI_Right - overlappedEL.UI_X;
+                    PushAllEffectsWhichOnTheRight(insertedEL, move);
+                }
+                else if (overlappedEL.UI_X < insertedEL.UI_X)
+                {
+                    insertedEL.UI_X += (overlappedEL.UI_Right - insertedEL.UI_X);
+                    InsertEffectLine(insertedEL);
+                }
+            }
+        }
+        public void PushAllEffectsWhichOnTheRight(Effect effect, double move)
+        {
+            foreach (Effect e in Effects)
+            {
+                if (effect.Equals(e))
+                    continue;
+
+                if (effect.UI_X <= e.UI_X)
+                {
+                    e.UI_X += move;
+                }
+            }
+        }
+        public Effect TestAndGetFirstOverlappingEffect(Effect testEffect)
+        {
+            Effect result = null;
+
+            foreach (Effect e in Effects)
+            {
+                if (e.Equals(testEffect))
+                    continue;
+
+                if (IsOverlapping(testEffect, e))
+                {
+                    if (result == null)
+                        result = e;
+                    else if (e.UI_X < result.UI_X)
+                    {
+                        result = e;
+                    }
+                }
+            }
+
+            return result;
+        }
+        private bool IsOverlapping(Effect effect1, Effect effect2)
+        {
+            return ControlHelper.IsOverlapping(effect1.UI_X, effect1.UI_Width, effect2.UI_X, effect2.UI_Width);
+        }
+        public Effect FindEffectByPosition(double x)
+        {
+            foreach (Effect e in Effects)
+            {
+                double left = e.UI_X;
+                double width = e.UI_Width;
+
+                if ((left <= x) && (x <= left + width))
+                    return e;
+            }
+            return null;
+        }
+        public Effect FindFirstEffectOnTheRight(double x)
+        {
+            Effect result = null;
+
+            foreach (Effect e in Effects)
+            {
+                if (e.UI_X > x)
+                {
+                    if (result == null)
+                        result = e;
+
+                    if (e.UI_X < result.UI_X)
+                    {
+                        result = e;
+                    }
+                }
+            }
+            return result;
+        }
+        public double GetFirstFreeRoomPosition()
+        {
+            double roomX = 0;
+
+            for (int i = 0; i < Effects.Count; i++)
+            {
+                Effect effect = Effects[i];
+                if (roomX <= effect.UI_X && effect.UI_X < roomX + AuraCreatorManager.GetPixelsPerSecond())
+                {
+                    roomX = effect.UI_X + effect.UI_Width;
+                    i = -1; // rescan every effect line
+                }
+            }
+
+            return roomX;
+        }
+
         private async void Canvas_DragOver(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
                 var effectname = await e.DataView.GetTextAsync();
 
-                if (!EffectHelper.IsCommonEffect(effectname))
+                if (!IsCommonEffect(effectname))
                     e.AcceptedOperation = DataPackageOperation.None;
                 else
                     e.AcceptedOperation = DataPackageOperation.Copy;
@@ -71,154 +193,11 @@ namespace AuraEditor
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
                 var effectname = await e.DataView.GetTextAsync();
-                int type = EffectHelper.GetEffectIndex(effectname);
+                int type = GetEffectIndex(effectname);
 
                 Effect effect = new Effect(this, type);
                 AddEffect(effect);
             }
-        }
-        public double InsertEffectLine(Effect selectedEffect)
-        {
-            double oldLeft = selectedEffect.UI_X;
-            double width = selectedEffect.UI_Width;
-            double newLeft = oldLeft;
-            Effect coveredEffect = null;
-            bool needToAdjustPosition = false;
-            double distanceToMove = 0;
-
-            // Step 1 : Determine if X of selectedEffect on someone effectline
-            foreach (Effect e in Effects)
-            {
-                if (e != selectedEffect && e.UI_X <= oldLeft && e.UI_X + e.UI_Width > oldLeft)
-                {
-                    coveredEffect = e;
-                    break;
-                }
-            }
-
-            // Step 2 : Calculate leftpoint position
-            if (coveredEffect != null)
-            {
-                // if have same Start, move coveredEffectLine behind selectedEffect
-                if (coveredEffect.UI_X != oldLeft)
-                    newLeft = coveredEffect.UI_X + coveredEffect.UI_Width;
-            }
-
-            // Step 3 : determine all effectlines position on the right hand side
-            foreach (Effect e in Effects)
-            {
-                // if there is overlap to selected effectline
-                if (e != selectedEffect && e.UI_X >= newLeft && e.UI_X < newLeft + width)
-                {
-                    needToAdjustPosition = true;
-                    double len = selectedEffect.UI_Width - (e.UI_X - newLeft);
-
-                    // There may be many e which is overlap to selected effectline.
-                    // We should find the longgest distance.
-                    if (len > distanceToMove)
-                        distanceToMove = len;
-                }
-            }
-
-            if (needToAdjustPosition == true)
-            {
-                if (newLeft < oldLeft)
-                    foreach (Effect e in Effects)
-                    {
-                        if (e != selectedEffect && e.UI_X >= newLeft && e.UI_X < oldLeft)
-                        {
-                            e.UI_X += distanceToMove;
-                        }
-                    }
-                else
-                    foreach (Effect e in Effects)
-                    {
-                        if (e != selectedEffect && e.UI_X >= newLeft/* && e.Start < newLeftposition + w*/)
-                        {
-                            e.UI_X += distanceToMove;
-                        }
-                    }
-            }
-
-            return newLeft;
-        }
-        public void OnCursorSizeRight(Effect effect)
-        {
-            Effect overlapEff = TestOverlap(effect);
-            double left = effect.UI_X;
-            double width = effect.UI_Width;
-            double moveLength = 0;
-
-            if (overlapEff != null)
-            {
-                moveLength = (left + width) - overlapEff.UI_X;
-                foreach (Effect e in Effects)
-                {
-                    if (!e.Equals(effect))
-                    {
-                        if (left < e.UI_X)
-                            e.UI_X += moveLength;
-                    }
-                }
-            }
-        }
-        public Effect TestOverlap(Effect effect)
-        {
-            double left = effect.UI_X;
-            double width = effect.UI_Width;
-
-            foreach (Effect e in Effects)
-            {
-                if (!e.Equals(effect))
-                {
-                    if ((left < e.UI_X + e.UI_Width) && (left + width > e.UI_X))
-                        return e;
-                }
-            }
-            return null;
-        }
-        public Effect FindEffectByPosition(double x)
-        {
-            foreach (Effect e in Effects)
-            {
-                double left = e.UI_X;
-                double width = e.UI_Width;
-
-                if ((left <= x) && (left + width >= x))
-                    return e;
-            }
-            return null;
-        }
-        public double GetFirstFreeRoomPosition()
-        {
-            double RoomX = 0;
-
-            for (int i = 0; i < Effects.Count; i++)
-            {
-                Effect effect = Effects[i];
-                if (RoomX <= effect.UI_X && effect.UI_X < RoomX + AuraCreatorManager.GetPixelsPerSecond())
-                {
-                    RoomX = effect.UI_X + effect.UI_Width;
-                    i = -1; // rescan every effect line
-                }
-            }
-
-            return RoomX;
-        }
-        private Canvas CreateUICanvas()
-        {
-            Thickness margin = new Thickness(0, 3, 0, 3);
-            Canvas canvas = new Canvas
-            {
-                Width = 5000,
-                Height = 44,
-                Margin = margin
-            };
-
-            canvas.DragOver += Canvas_DragOver;
-            canvas.Drop += Canvas_Drop;
-
-            return canvas;
         }
     }
 }

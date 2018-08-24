@@ -30,7 +30,7 @@ namespace AuraEditor.Common
             "Smart",
         };
 
-        static public ObservableCollection<string> GetCommonEffectList()
+        static public ObservableCollection<string> GetCommonEffectBlocks()
         {
             ObservableCollection<string> collection = new ObservableCollection<string>();
 
@@ -41,7 +41,7 @@ namespace AuraEditor.Common
 
             return collection;
         }
-        static public ObservableCollection<string> GetTriggerEffectList()
+        static public ObservableCollection<string> GetTriggerEffectBlocks()
         {
             ObservableCollection<string> collection = new ObservableCollection<string>();
 
@@ -52,7 +52,7 @@ namespace AuraEditor.Common
 
             return collection;
         }
-        static public ObservableCollection<string> GetOtherTriggerEffectList()
+        static public ObservableCollection<string> GetOtherTriggerEffectBlocks()
         {
             ObservableCollection<string> collection = new ObservableCollection<string>();
 
@@ -66,10 +66,10 @@ namespace AuraEditor.Common
 
         static public int GetEffectIndex(string effectName)
         {
-            List<string> effectList = new List<string>();
-            effectList.AddRange(_commonEffects);
-            effectList.AddRange(_triggerEffects);
-            effectList.AddRange(_otherTriggerEffects);
+            List<string> effectBlocks = new List<string>();
+            effectBlocks.AddRange(_commonEffects);
+            effectBlocks.AddRange(_triggerEffects);
+            effectBlocks.AddRange(_otherTriggerEffects);
 
             // remove index
             char[] charArray = effectName.ToCharArray();
@@ -82,9 +82,9 @@ namespace AuraEditor.Common
                 }
             }
 
-            for (int idx = 0; idx < effectList.Count; idx++)
+            for (int idx = 0; idx < effectBlocks.Count; idx++)
             {
-                if (effectName.Equals(effectList[idx]))
+                if (effectName.Equals(effectBlocks[idx]))
                     return idx;
             }
 
@@ -92,13 +92,13 @@ namespace AuraEditor.Common
         }
         static public string GetEffectName(int effectIdx)
         {
-            List<string> effectList = new List<string>();
-            effectList.AddRange(_commonEffects);
-            effectList.AddRange(_triggerEffects);
-            effectList.AddRange(_otherTriggerEffects);
+            List<string> effectBlocks = new List<string>();
+            effectBlocks.AddRange(_commonEffects);
+            effectBlocks.AddRange(_triggerEffects);
+            effectBlocks.AddRange(_otherTriggerEffects);
 
-            if (effectIdx < effectList.Count)
-                return effectList[effectIdx];
+            if (effectIdx < effectBlocks.Count)
+                return effectBlocks[effectIdx];
             else
                 return "";
         }

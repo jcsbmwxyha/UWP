@@ -8,10 +8,7 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using static AuraEditor.Common.ControlHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -42,7 +39,7 @@ namespace AuraEditor
 
         private void EyeToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleButton tb = Common.ControlHelper.FindControl<ToggleButton>(this, typeof(ToggleButton), "EyeToggleButton");
+            ToggleButton tb = FindControl<ToggleButton>(this, typeof(ToggleButton), "EyeToggleButton");
 
             if (tb != null)
             {

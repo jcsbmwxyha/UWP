@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls.Primitives;
 using AuraEditor.Common;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor
 {
@@ -108,8 +109,8 @@ namespace AuraEditor
             {
                 if (timelineZoomLevel != value)
                 {
-                    int newSecondsPerTimeUnit = Definitions.GetSecondsPerTimeUnitByLevel(value);
-                    int oldSecondsPerTimeUnit = Definitions.GetSecondsPerTimeUnitByLevel(timelineZoomLevel);
+                    int newSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(value);
+                    int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(timelineZoomLevel);
                     double rate = (double)oldSecondsPerTimeUnit / newSecondsPerTimeUnit;
 
                     _auraCreatorManager.SetTimeUnit(newSecondsPerTimeUnit);

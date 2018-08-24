@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.MainPage;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -40,6 +41,7 @@ namespace AuraEditor
                 UI.Width = value;
             }
         }
+        public double UI_Right { get { return UI_X + UI_Width; } }
         public double StartTime
         {
             get
@@ -92,7 +94,7 @@ namespace AuraEditor
         {
             Layer = layer;
             EffectType = effectType;
-            EffectName = EffectHelper.GetEffectName(effectType);
+            EffectName = GetEffectName(effectType);
             UI = CreateEffectUI(effectType);
             UI.DataContext = this;
             UI_X = (int)Layer.GetFirstFreeRoomPosition();

@@ -15,9 +15,9 @@ namespace AuraEditor.Common
             GradientStop stop1 = new GradientStop();
             GradientStop stop2 = new GradientStop();
             GradientStop stop3 = new GradientStop();
-            stop1.Color = Windows.UI.Colors.Red;
-            stop2.Color = Windows.UI.Colors.Yellow;
-            stop3.Color = Windows.UI.Colors.LightGreen;
+            stop1.Color = Colors.Red;
+            stop2.Color = Colors.Yellow;
+            stop3.Color = Colors.LightGreen;
             stop1.Offset = 0.1;
             stop2.Offset = 0.4;
             stop3.Offset = 0.75;
@@ -40,12 +40,12 @@ namespace AuraEditor.Common
             GradientStop stop5 = new GradientStop();
             GradientStop stop6 = new GradientStop();
 
-            stop1.Color = Windows.UI.Colors.Red;
-            stop2.Color = Windows.UI.Colors.Yellow;
-            stop3.Color = Windows.UI.Colors.LightGreen;
-            stop4.Color = Windows.UI.Colors.Aqua;
-            stop5.Color = Windows.UI.Colors.Blue;
-            stop6.Color = Windows.UI.Colors.Purple;
+            stop1.Color = Colors.Red;
+            stop2.Color = Colors.Yellow;
+            stop3.Color = Colors.LightGreen;
+            stop4.Color = Colors.Aqua;
+            stop5.Color = Colors.Blue;
+            stop6.Color = Colors.Purple;
             stop1.Offset = 0.1;
             stop2.Offset = 0.25;
             stop3.Offset = 0.4;

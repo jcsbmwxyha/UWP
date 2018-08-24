@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -57,7 +58,7 @@ namespace AuraEditor
         private void ShowEffectInfoGroupsByType(int effectType)
         {
             EffectInfoGroup.Visibility = Visibility.Visible;
-            Title.Text = EffectHelper.GetEffectName(effectType);
+            Title.Text = GetEffectName(effectType);
 
             switch (Title.Text)
             {

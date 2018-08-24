@@ -9,6 +9,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -34,7 +35,7 @@ namespace AuraEditor
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
                 var effectname = await e.DataView.GetTextAsync();
-                int type = EffectHelper.GetEffectIndex(effectname);
+                int type = GetEffectIndex(effectname);
 
                 Effect effect = new Effect(this, type);
                 AddEffect(effect);

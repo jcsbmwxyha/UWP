@@ -13,6 +13,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AuraEditor.Common;
+using CoreCursor = Windows.UI.Core.CoreCursor;
+using Windows.UI.Core;
+using static AuraEditor.Common.ControlHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -20,30 +24,34 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectLine : UserControl
     {
-        public Effect MyEffect { get { return this.DataContext as Effect; } }
-        private bool _cursorSizeRight;
-        private bool _cursorSizeLeft;
-        private bool _cursorMove;
+        public Effect MyEffectLine { get { return this.DataContext as Effect; } }
 
-        private bool lightButtonPressed;
-        public bool LightButtonPressed {
-            get { return lightButtonPressed; }
+        public enum CursorState
+        {
+            None = 0,
+            SizeAll = 1,
+            SizeLeft = 2,
+            SizeRight = 3,
+        }
+        private CursorState mouseState;
+        public CursorState MouseState
+        {
+            get
+            {
+                return mouseState;
+            }
             set
             {
-                if (value ^ lightButtonPressed)
+                if (mouseState != value)
                 {
-                    if (value == true)
-                    {
+                    if (value == CursorState.None)
+                        Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+                    else if (value == CursorState.SizeAll)
+                        Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.SizeAll, 0);
+                    else if (value == CursorState.SizeLeft || value == CursorState.SizeRight)
+                        Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.SizeWestEast, 0);
 
-                    }
-                    else
-                    {
-                        _cursorSizeRight = false;
-                        _cursorSizeLeft = false;
-                        _cursorMove = false;
-                    }
-
-                    lightButtonPressed = value;
+                    mouseState = value;
                 }
             }
         }
@@ -55,66 +63,70 @@ namespace AuraEditor.UserControls
 
         void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (_cursorMove)
+            if (MouseState == CursorState.SizeAll)
             {
-                if (MyEffect.UI_X + e.Delta.Translation.X < 0)
+                if (MyEffectLine.UI_X + e.Delta.Translation.X < 0)
                     return;
-                MyEffect.UI_X += e.Delta.Translation.X;
-            }
-            else if (_cursorSizeRight)
-            {
-                if (e.Position.X > 50)
-                    MyEffect.UI_Width = e.Position.X;
 
-                if (e.Delta.Translation.X > 0)
-                    MyEffect.Layer.OnCursorSizeRight(MyEffect);
+                MyEffectLine.UI_X += e.Delta.Translation.X;
             }
-            else if (_cursorSizeLeft)
+            else if (MouseState == CursorState.SizeRight)
+            {
+                if (e.Position.X <= 50)
+                    return;
+
+                MyEffectLine.UI_Width = e.Position.X;
+
+                if (e.Delta.Translation.X > 0) // To right
+                {
+                    // We should check if it will overlap others
+                    DeviceLayer myLayer = MyEffectLine.Layer;
+                    Effect overlappedEL = myLayer.TestAndGetFirstOverlappingEffect(MyEffectLine);
+
+                    if (overlappedEL != null)
+                        myLayer.PushAllEffectsWhichOnTheRight(MyEffectLine, e.Delta.Translation.X);
+                }
+            }
+            else if (MouseState == CursorState.SizeLeft)
             {
                 double move = e.Delta.Translation.X;
 
-                // If effectline expand to the left, we should check if it will overlap others?
-                if (move < 0 && MyEffect.Layer.FindEffectByPosition(MyEffect.UI_X + move) != null)
+                if (move < 0) // To left
+                {
+                    // We should check if it will overlap others
+                    if (MyEffectLine.Layer.FindEffectByPosition(MyEffectLine.UI_X + move) != null)
+                        return;
+                }
+
+                if (MyEffectLine.UI_Width - move <= 50)
                     return;
 
-                if (MyEffect.UI_Width - move > 50)
-                {
-                    MyEffect.UI_X += move;
-                    MyEffect.UI_Width -= move;
-                }
+                MyEffectLine.UI_X += move;
+                MyEffectLine.UI_Width -= move;
             }
         }
         void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            double left;
-            double right;
-            double width;
-            //fe.Opacity = 1;
+            double keepWidth;
 
-            left = MyEffect.UI_X;
-            right = MyEffect.UI_X + MyEffect.UI_Width;
-
-            if (_cursorSizeLeft)
+            if (MouseState == CursorState.SizeLeft)
             {
-                left = left / 10 * 10;
-                width = right - left;
+                keepWidth = MyEffectLine.UI_Width;
+                MyEffectLine.UI_X = RoundToTens(MyEffectLine.UI_X);
+                MyEffectLine.UI_Width = RoundToTens(keepWidth);
             }
-            else if (_cursorSizeRight)
+            else if (MouseState == CursorState.SizeRight)
             {
-                right = right / 10 * 10;
-                width = right - left;
+                keepWidth = MyEffectLine.UI_Width;
+                MyEffectLine.UI_Width = RoundToTens(keepWidth);
             }
             else // move
             {
-                width = right - left;
-                left = left / 10 * 10;
+                MyEffectLine.UI_X = RoundToTens(MyEffectLine.UI_X);
             }
 
-            MyEffect.UI_X = left;
-            MyEffect.UI_Width = width;
-            MyEffect.UI_X = MyEffect.Layer.InsertEffectLine(MyEffect);
-            Window.Current.CoreWindow.PointerCursor =
-                new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+            MyEffectLine.Layer.InsertEffectLine(MyEffectLine);
+            MouseState = CursorState.None;
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
@@ -124,59 +136,35 @@ namespace AuraEditor.UserControls
             Point position = e.GetCurrentPoint(el).Position;
 
             //System.Diagnostics.Debug.WriteLine(position.X);
+            if (ptrPt.Properties.IsLeftButtonPressed)
+                return;
 
-            if (ptrPt.PointerDevice.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+            if (position.X > el.Width - 5)
             {
-                if (position.X > el.Width - 5)
-                {
-                    Window.Current.CoreWindow.PointerCursor =
-                        new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeWestEast, 0);
-                }
-                else if (position.X < 5)
-                {
-                    Window.Current.CoreWindow.PointerCursor =
-                          new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeWestEast, 0);
-                }
-                else
-                {
-                    Window.Current.CoreWindow.PointerCursor =
-                        new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
-                }
-
-                if (ptrPt.Properties.IsLeftButtonPressed)
-                {
-                    if ((_cursorSizeRight | _cursorSizeLeft | _cursorMove) == false)
-                    {
-                        LightButtonPressed = true;
-                        if (position.X > el.Width - 5)
-                        {
-                            _cursorSizeRight = true;
-                        }
-                        else if (position.X < 5)
-                        {
-                            _cursorSizeLeft = true;
-                        }
-                        else
-                        {
-                            _cursorMove = true;
-                        }
-                    }
-                }
-                else
-                {
-                    LightButtonPressed = false;
-                }
+                MouseState = CursorState.SizeRight;
+            }
+            else if (position.X < 5)
+            {
+                MouseState = CursorState.SizeLeft;
+            }
+            else
+            {
+                MouseState = CursorState.SizeAll;
             }
         }
         private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor =
-                new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-        }
+            FrameworkElement fe = sender as FrameworkElement;
+            EffectLine el = fe.Parent as EffectLine;
+            PointerPoint ptrPt = e.GetCurrentPoint(el);
 
+            // ManipulationCompleted will handle it if the mouse is pressed
+            if (!ptrPt.Properties.IsLeftButtonPressed)
+                MouseState = CursorState.None;
+        }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            MainPage.MainPageInstance.SelectedEffectLine = MyEffect;
+            MainPage.MainPageInstance.SelectedEffectLine = MyEffectLine;
         }
     }
 }

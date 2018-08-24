@@ -133,8 +133,8 @@
     <Compile Include="UserControls\EffectLine.xaml.cs">
       <DependentUpon>EffectLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\EffectListItem.xaml.cs">
-      <DependentUpon>EffectListItem.xaml</DependentUpon>
+    <Compile Include="UserControls\EffectBlock.xaml.cs">
+      <DependentUpon>EffectBlock.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +209,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\EffectListItem.xaml">
+    <Page Include="UserControls\EffectBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

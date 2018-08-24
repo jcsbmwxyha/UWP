@@ -11,6 +11,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using static AuraEditor.Common.FixedLuaString;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -132,7 +134,7 @@ namespace AuraEditor
             #region Global devices
             public Device GetGlobalDeviceByType(int type)
             {
-                return GlobalDevices.Find(x => x.DeviceType == type);
+                return GlobalDevices.Find(x => x.Type == type);
             }
             public void SetGlobalDevices(List<Device> devices)
             {
@@ -272,8 +274,8 @@ namespace AuraEditor
                 DynValue generateEventDV;
 
                 queueTable = GetQueueTable();
-                generateEventDV = script.LoadFunction(Constants.GenerateEventFunctionString);
-                _functionDictionary.Add(generateEventDV, Constants.GenerateEventFunctionString);
+                generateEventDV = script.LoadFunction(GenerateEventFunctionString);
+                _functionDictionary.Add(generateEventDV, GenerateEventFunctionString);
 
                 eventProviderTable = CreateNewTable();
                 eventProviderTable.Set("queue", DynValue.NewTable(queueTable));
@@ -301,14 +303,14 @@ namespace AuraEditor
                     foreach (Effect eff in layer.Effects)
                     {
                         // Give uniqle index for all effects
-                        eff.EffectLuaName = EffectHelper.GetEffectName(eff.EffectType) + effectCount.ToString();
+                        eff.EffectLuaName = GetEffectName(eff.EffectType) + effectCount.ToString();
                         effectCount++;
 
                         queueItemTable = CreateNewTable();
                         queueItemTable.Set("Effect", DynValue.NewString(eff.EffectLuaName));
                         queueItemTable.Set("Viewport", DynValue.NewString(layer.LayerName));
 
-                        if (EffectHelper.IsTriggerEffects(eff.EffectType))
+                        if (IsTriggerEffects(eff.EffectType))
                             queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
                         else if (MainPageInstance.RepeatMode == true)
                             queueItemTable.Set("Trigger", DynValue.NewString("Period"));
@@ -357,7 +359,7 @@ namespace AuraEditor
                 foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
                 {
                     device = GetGlobalDeviceByType(pair.Key);
-                    layerTable.Set(device.DeviceName, DynValue.NewTable(GetDeviceTable(pair)));
+                    layerTable.Set(device.Name, DynValue.NewTable(GetDeviceTable(pair)));
                 }
 
                 return layerTable;
@@ -374,13 +376,13 @@ namespace AuraEditor
                 locationTable = GetLocationTable(device);
                 usageTable = GetUsageTable(pair.Value);
 
-                deviceTable.Set("name", DynValue.NewString(device.DeviceName));
+                deviceTable.Set("name", DynValue.NewString(device.Name));
 
-                if (device.DeviceType == 0)
+                if (device.Type == 0)
                     deviceTable.Set("DeviceType", DynValue.NewString("Notebook"));
-                else if (device.DeviceType == 1)
+                else if (device.Type == 1)
                     deviceTable.Set("DeviceType", DynValue.NewString("Mouse"));
-                else if (device.DeviceType == 2)
+                else if (device.Type == 2)
                     deviceTable.Set("DeviceType", DynValue.NewString("Keyboard"));
                 else
                     deviceTable.Set("DeviceType", DynValue.NewString("Headset"));
@@ -390,7 +392,7 @@ namespace AuraEditor
 
                 return deviceTable;
             }
-            private Table GetUsageTable(int[] zones)
+            private Table GetUsageTable(int[] zoneIndexes)
             {
                 Table usageTable;
                 int count;
@@ -398,9 +400,9 @@ namespace AuraEditor
                 usageTable = CreateNewTable();
                 count = 1;
 
-                foreach (int phyIndex in zones)
+                foreach (int index in zoneIndexes)
                 {
-                    usageTable.Set(count, DynValue.NewNumber(phyIndex));
+                    usageTable.Set(count, DynValue.NewNumber(index));
                     count++;
                 };
 
@@ -431,8 +433,8 @@ namespace AuraEditor
 
                 effectTable = CreateNewTable();
                 initColorTable = GetInitColorTable(eff);
-                viewportTransformTable = EffectHelper.GetViewportTransformTable(_functionDictionary, script, eff.EffectType);
-                bindToSlotTable = EffectHelper.GetBindToSlotTable(script, eff.EffectType);
+                viewportTransformTable = GetViewportTransformTable(_functionDictionary, script, eff.EffectType);
+                bindToSlotTable = GetBindToSlotTable(script, eff.EffectType);
                 waveTable = GetWaveTable(eff);
 
                 effectTable.Set("initColor", DynValue.NewTable(initColorTable));
@@ -450,10 +452,10 @@ namespace AuraEditor
                 double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
                 DynValue randomHue_dv;
 
-                if (EffectHelper.GetEffectName(eff.EffectType) == "Star")
+                if (GetEffectName(eff.EffectType) == "Star")
                 {
-                    randomHue_dv = script.LoadFunction(Constants.RandomHueString);
-                    _functionDictionary.Add(randomHue_dv, Constants.RandomHueString);
+                    randomHue_dv = script.LoadFunction(RandomHueString);
+                    _functionDictionary.Add(randomHue_dv, RandomHueString);
                     initColorTable.Set("hue", randomHue_dv);
                 }
                 else
@@ -498,7 +500,7 @@ namespace AuraEditor
                 Table globalSpaceTable = CreateNewTable();
 
                 foreach (Device d in GlobalDevices)
-                    globalSpaceTable.Set(d.DeviceName, DynValue.NewTable(GetGlobalDeviceTable(d)));
+                    globalSpaceTable.Set(d.Name, DynValue.NewTable(GetGlobalDeviceTable(d)));
 
                 return globalSpaceTable;
             }
@@ -508,7 +510,7 @@ namespace AuraEditor
                 Table locationTable = GetLocationTable(d);
                 string deviceTypeName = "";
 
-                switch (d.DeviceType)
+                switch (d.Type)
                 {
                     case 0: deviceTypeName = "Notebook"; break;
                     case 1: deviceTypeName = "Mouse"; break;
@@ -525,8 +527,8 @@ namespace AuraEditor
             {
                 Table locationTable = CreateNewTable();
 
-                locationTable.Set("x", DynValue.NewNumber(d.X));
-                locationTable.Set("y", DynValue.NewNumber(d.Y));
+                locationTable.Set("x", DynValue.NewNumber(d.GridPosition.X));
+                locationTable.Set("y", DynValue.NewNumber(d.GridPosition.Y));
 
                 return locationTable;
             }

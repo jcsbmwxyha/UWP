@@ -21,6 +21,7 @@ namespace AuraEditor.Common
 
             return seconds;
         }
+        public const int GridWidthPixels = 35;
     }                                               
 }                                                   
                                                     

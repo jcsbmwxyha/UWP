@@ -9,14 +9,14 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor
 {
     public class LightZone
     {
         public Shape Frame;
-        public int PhysicalIndex;
-        public int UIIndex;
+        public int Index;
         public Rect RelativeZoneRect;
         public Rect AbsoluteZoneRect
         {
@@ -32,7 +32,7 @@ namespace AuraEditor
         public bool Selected;
         public int ZIndex;
         
-        public LightZone(int ui_idx, Point deviceGridPosition, LedUI led)
+        public LightZone(Point deviceGridPosition, LedUI led)
         {
             int deviceLeft;
             int deviceTop;
@@ -41,15 +41,14 @@ namespace AuraEditor
             int frameRight;
             int frameBottom;
 
-            deviceLeft = (int)deviceGridPosition.X * Constants.GridLength;
-            deviceTop = (int)deviceGridPosition.Y * Constants.GridLength;
+            deviceLeft = (int)deviceGridPosition.X * GridWidthPixels;
+            deviceTop = (int)deviceGridPosition.Y * GridWidthPixels;
             frameLeft = led.Left;
             frameTop = led.Top;
             frameRight = led.Right;
             frameBottom = led.Bottom;
 
-            PhysicalIndex = led.PhyIndex;
-            UIIndex = ui_idx;
+            Index = led.Index;
             Selected = false;
             RelativeZoneRect = new Rect(
                 new Point(frameLeft, frameTop),

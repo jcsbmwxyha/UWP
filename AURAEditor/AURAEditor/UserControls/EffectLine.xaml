@@ -21,7 +21,7 @@
                   ManipulationCompleted="EffectLine_ManipulationCompleted"
                   PointerMoved="EffectLine_PointerMoved"
                   PointerExited="EffectLine_PointerExited"
-                  Content="{x:Bind MyEffect.EffectName}">
+                  Content="{x:Bind MyEffectLine.EffectName}">
         <ToggleButton.RenderTransform>
             <CompositeTransform/>
         </ToggleButton.RenderTransform>

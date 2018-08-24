@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace AuraEditor.Common
 {
-    static class Constants
+    static class FixedLuaString
     {
-        public const int MAX_KEYS = 152; // km per sec.
         public const string EVENTPROVIDER_FIRST_STRING = @"require(""global"")";
         public const string RandomHueString = @"function() return math.random() end";
         public const string GenerateEventFunctionString = @"
@@ -56,8 +55,5 @@ namespace AuraEditor.Common
                global.PeriodDone = true
            end
     end";
-
-
-        public const int GridLength = 35;
     }
 }

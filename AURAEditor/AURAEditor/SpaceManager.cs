@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
+using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor
 {
@@ -18,7 +19,7 @@ namespace AuraEditor
         Normal = 1,
         DragingDevice = 2,
         WatchingLayer = 3,
-        DragingEffectListItem = 4,
+        DragingEffectBlock = 4,
     }
 
     public sealed partial class MainPage : Page
@@ -55,7 +56,7 @@ namespace AuraEditor
                 SpaceAreaCanvas.RightTapped += SpaceGrid_RightTapped;
                 SetLayerButton.IsEnabled = true;
             }
-            else if (value == SpaceStatus.WatchingLayer || value == SpaceStatus.DragingEffectListItem)
+            else if (value == SpaceStatus.WatchingLayer || value == SpaceStatus.DragingEffectBlock)
             {
                 DisableAllDevicesOperation();
                 SpaceAreaCanvas.PointerPressed -= SpaceGrid_PointerPressed;
@@ -76,7 +77,12 @@ namespace AuraEditor
                 SetLayerButton.IsEnabled = true;
             }
         }
-        
+
+        private void IntializeSpaceGrid()
+        {
+            _mouseEventCtrl = IntializeMouseEventCtrl();
+            SetSpaceStatus(SpaceStatus.Normal);
+        }
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
@@ -97,10 +103,10 @@ namespace AuraEditor
             SpaceAreaCanvas.Children.Clear();
             SpaceAreaCanvas.Children.Add(GridImage);
             SpaceAreaCanvas.Children.Add(mouseRectangle);
-            
+
             foreach (Device d in devices)
             {
-                SpaceAreaCanvas.Children.Add(d.DeviceImg);
+                SpaceAreaCanvas.Children.Add(d.Image);
                 SortByZIndex(d.LightZones);
 
                 foreach (var zone in d.LightZones)
@@ -114,7 +120,7 @@ namespace AuraEditor
                         Hover = false,
                         Selected = zone.Selected,
                         Callback = zone.Frame_StatusChanged,
-                        GroupIndex = d.DeviceType
+                        GroupIndex = d.Type
                     };
                     regions.Add(r);
                 }
@@ -142,14 +148,14 @@ namespace AuraEditor
             }
         }
 
-        public void SetDevicePosition(Device device, int offsetX, int offsetY)
+        public void MoveDevicePosition(Device device, double offsetX, double offsetY)
         {
-            _mouseEventCtrl.UpdateGroupRects(device.DeviceType, offsetX, offsetY);
+            _mouseEventCtrl.MoveGroupRects(device.Type, offsetX, offsetY);
         }
         private void UnselectAllLayers()
         {
             List<DeviceLayerListViewItem> layers =
-                Common.ControlHelper.FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
+                FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
 
             foreach (var layer in layers)
             {
@@ -191,13 +197,13 @@ namespace AuraEditor
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
                 Device d = _auraCreatorManager.GetGlobalDeviceByType(pair.Key);
-                int[] phyIndexes = pair.Value;
+                int[] indexes = pair.Value;
 
                 foreach (var zone in d.LightZones)
                 {
                     Shape shape = zone.Frame;
 
-                    if (Array.Find(phyIndexes, x => x == zone.PhysicalIndex) > 0)
+                    if (Array.Find(indexes, x => x == zone.Index) > 0)
                     {
                         shape.Stroke = new SolidColorBrush(Colors.Yellow);
                         shape.Fill = new SolidColorBrush(Colors.Transparent);
@@ -246,13 +252,13 @@ namespace AuraEditor
                 {
                     if (zone.Selected == true)
                     {
-                        selectedIndex.Add(zone.PhysicalIndex);
+                        selectedIndex.Add(zone.Index);
                     }
                 }
 
-                layer.AddDeviceZones(d.DeviceType, selectedIndex.ToArray());
+                layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
             }
-            
+
             _auraCreatorManager.AddDeviceLayer(layer);
             UnselectAllZones();
         }
@@ -263,6 +269,26 @@ namespace AuraEditor
         private void DragDevImgToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             SetSpaceStatus(SpaceStatus.Normal);
+        }
+        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string content = e.AddedItems[0].ToString();
+            switch (content)
+            {
+                case "0 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1, true);
+                    break;
+                case "50 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 1.5f, true);
+                    break;
+                case "100 %":
+                    SpaceAreaScrollViewer.ChangeView(SpaceAreaScrollViewer.HorizontalOffset,
+                        SpaceAreaScrollViewer.VerticalOffset, 2, true);
+                    break;
+            }
+
         }
         #endregion
 
@@ -277,7 +303,6 @@ namespace AuraEditor
             var fe = sender as FrameworkElement;
             Point Position = e.GetCurrentPoint(fe).Position;
             _mouseEventCtrl.OnMousePressed(Position);
-            //bool _hasCapture = fe.CapturePointer(e.Pointer);
         }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
@@ -334,6 +359,48 @@ namespace AuraEditor
             {
                 d.DisableManipulation();
             }
+        }
+        public bool IsOverlapping(Device testDev)
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                if (testDev.Equals(d))
+                    continue;
+
+                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.Width, d.GridPosition.X, d.Width) &&
+                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.Height, d.GridPosition.Y, d.Height))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private Point GetFreeRoomGridPosition(Rect gridRect)
+        {
+            Device overlappingDevice = GetFirstOverlappingDevice(gridRect);
+
+            if (overlappingDevice == null)
+                return new Point(gridRect.X, gridRect.Y);
+            else
+            {
+                return GetFreeRoomGridPosition(new Rect(
+                    overlappingDevice.GridPosition.X + overlappingDevice.Width,
+                    overlappingDevice.GridPosition.Y,
+                    overlappingDevice.Width,
+                    overlappingDevice.Height));
+            }
+        }
+        private Device GetFirstOverlappingDevice(Rect gridRect)
+        {
+            foreach (var d in _auraCreatorManager.GlobalDevices)
+            {
+                if (ControlHelper.IsOverlapping(gridRect.X, gridRect.Width, d.GridPosition.X, d.Width) &&
+                    ControlHelper.IsOverlapping(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.Height))
+                {
+                    return d;
+                }
+            }
+            return null;
         }
     }
 }

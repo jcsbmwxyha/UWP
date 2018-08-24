@@ -14,16 +14,17 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using static AuraEditor.Common.EffectHelper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace AuraEditor.UserControls
 {
-    public sealed partial class EffectListItem : UserControl
+    public sealed partial class EffectBlock : UserControl
     {
         public string MyText { get { return this.DataContext as string; } }
 
-        public EffectListItem()
+        public EffectBlock()
         {
             this.InitializeComponent();
         }
@@ -36,12 +37,12 @@ namespace AuraEditor.UserControls
             args.Data.RequestedOperation = DataPackageOperation.Copy;
             args.Data.SetText(MyText);
 
-            if (EffectHelper.IsTriggerEffects(MyText))
+            if (IsTriggerEffects(MyText))
                 page._auraCreatorManager.ShowTriggerDeviceLayer();
             else
                 page._auraCreatorManager.HideTriggerDeviceLayer();
 
-            page.SetSpaceStatus(SpaceStatus.DragingEffectListItem);
+            page.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
         }
 
         private void Grid_DropCompleted(UIElement sender, DropCompletedEventArgs args)

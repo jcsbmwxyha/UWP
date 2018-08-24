@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor.Common
 {
@@ -64,6 +65,21 @@ namespace AuraEditor.Common
         {
             var messDialog = new MessageDialog(res);
             await messDialog.ShowAsync();
+        }
+        public static bool IsOverlapping(double x1, double w1, double x2, double w2)
+        {
+            if ((x2 + w2 > x1) && (x1 + w1 > x2))
+                return true;
+            else
+                return false;
+        }
+        public static double RoundToTens(double number)
+        {
+            return Math.Round(number / 10d, 0) * 10;
+        }
+        public static double RoundToGrid(double number)
+        {
+            return Math.Round(number / GridWidthPixels, 0) * GridWidthPixels;
         }
     }
 }

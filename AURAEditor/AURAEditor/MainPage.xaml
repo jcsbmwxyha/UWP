@@ -126,7 +126,7 @@
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer Name="EffectListScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0">
+            <ScrollViewer Name="EffectBlockScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0">
                 <StackPanel>
                     <RadioButton x:Name="EffectRadioButton"
                                  Content="Effects"
@@ -135,11 +135,11 @@
                                  IsChecked="True"
                                  FontSize="20"
                                  Foreground="White"/>
-                    <ListView x:Name="EffectListView"
+                    <ListView x:Name="EffectBlockListView"
                               Margin="22,4">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <usercontrol:EffectListItem/>
+                                <usercontrol:EffectBlock/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -161,7 +161,7 @@
                                   Margin="44,0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <usercontrol:EffectListItem/>
+                                    <usercontrol:EffectBlock/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -176,7 +176,7 @@
                                   Foreground="White">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <usercontrol:EffectListItem/>
+                                    <usercontrol:EffectBlock/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -207,7 +207,7 @@
                         Width="10"
                         Canvas.ZIndex="5"
                         Background="Gray"
-                        Click="HideEffectList_Click"/>
+                        Click="HideEffectBlockGrid_Click"/>
                 <Button Content="-"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
@@ -216,7 +216,7 @@
                         Width="10"
                         Canvas.ZIndex="5"
                         Background="Gray"
-                        Click="HideEffectInfo_Click"/>
+                        Click="HideEffectInfoGrid_Click"/>
                 <ScrollViewer Name="SpaceAreaScrollViewer"
                               Grid.Column="0"
                               Grid.ColumnSpan="3"

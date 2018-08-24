@@ -5,150 +5,133 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Constants = AuraEditor.Common.Constants;
 using static AuraEditor.MainPage;
+using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Definitions;
+using Windows.Foundation;
 
 namespace AuraEditor
 {
     public class Device
     {
-        public string DeviceName { get; set; }
-        public int DeviceType { get; set; }
-        private double _oldX;
-        public double X
-        {
+        public string Name { get; set; }
+        public int Type { get; set; }
+        public Point GridPosition {
             get
             {
-                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                return ct.TranslateX / Constants.GridLength;
+                CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+
+                return new Point(
+                    ct.TranslateX / GridWidthPixels,
+                    ct.TranslateY / GridWidthPixels);
             }
             set
             {
-                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                ct.TranslateX = value * Constants.GridLength;
+                SetImagePixelPosition(
+                    value.X * GridWidthPixels,
+                    value.Y * GridWidthPixels);
             }
         }
-        private double _oldY;
-        public double Y
-        {
-            get
-            {
-                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                return ct.TranslateY / Constants.GridLength;
-            }
-            set
-            {
-                CompositeTransform ct = DeviceImg.RenderTransform as CompositeTransform;
-                ct.TranslateY = value * Constants.GridLength;
-            }
-        }
-        public double W { get; set; }
-        public double H { get; set; }
-        public Image DeviceImg { get; set; }
+        private Point _oldPixelPosition;
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public Image Image { get; set; }
         public LightZone[] LightZones { get; set; }
 
         public Device(Image img)
         {
-            DeviceImg = img;
-
-            DeviceImg.PointerPressed += Image_PointerPressed;
-            DeviceImg.PointerReleased += Image_PointerReleased;
-            DeviceImg.Tapped += DeviceImg_Tapped;
+            Image = img;
+            Image.Tapped += DeviceImg_Tapped;
         }
         public void EnableManipulation()
         {
-            DeviceImg.ManipulationStarted -= ImageManipulationStarted;
-            DeviceImg.ManipulationDelta -= ImageManipulationDelta;
-            DeviceImg.ManipulationCompleted -= ImageManipulationCompleted;
-            DeviceImg.PointerEntered -= ImagePointerEntered;
-            DeviceImg.PointerExited -= ImagePointerExited;
+            Image.ManipulationStarted -= ImageManipulationStarted;
+            Image.ManipulationDelta -= ImageManipulationDelta;
+            Image.ManipulationCompleted -= ImageManipulationCompleted;
+            Image.PointerEntered -= ImagePointerEntered;
+            Image.PointerExited -= ImagePointerExited;
 
-            DeviceImg.ManipulationStarted += ImageManipulationStarted;
-            DeviceImg.ManipulationDelta += ImageManipulationDelta;
-            DeviceImg.ManipulationCompleted += ImageManipulationCompleted;
-            DeviceImg.PointerEntered += ImagePointerEntered;
-            DeviceImg.PointerExited += ImagePointerExited;
+            Image.ManipulationStarted += ImageManipulationStarted;
+            Image.ManipulationDelta += ImageManipulationDelta;
+            Image.ManipulationCompleted += ImageManipulationCompleted;
+            Image.PointerEntered += ImagePointerEntered;
+            Image.PointerExited += ImagePointerExited;
         }
         public void DisableManipulation()
         {
-            DeviceImg.ManipulationStarted -= ImageManipulationStarted;
-            DeviceImg.ManipulationDelta -= ImageManipulationDelta;
-            DeviceImg.ManipulationCompleted -= ImageManipulationCompleted;
-            DeviceImg.PointerEntered -= ImagePointerEntered;
-            DeviceImg.PointerExited -= ImagePointerExited;
+            Image.ManipulationStarted -= ImageManipulationStarted;
+            Image.ManipulationDelta -= ImageManipulationDelta;
+            Image.ManipulationCompleted -= ImageManipulationCompleted;
+            Image.PointerEntered -= ImagePointerEntered;
+            Image.PointerExited -= ImagePointerExited;
         }
 
+        #region Mouse event
         private void DeviceImg_Tapped(object sender, TappedRoutedEventArgs e)
         {
             MainPageInstance.SetSpaceStatus(SpaceStatus.Normal);
         }
-        private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            //MainPageInstance.UpdateSpaceGridOperations(SpaceStatus.DragingDevice);
-        }
-        private void Image_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            //MainPageInstance.UpdateSpaceGridOperations(SpaceStatus.Normal);
-        }
         private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            var fe = sender as FrameworkElement;
-            fe.Opacity = 0.5;
+            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
-            _oldX = X;
-            _oldY = Y;
+            _oldPixelPosition = new Point(ct.TranslateX, ct.TranslateY);
+            Image.Opacity = 0.5;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            Image img = sender as Image;
-            CompositeTransform ct = img.RenderTransform as CompositeTransform;
-            ct.TranslateX += e.Delta.Translation.X;
-            ct.TranslateY += e.Delta.Translation.Y;
+            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
-            foreach(var zone in LightZones)
-            {
-                ct = zone.Frame.RenderTransform as CompositeTransform;
-
-                ct.TranslateX += e.Delta.Translation.X;
-                ct.TranslateY += e.Delta.Translation.Y;
-            }
+            SetImagePixelPosition(
+                ct.TranslateX + e.Delta.Translation.X,
+                ct.TranslateY + e.Delta.Translation.Y);
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            Image img = sender as Image;
-            CompositeTransform ct = img.RenderTransform as CompositeTransform;
-            CompositeTransform zone_ct;
+            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
-            // TODO : ++ functionalized  this part
-            img.Opacity = 1;
-            ct.TranslateX = (int)ct.TranslateX / Constants.GridLength * Constants.GridLength;
-            ct.TranslateY = (int)ct.TranslateY / Constants.GridLength * Constants.GridLength;
+            SetImagePixelPosition(
+                RoundToGrid(ct.TranslateX),
+                RoundToGrid(ct.TranslateY));
+            Image.Opacity = 1;
 
-            foreach (var zone in LightZones)
+            if (!MainPageInstance.IsOverlapping(this))
             {
-                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
-                zone_ct.TranslateX = (int)ct.TranslateX + zone.RelativeZoneRect.Left;
-                zone_ct.TranslateY = (int)ct.TranslateY + zone.RelativeZoneRect.Top;
+                MainPageInstance.MoveDevicePosition(this,
+                    RoundToGrid(ct.TranslateX - _oldPixelPosition.X),
+                    RoundToGrid(ct.TranslateY - _oldPixelPosition.Y));
             }
-            // TODO : --
-
-            MainPageInstance.SetDevicePosition(this,
-                (int)(X - _oldX) * Constants.GridLength,
-                (int)(Y - _oldY) * Constants.GridLength);
+            else
+            {
+                SetImagePixelPosition(_oldPixelPosition.X, _oldPixelPosition.Y);
+            }
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor 
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
-
-            //MainPageInstance.UpdateSpaceGridStatus(SpaceStatus.DragingDevice);
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor 
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-            
-            //MainPageInstance.UpdateSpaceGridStatus(SpaceStatus.Normal);
+        }
+        #endregion
+
+        private void SetImagePixelPosition(double x, double y)
+        {
+            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform zone_ct;
+
+            ct.TranslateX = x;
+            ct.TranslateY = y;
+
+            foreach (var zone in LightZones)
+            {
+                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
+                zone_ct.TranslateX = ct.TranslateX + zone.RelativeZoneRect.Left;
+                zone_ct.TranslateY = ct.TranslateY + zone.RelativeZoneRect.Top;
+            }
         }
     }
 }
