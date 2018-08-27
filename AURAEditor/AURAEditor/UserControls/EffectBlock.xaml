@@ -9,7 +9,35 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid CanDrag="True" DragStarting="Grid_DragStarting" DropCompleted="Grid_DropCompleted">
-        <TextBlock Grid.Column="1" Text="{Binding}"/>
+    <Grid Height="26" Width="150" CanDrag="True"
+          DragStarting="Grid_DragStarting"
+          DropCompleted="Grid_DropCompleted"
+          PointerPressed="Grid_PointerPressed"
+          PointerEntered="Grid_PointerEntered"
+          PointerExited="Grid_PointerExited"
+          PointerReleased="Grid_PointerReleased">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="FrameImage.Source" Value="../Assets/asus_ac_effectblock_btn_f.png"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="FrameImage.Source" Value="../Assets/asus_ac_effectblock_btn_s.png"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <Image Name="FrameImage"
+               Source="../Assets/asus_ac_effectblock_btn_n.png"
+               Stretch="Fill"/>
+        <TextBlock Margin="10,0,0,0"
+                   Text="{Binding}"
+                   VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

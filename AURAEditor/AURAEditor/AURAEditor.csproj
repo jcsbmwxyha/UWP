@@ -141,6 +141,9 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\asus_ac_effectblock_btn_f.png" />
+    <Content Include="Assets\asus_ac_effectblock_btn_n.png" />
+    <Content Include="Assets\asus_ac_effectblock_btn_s.png" />
     <Content Include="Assets\effectUI.png" />
     <Content Include="Assets\GLADIUS.png" />
     <Content Include="Assets\grid35-2.png" />
