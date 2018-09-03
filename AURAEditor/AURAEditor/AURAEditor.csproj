@@ -121,9 +121,11 @@
     <Compile Include="DeviceLayer.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="EffectInfo.cs" />
+    <Compile Include="IEffect.cs" />
     <Compile Include="LightZone.cs" />
     <Compile Include="SpaceManager.cs" />
     <Compile Include="TriggerDeviceLayer.cs" />
+    <Compile Include="TriggerEffect.cs" />
     <Compile Include="UserControls\DeviceLayerListViewItem.xaml.cs">
       <DependentUpon>DeviceLayerListViewItem.xaml</DependentUpon>
     </Compile>

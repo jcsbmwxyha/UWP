@@ -10,10 +10,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.MainPage;
 using static AuraEditor.Common.EffectHelper;
+using MoonSharp.Interpreter;
 
 namespace AuraEditor
 {
-    public class Effect
+    public class Effect : IEffect
     {
         public DeviceLayer Layer { get; set; }
         public string Name { get; set; }
@@ -82,5 +83,15 @@ namespace AuraEditor
 
             return el;
         }
+
+        public virtual Table ToEventTable() { return null; }
+    }
+
+    public class RainbowEffect : Effect
+    {
+        public RainbowEffect(DeviceLayer layer, int effectType) : base(layer, effectType)
+        {
+        }
+        public override Table ToEventTable() { return null; }
     }
 }
