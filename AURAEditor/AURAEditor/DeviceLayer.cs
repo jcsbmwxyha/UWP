@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.MainPage;
 using static AuraEditor.Common.EffectHelper;
+using AuraEditor.UserControls;
 
 namespace AuraEditor
 {
@@ -71,20 +72,21 @@ namespace AuraEditor
         }
         public void InsertEffectLine(Effect insertedEL)
         {
-            Effect overlappedEL = null;
-
-            overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
+            Effect overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
 
             if (overlappedEL != null)
             {
-                if (insertedEL.UI_X <= overlappedEL.UI_X)
+                EffectLine overUI = overlappedEL.UI;
+                EffectLine inUI = insertedEL.UI;
+
+                if (inUI.X <= overUI.X)
                 {
-                    double move = insertedEL.UI_Right - overlappedEL.UI_X;
+                    double move = inUI.Right - overUI.X;
                     PushAllEffectsWhichOnTheRight(insertedEL, move);
                 }
-                else if (overlappedEL.UI_X < insertedEL.UI_X)
+                else if (overUI.X < inUI.X)
                 {
-                    insertedEL.UI_X += (overlappedEL.UI_Right - insertedEL.UI_X);
+                    inUI.X += (overUI.Right - inUI.X);
                     InsertEffectLine(insertedEL);
                 }
             }
@@ -96,9 +98,9 @@ namespace AuraEditor
                 if (effect.Equals(e))
                     continue;
 
-                if (effect.UI_X <= e.UI_X)
+                if (effect.UI.X <= e.UI.X)
                 {
-                    e.UI_X += move;
+                    e.UI.X += move;
                 }
             }
         }
@@ -115,7 +117,7 @@ namespace AuraEditor
                 {
                     if (result == null)
                         result = e;
-                    else if (e.UI_X < result.UI_X)
+                    else if (e.UI.X < result.UI.X)
                     {
                         result = e;
                     }
@@ -126,14 +128,19 @@ namespace AuraEditor
         }
         private bool IsOverlapping(Effect effect1, Effect effect2)
         {
-            return ControlHelper.IsOverlapping(effect1.UI_X, effect1.UI_Width, effect2.UI_X, effect2.UI_Width);
+            EffectLine UI_1 = effect1.UI;
+            EffectLine UI_2 = effect2.UI;
+
+            return ControlHelper.IsOverlapping(
+                UI_1.X, UI_1.Width,
+                UI_2.X, UI_2.Width);
         }
         public Effect FindEffectByPosition(double x)
         {
             foreach (Effect e in Effects)
             {
-                double left = e.UI_X;
-                double width = e.UI_Width;
+                double left = e.UI.X;
+                double width = e.UI.Width;
 
                 if ((left <= x) && (x <= left + width))
                     return e;
@@ -146,12 +153,12 @@ namespace AuraEditor
 
             foreach (Effect e in Effects)
             {
-                if (e.UI_X > x)
+                if (e.UI.X > x)
                 {
                     if (result == null)
                         result = e;
 
-                    if (e.UI_X < result.UI_X)
+                    if (e.UI.X < result.UI.X)
                     {
                         result = e;
                     }
@@ -166,9 +173,11 @@ namespace AuraEditor
             for (int i = 0; i < Effects.Count; i++)
             {
                 Effect effect = Effects[i];
-                if (roomX <= effect.UI_X && effect.UI_X < roomX + AuraCreatorManager.GetPixelsPerSecond())
+                EffectLine UI = effect.UI;
+
+                if (roomX <= UI.X && UI.X < roomX + AuraCreatorManager.GetPixelsPerSecond())
                 {
-                    roomX = effect.UI_X + effect.UI_Width;
+                    roomX = UI.X + UI.Width;
                     i = -1; // rescan every effect line
                 }
             }

@@ -1,0 +1,8 @@
+Model,GLADIUS II,,,,,,
+UI_width,4,,,,,,
+UI_height,7,,,,,,
+,,,,,,,
+Parameters,grid_x,grid_y,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index
+LED 1,0,0,45,42,95,92,0
+LED 2,6,0,45,190,95,235,0
+LED 3,12,0,10,125,130,240,0

@@ -10,6 +10,16 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Definitions;
+using Windows.Storage;
+using Windows.UI.Xaml.Media.Imaging;
+using System.Threading.Tasks;
+using System.Xml;
+using System.IO;
+using Windows.Storage.Streams;
+using System.Linq;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace AuraEditor
 {
@@ -82,6 +92,14 @@ namespace AuraEditor
         {
             _mouseEventCtrl = IntializeMouseEventCtrl();
             SetSpaceStatus(SpaceStatus.Normal);
+
+            if (true /* If Aura file does not exist*/)
+            {
+                FillWithIngroupDevices();
+            }
+            else if (true /* If Aura file exist*/)
+            {
+            }
         }
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
@@ -184,13 +202,6 @@ namespace AuraEditor
             SetSpaceStatus(SpaceStatus.WatchingLayer);
             UnselectAllZones();
 
-            if (layer is TriggerDeviceLayer)
-                WatchTriggerLayer(layer);
-            else
-                WatchNormalLayer(layer);
-        }
-        private void WatchNormalLayer(DeviceLayer layer)
-        {
             Dictionary<int, int[]> dictionary = layer.GetDeviceToZonesDictionary();
 
             // According to the layer, assign selection status for every zone
@@ -208,23 +219,6 @@ namespace AuraEditor
                         shape.Stroke = new SolidColorBrush(Colors.Yellow);
                         shape.Fill = new SolidColorBrush(Colors.Transparent);
                     }
-                }
-            }
-        }
-        private void WatchTriggerLayer(DeviceLayer layer)
-        {
-            List<Device> devices = _auraCreatorManager.GlobalDevices;
-
-            foreach (var device in devices)
-            {
-                LightZone[] zones = device.LightZones;
-
-                foreach (var zone in zones)
-                {
-                    Shape shape = zone.Frame;
-
-                    shape.Stroke = new SolidColorBrush(Colors.Yellow);
-                    shape.Fill = new SolidColorBrush(Colors.Transparent);
                 }
             }
         }
@@ -346,6 +340,150 @@ namespace AuraEditor
         }
         #endregion
 
+        #region Ingroup devices
+        private async void FillWithIngroupDevices()
+        {
+            List<string> namesOfIngroupDevices = await GetIngroupDevices();
+
+            DeviceContent deviceContent;
+            Device device;
+
+            for (int i = 0; i < namesOfIngroupDevices.Count; i++)
+            {
+                deviceContent = await DeviceContent.GetDeviceContent(namesOfIngroupDevices[i]);
+
+                if (deviceContent == null)
+                    continue;
+
+                if (i == 0) // local
+                    device = deviceContent.ToDevice();
+                else // other
+                {
+                    Rect r = new Rect(0, 0, deviceContent.UI_Width, deviceContent.UI_Height);
+                    Point p = GetFreeRoomPositionForRect(r);
+                    device = deviceContent.ToDevice(p);
+                }
+
+                _auraCreatorManager.GlobalDevices.Add(device);
+            }
+
+            // For developing
+            /*
+            deviceContent = await GetDeviceContent("GLADIUS II");
+            device = CreateDeviceFromContent(deviceContent);
+            _auraCreatorManager.GlobalDevices.Add(device);
+            */
+
+            RefreshSpaceGrid();
+        }
+        private async Task<List<string>> GetIngroupDevices()
+        {
+            XmlDocument xmlDoc = await GetIngroupDevicesXmlDoc();
+
+            List<string> results = new List<string>();
+            string localDevice = GetLocalDevice(xmlDoc);
+            List<string> otherDevices = GetOtherDevice(xmlDoc);
+
+            // Put local at first
+            results.Add(localDevice);
+            results.AddRange(otherDevices);
+
+            return results;
+        }
+        private async Task<XmlDocument> GetIngroupDevicesXmlDoc()
+        {
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+            folder = await EnterOrCreateFolder(folder, "AURA Creator");
+            folder = await EnterOrCreateFolder(folder, "Devices");
+            StorageFile sf = await folder.GetFileAsync("ingroupdevice.xml");
+
+            XmlDocument devicesXml = new XmlDocument();
+            devicesXml.Load(await sf.OpenStreamForReadAsync());
+
+            return devicesXml;
+        }
+        private string GetLocalDevice(XmlDocument devicesXml)
+        {
+            XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
+            XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
+            string result = "";
+
+            foreach (XmlNode node in deviceNodes)
+            {
+                XmlElement element = (XmlElement)node;
+
+                if (element.GetAttribute("local") == "1")
+                {
+                    return element.GetAttribute("name");
+                }
+            }
+
+            return result;
+        }
+        private List<string> GetOtherDevice(XmlDocument devicesXml)
+        {
+            XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
+            XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
+            List<string> results = new List<string>();
+
+            foreach (XmlNode node in deviceNodes)
+            {
+                XmlElement element = (XmlElement)node;
+
+                if (element.GetAttribute("local") != "1")
+                {
+                    results.Add(element.GetAttribute("name"));
+                }
+            }
+
+            return results;
+        }
+        private async void RescanIngroupDevices()
+        {
+            List<string> namesOfIngroupDevices = await GetIngroupDevices();
+
+            List<Device> globalDevices = _auraCreatorManager.GlobalDevices;
+            List<string> namesOfGlobalDevices = new List<string>();
+
+            foreach (var d in globalDevices)
+            {
+                namesOfGlobalDevices.Add(d.Name);
+            }
+
+            var needToAdd = namesOfIngroupDevices.Except(namesOfGlobalDevices);
+            var needToRemove = namesOfGlobalDevices.Except(namesOfIngroupDevices);
+
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                foreach (var d_name in needToRemove)
+                {
+                    Device device = _auraCreatorManager.GlobalDevices.Find(x => x.Name == d_name);
+
+                    if (device != null)
+                    {
+                        _auraCreatorManager.GlobalDevices.Remove(device);
+                    }
+                }
+
+                foreach (var d_name in needToAdd)
+                {
+                    DeviceContent deviceContent = await DeviceContent.GetDeviceContent(d_name);
+
+                    if (deviceContent == null)
+                        continue;
+
+                    Rect r = new Rect(0, 0, deviceContent.UI_Width, deviceContent.UI_Height);
+                    Point p = GetFreeRoomPositionForRect(r);
+                    Device device = deviceContent.ToDevice(p);
+
+                    _auraCreatorManager.GlobalDevices.Add(device);
+                }
+
+                RefreshSpaceGrid();
+            });
+        }
+        #endregion
+
         private void EableAllDevicesOperation()
         {
             foreach (var d in _auraCreatorManager.GlobalDevices)
@@ -375,15 +513,15 @@ namespace AuraEditor
             }
             return false;
         }
-        private Point GetFreeRoomGridPosition(Rect gridRect)
+        private Point GetFreeRoomPositionForRect(Rect rect)
         {
-            Device overlappingDevice = GetFirstOverlappingDevice(gridRect);
+            Device overlappingDevice = GetFirstOverlappingDevice(rect);
 
             if (overlappingDevice == null)
-                return new Point(gridRect.X, gridRect.Y);
+                return new Point(rect.X, rect.Y);
             else
             {
-                return GetFreeRoomGridPosition(new Rect(
+                return GetFreeRoomPositionForRect(new Rect(
                     overlappingDevice.GridPosition.X + overlappingDevice.Width,
                     overlappingDevice.GridPosition.Y,
                     overlappingDevice.Width,

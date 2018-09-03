@@ -171,20 +171,6 @@ namespace AuraEditor
             ScaleScrollViewer.ChangeView(0, null, null, true);
             LayerScrollViewer.ChangeView(null, 0, null, true);
             IconScrollViewer.ChangeView(0, 0, null, true);
-
-            //IconCanvas.Height = TrackStackPanel.ActualHeight + ScaleScrollViewer.ActualHeight;
-            //IconCanvas.Width = TrackStackPanel.ActualWidth;
         }
-
-        //private async void CreateXML(string xmlstring)
-        //{
-        //    var doc2 = new Windows.Data.Xml.Dom.XmlDocument();
-        //    doc2.LoadXml(xmlstring);
-
-        //    // save xml to a file
-        //    var file = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync("Space.xml",
-        //        Windows.Storage.CreationCollisionOption.ReplaceExisting);
-        //    await doc2.SaveToFileAsync(file);
-        //}
     }
 }

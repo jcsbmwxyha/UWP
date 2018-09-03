@@ -40,11 +40,6 @@ namespace AuraEditor.UserControls
             args.Data.RequestedOperation = DataPackageOperation.Copy;
             args.Data.SetText(MyText);
 
-            if (IsTriggerEffects(MyText))
-                page._auraCreatorManager.ShowTriggerDeviceLayer();
-            else
-                page._auraCreatorManager.HideTriggerDeviceLayer();
-
             page.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
         }
 

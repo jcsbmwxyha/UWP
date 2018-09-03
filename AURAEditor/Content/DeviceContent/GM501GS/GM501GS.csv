@@ -1,0 +1,9 @@
+Model,GM501GS,,,,,,
+UI_width,25,,,,,,
+UI_height,8,,,,,,
+,,,,,,,
+Parameters,grid_x,grid_y,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index
+LED 1,0,0,345,30,405,80,1
+LED 2,6,0,76,120,226,330,1
+LED 3,12,0,236,120,381,330,1
+LED 4,18,0,391,120,536,330,1

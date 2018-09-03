@@ -10,57 +10,1026 @@
     Loaded="MainPage_Loaded">
 
     <Page.Resources>
-        <Style TargetType="Image" x:Key="DeviceImgStyle">
-            <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
-            <Setter Property="Stretch" Value="Fill"/>
-        </Style>
-        <Style TargetType="Canvas">
-            <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Width" Value="2500" />
-            <Setter Property="Height" Value="50" />
-            <Setter Property="AllowDrop" Value="True" />
-        </Style>
-
-        <Style TargetType="Button" x:Key="ButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border>
-                            <Grid>
-                                <Image Source="Assets/asus_auraeditor_btn.png"/>
-                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="ListViewItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Grid>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0" Storyboard.TargetName="contentControl" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" To="White"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Border Background="Transparent">
-                                <ContentControl x:Name="contentControl" Foreground="{TemplateBinding Foreground}" Content="{TemplateBinding Content}"  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+        <ResourceDictionary>
+            <BitmapImage x:Key="VerticalScrollBarImgContent" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_system_scrollbar_Vertical.png"/>
+            <BitmapImage x:Key="Vertical_portrait_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_t_btn_n.png"/>
+            <BitmapImage x:Key="Vertical_portrait_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_n.png"/>
+            <BitmapImage x:Key="Vertical_portrait_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_b_btn_n.png"/>
+            <BitmapImage x:Key="Vertical_portrait_p_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_t_btn_p.png"/>
+            <BitmapImage x:Key="Vertical_portrait_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_p.png"/>
+            <BitmapImage x:Key="Vertical_portrait_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_b_btn_p.png"/>
+            <BitmapImage x:Key="HorizontalScrollBarImgContent" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_system_scrollbar_Horizontal.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_l.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_mid.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_r.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_l" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_l.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_mid.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_r.png"/>
+            <BitmapImage x:Key="Delete_n" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_n.png"/>
+            <BitmapImage x:Key="Delete_h" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_h.png"/>
+            <BitmapImage x:Key="Delete_s" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_s.png"/>
+            <BitmapImage x:Key="GoLeft_n" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_n.png"/>
+            <BitmapImage x:Key="GoLeft_h" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_h.png"/>
+            <BitmapImage x:Key="GoLeft_s" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_s.png"/>
+            <BitmapImage x:Key="GoRight_n" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_n.png"/>
+            <BitmapImage x:Key="GoRight_h" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_h.png"/>
+            <BitmapImage x:Key="GoRight_s" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_s.png"/>
+            <BitmapImage x:Key="Stop_n" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_n.png"/>
+            <BitmapImage x:Key="Stop_h" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_h.png"/>
+            <BitmapImage x:Key="Stop_s" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_s.png"/>
+            <BitmapImage x:Key="Play_n" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_n.png"/>
+            <BitmapImage x:Key="Play_h" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_h.png"/>
+            <BitmapImage x:Key="Play_s" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_s.png"/>
+            <BitmapImage x:Key="Save_n" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_n.png"/>
+            <BitmapImage x:Key="Save_h" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_h.png"/>
+            <BitmapImage x:Key="Save_s" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_s.png"/>
+            <BitmapImage x:Key="More_n" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_n.png"/>
+            <BitmapImage x:Key="More_h" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_h.png"/>
+            <BitmapImage x:Key="More_s" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_s.png"/>
+            
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+            
+            <Style TargetType="Image" x:Key="DeviceImgStyle">
+                <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
+                <Setter Property="Stretch" Value="Fill"/>
+            </Style>
+            <Style TargetType="Canvas">
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+                <Setter Property="Width" Value="2500" />
+                <Setter Property="Height" Value="50" />
+                <Setter Property="AllowDrop" Value="True" />
+            </Style>
+            <Style x:Key="BasicButton" TargetType="Button">
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="30" />
+            </Style>
+            <Style x:Key="DeleteButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
                             </Border>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="GoLeftButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="GoRightButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="StopButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="PlayButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Play_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Play_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Play_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SaveButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="MoreButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="ListViewItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <ColorAnimation Duration="0" Storyboard.TargetName="contentControl" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" To="White"/>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border Background="Transparent">
+                                    <ContentControl x:Name="contentControl" Foreground="{TemplateBinding Foreground}" Content="{TemplateBinding Content}"  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="RadioButton" x:Key="ColorBtn">
+                <Setter Property="Margin" Value="0,0,12,0"/>
+                <Setter Property="Height" Value="49"/>
+                <Setter Property="MinWidth" Value="48"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CheckStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorBtnBg.Visibility" Value="Collapsed"/>
+                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Visible"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Unchecked">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorBtnBg.Visibility" Value="Visible"/>
+                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Collapsed"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Polygon x:Name="PolygonColor" Points="8,8,8,36,13,41,41,41,41,8" Fill="{TemplateBinding Background}"/>
+                                <Image x:Name="ColorBtnBg" Source="Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_n_btn.png"/>
+                                <Image x:Name="ColorBtnSelectBg" Source="Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_s_btn.png"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SliderStyle" TargetType="Slider">
+                <Setter Property="Background" Value="Gray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+                <Setter Property="FontSize" Value="30" />
+                <Setter Property="ManipulationMode" Value="None" />
+                <Setter Property="UseSystemFocusVisuals" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style TargetType="Thumb" x:Key="SliderThumbStyle">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Background" Value="Plum" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Rectangle HorizontalAlignment="Center" VerticalAlignment="Top" Height="22" Width="40" Margin="0,5,0,0">
+                                                        <Rectangle.Fill>
+                                                            <ImageBrush ImageSource="Assets/EffectInfoGroup/asus_ac_slider_n.png"/>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Grid x:Name="SliderContainer" Background="Transparent" Control.IsTemplateFocusTarget="True">
+                                    <Grid x:Name="HorizontalTemplate" MinHeight="45">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="25" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="15" />
+                                        </Grid.RowDefinitions>
+                                        <Rectangle x:Name="HorizontalTrackRect" Fill="{TemplateBinding Background}" Height="2" Grid.Row="1" Grid.ColumnSpan="3" Margin="2,0,5,0"/>
+                                        <Rectangle x:Name="HorizontalDecreaseRect" Grid.Row="1">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                    <GradientStop Color="Red" Offset="0.0"/>
+                                                    <GradientStop Color="Yellow" Offset="0.75"/>
+                                                    <GradientStop Color="White" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Thumb x:Name="HorizontalThumb" Background="Black" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid x:Name="VerticalTemplate" Visibility="Collapsed">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="15" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="15" />
+                                        </Grid.ColumnDefinitions>
+                                        <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
+                                        <Rectangle x:Name="VerticalDecreaseRect" Grid.Row="1">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                    <GradientStop Color="Red" Offset="0.0"/>
+                                                    <GradientStop Color="Yellow" Offset="0.75"/>
+                                                    <GradientStop Color="White" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Thumb x:Name="VerticalThumb" Background="{ThemeResource SystemControlForegroundAccentBrush}" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="RadioButton" x:Key="LeftRadioBtn">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CheckStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedLeftRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                                <Setter Target="UncheckedLeftRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Unchecked" >
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedLeftRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                                <Setter Target="UncheckedLeftRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image x:Name="CheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_left_select_ic.png"/>
+                                    <Image x:Name="UncheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_left__ic.png"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="RadioButton" x:Key="RightRadioBtn">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CheckStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedRightRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                                <Setter Target="UncheckedRightRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Unchecked" >
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedRightRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                                <Setter Target="UncheckedRightRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image x:Name="CheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_right_select_ic.png"/>
+                                    <Image x:Name="UncheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_right_ic.png"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="RadioButton" x:Key="UpRadioBtn">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CheckStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedUpRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                                <Setter Target="UncheckedUpRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Unchecked" >
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedUpRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                                <Setter Target="UncheckedUpRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image x:Name="CheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_up_select_ic.png"/>
+                                    <Image x:Name="UncheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_up.png"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="RadioButton" x:Key="DownRadioBtn">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CheckStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedDownRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                                <Setter Target="UncheckedDownRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Unchecked" >
+                                            <VisualState.Setters>
+                                                <Setter Target="CheckedDownRadioBtnBg.Visibility" 
+                                                Value="Collapsed"></Setter>
+                                                <Setter Target="UncheckedDownRadioBtnBg.Visibility" 
+                                                Value="Visible"></Setter>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image x:Name="CheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_down_select_ic.png"/>
+                                    <Image x:Name="UncheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_down.png"/>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="ScrollBar">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid x:Name="Root">
+                                <Grid.Resources>
+                                    <ControlTemplate x:Key="RepeatButtonTemplate" TargetType="RepeatButton">
+                                        <Grid x:Name="Root" Background="Black" Opacity="0.3">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="HorizontalIncrementTemplate" TargetType="RepeatButton">
+                                        <Grid x:Name="Root">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Disabled">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0E3;" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontSize="6" MirroredWhenRightToLeft="True" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="HorizontalDecrementTemplate" TargetType="RepeatButton">
+                                        <Grid x:Name="Root">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Disabled">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0E2;" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontSize="6" MirroredWhenRightToLeft="True"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="VerticalIncrementTemplate" TargetType="RepeatButton">
+                                        <Grid x:Name="Root">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Disabled">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0E5;" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontSize="6" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="VerticalDecrementTemplate" TargetType="RepeatButton">
+                                        <Grid x:Name="Root">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="PointerOver">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Pressed">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
+                                                     Storyboard.TargetProperty="Background">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Disabled">
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
+                                                     Storyboard.TargetProperty="Foreground">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0E4;" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontSize="6" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="VerticalThumbTemplate" TargetType="Thumb">
+                                        <Grid>
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="PointerOver">
+                                                        <VisualState.Setters>
+                                                            <Setter Target="LPart.Source" 
+                                                Value="{ThemeResource Vertical_portrait_p_l}"/>
+                                                            <Setter Target="MPart.Source" 
+                                                Value="{ThemeResource Vertical_portrait_p_mid}"/>
+                                                            <Setter Target="RPart.Source" 
+                                                Value="{ThemeResource Vertical_portrait_p_r}"/>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Background="Black" 
+                                            Opacity="0.3"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="3"/>
+                                            <Image x:Name="LPart" 
+                                           Grid.Row="0" 
+                                           Source="{ThemeResource Vertical_portrait_n_l}"  
+                                           Width="12" 
+                                           Stretch="Fill"/>
+                                            <Image x:Name="MPart" 
+                                           Grid.Row="1" 
+                                           Source="{ThemeResource Vertical_portrait_n_mid}" 
+                                           Width="12" 
+                                           Stretch="Fill"/>
+                                            <Image x:Name="RPart" 
+                                           Grid.Row="2" 
+                                           Source="{ThemeResource Vertical_portrait_n_r}" 
+                                           Width="12" 
+                                           Stretch="Fill"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                    <ControlTemplate x:Key="HorizontalThumbTemplate" TargetType="Thumb">
+                                        <Grid>
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal"/>
+                                                    <VisualState x:Name="PointerOver">
+                                                        <VisualState.Setters>
+                                                            <Setter Target="LPart.Source" 
+                                                Value="{ThemeResource Horizontal_Landscape_p_l}"/>
+                                                            <Setter Target="MPart.Source" 
+                                                Value="{ThemeResource Horizontal_Landscape_p_mid}"/>
+                                                            <Setter Target="RPart.Source" 
+                                                Value="{ThemeResource Horizontal_Landscape_p_r}"/>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Background="Black" 
+                                            Opacity="0.3"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="3"/>
+                                            <Image x:Name="LPart" 
+                                           Grid.Column="0" 
+                                           Source="{ThemeResource Horizontal_Landscape_n_l}"  
+                                           Height="12" 
+                                           Stretch="Fill"/>
+                                            <Image x:Name="MPart" 
+                                           Grid.Column="1" 
+                                           Source="{ThemeResource Horizontal_Landscape_n_mid}" 
+                                           Height="12" 
+                                           Stretch="Fill"/>
+                                            <Image x:Name="RPart" 
+                                           Grid.Column="2" 
+                                           Source="{ThemeResource Horizontal_Landscape_n_r}" 
+                                           Height="12" 
+                                           Stretch="Fill"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Grid.Resources>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualState x:Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0"
+                                                                 To="0.5"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 Storyboard.TargetName="Root" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect"
+                                               Storyboard.TargetProperty="Stroke">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect"
+                                               Storyboard.TargetProperty="Stroke">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalPanningThumb"
+                                               Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledChromeHighBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalPanningThumb"
+                                               Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledChromeHighBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup x:Name="ScrollingIndicatorStates">
+                                        <VisualState x:Name="TouchIndicator">
+                                            <Storyboard>
+                                                <FadeOutThemeAnimation TargetName="HorizontalRoot" />
+                                                <FadeOutThemeAnimation TargetName="VerticalRoot" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalRoot"
+                                               Storyboard.TargetProperty="Visibility"
+                                               Duration="0">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Collapsed</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalRoot"
+                                               Storyboard.TargetProperty="Visibility"
+                                               Duration="0">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <Visibility>Collapsed</Visibility>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="MouseIndicator">
+                                            <Storyboard>
+                                                <FadeInThemeAnimation TargetName="HorizontalRoot" />
+                                                <FadeInThemeAnimation TargetName="VerticalRoot" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible"
+                                               Storyboard.TargetName="HorizontalRoot">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <x:Boolean>True</x:Boolean>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible"
+                                               Storyboard.TargetName="VerticalRoot">
+                                                    <DiscreteObjectKeyFrame KeyTime="0">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <x:Boolean>True</x:Boolean>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="NoIndicator">
+                                            <Storyboard>
+                                                <FadeOutThemeAnimation BeginTime="0" TargetName="HorizontalRoot" />
+                                                <FadeOutThemeAnimation BeginTime="0" TargetName="VerticalRoot" />
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid x:Name="HorizontalRoot" IsHitTestVisible="False">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <RepeatButton x:Name="HorizontalSmallDecrease"
+                                                  Grid.Column="0"           
+                                                  MinHeight="12"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Margin="0"
+                                                  Template="{StaticResource HorizontalDecrementTemplate}"
+                                                  Width="0"
+                                                  VerticalAlignment="Center" />
+                                    <RepeatButton x:Name="HorizontalLargeDecrease"
+                                                  Grid.Column="1"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Template="{StaticResource RepeatButtonTemplate}"
+                                                  Width="0" />
+                                    <Thumb x:Name="HorizontalThumb"
+                                           Grid.Column="2"
+                                           Template="{StaticResource HorizontalThumbTemplate}"
+                                           AutomationProperties.AccessibilityView="Raw" />
+                                    <RepeatButton x:Name="HorizontalLargeIncrease"
+                                                  Grid.Column="3"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Template="{StaticResource RepeatButtonTemplate}" />
+                                    <RepeatButton x:Name="HorizontalSmallIncrease"
+                                                  Grid.Column="4"
+                                                  Height="12"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Margin="0"
+                                                  Template="{StaticResource HorizontalIncrementTemplate}"
+                                                  Width="0"
+                                                  VerticalAlignment="Center" />
+                                </Grid>
+
+                                <Grid x:Name="VerticalRoot" IsHitTestVisible="False">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <RepeatButton x:Name="VerticalSmallDecrease"
+                                                  Height="0"
+                                                  MinWidth="12"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Margin="0"
+                                                  Grid.Row="0"
+                                                  Template="{StaticResource VerticalDecrementTemplate}"
+                                                  HorizontalAlignment="Center" />
+                                    <RepeatButton x:Name="VerticalLargeDecrease"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  Height="0"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Grid.Row="1"
+                                                  Template="{StaticResource RepeatButtonTemplate}" />
+                                    <Thumb x:Name="VerticalThumb"
+                                           Grid.Row="2"                        
+                                           Template="{StaticResource VerticalThumbTemplate}"                                                          
+                                           AutomationProperties.AccessibilityView="Content" />
+                                    <RepeatButton x:Name="VerticalLargeIncrease"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Grid.Row="3"
+                                                  Template="{StaticResource RepeatButtonTemplate}" />
+                                    <RepeatButton x:Name="VerticalSmallIncrease"
+                                                  Height="0"
+                                                  MinWidth="12"
+                                                  IsTabStop="False"
+                                                  Interval="50"
+                                                  Margin="0"
+                                                  Grid.Row="4"
+                                                  Template="{StaticResource VerticalIncrementTemplate}"
+                                                  HorizontalAlignment="Center" />
+                                </Grid>
+
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Page.Resources>
 
-    <Grid Name="MainGrid">
+    <Grid Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="12*"/>
@@ -73,12 +1042,12 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        
+
         <!--Backgroud image-->
-        <Image Source="Assets/asus_auraeditor_bg.png"
+        <!--<Image Source="Assets/asus_auraeditor_bg.png"
                Grid.ColumnSpan="3"
                Grid.RowSpan="5"
-               Stretch="Fill"/>
+               Stretch="Fill"/>-->
         <Image Grid.Row="2"
                Grid.Column="0"
                Grid.RowSpan="3"
@@ -109,244 +1078,322 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Name="SaveButton" Margin="1,0,0,0" Click="SaveButton_Click">
-                    <Image Source="Assets/asus_auraeditor_save_ic.png"/>
-                </Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Name="SaveButton" 
+                        Style="{StaticResource SaveButtonStyle}"
+                        Margin="1,0,0,0"
+                        Click="SaveButton_Click"/>
                 <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
                         Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
                 <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
                         Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
+                <Button Name="MoreButton"
+                        Style="{StaticResource MoreButtonStyle}"
+                        Margin="3,0,0,0"/>
             </StackPanel>
         </Grid>
-        <Grid x:Name="MainWindowRow1" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="Black" BorderThickness="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="200"/>
-            </Grid.ColumnDefinitions>
-
-            <ScrollViewer Name="EffectBlockScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0">
-                <StackPanel>
-                    <RadioButton x:Name="EffectRadioButton"
+        <ScrollViewer Name="EffectBlockScrollViewer"
+                      Grid.Row="1" Grid.Column="0"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto" >
+            <StackPanel>
+                <RadioButton x:Name="EffectRadioButton"
                                  Content="Effects"
                                  GroupName="EffectOption"
                                  Click="EffectRadioButton_Click"
                                  IsChecked="True"
                                  FontSize="20"
                                  Foreground="White"/>
-                    <ListView x:Name="EffectBlockListView"
+                <ListView x:Name="EffectBlockListView"
                               Margin="22,4">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <usercontrol:EffectBlock/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <RadioButton x:Name="EventRadioButton"
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <usercontrol:EffectBlock/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <RadioButton x:Name="EventRadioButton"
                                  Content="Event Trigger"
                                  HorizontalAlignment="Stretch"
                                  GroupName="EffectOption" FontSize="20"
                                  Foreground="White"
                                  Click="EffectRadioButton_Click"
                                  IsChecked="True"/>
-                    <StackPanel Name="EventStackPanel">
-                        <RadioButton x:Name="TriggerEventRadioButton" Content="Event Trigger"
+                <StackPanel Name="EventStackPanel">
+                    <RadioButton x:Name="TriggerEventRadioButton" Content="Event Trigger"
                                      Click="EffectRadioButton_Click"
                                      IsChecked="True"
                                      GroupName="123"
                                      Margin="20,0,0,0"
                                      Foreground="White"/>
-                        <ListView x:Name="TriggerEventListView"
+                    <ListView x:Name="TriggerEventListView"
                                   Margin="44,0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <usercontrol:EffectBlock/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <RadioButton x:Name="OtherTriggerEventRadioButton"
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <usercontrol:EffectBlock/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <RadioButton x:Name="OtherTriggerEventRadioButton"
                                      Content="Other trigger events"
                                      Click="EffectRadioButton_Click"
                                      IsChecked="True"
                                      Margin="20,0,0,0"
                                      Foreground="White"/>
-                        <ListView x:Name="OtherTriggerEventListView"
+                    <ListView x:Name="OtherTriggerEventListView"
                                   Margin="44,0"
                                   Foreground="White">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <usercontrol:EffectBlock/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <usercontrol:EffectBlock/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
-            </ScrollViewer>
-            <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="SpaceZoomComboxBox"
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Name="SpaceGrid" Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="SpaceZoomComboxBox"
                           SelectionChanged="SpaceZoomComboxBox_SelectionChanged"
                           PlaceholderText="0 %"
                           Width="100"
                           Grid.ColumnSpan="3"
                           Background="Gray"
                           Canvas.ZIndex="6">
-                    <x:String>0 %</x:String>
-                    <x:String>50 %</x:String>
-                    <x:String>100 %</x:String>
-                </ComboBox>
-                <Button Content="-"
-                        VerticalAlignment="Center"
-                        Grid.Column="0"
-                        Height="60"
-                        Width="10"
-                        Canvas.ZIndex="5"
-                        Background="Gray"
-                        Click="HideEffectBlockGrid_Click"/>
-                <Button Content="-"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Grid.Column="2"
-                        Height="60"
-                        Width="10"
-                        Canvas.ZIndex="5"
-                        Background="Gray"
-                        Click="HideEffectInfoGrid_Click"/>
-                <ScrollViewer Name="SpaceAreaScrollViewer"
-                              Grid.Column="0"
-                              Grid.ColumnSpan="3"
-                              MinZoomFactor="1"
-                              MaxZoomFactor="100"
-                              ZoomMode="Enabled"
-                              HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto">
-                    <Canvas Name="SpaceAreaCanvas"
-                            Width="2400"
-                            Height="824"
-                            HorizontalAlignment="Left">
-                        <Rectangle Name="mouseRectangle" Width="0" Height="0"
+                <x:String>0 %</x:String>
+                <x:String>50 %</x:String>
+                <x:String>100 %</x:String>
+            </ComboBox>
+            <Button Content="-"
+                    VerticalAlignment="Center"
+                    Grid.Column="0"
+                    Height="60"
+                    Width="10"
+                    Canvas.ZIndex="5"
+                    Background="Gray"
+                    Click="AdjustEffectBlockGrid_Click"/>
+            <Button Content="-"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Grid.Column="2"
+                    Height="60"
+                    Width="10"
+                    Canvas.ZIndex="5"
+                    Background="Gray"
+                    Click="AdjustEffectInfoGrid_Click"/>
+            <ScrollViewer Name="SpaceAreaScrollViewer"
+                          Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          MinZoomFactor="1"
+                          MaxZoomFactor="100"
+                          ZoomMode="Enabled"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <Canvas Name="SpaceAreaCanvas"
+                        Width="2400"
+                        Height="824"
+                        HorizontalAlignment="Left">
+                    <Rectangle Name="mouseRectangle" Width="0" Height="0"
                                Fill="Transparent"
                                Stroke="Red"
                                StrokeThickness="1"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
                                Canvas.ZIndex="8">
-                            <Rectangle.RenderTransform>
-                                <CompositeTransform/>
-                            </Rectangle.RenderTransform>
-                        </Rectangle>
-                        <Image Name="GridImage" Source="Assets/grid35-2.png" Stretch="None" Canvas.ZIndex="-2"/>
-                    </Canvas>
-                </ScrollViewer>
-            </Grid>
-            <ScrollViewer Name="EffectInfoScrollViewer" Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="10,5,0,0">
-                    <TextBlock Name="Title" FontSize="42" Foreground="White"/>
-                    <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
+                        <Rectangle.RenderTransform>
+                            <CompositeTransform/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <Image Name="GridImage" Source="Assets/grid35-2.png" Stretch="None" Canvas.ZIndex="-2"/>
+                </Canvas>
+            </ScrollViewer>
+        </Grid>
+        <ScrollViewer Name="EffectInfoScrollViewer"
+                      Grid.Row="1" Grid.Column="2"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10,5,0,0">
+                <TextBlock Name="Title" FontSize="42" Foreground="White"/>
+                <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
                            PointerPressed="ColorRect_Pressed" Margin="0,10" Visibility="Collapsed">
-                        <FlyoutBase.AttachedFlyout>
-                            <Flyout Placement="Top">
-                                <StackPanel>
-                                    <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
+                    <FlyoutBase.AttachedFlyout>
+                        <Flyout Placement="Top">
+                            <StackPanel>
+                                <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
                                              IsColorChannelTextInputVisible="False"
                                              IsHexInputVisible="False"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="OK" Click="ColorPickerOk_Click"/>
-                                        <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
-                                    </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="OK" Click="ColorPickerOk_Click"/>
+                                    <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
                                 </StackPanel>
-                            </Flyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </Rectangle>
-                    <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
-                        <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged"
+                            </StackPanel>
+                        </Flyout>
+                    </FlyoutBase.AttachedFlyout>
+                </Rectangle>
+                <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged"
                               PlaceholderText="Pick a wave type" Width="190">
-                            <ComboBox.Header>
-                                <TextBlock Text="Wave Type:" Foreground="White"/>
-                            </ComboBox.Header>
-                            <x:String>SineWave</x:String>
-                            <x:String>HalfSineWave</x:String>
-                            <x:String>QuarterSineWave</x:String>
-                            <x:String>SquareWave</x:String>
-                            <x:String>TriangleWave</x:String>
-                            <x:String>SawToothleWave</x:String>
-                        </ComboBox>
-                        <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Min:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="MaxTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Max:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="WaveLenTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="WaveLen:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Freq:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Phase:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Start:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
-                        <TextBox Name="VelocityTextBox" HorizontalAlignment="Left" FontSize="14" Height="55" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                            <TextBox.Header>
-                                <TextBlock Text="Velocity:" Foreground="White"/>
-                            </TextBox.Header>
-                        </TextBox>
+                        <ComboBox.Header>
+                            <TextBlock Text="Wave Type:" Foreground="White"/>
+                        </ComboBox.Header>
+                        <x:String>SineWave</x:String>
+                        <x:String>HalfSineWave</x:String>
+                        <x:String>QuarterSineWave</x:String>
+                        <x:String>SquareWave</x:String>
+                        <x:String>TriangleWave</x:String>
+                        <x:String>SawToothleWave</x:String>
+                    </ComboBox>
+                    <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Min:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="MaxTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Max:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="WaveLenTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="WaveLen:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Freq:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Phase:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Start:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                    <TextBox Name="VelocityTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                        <TextBox.Header>
+                            <TextBlock Text="Velocity:" Foreground="White"/>
+                        </TextBox.Header>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel x:Name="ColorGroup" Orientation="Vertical">
+                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <RadioButton Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,0" Tapped="ColorRadioBtn_Tapped"/>
+                </StackPanel>
+                <StackPanel x:Name="BrightnessGroup" Orientation="Vertical">
+                    <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged" 
+										Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
+                        <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
                     </StackPanel>
-                    <StackPanel x:Name="TempoGroup" Orientation="Vertical" Visibility="Collapsed">
-                        <TextBlock Text="Tempo" Margin="20,20,0,0" Foreground="White"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                            <RadioButton x:Name="SlowRadioButton" Content="Slow" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click" Foreground="White"/>
-                            <RadioButton x:Name="MediumRadioButton" Content="Medium" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click" Foreground="White"/>
-                            <RadioButton x:Name="FastRadioButton" Content="Fast" MinWidth="20" Margin="20,0,0,0" Click="TempoRadioButton_Click" Foreground="White"/>
+                </StackPanel>
+                <StackPanel x:Name="SpeedGroup" Orientation="Vertical">
+                    <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged" 
+										Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
+                        <TextBlock x:Name="SpeedTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="DirectionGroup" Orientation="Vertical">
+                    <TextBlock Text="Direction" Margin="20,20,0,0" Foreground="White"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <RadioButton x:Name="Left" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource LeftRadioBtn}"/>
+                        <RadioButton x:Name="Right" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource RightRadioBtn}"/>
+                        <RadioButton x:Name="Up" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource UpRadioBtn}"/>
+                        <RadioButton x:Name="Down" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource DownRadioBtn}"/>
+                    </StackPanel>
+
+                    <StackPanel x:Name="AngleGroup" Orientation="Vertical">
+                        <TextBlock Text="Angle" Margin="20,20,0,0" Foreground="White"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid x:Name="AngleGrid" Grid.Column="0">
+                                <Image x:Name="AngleIcImg" Source="Assets/EffectInfoGroup/asus_ac_angle_ic_n.png" Width="80" Height="80"
+                                       RenderTransformOrigin="0.5,0.5">
+                                    <Image.RenderTransform>
+                                        <RotateTransform x:Name="AngleIcImgRotation"/>
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Image x:Name="AngleBgImg" Source="Assets/EffectInfoGroup/asus_ac_angle_bg_n.png" Width="80" Height="80"
+                                       PointerPressed="AngleBgImg_PointerPressed"
+                                       PointerReleased="AngleBgImg_PointerReleased"/>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="DecreaseBtn" Content="-" Click="DecreaseBtn_Click"
+                                            Foreground="White" Background="Gray" FontSize="16"/>
+                                    <TextBox x:Name="AngleTextBox" Width="20" Height="20" HorizontalAlignment="Left"
+                                         KeyDown="AngleTextBox_KeyDown"
+                                         TextChanged="AngleTextBox_TextChanged"/>
+                                    <Button x:Name="IncreaseBtn" Content="+" Click="IncreaseBtn_Click"
+                                            Foreground="White" Background="Gray" FontSize="16"/>
+                                </StackPanel>
+                                
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel x:Name="TemperatureGroup" Orientation="Vertical">
+                        <TextBlock Text="Temperature (°C)" Margin="20,20,0,0" Foreground="White"/>
+                        <StackPanel Margin="0,20,0,0">
+                            <Rectangle Height="30" Width="250">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                        <GradientStop Color="Green" Offset="0.0"/>
+                                        <GradientStop Color="Yellow" Offset="0.5"/>
+                                        <GradientStop Color="Red" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
                         </StackPanel>
-                    </StackPanel>
-                    <StackPanel x:Name="DirectionGroup" Orientation="Vertical" Visibility="Collapsed">
-                        <TextBlock Text="Direction" Margin="20,20,0,0" Foreground="White"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                            <RadioButton x:Name="LeftRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click" Foreground="White"/>
-                            <RadioButton x:Name="RightRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click" Foreground="White"/>
-                            <RadioButton x:Name="UpRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click" Foreground="White"/>
-                            <RadioButton x:Name="DownRadioButton" MinWidth="20" Margin="20,0,0,0" Click="DirectionRadioButton_Click" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <Rectangle Height="8" Width="8" Fill="Green" RadiusX="4" RadiusY="4" Margin="10,5,0,5"/>
+                            <Rectangle Height="8" Width="8" Fill="Yellow" RadiusX="4" RadiusY="4" Margin="100,5,0,5"/>
+                            <Rectangle Height="8" Width="8" Fill="Red" RadiusX="4" RadiusY="4" Margin="100,5,0,5"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <TextBlock Text="≤30" Margin="0,0,0,5"/>
+                            <TextBlock Text="30-60" Margin="75,0,0,5"/>
+                            <TextBlock Text="60≤" Margin="70,0,0,5"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
-            </ScrollViewer>
-        </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
         <RelativePanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
+            <Button Name="GoLeftButton"
+                    Style="{StaticResource GoLeftButtonStyle}"
+                    Click="GoLeftButton_Click"
+                    Margin="3,0,0,0"
+                    RelativePanel.AlignLeftWithPanel="True"/>
+            <Button Name="GoRightButton"
+                    Style="{StaticResource GoRightButtonStyle}"
+                    Click="GoRightButton_Click"
+                    Margin="3,0,0,0"
+                    RelativePanel.RightOf="GoLeftButton"/>
             <Button Name="StopButton"
-                    FontSize="24"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE002;"
+                    Style="{StaticResource StopButtonStyle}"
                     Click="StopButton_Click"
-                    RelativePanel.AlignLeftWithPanel="True"
-                    Margin="1,0,0,0"
-                    Foreground="White"/>
+                    Margin="3,0,0,0"
+                    RelativePanel.RightOf="GoRightButton"/>
             <Button Name="PlayButton"
-                    FontSize="24"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xF5B0;"
+                    Style="{StaticResource PlayButtonStyle}"
                     Click="PlayButton_Click"
-                    Foreground="White"
+                    Margin="3,0,0,0"
                     RelativePanel.RightOf="StopButton"/>
             <ToggleButton Name="RepeatButton"
                           FontSize="20" FontFamily="Segoe MDL2 Assets" Content="&#xE117;"
@@ -411,7 +1458,7 @@
                       VerticalScrollBarVisibility="Disabled"
                       BorderBrush="Black"
                       BorderThickness="1">
-            <Canvas Name="ScaleCanvas"
+            <Canvas Name="ScaleCanvas" x:FieldModifier="public"
                     Width="5000"/>
         </ScrollViewer>
         <ScrollViewer Name="TrackScrollViewer"
@@ -422,18 +1469,16 @@
                       HorizontalScrollBarVisibility="Visible"
                       VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged">
-            <StackPanel Name="TrackStackPanel"/>
+            <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
         </ScrollViewer>
 
         <Grid Grid.Column="0"
               Grid.Row="4">
-            <Button x:Name="TrashCanButton"
-                    FontSize="24"
+            <Button x:Name="TrashCanButton" 
+                    Style="{StaticResource DeleteButtonStyle}"
                     Click="TrashCanButton_Click"
-                    HorizontalAlignment="Center">
-                <Image Source="Assets/asus_auraeditor_delet_ic.png"
-                       Width="35"/>
-            </Button>
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"/>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
             <Slider Name="ZoomSlider"

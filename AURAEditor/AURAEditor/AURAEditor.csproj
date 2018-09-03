@@ -82,6 +82,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -103,14 +104,20 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AuraCreatorManager.cs" />
+    <Compile Include="ColorPickerDialog.xaml.cs">
+      <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Common\ColorHelper.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\ControlHelper.cs" />
     <Compile Include="Common\CsvParse.cs" />
     <Compile Include="Common\EffectHelper.cs" />
     <Compile Include="Common\Definitions.cs" />
+    <Compile Include="Common\HSVColor.cs" />
+    <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="DeviceContent.cs" />
     <Compile Include="DeviceLayer.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="EffectInfo.cs" />
@@ -144,10 +151,106 @@
     <Content Include="Assets\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_delect_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_delect_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_delect_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_more_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_more_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_more_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_next_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_next_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_next_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_pause_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_pause_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_pause_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_play_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_play_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_rewind_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_rewind_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_rewind_btn_s.png" />
+    <Content Include="Assets\Button\asus_ac_save_btn_h.png" />
+    <Content Include="Assets\Button\asus_ac_save_btn_n.png" />
+    <Content Include="Assets\Button\asus_ac_save_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_n.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_s.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_m_n.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_m_s.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_n.png" />
+    <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
     <Content Include="Assets\effectUI.png" />
     <Content Include="Assets\GLADIUS.png" />
     <Content Include="Assets\grid35-2.png" />
     <Content Include="Assets\grid35.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_bg_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_ic_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_slider_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_s.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_n_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_small_bg.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_ring_colorgrill_bg.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selescted_ring_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_s_btn.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_down.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_down_select_ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_left_select_ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_left__ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_right_ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_right_select_ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_up.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_direction_up_select_ic.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_l.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_mid.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_bg_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_ic_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_slider_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_s.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_n_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_small_bg.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_ring_colorgrill_bg.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selescted_ring_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_s_btn.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_down.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_down_select_ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_left_select_ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_left__ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_right_ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_right_select_ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_up.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_direction_up_select_ic.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_l.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_mid.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_l.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_mid.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_r.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_l.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_mid.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_r.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Horizontal.png" />
+    <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Vertical.png" />
     <Content Include="AURAEditor.sccd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -196,6 +299,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ColorPickerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DeviceLayerListViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

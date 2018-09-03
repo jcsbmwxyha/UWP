@@ -1,0 +1,8 @@
+Model,P503,,,,,,,
+UI_width,3,,,,,,,
+UI_height,5,,,,,,,
+,,,,,,,,
+Parameters,grid_x,grid_y,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index,Note
+LED 1,0,5,,,,,1,Logo
+LED 2,0,0,,,,,1,Scroll Wheel
+LED 3,0,5,,,,,1,Buttom Ring

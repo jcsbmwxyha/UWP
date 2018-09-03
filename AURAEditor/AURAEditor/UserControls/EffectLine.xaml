@@ -9,10 +9,70 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="LPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_n.png"/>
+            <BitmapImage x:Key="MPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_n.png"/>
+            <BitmapImage x:Key="RPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_n.png"/>
+            <BitmapImage x:Key="LPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_s.png"/>
+            <BitmapImage x:Key="MPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
+            <BitmapImage x:Key="RPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
+            <BitmapImage x:Key="LPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_s.png"/>
+            <BitmapImage x:Key="MPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
+            <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
+
+            <Style x:Key="EffectLineStyle"  TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup>
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="LPart.Source" Value="{ThemeResource LPart_h}"/>
+                                                <Setter Target="MPart.Source" Value="{ThemeResource MPart_h}"/>
+                                                <Setter Target="RPart.Source" Value="{ThemeResource RPart_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="CheckedPointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="LPart.Source" Value="{ThemeResource LPart_h}"/>
+                                                <Setter Target="MPart.Source" Value="{ThemeResource MPart_h}"/>
+                                                <Setter Target="RPart.Source" Value="{ThemeResource RPart_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="LPart.Source" Value="{ThemeResource LPart_s}"/>
+                                                <Setter Target="MPart.Source" Value="{ThemeResource MPart_s}"/>
+                                                <Setter Target="RPart.Source" Value="{ThemeResource RPart_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="28"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource LPart_n}" Stretch="Fill"/>
+                                <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource MPart_n}" Stretch="Fill"/>
+                                <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RPart_n}" Stretch="Fill"/>
+                                <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <UserControl.RenderTransform>
         <CompositeTransform/>
     </UserControl.RenderTransform>
-    
+
     <ToggleButton HorizontalAlignment="Left"
                   Background="DarkBlue"
                   Click="EffectLine_Click"
@@ -21,50 +81,10 @@
                   ManipulationCompleted="EffectLine_ManipulationCompleted"
                   PointerMoved="EffectLine_PointerMoved"
                   PointerExited="EffectLine_PointerExited"
-                  Content="{x:Bind MyEffectLine.EffectName}">
+                  Style="{StaticResource EffectLineStyle}"
+                  Content="{x:Bind MyEffect.Name}">
         <ToggleButton.RenderTransform>
             <CompositeTransform/>
         </ToggleButton.RenderTransform>
-        <ToggleButton.Template>
-            <ControlTemplate TargetType="ToggleButton">
-                <Grid>
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup>
-                            <VisualState x:Name="Normal"/>
-                            <VisualState x:Name="PointerOver">
-                                <VisualState.Setters>
-                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_s.png"/>
-                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_s.png"/>
-                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_s.png"/>
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="CheckedPointerOver">
-                                <VisualState.Setters>
-                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_s.png"/>
-                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_s.png"/>
-                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_s.png"/>
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="Checked">
-                                <VisualState.Setters>
-                                    <Setter Target="LPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_1_s.png"/>
-                                    <Setter Target="MPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_2_s.png"/>
-                                    <Setter Target="RPart.Source" Value="../Assets/asus_auraeditor_effectblock_btn_3_s.png"/>
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="24"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="18"/>
-                    </Grid.ColumnDefinitions>
-                    <Image x:Name="LPart" Grid.Column="0" Source="../Assets/asus_auraeditor_effectblock_btn_1_s.png" Stretch="Fill"/>
-                    <Image x:Name="MPart" Grid.Column="1" Source="../Assets/asus_auraeditor_effectblock_btn_2_s.png" Stretch="Fill"/>
-                    <Image x:Name="RPart" Grid.Column="2" Source="../Assets/asus_auraeditor_effectblock_btn_3_s.png" Stretch="Fill"/>
-                    <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
-                </Grid>
-            </ControlTemplate>
-        </ToggleButton.Template>
     </ToggleButton>
 </UserControl>

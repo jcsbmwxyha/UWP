@@ -1,13 +1,17 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.UserControls;
 using System;
+using System.Diagnostics;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.EffectHelper;
 
@@ -46,7 +50,7 @@ namespace AuraEditor
         {
             //EffectLine border = effect.UI;
 
-            ShowEffectInfoGroupsByType(effect.EffectType);
+            ShowEffectInfoGroupsByType(effect.Type);
             UpdateGroupContents(effect.Info);
             
             //if (border.Background is SolidColorBrush)
@@ -203,8 +207,8 @@ namespace AuraEditor
                     VelocityTextBox.Visibility = Visibility.Collapsed;
                     break;
             }
-            TempoGroup.Visibility = Visibility.Collapsed;
-            DirectionGroup.Visibility = Visibility.Collapsed;
+            //TempoGroup.Visibility = Visibility.Collapsed;
+            //DirectionGroup.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateGroupContents(EffectInfo info)
@@ -241,16 +245,6 @@ namespace AuraEditor
         {
             m_flyoutBase = Flyout.GetAttachedFlyout(sender as Rectangle);
             Flyout.ShowAttachedFlyout(sender as Rectangle);
-        }
-
-        private void TempoRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void DirectionRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void WaveTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -362,6 +356,213 @@ namespace AuraEditor
             ei.Phase = double.Parse(PhaseTextBox.Text);
             ei.Start = double.Parse(StartTextBox.Text);
             ei.Velocity = double.Parse(VelocityTextBox.Text);
+        }
+
+        private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ContentDialog colorPickerDialog = new ColorPickerDialog();
+            await colorPickerDialog.ShowAsync();
+        }
+
+        private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            Slider slider = sender as Slider;
+            if (slider != null)
+            {
+                if (slider.Value == 1)
+                {
+                    BrightnessTextBlock.Text = "33%";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                }
+                else if (slider.Value == 2)
+                {
+                    BrightnessTextBlock.Text = "66%";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
+                }
+                else if (slider.Value == 3)
+                {
+                    BrightnessTextBlock.Text = "100%";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                }
+                else
+                {
+                    BrightnessTextBlock.Text = "0%";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                }
+            }
+        }
+
+        private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            Slider slider = sender as Slider;
+            if (slider != null)
+            {
+                if (slider.Value == 1)
+                {
+                    SpeedTextBlock.Text = "Medium";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                }
+                else if (slider.Value == 2)
+                {
+                    SpeedTextBlock.Text = "Fast";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
+                }
+                else
+                {
+                    SpeedTextBlock.Text = "Slow";
+                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
+                }
+            }
+        }
+
+        private void AngleBgImg_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            _angleImgPressing = true;
+            Point currentLocation = e.GetCurrentPoint(AngleGrid).Position;
+
+            double dx = currentLocation.X - AngleImgCenter.X;
+            double dy = currentLocation.Y - AngleImgCenter.Y;
+            double hue = Math2.ComputeH(dx, dy);
+            AngleTextBox.Text = hue.ToString("F0");
+            AngleStoryboardStart(hue);
+
+        }
+        private void AngleBgImg_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            _angleImgPressing = false;
+        }
+
+        private void AngleTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            TextBox textBoxContent = sender as TextBox;
+
+            if (!e.Key.ToString().Contains("Number"))
+            {
+                e.Handled = true;
+            }
+
+            //Press Enter to change graphic
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                if (textBoxContent.Text != "")
+                {
+                    AngleStoryboardStart(Convert.ToDouble(textBoxContent.Text));
+                }
+            }
+        }
+
+        private void AngleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox AngleChangeText = sender as TextBox;
+
+            char[] originalText = AngleChangeText.Text.ToCharArray();
+            if (AngleChangeText.Text.Length > 0)
+            {
+                foreach (char c in originalText)
+                {
+                    if (!(Char.IsNumber(c)))
+                    {
+                        AngleChangeText.Text = AngleChangeText.Text.Replace(Convert.ToString(c), "");
+                        break;
+                    }
+                }
+            }
+
+            if ((AngleChangeText.Text != ""))
+            {
+                if (int.Parse(AngleChangeText.Text) > 360)
+                {
+                    AngleChangeText.Text = "360";
+                }
+                else if (int.Parse(AngleChangeText.Text) < 0)
+                {
+                    AngleChangeText.Text = "0";
+                }
+            }
+        }
+
+        private void AngleStoryboardStart(double AngleImgTargetAngle)
+        {
+            _angleImgPressing = true;
+
+            if (_angleImgPressing)
+            {
+                int runTime = 300;
+                var storyboard = new Storyboard();
+                var angleIcAnimation = new DoubleAnimation();
+
+                if (_preAngle != AngleImgTargetAngle)
+                {
+                    AngleImgTargetAngle = AngleImgTargetAngle % 360;
+                    if (_preAngle - AngleImgTargetAngle > 180)
+                    {
+                        _preAngle -= 360;
+                    }
+                    else if (_preAngle - AngleImgTargetAngle < -180)
+                    {
+                        _preAngle += 360;
+                    }
+
+                    // triangle
+                    angleIcAnimation.Duration = TimeSpan.FromMilliseconds(runTime);
+                    angleIcAnimation.EnableDependentAnimation = true;
+                    angleIcAnimation.From = _preAngle;
+                    angleIcAnimation.To = AngleImgTargetAngle;
+                    Storyboard.SetTargetProperty(angleIcAnimation, "Angle");
+                    Storyboard.SetTarget(angleIcAnimation, AngleIcImgRotation);
+                    storyboard.Children.Add(angleIcAnimation);
+                    storyboard.Begin();
+
+                    _preAngle = AngleImgTargetAngle;
+                }
+            }
+        }
+
+        private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if ((AngleTextBox.Text != ""))
+            {
+                double textIncrease = Convert.ToDouble(AngleTextBox.Text);
+                textIncrease += 5;
+                if(textIncrease > 360)
+                {
+                    textIncrease = 360;
+                    AngleTextBox.Text = textIncrease.ToString();
+                    AngleStoryboardStart(textIncrease);
+                }
+                else
+                {
+                    AngleTextBox.Text = textIncrease.ToString();
+                    AngleStoryboardStart(textIncrease);
+                }
+            }
+        }
+
+        private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if ((AngleTextBox.Text != ""))
+            {
+                double textdecrease = Convert.ToDouble(AngleTextBox.Text);
+                textdecrease -= 5;
+                if (textdecrease < 0)
+                {
+                    textdecrease = 0;
+                    AngleTextBox.Text = textdecrease.ToString();
+                    AngleStoryboardStart(textdecrease);
+                }
+                else
+                {
+                    AngleTextBox.Text = textdecrease.ToString();
+                    AngleStoryboardStart(textdecrease);
+                }
+            }
         }
     }
 }

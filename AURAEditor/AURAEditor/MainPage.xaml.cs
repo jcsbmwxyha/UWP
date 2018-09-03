@@ -20,41 +20,18 @@ using Windows.Storage.Streams;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
+using System.Xml;
+using System.ComponentModel;
+using System.Linq;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
 namespace AuraEditor
 {
-    /// <summary>
-    /// 可以在本身使用或巡覽至框架內的空白頁面。
-    /// </summary>
-
-    public class LedUI
-    {
-        public int Index;
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-        public int ZIndex;
-    }
-    public class DeviceContent
-    {
-        public string DeviceName;
-        public int DeviceType;
-        public int UI_Width;
-        public int UI_Height;
-        public List<LedUI> Leds;
-        public BitmapImage Image;
-
-        public DeviceContent()
-        {
-            Leds = new List<LedUI>();
-        }
-    }
-    
     public sealed partial class MainPage : Page
     {
+        BackgroundWorker bgwSocketServer;
+
         static MainPage _instance;
         static public MainPage MainPageInstance
         {
@@ -62,6 +39,10 @@ namespace AuraEditor
         }
         public AuraCreatorManager _auraCreatorManager;
         public BitmapImage DragEffectIcon;
+
+        bool _angleImgPressing;
+        public double _preAngle;
+        Point AngleImgCenter;
 
         public MainPage()
         {
@@ -73,8 +54,35 @@ namespace AuraEditor
             OtherTriggerEventListView.ItemsSource = GetOtherTriggerEffectBlocks();
 
             _auraCreatorManager = AuraCreatorManager.Instance;
+
+            //BackgroundWorker for Socket Server
+            bgwSocketServer = new BackgroundWorker();
+            bgwSocketServer.DoWork += SocketServer_DoWork;
+            bgwSocketServer.RunWorkerAsync();
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
             IntializeSpaceGrid();
             InitializeDragEffectIcon();
+            InitializeTimelineStructure();
+
+            AngleImgCenter = new Point(AngleGrid.ActualWidth / 2, AngleGrid.ActualHeight / 2);
+            _preAngle = 0;
+            AngleTextBox.Text = "0";
+
+            // for receive cmd form Service
+            //socketstart();
+
+            // For developing
+            /*
+            for (int i = 0; i < 6; i++)
+            {
+                DeviceLayer dg = new DeviceLayer();
+                dg.LayerName = "123";
+                _deviceLayerManager.AddDeviceLayer(dg);
+            }
+            */
         }
 
         private async void InitializeDragEffectIcon()
@@ -90,162 +98,6 @@ namespace AuraEditor
             {
                 DragEffectIcon.SetSource(fileStream);
             }
-        }
-        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitializeTimelineStructure();
-            await GetCurrentDevicesTest();
-            RefreshSpaceGrid();
-
-            // for receive cmd form Service
-            socketstart();
-
-            // For developing
-            /*
-            for (int i = 0; i < 6; i++)
-            {
-                DeviceLayer dg = new DeviceLayer();
-                dg.LayerName = "123";
-                _deviceLayerManager.AddDeviceLayer(dg);
-            }
-            */
-        }
-        private async Task GetCurrentDevicesTest()
-        {
-            try
-            {
-                DeviceContent deviceContent = await GetDeviceContent("GL504");
-                Device device = CreateDeviceFromContent(deviceContent, new Point(1, 1));
-                _auraCreatorManager.GlobalDevices.Add(device);
-
-                // For developing
-                /*
-                deviceContent = await GetDeviceContent("GLADIUS II");
-                device = CreateDeviceFromContent(deviceContent);
-                _auraCreatorManager.GlobalDevices.Add(device);
-                */
-            }
-            catch
-            {
-
-            }
-        }
-        private async Task<DeviceContent> GetDeviceContent(string modelName)
-        {
-            try
-            {
-                DeviceContent deviceContent = new DeviceContent();
-                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
-                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
-                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
-
-                deviceContent.DeviceName = modelName;
-                if (modelName == "GLADIUS II")
-                    deviceContent.DeviceType = 1;
-                else
-                    deviceContent.DeviceType = 0;
-
-
-                if (csvFile != null)
-                {
-                    using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
-                    {
-                        CsvRow row = new CsvRow();
-                        while (csvReader.ReadRow(row))
-                        {
-                            if (row[0] == "UI_width")
-                            {
-                                deviceContent.UI_Width = Int32.Parse(row[1]);
-                            }
-                            else if (row[0] == "UI_height")
-                            {
-                                deviceContent.UI_Height = Int32.Parse(row[1]);
-                            }
-                            else if (row[0].Contains("LED "))
-                            {
-                                deviceContent.Leds.Add(
-                                    new LedUI()
-                                    {
-                                        Index = Int32.Parse(row[0].Substring("LED ".Length)),
-                                        Left = Int32.Parse(row[3]),
-                                        Top = Int32.Parse(row[4]),
-                                        Right = Int32.Parse(row[5]),
-                                        Bottom = Int32.Parse(row[6]),
-                                        ZIndex = Int32.Parse(row[7]),
-                                    });
-                            }
-                        }
-                    }
-                }
-
-                if (pngFile != null)
-                {
-                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        BitmapImage bitmapImage = new BitmapImage();
-
-                        bitmapImage.SetSource(fileStream);
-                        deviceContent.Image = bitmapImage;
-                    }
-                }
-
-                return deviceContent;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        private Device CreateDeviceFromContent(DeviceContent deviceContent)
-        {
-            Rect rect = new Rect(1, 1, deviceContent.UI_Width, deviceContent.UI_Height);
-            Point gridPosition = GetFreeRoomGridPosition(rect);
-
-            return CreateDeviceFromContent(deviceContent, gridPosition);
-        }
-        private Device CreateDeviceFromContent(DeviceContent deviceContent, Point gridPosition)
-        {
-            Device device;
-            CompositeTransform ct;
-            Image img;
-            List<LightZone> zones = new List<LightZone>();
-
-            ct = new CompositeTransform
-            {
-                TranslateX = GridWidthPixels * gridPosition.X,
-                TranslateY = GridWidthPixels * gridPosition.Y
-            };
-
-            img = new Image
-            {
-                RenderTransform = ct,
-                Width = GridWidthPixels * deviceContent.UI_Width,
-                Height = GridWidthPixels * deviceContent.UI_Height,
-                Source = deviceContent.Image,
-                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-                Stretch = Stretch.Fill,
-            };
-
-            for (int idx = 0; idx < deviceContent.Leds.Count; idx++)
-            {
-                LedUI led = deviceContent.Leds[idx];
-                zones.Add(new LightZone(gridPosition, led));
-            }
-
-            device = new Device(img)
-            {
-                Name = deviceContent.DeviceName,
-                Type = deviceContent.DeviceType,
-                LightZones = zones.ToArray(),
-                GridPosition = new Point(gridPosition.X, gridPosition.Y),
-                Width = deviceContent.UI_Width,
-                Height = deviceContent.UI_Height,
-                Image = img,
-            };
-
-            return device;
         }
 
         #region Framework Element
@@ -270,19 +122,43 @@ namespace AuraEditor
             else
                 fe.Visibility = Visibility.Visible;
         }
-        private void HideEffectBlockGrid_Click(object sender, RoutedEventArgs e)
+        private void AdjustEffectBlockGrid_Click(object sender, RoutedEventArgs e)
         {
-            if (MainWindowRow1.ColumnDefinitions[0].ActualWidth < 100)
-                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(300);
+            int columnSpans = Grid.GetColumnSpan(SpaceGrid);
+
+            if (MainGrid.Children.Contains(EffectBlockScrollViewer))
+            {
+                MainGrid.Children.Remove(EffectBlockScrollViewer);
+
+                Grid.SetColumn(SpaceGrid, 0);
+                Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
+            }
             else
-                MainWindowRow1.ColumnDefinitions[0].Width = new GridLength(10);
+            {
+                Grid.SetColumn(EffectBlockScrollViewer, 0);
+                MainGrid.Children.Add(EffectBlockScrollViewer);
+
+                Grid.SetColumn(SpaceGrid, 1);
+                Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
+            }
         }
-        private void HideEffectInfoGrid_Click(object sender, RoutedEventArgs e)
+        private void AdjustEffectInfoGrid_Click(object sender, RoutedEventArgs e)
         {
-            if (MainWindowRow1.ColumnDefinitions[2].ActualWidth < 100)
-                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(200);
+            int columnSpans = Grid.GetColumnSpan(SpaceGrid);
+
+            if (MainGrid.Children.Contains(EffectInfoScrollViewer))
+            {
+                MainGrid.Children.Remove(EffectInfoScrollViewer);
+
+                Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
+            }
             else
-                MainWindowRow1.ColumnDefinitions[2].Width = new GridLength(10);
+            {
+                Grid.SetColumn(EffectInfoScrollViewer, 2);
+                MainGrid.Children.Add(EffectInfoScrollViewer);
+
+                Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
+            }
         }
         private void DeleteItem_DragEnter(object sender, DragEventArgs e)
         {
@@ -319,6 +195,17 @@ namespace AuraEditor
                     _auraCreatorManager.RemoveDeviceLayer(layer);
                 }
             }
+        }
+        private void GoLeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            TrackScrollViewer.ChangeView(0, null, null, true);
+            ScaleScrollViewer.ChangeView(0, null, null, true);
+        }
+        private void GoRightButton_Click(object sender, RoutedEventArgs e)
+        {
+            double requiredWidth = _auraCreatorManager.RightmostPosition;
+            TrackScrollViewer.ChangeView(requiredWidth, null, null, true);
+            ScaleScrollViewer.ChangeView(requiredWidth, null, null, true);
         }
         #endregion
 
@@ -362,7 +249,7 @@ namespace AuraEditor
 
             // Step 1 : Get global devices from GlobalSpace table and set to deviceLayerManager
             List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
-            _auraCreatorManager.SetGlobalDevices(globaldevices);
+            _auraCreatorManager.GlobalDevices = globaldevices;
 
             // Step 2 : Get all device layers from EventProvider table
             List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
@@ -377,7 +264,7 @@ namespace AuraEditor
 
                 foreach (var effect in layer.Effects)
                 {
-                    EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.EffectLuaName);
+                    EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.LuaName);
                     effect.Info = ei;
                 }
                 _auraCreatorManager.AddDeviceLayer(layer);
@@ -390,8 +277,8 @@ namespace AuraEditor
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-            folder = await CheckOrCreateFolder(folder, "AURA Creator");
-            folder = await CheckOrCreateFolder(folder, "script");
+            folder = await EnterOrCreateFolder(folder, "AURA Creator");
+            folder = await EnterOrCreateFolder(folder, "script");
             StorageFile sf =
                 await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
@@ -423,7 +310,7 @@ namespace AuraEditor
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
             }
         }
-        private async Task<StorageFolder> CheckOrCreateFolder(StorageFolder sf, string folderName)
+        private async Task<StorageFolder> EnterOrCreateFolder(StorageFolder sf, string folderName)
         {
             IReadOnlyList<StorageFolder> folderList = await sf.GetFoldersAsync();
 
@@ -494,7 +381,7 @@ namespace AuraEditor
 
                 Effect effect = new Effect(layer, type)
                 {
-                    EffectLuaName = effectLuaName,
+                    LuaName = effectLuaName,
                     StartTime = startTime,
                     DurationTime = durationTime
                 };
@@ -569,22 +456,43 @@ namespace AuraEditor
             return devices;
         }
         #endregion
-        
+
         async void socketstart()
         {
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
-            socket.MessageReceived += Socket_MessageReceived;
-            string serverPort = "6667";
-            string clientPort = "8002";
-            Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
+            while (true)
+            {
+                socket.Dispose();
+                try
+                {
+                    socket = new Windows.Networking.Sockets.DatagramSocket();
+                    socket.MessageReceived += Socket_MessageReceived;
 
-            await socket.BindServiceNameAsync(clientPort);
-            await socket.ConnectAsync(serverHost, serverPort);
-            Stream streamOut = (await socket.GetOutputStreamAsync(serverHost, serverPort)).AsStreamForWrite();
-            StreamWriter writer = new StreamWriter(streamOut);
-            string message = "client";
-            await writer.WriteLineAsync(message);
-            await writer.FlushAsync();
+                    //You can use any port that is not currently in use already on the machine. We will be using two separate and random 
+                    //ports for the client and server because both the will be running on the same machine.
+                    string serverPort = "6667";
+                    string clientPort = "8002";
+
+                    //Because we will be running the client and server on the same machine, we will use localhost as the hostname.
+                    Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
+
+                    //Bind the socket to the clientPort so that we can start listening for UDP messages from the UDP echo server.
+                    await socket.BindServiceNameAsync(clientPort);
+                    await socket.ConnectAsync(serverHost, serverPort);
+                    //Write a message to the UDP echo server.
+                    Stream streamOut = (await socket.GetOutputStreamAsync(serverHost, serverPort)).AsStreamForWrite();
+                    StreamWriter writer = new StreamWriter(streamOut);
+                    string message = "I'm the message from client!";
+                    await writer.WriteLineAsync(message);
+                    await writer.FlushAsync();
+                }
+                catch (Exception ex)
+                {
+                    Windows.Networking.Sockets.SocketErrorStatus webErrorStatus = Windows.Networking.Sockets.SocketError.GetStatus(ex.GetBaseException().HResult);
+                }
+
+                await Task.Delay(10000);
+            }
         }
         private async void Socket_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
         {
@@ -593,8 +501,6 @@ namespace AuraEditor
                 Stream streamIn = args.GetDataStream().AsStreamForRead();
                 StreamReader reader = new StreamReader(streamIn);
                 string message = await reader.ReadLineAsync();
-                string first2;
-                string deviceName;
 
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -602,39 +508,17 @@ namespace AuraEditor
                     txtresult.Text = "Service : " + message;
                 });
 
-                // 0:GLADIUS II
-                first2 = message.Substring(0, 2);
-                deviceName = message.Substring(2);
-
-                if (first2 == "0:")
-                {
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                    {
-                        Device device = _auraCreatorManager.GlobalDevices.Find(x => x.Name == deviceName);
-
-                        if (device != null)
-                        {
-                            _auraCreatorManager.GlobalDevices.Remove(device);
-                            RefreshSpaceGrid();
-                        }
-                    });
-                }
-                else if (first2 == "1:")
-                {
-                    await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                    {
-                        DeviceContent deviceContent = await GetDeviceContent(deviceName);
-                        Device device = CreateDeviceFromContent(deviceContent, new Point(25, 3));
-
-                        _auraCreatorManager.GlobalDevices.Add(device);
-                        RefreshSpaceGrid();
-                    });
-                }
+                RescanIngroupDevices();
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.ToString());
             }
+        }
+
+        private void SocketServer_DoWork(object sender, DoWorkEventArgs e)
+        {
+            socketstart();
         }
     }
 }

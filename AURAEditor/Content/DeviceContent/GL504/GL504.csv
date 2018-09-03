@@ -1,12 +1,12 @@
-Model,GL504,,,,,,,
-Weight,21,,,,,,,
-Height,13,,,,,,,
-,,,,,,,,
-Parameters,PhyIndex,Grid_X,Grid_Y,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index
-LED 1,1,0,0,345,30,405,80,1
-LED 2,2,1,0,76,120,226,330,1
-LED 3,3,2,0,236,120,381,330,1
-LED 4,4,3,0,391,120,536,330,1
-LED 5,5,4,0,546,120,656,330,1
-LED 6,6,5,0,80,430,335,450,1
-LED 7,7,6,0,395,430,655,450,1
+Model,GL504,,,,,,
+UI_width,21,,,,,,
+UI_height,13,,,,,,
+,,,,,,,
+Parameters,grid_x,grid_y,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index
+LED 1,0,0,345,30,405,80,1
+LED 2,6,0,76,120,226,330,1
+LED 3,12,0,236,120,381,330,1
+LED 4,18,0,391,120,536,330,1
+LED 5,18,1,546,120,656,330,1
+LED 6,0,1,80,430,335,450,1
+LED 7,18,1,395,430,655,450,1

@@ -24,7 +24,22 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectLine : UserControl
     {
-        public Effect MyEffectLine { get { return this.DataContext as Effect; } }
+        public Effect MyEffect { get { return this.DataContext as Effect; } }
+
+        public double X
+        {
+            get
+            {
+                CompositeTransform ct = this.RenderTransform as CompositeTransform;
+                return ct.TranslateX;
+            }
+            set
+            {
+                CompositeTransform ct = this.RenderTransform as CompositeTransform;
+                ct.TranslateX = value;
+            }
+        }
+        public double Right { get { return X + Width; } }
 
         public enum CursorState
         {
@@ -65,26 +80,26 @@ namespace AuraEditor.UserControls
         {
             if (MouseState == CursorState.SizeAll)
             {
-                if (MyEffectLine.UI_X + e.Delta.Translation.X < 0)
+                if (X + e.Delta.Translation.X < 0)
                     return;
 
-                MyEffectLine.UI_X += e.Delta.Translation.X;
+                X += e.Delta.Translation.X;
             }
             else if (MouseState == CursorState.SizeRight)
             {
                 if (e.Position.X <= 50)
                     return;
 
-                MyEffectLine.UI_Width = e.Position.X;
+                Width = e.Position.X;
 
                 if (e.Delta.Translation.X > 0) // To right
                 {
                     // We should check if it will overlap others
-                    DeviceLayer myLayer = MyEffectLine.Layer;
-                    Effect overlappedEL = myLayer.TestAndGetFirstOverlappingEffect(MyEffectLine);
+                    DeviceLayer myLayer = MyEffect.Layer;
+                    Effect overlappedEL = myLayer.TestAndGetFirstOverlappingEffect(MyEffect);
 
                     if (overlappedEL != null)
-                        myLayer.PushAllEffectsWhichOnTheRight(MyEffectLine, e.Delta.Translation.X);
+                        myLayer.PushAllEffectsWhichOnTheRight(MyEffect, e.Delta.Translation.X);
                 }
             }
             else if (MouseState == CursorState.SizeLeft)
@@ -94,15 +109,15 @@ namespace AuraEditor.UserControls
                 if (move < 0) // To left
                 {
                     // We should check if it will overlap others
-                    if (MyEffectLine.Layer.FindEffectByPosition(MyEffectLine.UI_X + move) != null)
+                    if (MyEffect.Layer.FindEffectByPosition(X + move) != null)
                         return;
                 }
 
-                if (MyEffectLine.UI_Width - move <= 50)
+                if (Width - move <= 50)
                     return;
 
-                MyEffectLine.UI_X += move;
-                MyEffectLine.UI_Width -= move;
+                X += move;
+                Width -= move;
             }
         }
         void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -111,21 +126,21 @@ namespace AuraEditor.UserControls
 
             if (MouseState == CursorState.SizeLeft)
             {
-                keepWidth = MyEffectLine.UI_Width;
-                MyEffectLine.UI_X = RoundToTens(MyEffectLine.UI_X);
-                MyEffectLine.UI_Width = RoundToTens(keepWidth);
+                keepWidth = Width;
+                X = RoundToTens(X);
+                Width = RoundToTens(keepWidth);
             }
             else if (MouseState == CursorState.SizeRight)
             {
-                keepWidth = MyEffectLine.UI_Width;
-                MyEffectLine.UI_Width = RoundToTens(keepWidth);
+                keepWidth = Width;
+                Width = RoundToTens(keepWidth);
             }
             else // move
             {
-                MyEffectLine.UI_X = RoundToTens(MyEffectLine.UI_X);
+                X = RoundToTens(X);
             }
 
-            MyEffectLine.Layer.InsertEffectLine(MyEffectLine);
+            MyEffect.Layer.InsertEffectLine(MyEffect);
             MouseState = CursorState.None;
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -164,7 +179,7 @@ namespace AuraEditor.UserControls
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            MainPage.MainPageInstance.SelectedEffectLine = MyEffectLine;
+            MainPage.MainPageInstance.SelectedEffectLine = MyEffect;
         }
     }
 }
