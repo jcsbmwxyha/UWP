@@ -22,13 +22,19 @@ namespace MVVMTest
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        MyViewModel tbViewModel;
+        ViewModel textblockViewModel;
 
         public MainPage()
         {
             this.InitializeComponent();
-            tbViewModel = new MyViewModel();
-            MyTB.DataContext = tbViewModel;
+
+            textblockViewModel = new ViewModel();
+            UI_TextBlock.DataContext = textblockViewModel;
+        }
+
+        private void ChangeBool_Click(object sender, RoutedEventArgs e)
+        {
+            textblockViewModel.BoolForCanExecute = !textblockViewModel.BoolForCanExecute;
         }
     }
 }

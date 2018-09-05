@@ -17,8 +17,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MVVMTest
 {
-    public class MyModel
+    public class Model
     {
-        public string MyText { get; set; }
+        public string ModelText { get; set; }
+        public bool BoolForCanExecute { get; set; }
     }
 }

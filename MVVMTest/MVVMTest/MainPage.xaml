@@ -9,11 +9,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-        <TextBlock Name="MyTB" Text="{Binding TheText}">
+        <TextBlock Name="UI_TextBlock" Text="{Binding ViewModelText}">
             <TextBlock.DataContext>
-                <local:MyViewModel/>
+                <local:ViewModel/>
             </TextBlock.DataContext>
         </TextBlock>
-        <Button Content="Click" Command="{x:Bind tbViewModel.UpdateTitleName}"/>
+        <Button Content="Change BoolForCanExecute" Click="ChangeBool_Click"/>
+        <Button Content="Click" Command="{x:Bind textblockViewModel.UpdateTitleName}"/>
     </StackPanel>
 </Page>

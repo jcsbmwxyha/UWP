@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MVVMTest
 {
-    public class MyViewModel : INotifyPropertyChanged
+    public class ViewModel : INotifyPropertyChanged
     {
         private RelayCommand _sendEffectCommand;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,45 +30,51 @@ namespace MVVMTest
                 return (_sendEffectCommand ?? (_sendEffectCommand = new RelayCommand(UpdateTextExecute, CanUpdateTextExecute)));
             }
         }
-
-        public MyModel Model { get; set; }
-        public string TheText
-        {
-            get {
-                return Model.MyText;
-            }
+        public Model MyModel { get; set; }
+        
+        public bool BoolForCanExecute {
+            get { return MyModel.BoolForCanExecute; }
             set
             {
-                if (Model.MyText != value)
+                MyModel.BoolForCanExecute = value;
+                _sendEffectCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string ViewModelText
+        {
+            get { return MyModel.ModelText; }
+            set
+            {
+                if (MyModel.ModelText != value)
                 {
-                    Model.MyText = value;
-                    RaisePropertyChanged("TheText");
-                    _sendEffectCommand.RaiseCanExecuteChanged();
+                    MyModel.ModelText = value;
+                    RaisePropertyChanged("ViewModelText");
                 }
             }
         }
 
-        public MyViewModel()
+        public ViewModel()
         {
-            Model = new MyModel { MyText = "" };
-        }
-        private void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
+            MyModel = new Model
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        void UpdateTextExecute()
-        {
-            TheText = "SkyMVVM";
+                ModelText = "",
+                BoolForCanExecute = true
+            };
         }
 
-        //定義是否可以更新Title
+        void UpdateTextExecute()
+        {
+            ViewModelText = "SkyMVVM";
+        }
         bool CanUpdateTextExecute()
         {
-            return true;
+            return BoolForCanExecute;
+        }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
