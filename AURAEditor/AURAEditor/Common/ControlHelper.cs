@@ -6,23 +6,40 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor.Common
 {
-    class ControlHelper
+    static class ControlHelper
     {
+        public static T FindParentControl<T>(UIElement child, Type targetType) where T : FrameworkElement
+        {
+            if (child == null)
+                return null;
+
+            if (child.GetType() == targetType)
+            {
+                return (T)child;
+            }
+
+            UIElement parent = (UIElement)VisualTreeHelper.GetParent(child);
+
+            return FindParentControl<T>(parent, targetType);
+        }
         public static T FindControl<T>(UIElement parent, Type targetType, string ControlName) where T : FrameworkElement
         {
-
-            if (parent == null) return null;
+            if (parent == null)
+                return null;
 
             if (parent.GetType() == targetType && ((T)parent).Name == ControlName)
             {
                 return (T)parent;
             }
+
             T result = null;
             int count = VisualTreeHelper.GetChildrenCount(parent);
+
             for (int i = 0; i < count; i++)
             {
                 UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
@@ -33,6 +50,7 @@ namespace AuraEditor.Common
                     break;
                 }
             }
+
             return result;
         }
         public static List<T> FindAllControl<T>(UIElement parent, Type targetType) where T : FrameworkElement
@@ -47,8 +65,8 @@ namespace AuraEditor.Common
             }
 
             List<T> result = new List<T>();
-
             int count = VisualTreeHelper.GetChildrenCount(parent);
+
             for (int i = 0; i < count; i++)
             {
                 UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
@@ -79,7 +97,43 @@ namespace AuraEditor.Common
         }
         public static double RoundToGrid(double number)
         {
-            return Math.Round(number / GridWidthPixels, 0) * GridWidthPixels;
+            return Math.Round(number / GridPixels, 0) * GridPixels;
+        }
+
+        static public void AnimationStart(DependencyObject o, string target, double runTime, double from, double to)
+        {
+            var storyboard = new Storyboard();
+            var animation = new DoubleAnimation();
+
+            animation.Duration = TimeSpan.FromMilliseconds(runTime);
+            animation.EnableDependentAnimation = true;
+            animation.From = from;
+            animation.To = to;
+
+            Storyboard.SetTargetProperty(animation, target);
+            Storyboard.SetTarget(animation, o);
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+        static public async Task AnimationStartAsync(DependencyObject o, string target, double runTime, double from, double to)
+        {
+            var storyboard = new Storyboard();
+            var animation = new DoubleAnimation();
+
+            animation.Duration = TimeSpan.FromMilliseconds(runTime);
+            animation.EnableDependentAnimation = true;
+            animation.From = from;
+            animation.To = to;
+
+            Storyboard.SetTargetProperty(animation, target);
+            Storyboard.SetTarget(animation, o);
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+
+            while (storyboard.GetCurrentState() == ClockState.Active)
+            {
+                await Task.Delay(50);
+            }
         }
     }
 }

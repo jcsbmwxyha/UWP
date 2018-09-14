@@ -45,8 +45,8 @@ namespace AuraEditor
     {
         public string DeviceName;
         public int DeviceType;
-        public int UI_Width;
-        public int UI_Height;
+        public int GridWidth;
+        public int GridHeight;
         public List<LedUI> Leds;
         public BitmapImage Image;
 
@@ -66,12 +66,21 @@ namespace AuraEditor
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
 
+                int exist_Column = 0;
+                int leftTopX_Column = 0;
+                int leftTopY_Column = 0;
+                int rightBottomX_Column = 0;
+                int rightBottomY_Column = 0;
+                int z_Column = 0;
+
                 deviceContent.DeviceName = modelName;
+
                 if (modelName == "GLADIUS II")
                     deviceContent.DeviceType = 1;
+                else if (modelName == "Flare")
+                    deviceContent.DeviceType = 2;
                 else
                     deviceContent.DeviceType = 0;
-
 
                 if (csvFile != null)
                 {
@@ -80,25 +89,32 @@ namespace AuraEditor
                         CsvRow row = new CsvRow();
                         while (csvReader.ReadRow(row))
                         {
-                            if (row[0] == "UI_width")
+                            if (row[0].ToLower() == "parameters")
                             {
-                                deviceContent.UI_Width = Int32.Parse(row[1]);
+                                for (int i = 0; i < row.Count; i++)
+                                {
+                                    if (row[i].ToLower() == "exist") { exist_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
+                                    else if (row[i].ToLower() == "z_index") { z_Column = i; }
+                                }
                             }
-                            else if (row[0] == "UI_height")
+                            else if (row[0].ToLower().Contains("led "))
                             {
-                                deviceContent.UI_Height = Int32.Parse(row[1]);
-                            }
-                            else if (row[0].Contains("LED "))
-                            {
+                                if (row[exist_Column] != "1")
+                                    continue;
+
                                 deviceContent.Leds.Add(
                                     new LedUI()
                                     {
-                                        Index = Int32.Parse(row[0].Substring("LED ".Length)),
-                                        Left = Int32.Parse(row[3]),
-                                        Top = Int32.Parse(row[4]),
-                                        Right = Int32.Parse(row[5]),
-                                        Bottom = Int32.Parse(row[6]),
-                                        ZIndex = Int32.Parse(row[7]),
+                                        Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                        Left = Int32.Parse(row[leftTopX_Column]),
+                                        Top = Int32.Parse(row[leftTopY_Column]),
+                                        Right = Int32.Parse(row[rightBottomX_Column]),
+                                        Bottom = Int32.Parse(row[rightBottomY_Column]),
+                                        ZIndex = Int32.Parse(row[z_Column]),
                                     });
                             }
                         }
@@ -113,6 +129,8 @@ namespace AuraEditor
 
                         bitmapImage.SetSource(fileStream);
                         deviceContent.Image = bitmapImage;
+                        deviceContent.GridWidth = bitmapImage.PixelWidth / GridPixels;
+                        deviceContent.GridHeight = bitmapImage.PixelHeight / GridPixels;
                     }
                 }
 
@@ -136,15 +154,15 @@ namespace AuraEditor
 
             ct = new CompositeTransform
             {
-                TranslateX = GridWidthPixels * gridPosition.X,
-                TranslateY = GridWidthPixels * gridPosition.Y
+                TranslateX = GridPixels * gridPosition.X,
+                TranslateY = GridPixels * gridPosition.Y
             };
 
             img = new Image
             {
                 RenderTransform = ct,
-                Width = GridWidthPixels * this.UI_Width,
-                Height = GridWidthPixels * this.UI_Height,
+                Width = Image.PixelWidth,
+                Height = Image.PixelHeight,
                 Source = this.Image,
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,
@@ -162,8 +180,8 @@ namespace AuraEditor
                 Type = this.DeviceType,
                 LightZones = zones.ToArray(),
                 GridPosition = new Point(gridPosition.X, gridPosition.Y),
-                Width = this.UI_Width,
-                Height = this.UI_Height,
+                Width = GridWidth,
+                Height = GridHeight,
                 Image = img,
             };
 

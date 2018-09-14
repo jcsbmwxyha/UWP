@@ -8,7 +8,9 @@ using Windows.UI.Xaml.Input;
 using static AuraEditor.MainPage;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.LuaHelper;
 using Windows.Foundation;
+using MoonSharp.Interpreter;
 
 namespace AuraEditor
 {
@@ -22,14 +24,14 @@ namespace AuraEditor
                 CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
                 return new Point(
-                    ct.TranslateX / GridWidthPixels,
-                    ct.TranslateY / GridWidthPixels);
+                    ct.TranslateX / GridPixels,
+                    ct.TranslateY / GridPixels);
             }
             set
             {
-                SetImagePixelPosition(
-                    value.X * GridWidthPixels,
-                    value.Y * GridWidthPixels);
+                SetPosition(
+                    value.X * GridPixels,
+                    value.Y * GridPixels);
             }
         }
         private Point _oldPixelPosition;
@@ -82,7 +84,7 @@ namespace AuraEditor
         {
             CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
-            SetImagePixelPosition(
+            SetPosition(
                 ct.TranslateX + e.Delta.Translation.X,
                 ct.TranslateY + e.Delta.Translation.Y);
         }
@@ -90,7 +92,7 @@ namespace AuraEditor
         {
             CompositeTransform ct = Image.RenderTransform as CompositeTransform;
 
-            SetImagePixelPosition(
+            SetPosition(
                 RoundToGrid(ct.TranslateX),
                 RoundToGrid(ct.TranslateY));
             Image.Opacity = 1;
@@ -103,7 +105,7 @@ namespace AuraEditor
             }
             else
             {
-                SetImagePixelPosition(_oldPixelPosition.X, _oldPixelPosition.Y);
+                SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
@@ -118,7 +120,7 @@ namespace AuraEditor
         }
         #endregion
 
-        private void SetImagePixelPosition(double x, double y)
+        private void SetPosition(double x, double y)
         {
             CompositeTransform ct = Image.RenderTransform as CompositeTransform;
             CompositeTransform zone_ct;
@@ -132,6 +134,69 @@ namespace AuraEditor
                 zone_ct.TranslateX = ct.TranslateX + zone.RelativeZoneRect.Left;
                 zone_ct.TranslateY = ct.TranslateY + zone.RelativeZoneRect.Top;
             }
+        }
+        private void SetPositionByAnimation(double x, double y)
+        {
+            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform zone_ct;
+            double runTime = 300;
+            double source;
+            double targetX;
+            double targetY;
+
+            source = ct.TranslateX;
+            targetX = x;
+            AnimationStart(Image.RenderTransform, "TranslateX", runTime, source, targetX);
+
+            source = ct.TranslateY;
+            targetY = y;
+            AnimationStart(Image.RenderTransform, "TranslateY", runTime, source, targetY);
+
+            foreach (var zone in LightZones)
+            {
+                double targetZoneX;
+                double targetZoneY;
+
+                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
+
+                source = zone_ct.TranslateX;
+                targetZoneX = targetX + zone.RelativeZoneRect.Left;
+                AnimationStart(zone.Frame.RenderTransform, "TranslateX", runTime, source, targetZoneX);
+
+                source = zone_ct.TranslateY;
+                targetZoneY = targetY + zone.RelativeZoneRect.Top;
+                AnimationStart(zone.Frame.RenderTransform, "TranslateY", runTime, source, targetZoneY);
+            }
+        }
+        public Table ToTable()
+        {
+            Table deviceTable = CreateNewTable();
+            Table locationTable = GetLocationTable();
+
+            string type = "";
+
+            switch (Type)
+            {
+                case 0: type = "Notebook"; break;
+                case 1: type = "Mouse"; break;
+                case 2: type = "Keyboard"; break;
+                case 3: type = "Headset"; break;
+            }
+
+            deviceTable.Set("name", DynValue.NewString(Name));
+            deviceTable.Set("DeviceType", DynValue.NewString(type));
+            deviceTable.Set("location", DynValue.NewTable(locationTable));
+
+            return deviceTable;
+        }
+        private Table GetLocationTable()
+        {
+            Table locationTable = CreateNewTable();
+
+            locationTable.Set("x", DynValue.NewNumber(GridPosition.X));
+            locationTable.Set("y", DynValue.NewNumber(GridPosition.Y));
+
+            return locationTable;
         }
     }
 }

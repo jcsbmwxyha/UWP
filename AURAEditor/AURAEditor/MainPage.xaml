@@ -459,8 +459,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image x:Name="CheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_left_select_ic.png"/>
-                                    <Image x:Name="UncheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_left__ic.png"/>
+                                    <Image x:Name="CheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_l_s.png"/>
+                                    <Image x:Name="UncheckedLeftRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_l_n.png"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
@@ -493,8 +493,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image x:Name="CheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_right_select_ic.png"/>
-                                    <Image x:Name="UncheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_right_ic.png"/>
+                                    <Image x:Name="CheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_r_s.png"/>
+                                    <Image x:Name="UncheckedRightRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_r_n.png"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
@@ -527,8 +527,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image x:Name="CheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_up_select_ic.png"/>
-                                    <Image x:Name="UncheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_up.png"/>
+                                    <Image x:Name="CheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_u_s.png"/>
+                                    <Image x:Name="UncheckedUpRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_u_n.png"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
@@ -561,8 +561,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image x:Name="CheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_down_select_ic.png"/>
-                                    <Image x:Name="UncheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_down.png"/>
+                                    <Image x:Name="CheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_d_s.png"/>
+                                    <Image x:Name="UncheckedDownRadioBtnBg" Height="40" Width="40" Source="Assets/EffectInfoGroup/asus_gc_aura_direction_d_n.png"/>
                                 </Grid>
                             </Grid>
                         </ControlTemplate>
@@ -1159,12 +1159,12 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="SpaceZoomComboxBox"
-                          SelectionChanged="SpaceZoomComboxBox_SelectionChanged"
-                          PlaceholderText="0 %"
-                          Width="100"
-                          Grid.ColumnSpan="3"
-                          Background="Gray"
-                          Canvas.ZIndex="6">
+                      SelectionChanged="SpaceZoomComboxBox_SelectionChanged"
+                      PlaceholderText="0 %"
+                      Width="100"
+                      Grid.ColumnSpan="3"
+                      Background="Gray"
+                      Canvas.ZIndex="6">
                 <x:String>0 %</x:String>
                 <x:String>50 %</x:String>
                 <x:String>100 %</x:String>
@@ -1209,7 +1209,7 @@
                             <CompositeTransform/>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Image Name="GridImage" Source="Assets/grid35-2.png" Stretch="None" Canvas.ZIndex="-2"/>
+                    <Image Name="GridImage" Source="Assets/Grid.png" Stretch="None" Canvas.ZIndex="-2"/>
                 </Canvas>
             </ScrollViewer>
         </Grid>
@@ -1286,28 +1286,36 @@
                 </StackPanel>
                 <StackPanel x:Name="ColorGroup" Orientation="Vertical">
                     <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <RadioButton Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,0" Tapped="ColorRadioBtn_Tapped"/>
+                    <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,0" Tapped="ColorRadioBtn_Tapped"/>
                 </StackPanel>
                 <StackPanel x:Name="BrightnessGroup" Orientation="Vertical">
                     <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
                         <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged" 
 										Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
-                        <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Text="0%"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel x:Name="SpeedGroup" Orientation="Vertical">
                     <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged" 
 										Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
-                        <TextBlock x:Name="SpeedTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                    </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
+                            <TextBlock Text="Slow" Margin="0,0,55,0" FontSize="12"/>
+                            <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
+                            <TextBlock Text="Fast" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
                 <StackPanel x:Name="DirectionGroup" Orientation="Vertical">
                     <TextBlock Text="Direction" Margin="20,20,0,0" Foreground="White"/>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <RadioButton x:Name="Left" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource LeftRadioBtn}"/>
+                        <RadioButton x:Name="Left" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource LeftRadioBtn}" IsChecked="True"/>
                         <RadioButton x:Name="Right" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource RightRadioBtn}"/>
                         <RadioButton x:Name="Up" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource UpRadioBtn}"/>
                         <RadioButton x:Name="Down" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource DownRadioBtn}"/>
@@ -1424,7 +1432,7 @@
                       HorizontalAlignment="Left">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:DeviceLayer">
-                        <local:DeviceLayerListViewItem HorizontalAlignment="Center"/>
+                        <usercontrol:DeviceLayerItem HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

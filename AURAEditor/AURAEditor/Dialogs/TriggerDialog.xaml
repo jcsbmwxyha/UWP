@@ -1,0 +1,210 @@
+﻿<ContentDialog
+    x:Class="AuraEditor.Dialogs.TriggerDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraEditor.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ContentDialog.TitleTemplate>
+        <DataTemplate>
+            <Border Background="White"/>
+        </DataTemplate>
+    </ContentDialog.TitleTemplate>
+    
+    <ContentDialog.Style>
+        <Style TargetType="ContentDialog">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentDialog">
+                        <Border x:Name="Container" >
+                            <Grid x:Name="LayoutRoot">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Border Name="BackgroundElement"
+                                        Background="Transparent">
+                                    <Grid x:Name="DialogSpace" VerticalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <ScrollViewer Name="ContentScrollViewer"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      VerticalScrollBarVisibility="Disabled"
+                                                      ZoomMode="Disabled"
+                                                      Margin="{ThemeResource ContentDialogContentScrollViewerMargin}"
+                                                      IsTabStop="False">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <ContentControl Name="Title"/>
+                                                <ContentPresenter Name="Content"
+                                                                  Grid.Row="1"
+                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  FontSize="{ThemeResource ControlContentThemeFontSize}"
+                                                                  FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                                                  Margin="{ThemeResource ContentDialogContentMargin}"
+                                                                  Foreground="{TemplateBinding Foreground}"
+                                                                  TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </ScrollViewer>
+                                        <Grid x:Name="CommandSpace"
+                                              Grid.Row="1">
+                                            <Border Name="Button1Host"/>
+                                            <Border Name="Button2Host"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentDialog.Style>
+
+    <Grid Width="470" Height="900">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="13*"/>
+            <RowDefinition Height="1.5*"/>
+        </Grid.RowDefinitions>
+
+        <Image Grid.RowSpan="3"
+               Source="ms-appx:///Assets/TriggerDialog/asus_ac_triggerevent_bg.png"
+               Stretch="Fill"/>
+        <RelativePanel Margin="5,10,0,0">
+            <TextBlock Text="Set Trigger Event" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
+            <Button Content="X" RelativePanel.AlignRightWithPanel="True" Foreground="White" Background="DarkGray"
+                    Click="OKButton_Click"/>
+        </RelativePanel>
+        <StackPanel Grid.Row="1" Width="450" VerticalAlignment="Top" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Action : " VerticalAlignment="Center" Foreground="White"/>
+                <ComboBox Name="ActionComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0" SelectedIndex="0">
+                    <x:String>One Click</x:String>
+                    <x:String>Double Click</x:String>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
+                <TextBlock  Text="Effect order :"
+                            VerticalAlignment="Center"
+                            Foreground="White"/>
+                <Button Name="AddEffectButton" Foreground="White" Background="DarkGray"
+                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0"/>
+            </StackPanel>
+            <ListView Name="TriggerEffectListView"
+                      BorderBrush="White" BorderThickness="2"
+                      CanReorderItems="True" AllowDrop="True"
+                      Height="170" SelectedIndex="{Binding SelectedIndex}"
+                      Margin="0,10,0,0" SelectionChanged="TriggerEffectListView_SelectionChanged">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="0,0,0,0"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:TriggerBlock Width="480" HorizontalAlignment="Left"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel Name="EffectInfoStackPanel" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Effect :" VerticalAlignment="Center"
+                           Foreground="White"/>
+                    <ComboBox Name="EffectComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0"
+                              SelectedIndex="0" SelectionChanged="EffectComboBox_SelectionChanged">
+                        <x:String>Ripple</x:String>
+                        <x:String>Reactive</x:String>
+                        <x:String>Laser</x:String>
+                    </ComboBox>
+                </StackPanel>
+                <ScrollViewer  Height="420">
+                    <StackPanel Name="EffectInfo"
+                            BorderThickness="2" BorderBrush="White" Margin="0,10,0,0">
+                        <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
+                           PointerPressed="ColorRect_Pressed" Margin="0,10">
+                            <FlyoutBase.AttachedFlyout>
+                                <Flyout Placement="Top">
+                                    <StackPanel>
+                                        <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
+                                             IsColorChannelTextInputVisible="False"
+                                             IsHexInputVisible="False"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="OK" Click="ColorPickerOk_Click"/>
+                                            <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Flyout>
+                            </FlyoutBase.AttachedFlyout>
+                        </Rectangle>
+                        <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged"
+                              PlaceholderText="Pick a wave type" Width="190">
+                            <ComboBox.Header>
+                                <TextBlock Text="Wave Type:" Foreground="White"/>
+                            </ComboBox.Header>
+                            <x:String>SineWave</x:String>
+                            <x:String>HalfSineWave</x:String>
+                            <x:String>QuarterSineWave</x:String>
+                            <x:String>SquareWave</x:String>
+                            <x:String>TriangleWave</x:String>
+                            <x:String>SawToothleWave</x:String>
+                        </ComboBox>
+                        <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Min:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="MaxTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Max:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="WaveLenTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="WaveLen:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Freq:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Phase:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Start:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                        <TextBox Name="VelocityTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
+                            <TextBox.Header>
+                                <TextBlock Text="Velocity:" Foreground="White"/>
+                            </TextBox.Header>
+                        </TextBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+        </StackPanel>
+        <Button Grid.Row="2"
+                Content="OK"
+                Margin="0,10,0,0"
+                HorizontalAlignment="Center"
+                Foreground="White"
+                Background="DarkGray"
+                Click="OKButton_Click"/>
+    </Grid>
+</ContentDialog>

@@ -1,7 +1,6 @@
 ﻿using Windows.UI.Xaml;
 using System;
 using Windows.UI.Xaml.Controls;
-using AuraEditor.Common;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
@@ -9,8 +8,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.Definitions;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
@@ -20,6 +17,10 @@ using Windows.Storage.Streams;
 using System.Linq;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+
+using AuraEditor.Common;
+using AuraEditor.UserControls;
+using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor
 {
@@ -172,8 +173,8 @@ namespace AuraEditor
         }
         private void UnselectAllLayers()
         {
-            List<DeviceLayerListViewItem> layers =
-                FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
+            List<DeviceLayerItem> layers =
+                FindAllControl<DeviceLayerItem>(LayerListView, typeof(DeviceLayerItem));
 
             foreach (var layer in layers)
             {
@@ -202,7 +203,7 @@ namespace AuraEditor
             SetSpaceStatus(SpaceStatus.WatchingLayer);
             UnselectAllZones();
 
-            Dictionary<int, int[]> dictionary = layer.GetDeviceToZonesDictionary();
+            Dictionary<int, int[]> dictionary = layer.GetZoneDictionary();
 
             // According to the layer, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
@@ -236,7 +237,7 @@ namespace AuraEditor
             DeviceLayer layer = new DeviceLayer();
             List<int> selectedIndex;
 
-            layer.LayerName = "Layer " + (_auraCreatorManager.GetLayerCount());
+            layer.Name = "Layer " + (_auraCreatorManager.GetLayerCount());
 
             foreach (Device d in devices)
             {
@@ -359,7 +360,7 @@ namespace AuraEditor
                     device = deviceContent.ToDevice();
                 else // other
                 {
-                    Rect r = new Rect(0, 0, deviceContent.UI_Width, deviceContent.UI_Height);
+                    Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
                     Point p = GetFreeRoomPositionForRect(r);
                     device = deviceContent.ToDevice(p);
                 }
@@ -472,7 +473,7 @@ namespace AuraEditor
                     if (deviceContent == null)
                         continue;
 
-                    Rect r = new Rect(0, 0, deviceContent.UI_Width, deviceContent.UI_Height);
+                    Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
                     Point p = GetFreeRoomPositionForRect(r);
                     Device device = deviceContent.ToDevice(p);
 

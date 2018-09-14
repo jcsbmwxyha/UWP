@@ -1,97 +1,61 @@
 ﻿using AuraEditor.Common;
-using AuraEditor.UserControls;
+using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static AuraEditor.MainPage;
+using Windows.UI;
 using static AuraEditor.Common.EffectHelper;
-using MoonSharp.Interpreter;
+using static AuraEditor.Common.LuaHelper;
 
 namespace AuraEditor
 {
-    public class Effect : IEffect
+    public class Effect
     {
         public DeviceLayer Layer { get; set; }
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public string LuaName { get; set; }
-        public int Type { get; set; }
-        public EffectLine UI { get; }
+        public int Type { get; private set; }
         public EffectInfo Info { get; set; }
-        public double StartTime
-        {
-            get
-            {
-                double timeUnits = UI.X / AuraCreatorManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
-
-                return seconds * 1000;
-            }
-            set
-            {
-                double seconds = value / 1000;
-                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
-
-                UI.X = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
-            }
-        }
-        public double DurationTime
-        {
-            get
-            {
-                double timeUnits = UI.Width / AuraCreatorManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
-
-                return seconds * 1000;
-            }
-            set
-            {
-                double seconds = value / 1000;
-                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
-
-                UI.Width = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
-            }
-        }
+        public virtual double StartTime { get; set; }
+        public virtual double DurationTime { get; set; }
 
         public Effect(DeviceLayer layer, int effectType)
         {
             Layer = layer;
             Type = effectType;
             Name = GetEffectName(effectType);
-            UI = CreateEffectUI(effectType);
-            UI.DataContext = this;
-            UI.X = (int)Layer.GetFirstFreeRoomPosition();
-            DurationTime = 1000; // 1s
             Info = new EffectInfo(effectType);
         }
-        private EffectLine CreateEffectUI(int effectType)
+        public Effect(DeviceLayer layer, string effectName)
         {
-            EffectLine el = new EffectLine
-            {
-                Height = 34,
-                Width = AuraCreatorManager.GetPixelsPerSecond(),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                ManipulationMode = ManipulationModes.TranslateX
-            };
-
-            CompositeTransform ct = el.RenderTransform as CompositeTransform;
-            ct.TranslateY = 5;
-
-            return el;
+            Layer = layer;
+            Type = GetEffectIndex(effectName);
+            Name = effectName;
+            Info = new EffectInfo(Type);
+        }
+        public void ChangeType(int effectType)
+        {
+            Type = effectType;
+            Name = GetEffectName(effectType);
+            Info = new EffectInfo(effectType);
         }
 
-        public virtual Table ToEventTable() { return null; }
-    }
-
-    public class RainbowEffect : Effect
-    {
-        public RainbowEffect(DeviceLayer layer, int effectType) : base(layer, effectType)
+        public virtual Table ToTable()
         {
+            return Info.ToTable();
+            //Table effectTable = CreateNewTable();
+
+            //Table initColorTable = GetInitColorTable();
+            //Table viewportTransformTable = GetViewportTransformTable(Type);
+            //Table waveTable = GetWaveTable();
+
+            //effectTable.Set("initColor", DynValue.NewTable(initColorTable));
+            //effectTable.Set("viewportTransform", DynValue.NewTable(viewportTransformTable));
+            //effectTable.Set("wave", DynValue.NewTable(waveTable));
+
+            //return effectTable;
         }
-        public override Table ToEventTable() { return null; }
     }
 }

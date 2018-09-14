@@ -1,2 +1,0 @@
-MainPackage=C:\Users\ASUS\Desktop\git\AuraEditor\AURAEditor\AuraEditor\bin\x64\Release\AuraEditor_0.0.6.0_x64.appx
-SymbolPackage=C:\Users\ASUS\Desktop\git\AuraEditor\AURAEditor\AuraEditor\AppPackages\AuraEditor_0.0.6.0_Test\AuraEditor_0.0.6.0_x64.appxsym

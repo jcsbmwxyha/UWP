@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
-using static AuraEditor.Common.FixedLuaString;
+using static AuraEditor.Common.LuaHelper;
 using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
@@ -40,7 +40,7 @@ namespace AuraEditor
         {
             get
             {
-                Effect effect = GetRightmostEffect();
+                TimelineEffect effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.StartTime + effect.DurationTime : 0;
             }
@@ -49,20 +49,15 @@ namespace AuraEditor
         {
             get
             {
-                Effect effect = GetRightmostEffect();
+                TimelineEffect effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.UI.X + effect.UI.Width : 0;
             }
         }
 
-        private Script script;
-        private Dictionary<DynValue, string> _functionDictionary;
-
         private AuraCreatorManager()
         {
-            script = new Script();
             DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
-            _functionDictionary = new Dictionary<DynValue, string>();
             GlobalDevices = new List<Device>();
 
             TimelineStackPanel = MainPage.MainPageInstance.TrackStackPanel;
@@ -124,22 +119,22 @@ namespace AuraEditor
 
             foreach (var layer in DeviceLayerCollection)
             {
-                foreach (var effect in layer.Effects)
+                foreach (var effect in layer.TimelineEffects)
                 {
                     effect.UI.X = effect.UI.X * rate;
                     effect.UI.Width = effect.UI.Width * rate;
                 }
             }
         }
-        private Effect GetRightmostEffect()
+        private TimelineEffect GetRightmostEffect()
         {
             double position = 0;
             double rightmostPosition = 0;
-            Effect rightmostEffect = null;
+            TimelineEffect rightmostEffect = null;
 
             foreach (DeviceLayer layer in DeviceLayerCollection)
             {
-                foreach (var effect in layer.Effects)
+                foreach (var effect in layer.TimelineEffects)
                 {
                     position = effect.UI.X + effect.UI.Width;
 
@@ -213,7 +208,7 @@ namespace AuraEditor
         public string PrintLuaScript()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("require(\"script//global\")\n\n");
+            sb.Append(RequireLine);
             sb.Append("EventProvider = ");
             sb.Append(PrintTable(GetEventProviderTable()));
             sb.Append("\n");
@@ -228,24 +223,12 @@ namespace AuraEditor
             sb.Append("\n");
             return sb.ToString();
         }
-        private Table CreateNewTable()
-        {
-            string s = "table={}";
-            Table table = script.DoString(s + "\nreturn table").Table;
-
-            return table;
-        }
         private Table GetEventProviderTable()
         {
-            Table eventProviderTable;
-            Table queueTable;
-            DynValue generateEventDV;
+            Table eventProviderTable = CreateNewTable();
+            Table queueTable = GetQueueTable();
+            DynValue generateEventDV = RegisterAndGetDV(GenerateEventFunctionString);
 
-            queueTable = GetQueueTable();
-            generateEventDV = script.LoadFunction(GenerateEventFunctionString);
-            _functionDictionary.Add(generateEventDV, GenerateEventFunctionString);
-
-            eventProviderTable = CreateNewTable();
             eventProviderTable.Set("queue", DynValue.NewTable(queueTable));
             eventProviderTable.Set("period", DynValue.NewNumber(PlayTime));
             eventProviderTable.Set("generateEvent", generateEventDV);
@@ -268,7 +251,7 @@ namespace AuraEditor
                 if (layer.Eye == false)
                     continue;
 
-                foreach (Effect eff in layer.Effects)
+                foreach (TimelineEffect eff in layer.TimelineEffects)
                 {
                     // Give uniqle index for all effects
                     eff.LuaName = GetEffectName(eff.Type) + effectCount.ToString();
@@ -276,7 +259,7 @@ namespace AuraEditor
 
                     queueItemTable = CreateNewTable();
                     queueItemTable.Set("Effect", DynValue.NewString(eff.LuaName));
-                    queueItemTable.Set("Viewport", DynValue.NewString(layer.LayerName));
+                    queueItemTable.Set("Viewport", DynValue.NewString(layer.Name));
 
                     if (IsTriggerEffects(eff.Type))
                         queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
@@ -294,12 +277,6 @@ namespace AuraEditor
 
             return queueTable;
         }
-        private Table GetGenerateEventTable()
-        {
-            Table generateEventTable = CreateNewTable();
-
-            return generateEventTable;
-        }
         private Table GetViewportTable()
         {
             Table viewPortTable;
@@ -309,196 +286,35 @@ namespace AuraEditor
 
             foreach (DeviceLayer layer in DeviceLayerCollection)
             {
-                layerTable = GetLayerTable(layer);
-                viewPortTable.Set(layer.LayerName, DynValue.NewTable(layerTable));
+                layerTable = layer.ToTable();
+                viewPortTable.Set(layer.Name, DynValue.NewTable(layerTable));
             }
 
             return viewPortTable;
-        }
-        private Table GetLayerTable(DeviceLayer layer)
-        {
-            Table layerTable;
-            Dictionary<int, int[]> deviceToZonesDictionary;
-            Device device;
-
-            layerTable = CreateNewTable();
-            deviceToZonesDictionary = layer.GetDeviceToZonesDictionary();
-
-            foreach (KeyValuePair<int, int[]> pair in deviceToZonesDictionary)
-            {
-                device = GetGlobalDeviceByType(pair.Key);
-                layerTable.Set(device.Name, DynValue.NewTable(GetDeviceTable(pair)));
-            }
-
-            return layerTable;
-        }
-        private Table GetDeviceTable(KeyValuePair<int, int[]> pair)
-        {
-            Table deviceTable;
-            Table locationTable;
-            Table usageTable;
-            Device device;
-
-            deviceTable = CreateNewTable();
-            device = GetGlobalDeviceByType(pair.Key);
-            locationTable = GetLocationTable(device);
-            usageTable = GetUsageTable(pair.Value);
-
-            deviceTable.Set("name", DynValue.NewString(device.Name));
-
-            if (device.Type == 0)
-                deviceTable.Set("DeviceType", DynValue.NewString("Notebook"));
-            else if (device.Type == 1)
-                deviceTable.Set("DeviceType", DynValue.NewString("Mouse"));
-            else if (device.Type == 2)
-                deviceTable.Set("DeviceType", DynValue.NewString("Keyboard"));
-            else
-                deviceTable.Set("DeviceType", DynValue.NewString("Headset"));
-
-            deviceTable.Set("location", DynValue.NewTable(locationTable));
-            deviceTable.Set("usage", DynValue.NewTable(usageTable));
-
-            return deviceTable;
-        }
-        private Table GetUsageTable(int[] zoneIndexes)
-        {
-            Table usageTable;
-            int count;
-
-            usageTable = CreateNewTable();
-            count = 1;
-
-            foreach (int index in zoneIndexes)
-            {
-                usageTable.Set(count, DynValue.NewNumber(index));
-                count++;
-            };
-
-            return usageTable;
         }
         private Table GetEventTable()
         {
             Table eventTable = CreateNewTable();
 
-            foreach (DeviceLayer gp in DeviceLayerCollection)
+            foreach (DeviceLayer layer in DeviceLayerCollection)
             {
-                if (gp.Eye == false)
+                if (layer.Eye == false)
                     continue;
 
-                foreach (Effect eff in gp.Effects)
-                    eventTable.Set(eff.LuaName, DynValue.NewTable(GetEffectTable(eff)));
+                foreach (TimelineEffect eff in layer.TimelineEffects)
+                    eventTable.Set(eff.LuaName, DynValue.NewTable(eff.ToTable()));
             }
 
             return eventTable;
-        }
-        private Table GetEffectTable(Effect eff)
-        {
-            Table effectTable;
-            Table initColorTable;
-            Table viewportTransformTable;
-            Table bindToSlotTable;
-            Table waveTable;
-
-            effectTable = CreateNewTable();
-            initColorTable = GetInitColorTable(eff);
-            viewportTransformTable = GetViewportTransformTable(_functionDictionary, script, eff.Type);
-            bindToSlotTable = GetBindToSlotTable(script, eff.Type);
-            waveTable = GetWaveTable(eff);
-
-            effectTable.Set("initColor", DynValue.NewTable(initColorTable));
-            effectTable.Set("viewportTransform", DynValue.NewTable(viewportTransformTable));
-            effectTable.Set("bindToSlot", DynValue.NewTable(bindToSlotTable));
-            effectTable.Set("wave", DynValue.NewTable(waveTable));
-
-            return effectTable;
-        }
-        private Table GetInitColorTable(Effect eff)
-        {
-            Table initColorTable = CreateNewTable();
-
-            Color c = eff.Info.Color;
-            double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
-            DynValue randomHue_dv;
-
-            if (GetEffectName(eff.Type) == "Star")
-            {
-                randomHue_dv = script.LoadFunction(RandomHueString);
-                _functionDictionary.Add(randomHue_dv, RandomHueString);
-                initColorTable.Set("hue", randomHue_dv);
-            }
-            else
-                initColorTable.Set("hue", DynValue.NewNumber(hsl[0]));
-
-            initColorTable.Set("saturation", DynValue.NewNumber(hsl[1]));
-            initColorTable.Set("lightness", DynValue.NewNumber(hsl[2]));
-            initColorTable.Set("alpha", DynValue.NewNumber(c.A / 255));
-
-            return initColorTable;
-        }
-        private Table GetWaveTable(Effect eff)
-        {
-            Table waveTable = CreateNewTable();
-            EffectInfo info = eff.Info;
-            Color c = eff.Info.Color;
-            string waveTypeString = "";
-
-            switch (info.WaveType)
-            {
-                case 0: waveTypeString = "SineWave"; break;
-                case 1: waveTypeString = "HalfSineWave"; break;
-                case 2: waveTypeString = "QuarterSineWave"; break;
-                case 3: waveTypeString = "SquareWave"; break;
-                case 4: waveTypeString = "TriangleWave"; break;
-                case 5: waveTypeString = "SawToothleWave"; break;
-            }
-
-            waveTable.Set("waveType", DynValue.NewString(waveTypeString));
-            waveTable.Set("min", DynValue.NewNumber(info.Min));
-            waveTable.Set("max", DynValue.NewNumber(info.Max));
-            waveTable.Set("waveLength", DynValue.NewNumber(info.WaveLength));
-            waveTable.Set("freq", DynValue.NewNumber(info.Freq));
-            waveTable.Set("phase", DynValue.NewNumber(info.Phase));
-            waveTable.Set("start", DynValue.NewNumber(info.Start));
-            waveTable.Set("velocity", DynValue.NewNumber(info.Velocity));
-
-            return waveTable;
         }
         private Table GetGlobalSpaceTable()
         {
             Table globalSpaceTable = CreateNewTable();
 
             foreach (Device d in GlobalDevices)
-                globalSpaceTable.Set(d.Name, DynValue.NewTable(GetGlobalDeviceTable(d)));
+                globalSpaceTable.Set(d.Name, DynValue.NewTable(d.ToTable()));
 
             return globalSpaceTable;
-        }
-        private Table GetGlobalDeviceTable(Device d)
-        {
-            Table deviceTable = CreateNewTable();
-            Table locationTable = GetLocationTable(d);
-            string deviceTypeName = "";
-
-            switch (d.Type)
-            {
-                case 0: deviceTypeName = "Notebook"; break;
-                case 1: deviceTypeName = "Mouse"; break;
-                case 2: deviceTypeName = "Keyboard"; break;
-                case 3: deviceTypeName = "Headset"; break;
-            }
-
-            deviceTable.Set("DeviceType", DynValue.NewString(deviceTypeName));
-            deviceTable.Set("location", DynValue.NewTable(locationTable));
-
-            return deviceTable;
-        }
-        private Table GetLocationTable(Device d)
-        {
-            Table locationTable = CreateNewTable();
-
-            locationTable.Set("x", DynValue.NewNumber(d.GridPosition.X));
-            locationTable.Set("y", DynValue.NewNumber(d.GridPosition.Y));
-
-            return locationTable;
         }
         private string PrintTable(Table tb, int tab = 0)
         {
@@ -546,7 +362,7 @@ namespace AuraEditor
                     }
                     else if (keyDV.Function != null)
                     {
-                        keyValue = _functionDictionary[keyDV];
+                        keyValue = GetFunctionString(keyDV);
                     }
                     else
                     {

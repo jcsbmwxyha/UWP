@@ -41,8 +41,8 @@ namespace AuraEditor
             int frameRight;
             int frameBottom;
 
-            deviceLeft = (int)deviceGridPosition.X * GridWidthPixels;
-            deviceTop = (int)deviceGridPosition.Y * GridWidthPixels;
+            deviceLeft = (int)deviceGridPosition.X * GridPixels;
+            deviceTop = (int)deviceGridPosition.Y * GridPixels;
             frameLeft = led.Left;
             frameTop = led.Top;
             frameRight = led.Right;
@@ -70,7 +70,7 @@ namespace AuraEditor
             Rectangle rectangle = new Rectangle
             {
                 Fill = new SolidColorBrush(Colors.Transparent),
-                StrokeThickness = 3,
+                StrokeThickness = 2,
                 RenderTransform = ct,
                 Width = Rect.Width,
                 Height = Rect.Height,

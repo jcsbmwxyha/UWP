@@ -7,7 +7,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using MoonSharp.Interpreter;
 using Windows.Storage.Pickers;
-using AuraEditor.Common;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
@@ -17,14 +16,15 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.ApplicationModel.Core;
 using Windows.Storage.Streams;
-using static AuraEditor.Common.Definitions;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.EffectHelper;
 using System.Xml;
 using System.ComponentModel;
 using System.Linq;
 
-// 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
+using AuraEditor.Common;
+using AuraEditor.UserControls;
+using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.LuaHelper;
 
 namespace AuraEditor
 {
@@ -39,6 +39,20 @@ namespace AuraEditor
         }
         public AuraCreatorManager _auraCreatorManager;
         public BitmapImage DragEffectIcon;
+
+        public double TimelineScrollHorOffset
+        {
+            get { return (double)GetValue(ScrollHorOffseProperty); }
+            set { SetValue(ScrollHorOffseProperty, (double)value); }
+        }
+        public static readonly DependencyProperty ScrollHorOffseProperty =
+            DependencyProperty.Register("TimelineScrollHorOffset", typeof(double), typeof(MainPage),
+                new PropertyMetadata(0, ScrollTimeLinePropertyChangedCallback));
+        static private void ScrollTimeLinePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as MainPage).TrackScrollViewer.ChangeView((double)e.NewValue, null, null, true);
+            (d as MainPage).ScaleScrollViewer.ChangeView((double)e.NewValue, null, null, true);
+        }
 
         bool _angleImgPressing;
         public double _preAngle;
@@ -177,8 +191,8 @@ namespace AuraEditor
         }
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            List<DeviceLayerListViewItem> items =
-                FindAllControl<DeviceLayerListViewItem>(LayerListView, typeof(DeviceLayerListViewItem));
+            List<DeviceLayerItem> items =
+                FindAllControl<DeviceLayerItem>(LayerListView, typeof(DeviceLayerItem));
 
             foreach (var item in items)
             {
@@ -186,10 +200,7 @@ namespace AuraEditor
                 {
                     DeviceLayer layer = item.DataContext as DeviceLayer;
 
-                    if (layer is TriggerDeviceLayer)
-                        continue;
-
-                    if (layer.Effects.Contains(_selectedEffectLine))
+                    if (layer.TimelineEffects.Contains(_selectedEffectLine))
                         SelectedEffectLine = null;
 
                     _auraCreatorManager.RemoveDeviceLayer(layer);
@@ -198,14 +209,15 @@ namespace AuraEditor
         }
         private void GoLeftButton_Click(object sender, RoutedEventArgs e)
         {
-            TrackScrollViewer.ChangeView(0, null, null, true);
-            ScaleScrollViewer.ChangeView(0, null, null, true);
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = 0;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
         }
         private void GoRightButton_Click(object sender, RoutedEventArgs e)
         {
-            double requiredWidth = _auraCreatorManager.RightmostPosition;
-            TrackScrollViewer.ChangeView(requiredWidth, null, null, true);
-            ScaleScrollViewer.ChangeView(requiredWidth, null, null, true);
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = _auraCreatorManager.RightmostPosition;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
         }
         #endregion
 
@@ -226,7 +238,7 @@ namespace AuraEditor
             }
 
             string luaScript = await Windows.Storage.FileIO.ReadTextAsync(inputFile);
-            luaScript = luaScript.Replace("require(\"script//global\")", "");
+            luaScript = luaScript.Replace(RequireLine, "");
 
             Script script = new Script();
 
@@ -259,10 +271,10 @@ namespace AuraEditor
             // Step 3 : According to device layer name, get all device zones from Viewport table
             foreach (var layer in deviceLayers)
             {
-                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.LayerName);
+                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
                 layer.AddDeviceZones(dictionary);
 
-                foreach (var effect in layer.Effects)
+                foreach (var effect in layer.TimelineEffects)
                 {
                     EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.LuaName);
                     effect.Info = ei;
@@ -366,7 +378,7 @@ namespace AuraEditor
                 Table t = queueTable.Get(queueIndex).Table;
                 string layerName = t.Get("Viewport").String;
 
-                DeviceLayer layer = layers.Find(x => x.LayerName == layerName);
+                DeviceLayer layer = layers.Find(x => x.Name == layerName);
 
                 if (layer == null)
                 {
@@ -379,13 +391,13 @@ namespace AuraEditor
                 double durationTime = t.Get("Duration").Number;
                 int type = GetEffectIndex(effectLuaName);
 
-                Effect effect = new Effect(layer, type)
+                TimelineEffect effect = new TimelineEffect(layer, type)
                 {
                     LuaName = effectLuaName,
                     StartTime = startTime,
                     DurationTime = durationTime
                 };
-                layer.AddEffect(effect);
+                layer.AddTimelineEffect(effect);
             }
 
             return layers;
@@ -396,37 +408,39 @@ namespace AuraEditor
             Table colorTable = effectTable.Get("initColor").Table;
             Table waveTable = effectTable.Get("wave").Table;
 
-            EffectInfo ei = new EffectInfo();
+            return null;
 
-            if (!effectLuaName.Contains("Rainbow") && !effectLuaName.Contains("Smart") && !effectLuaName.Contains("ColorCycle"))
-            {
-                ei.Color = AuraEditorColorHelper.HslToRgb(
-                    colorTable.Get("alpha").Number,
-                    colorTable.Get("hue").Number,
-                    colorTable.Get("saturation").Number,
-                    colorTable.Get("lightness").Number
-                    );
-            }
+            //EffectInfo ei = new EffectInfo();
 
-            switch (waveTable.Get("waveType").String)
-            {
-                case "SineWave": ei.WaveType = 0; break;
-                case "HalfSineWave": ei.WaveType = 1; break;
-                case "QuarterSineWave": ei.WaveType = 2; break;
-                case "SquareWave": ei.WaveType = 3; break;
-                case "TriangleWave": ei.WaveType = 4; break;
-                case "SawToothleWave": ei.WaveType = 5; break;
-            }
+            //if (!effectLuaName.Contains("Rainbow") && !effectLuaName.Contains("Smart") && !effectLuaName.Contains("ColorCycle"))
+            //{
+            //    ei.InitColor = AuraEditorColorHelper.HslToRgb(
+            //        colorTable.Get("alpha").Number,
+            //        colorTable.Get("hue").Number,
+            //        colorTable.Get("saturation").Number,
+            //        colorTable.Get("lightness").Number
+            //        );
+            //}
 
-            ei.Min = waveTable.Get("min").Number;
-            ei.Max = waveTable.Get("max").Number;
-            ei.WaveLength = waveTable.Get("waveLength").Number;
-            ei.Freq = waveTable.Get("freq").Number;
-            ei.Phase = waveTable.Get("phase").Number;
-            ei.Start = waveTable.Get("start").Number;
-            ei.Velocity = waveTable.Get("velocity").Number;
+            //switch (waveTable.Get("waveType").String)
+            //{
+            //    case "SineWave": ei.WaveType = 0; break;
+            //    case "HalfSineWave": ei.WaveType = 1; break;
+            //    case "QuarterSineWave": ei.WaveType = 2; break;
+            //    case "SquareWave": ei.WaveType = 3; break;
+            //    case "TriangleWave": ei.WaveType = 4; break;
+            //    case "SawToothleWave": ei.WaveType = 5; break;
+            //}
 
-            return ei;
+            //ei.Min = waveTable.Get("min").Number;
+            //ei.Max = waveTable.Get("max").Number;
+            //ei.WaveLength = waveTable.Get("waveLength").Number;
+            //ei.Freq = waveTable.Get("freq").Number;
+            //ei.Phase = waveTable.Get("phase").Number;
+            //ei.Start = waveTable.Get("start").Number;
+            //ei.Velocity = waveTable.Get("velocity").Number;
+
+            //return ei;
         }
         private List<Device> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
         {

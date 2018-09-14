@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Dialogs;
 using AuraEditor.UserControls;
 using System;
 using System.Diagnostics;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.EffectHelper;
+using System.Threading.Tasks;
 
 namespace AuraEditor
 {
@@ -21,8 +23,8 @@ namespace AuraEditor
     {
         internal FlyoutBase m_flyoutBase;
 
-        private Effect _selectedEffectLine;
-        public Effect SelectedEffectLine
+        private TimelineEffect _selectedEffectLine;
+        public TimelineEffect SelectedEffectLine
         {
             get
             {
@@ -46,7 +48,7 @@ namespace AuraEditor
             ColorRect.Visibility = Visibility.Collapsed;
             EffectInfoGroup.Visibility = Visibility.Collapsed;
         }
-        private void UpdateEffectInfoGrid(Effect effect)
+        private void UpdateEffectInfoGrid(TimelineEffect effect)
         {
             //EffectLine border = effect.UI;
 
@@ -213,15 +215,15 @@ namespace AuraEditor
 
         private void UpdateGroupContents(EffectInfo info)
         {
-            ColorRect.Fill = new SolidColorBrush(info.Color);
-            WaveTypeComboBox.SelectedIndex = info.WaveType;
-            MinTextBox.Text = info.Min.ToString();
-            MaxTextBox.Text = info.Max.ToString();
-            WaveLenTextBox.Text = info.WaveLength.ToString();
-            FreqTextBox.Text = info.Freq.ToString();
-            PhaseTextBox.Text = info.Phase.ToString();
-            StartTextBox.Text = info.Start.ToString();
-            VelocityTextBox.Text = info.Velocity.ToString();
+            ColorRect.Fill = new SolidColorBrush(info.InitColor);
+            WaveTypeComboBox.SelectedIndex = info.Waves[0].WaveType;
+            MinTextBox.Text = info.Waves[0].Min.ToString();
+            MaxTextBox.Text = info.Waves[0].Max.ToString();
+            WaveLenTextBox.Text = info.Waves[0].WaveLength.ToString();
+            FreqTextBox.Text = info.Waves[0].Freq.ToString();
+            PhaseTextBox.Text = info.Waves[0].Phase.ToString();
+            StartTextBox.Text = info.Waves[0].Start.ToString();
+            VelocityTextBox.Text = info.Waves[0].Velocity.ToString();
         }
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
@@ -230,7 +232,7 @@ namespace AuraEditor
             Color resultColor = ColorPicker.Color;
             SolidColorBrush scb = new SolidColorBrush(resultColor);
 
-            SelectedEffectLine.Info.Color = resultColor;
+            SelectedEffectLine.Info.InitColor = resultColor;
             ColorRect.Fill = scb;
             //border.Background = scb;
             m_flyoutBase.Hide();
@@ -259,22 +261,22 @@ namespace AuraEditor
             switch (waveName)
             {
                 case "SineWave":
-                    ei.WaveType = 0;
+                    ei.Waves[0].WaveType = 0;
                     break;
                 case "HalfSineWave":
-                    ei.WaveType = 1;
+                    ei.Waves[0].WaveType = 1;
                     break;
                 case "QuarterSineWave":
-                    ei.WaveType = 2;
+                    ei.Waves[0].WaveType = 2;
                     break;
                 case "SquareWave":
-                    ei.WaveType = 3;
+                    ei.Waves[0].WaveType = 3;
                     break;
                 case "TriangleWave":
-                    ei.WaveType = 4;
+                    ei.Waves[0].WaveType = 4;
                     break;
                 case "SawToothleWave":
-                    ei.WaveType = 5;
+                    ei.Waves[0].WaveType = 5;
                     break;
             }
         }
@@ -321,13 +323,13 @@ namespace AuraEditor
             }
             
             EffectInfo ei = SelectedEffectLine.Info;
-            ei.Min = double.Parse(MinTextBox.Text);
-            ei.Max = double.Parse(MaxTextBox.Text);
-            ei.WaveLength = double.Parse(WaveLenTextBox.Text);
-            ei.Freq = double.Parse(FreqTextBox.Text);
-            ei.Phase = double.Parse(PhaseTextBox.Text);
-            ei.Start = double.Parse(StartTextBox.Text);
-            ei.Start = double.Parse(VelocityTextBox.Text);
+            ei.Waves[0].Min = double.Parse(MinTextBox.Text);
+            ei.Waves[0].Max = double.Parse(MaxTextBox.Text);
+            ei.Waves[0].WaveLength = double.Parse(WaveLenTextBox.Text);
+            ei.Waves[0].Freq = double.Parse(FreqTextBox.Text);
+            ei.Waves[0].Phase = double.Parse(PhaseTextBox.Text);
+            ei.Waves[0].Start = double.Parse(StartTextBox.Text);
+            ei.Waves[0].Start = double.Parse(VelocityTextBox.Text);
         }
 
         private void EffectInfo_LostFocus(object sender, RoutedEventArgs e)
@@ -349,19 +351,27 @@ namespace AuraEditor
             }
 
             EffectInfo ei = SelectedEffectLine.Info;
-            ei.Min = double.Parse(MinTextBox.Text);
-            ei.Max = double.Parse(MaxTextBox.Text);
-            ei.WaveLength = double.Parse(WaveLenTextBox.Text);
-            ei.Freq = double.Parse(FreqTextBox.Text);
-            ei.Phase = double.Parse(PhaseTextBox.Text);
-            ei.Start = double.Parse(StartTextBox.Text);
-            ei.Velocity = double.Parse(VelocityTextBox.Text);
+            ei.Waves[0].Min = double.Parse(MinTextBox.Text);
+            ei.Waves[0].Max = double.Parse(MaxTextBox.Text);
+            ei.Waves[0].WaveLength = double.Parse(WaveLenTextBox.Text);
+            ei.Waves[0].Freq = double.Parse(FreqTextBox.Text);
+            ei.Waves[0].Phase = double.Parse(PhaseTextBox.Text);
+            ei.Waves[0].Start = double.Parse(StartTextBox.Text);
+            ei.Waves[0].Velocity = double.Parse(VelocityTextBox.Text);
         }
 
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            ContentDialog colorPickerDialog = new ColorPickerDialog();
+            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
+            RadioButtonBg.Background = new SolidColorBrush(newColor);
+        }
+
+        public async Task<Color> OpenColorPickerWindow(Color c)
+        {
+            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
             await colorPickerDialog.ShowAsync();
+
+            return colorPickerDialog.CurrentColor;
         }
 
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -403,21 +413,12 @@ namespace AuraEditor
             {
                 if (slider.Value == 1)
                 {
-                    SpeedTextBlock.Text = "Medium";
-                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
-                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                 }
                 else if (slider.Value == 2)
                 {
-                    SpeedTextBlock.Text = "Fast";
-                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
-                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_h.png"));
                 }
                 else
                 {
-                    SpeedTextBlock.Text = "Slow";
-                    //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
-                    //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                 }
             }
         }

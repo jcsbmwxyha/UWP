@@ -8,14 +8,9 @@ using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
-    class TriggerEffect : IEffect
+    public class TriggerEffect : Effect
     {
-        public DeviceLayer Layer { get; set; }
-        public string Name { get; set; }
-        public string LuaName { get; set; }
-        public int Type { get; set; }
-        public EffectInfo Info { get; set; }
-        public double StartTime
+        public override double StartTime
         {
             get
             {
@@ -25,7 +20,7 @@ namespace AuraEditor
             {
             }
         }
-        public double DurationTime
+        public override double DurationTime
         {
             get
             {
@@ -36,14 +31,13 @@ namespace AuraEditor
             }
         }
 
-        public TriggerEffect(DeviceLayer layer, int effectType)
+        public TriggerEffect(DeviceLayer layer, int effectType) : base(layer, effectType)
         {
-            Layer = layer;
-            Type = effectType;
-            Name = GetEffectName(effectType);
             DurationTime = 1000; // 1s
-            Info = new EffectInfo(effectType);
         }
-        public virtual Table ToEventTable() { return null; }
+        public TriggerEffect(DeviceLayer layer, string effectName) : base(layer, effectName)
+        {
+            DurationTime = 1000; // 1s
+        }
     }
 }

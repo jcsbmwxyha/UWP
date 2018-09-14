@@ -24,7 +24,7 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectLine : UserControl
     {
-        public Effect MyEffect { get { return this.DataContext as Effect; } }
+        public TimelineEffect MyEffect { get { return this.DataContext as TimelineEffect; } }
 
         public double X
         {
@@ -91,16 +91,6 @@ namespace AuraEditor.UserControls
                     return;
 
                 Width = e.Position.X;
-
-                if (e.Delta.Translation.X > 0) // To right
-                {
-                    // We should check if it will overlap others
-                    DeviceLayer myLayer = MyEffect.Layer;
-                    Effect overlappedEL = myLayer.TestAndGetFirstOverlappingEffect(MyEffect);
-
-                    if (overlappedEL != null)
-                        myLayer.PushAllEffectsWhichOnTheRight(MyEffect, e.Delta.Translation.X);
-                }
             }
             else if (MouseState == CursorState.SizeLeft)
             {

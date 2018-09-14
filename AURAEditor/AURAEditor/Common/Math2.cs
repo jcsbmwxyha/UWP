@@ -104,11 +104,9 @@ namespace AuraEditor.Common
         }
         static public Point SVToPoint(double s, double v, double sideLength)
         {
-            double theta = 60 * s;
-            double d = sideLength * v;
-            double d60 = d / Math.Sin(DegreeToRadian(120 - theta)) * Math.Sin(Degree60ToRadius);
-            return new Point(d60 * Math.Cos(DegreeToRadian(theta)),
-                             d60 * Math.Sin(DegreeToRadian(theta)));
+            double x = 60 + s * sideLength;
+            double y = 60 + sideLength - v * sideLength;
+            return new Point(x,y);
         }
         static public double ComputeH(double x, double y)
         {
@@ -141,6 +139,19 @@ namespace AuraEditor.Common
             double d = Distance(new Point(0, 0), p);
             s = r / DegreeToRadian(60);
             v = (d / Math.Sin(Degree60ToRadius) * Math.Sin(Degree120ToRadius - r)) / triangleSide;
+        }
+
+        static public void ComputeSquareSV(int row, int col, double squareSide, out double s, out double v)
+        {
+            if(row >=60 && col >= 60)
+            {
+                s = (col - 60) / squareSide;
+                v = (220 - row) / squareSide;
+            }
+            else
+            {
+                s = 0; v = 0;
+            }
         }
         static public Point RotatePoint(Point p, Point center, double angle)
         {

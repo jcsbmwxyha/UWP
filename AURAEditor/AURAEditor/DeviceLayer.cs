@@ -7,26 +7,33 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using static AuraEditor.MainPage;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.ControlHelper;
 using AuraEditor.UserControls;
+using MoonSharp.Interpreter;
 
 namespace AuraEditor
 {
     public class DeviceLayer
     {
-        public string LayerName { get; set; }
-        public List<Effect> Effects;
+        public string Name { get; set; }
+        public List<TimelineEffect> TimelineEffects;
+        public List<TriggerEffect> TriggerEffects;
         public Canvas UICanvas;
         public bool Eye { get; set; }
-        Dictionary<int, int[]> _deviceToZonesDictionary;
+        private Dictionary<int, int[]> m_ZoneDictionary;
+        public Dictionary<int, int[]> GetZoneDictionary()
+        {
+            return m_ZoneDictionary;
+        }
 
         public DeviceLayer(string name = "")
         {
-            LayerName = name;
-            Effects = new List<Effect>();
+            Name = name;
+            TimelineEffects = new List<TimelineEffect>();
             UICanvas = CreateUICanvas();
-            _deviceToZonesDictionary = new Dictionary<int, int[]>();
+            m_ZoneDictionary = new Dictionary<int, int[]>();
             Eye = true;
         }
         private Canvas CreateUICanvas()
@@ -44,10 +51,7 @@ namespace AuraEditor
 
             return canvas;
         }
-        public Dictionary<int, int[]> GetDeviceToZonesDictionary()
-        {
-            return _deviceToZonesDictionary;
-        }
+
         public void AddDeviceZones(Dictionary<int, int[]> dictionary)
         {
             if (dictionary == null)
@@ -55,24 +59,26 @@ namespace AuraEditor
 
             foreach (var item in dictionary)
             {
-                if (!_deviceToZonesDictionary.ContainsKey(item.Key))
+                if (!m_ZoneDictionary.ContainsKey(item.Key))
                 {
-                    _deviceToZonesDictionary.Add(item.Key, item.Value);
+                    m_ZoneDictionary.Add(item.Key, item.Value);
                 }
             }
         }
         public void AddDeviceZones(int type, int[] indexes)
         {
-            _deviceToZonesDictionary.Add(type, indexes);
+            m_ZoneDictionary.Add(type, indexes);
         }
-        public void AddEffect(Effect effect)
+        public void AddTimelineEffect(TimelineEffect effect)
         {
-            Effects.Add(effect);
+            TimelineEffects.Add(effect);
             UICanvas.Children.Add(effect.UI);
+            AnimationStart(effect.UI, "Opacity", 300, 0, 1);
         }
-        public void InsertEffectLine(Effect insertedEL)
+
+        public async void InsertEffectLine(TimelineEffect insertedEL)
         {
-            Effect overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
+            TimelineEffect overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
 
             if (overlappedEL != null)
             {
@@ -86,29 +92,35 @@ namespace AuraEditor
                 }
                 else if (overUI.X < inUI.X)
                 {
-                    inUI.X += (overUI.Right - inUI.X);
+                    double source = inUI.X;
+                    double target = source + overUI.Right - inUI.X;
+
+                    await AnimationStartAsync(inUI.RenderTransform, "TranslateX", 200, source, target);
                     InsertEffectLine(insertedEL);
                 }
             }
         }
-        public void PushAllEffectsWhichOnTheRight(Effect effect, double move)
+        public void PushAllEffectsWhichOnTheRight(TimelineEffect effect, double move)
         {
-            foreach (Effect e in Effects)
+            foreach (TimelineEffect e in TimelineEffects)
             {
                 if (effect.Equals(e))
                     continue;
 
                 if (effect.UI.X <= e.UI.X)
                 {
-                    e.UI.X += move;
+                    double source = e.UI.X;
+                    double target = source + move;
+
+                    AnimationStart(e.UI.RenderTransform, "TranslateX", 200, source, target);
                 }
             }
         }
-        public Effect TestAndGetFirstOverlappingEffect(Effect testEffect)
+        public TimelineEffect TestAndGetFirstOverlappingEffect(TimelineEffect testEffect)
         {
-            Effect result = null;
+            TimelineEffect result = null;
 
-            foreach (Effect e in Effects)
+            foreach (TimelineEffect e in TimelineEffects)
             {
                 if (e.Equals(testEffect))
                     continue;
@@ -126,7 +138,7 @@ namespace AuraEditor
 
             return result;
         }
-        private bool IsOverlapping(Effect effect1, Effect effect2)
+        private bool IsOverlapping(TimelineEffect effect1, TimelineEffect effect2)
         {
             EffectLine UI_1 = effect1.UI;
             EffectLine UI_2 = effect2.UI;
@@ -135,9 +147,9 @@ namespace AuraEditor
                 UI_1.X, UI_1.Width,
                 UI_2.X, UI_2.Width);
         }
-        public Effect FindEffectByPosition(double x)
+        public TimelineEffect FindEffectByPosition(double x)
         {
-            foreach (Effect e in Effects)
+            foreach (TimelineEffect e in TimelineEffects)
             {
                 double left = e.UI.X;
                 double width = e.UI.Width;
@@ -147,11 +159,11 @@ namespace AuraEditor
             }
             return null;
         }
-        public Effect FindFirstEffectOnTheRight(double x)
+        public TimelineEffect FindFirstEffectOnTheRight(double x)
         {
-            Effect result = null;
+            TimelineEffect result = null;
 
-            foreach (Effect e in Effects)
+            foreach (TimelineEffect e in TimelineEffects)
             {
                 if (e.UI.X > x)
                 {
@@ -170,9 +182,9 @@ namespace AuraEditor
         {
             double roomX = 0;
 
-            for (int i = 0; i < Effects.Count; i++)
+            for (int i = 0; i < TimelineEffects.Count; i++)
             {
-                Effect effect = Effects[i];
+                TimelineEffect effect = TimelineEffects[i];
                 EffectLine UI = effect.UI;
 
                 if (roomX <= UI.X && UI.X < roomX + AuraCreatorManager.GetPixelsPerSecond())
@@ -204,9 +216,41 @@ namespace AuraEditor
                 var effectname = await e.DataView.GetTextAsync();
                 int type = GetEffectIndex(effectname);
 
-                Effect effect = new Effect(this, type);
-                AddEffect(effect);
+                TimelineEffect effect = new TimelineEffect(this, type);
+                AddTimelineEffect(effect);
             }
+        }
+
+        public Table ToTable()
+        {
+            AuraCreatorManager manager = AuraCreatorManager.Instance;
+            List<Device> globalDevices = manager.GlobalDevices;
+            Table layerTable = CreateNewTable();
+
+            foreach (var d in globalDevices)
+            {
+                Table deviceTable = d.ToTable();
+                Table usageTable = GetUsageTable(d.Type);
+
+                deviceTable.Set("usage", DynValue.NewTable(usageTable));
+                layerTable.Set(d.Name, DynValue.NewTable(deviceTable));
+            }
+
+            return layerTable;
+        }
+        private Table GetUsageTable(int deviceType)
+        {
+            Table usageTable = CreateNewTable();
+            int[] zoneIndexes = m_ZoneDictionary[deviceType];
+            int count = 1;
+
+            foreach (int index in zoneIndexes)
+            {
+                usageTable.Set(count, DynValue.NewNumber(index));
+                count++;
+            };
+
+            return usageTable;
         }
     }
 }
