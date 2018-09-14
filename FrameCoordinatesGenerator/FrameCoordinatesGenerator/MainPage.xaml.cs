@@ -35,9 +35,16 @@ namespace FrameCoordinatesGenerator
 
     class ImagePixelStructure
     {
+        enum DetectMode
+        {
+            frame = 0,
+            key = 1,
+        }
+
         private SoftwareBitmap m_softwareBitmap;
         private List<Rect> m_frameRects;
         private bool[,] m_pixelBoolArray;
+        private DetectMode mode = DetectMode.frame;
 
         public ImagePixelStructure(SoftwareBitmap softwareBitmap)
         {
@@ -45,7 +52,7 @@ namespace FrameCoordinatesGenerator
             m_pixelBoolArray = GetBoolPixelArray(softwareBitmap);
             m_frameRects = FindFrames();
         }
-        
+
         public List<Rect> GetFrameRects()
         {
             return m_frameRects;
@@ -77,9 +84,7 @@ namespace FrameCoordinatesGenerator
                         {
                             int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x;
 
-                            if (dataInBytes[pixelIndex + 0] == 0 &&
-                                dataInBytes[pixelIndex + 1] == 255 &&
-                                dataInBytes[pixelIndex + 2] == 0)
+                            if (dataInBytes[pixelIndex + 0] - dataInBytes[pixelIndex + 1] >= 30)
                             {
                                 pixelBoolArray[y, x] = true;
                             }
@@ -110,7 +115,10 @@ namespace FrameCoordinatesGenerator
 
                         if (!AlreadyHasFrame(frames, pixel))
                         {
-                            frames.Add(GetFrame(pixel));
+                            if (mode == DetectMode.frame)
+                                frames.Add(GetFrame(pixel));
+                            else
+                                frames.Add(GetKey(pixel));
                         }
                     }
                 }
@@ -124,6 +132,14 @@ namespace FrameCoordinatesGenerator
 
             foreach (var frameRect in frames)
             {
+                if (mode == DetectMode.key)
+                {
+                    if (frameRect.Contains(pixel))
+                    {
+                        return true;
+                    }
+                }
+
                 if ((frameRect.X == leftTop.X) && (frameRect.Y == leftTop.Y))
                 {
                     return true;
@@ -188,6 +204,71 @@ namespace FrameCoordinatesGenerator
             }
 
             return y;
+        }
+
+        private Rect GetKey(Point firstPixel)
+        {
+            int left = (int)FindLeftmostPoint(firstPixel).X;
+            int top = (int)FindTopPoint(firstPixel).Y;
+
+            Point rightmostPoint = FindRightmostPoint(firstPixel);
+            int right = (int)rightmostPoint.X;
+            int bottom = (int)FindBottomPoint(rightmostPoint).Y;
+
+            return new Rect(
+                new Point(left, top),
+                new Point(right, bottom)
+                );
+        }
+        private Point FindLeftmostPoint(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_pixelBoolArray[y, x] == true)
+            {
+                if (m_pixelBoolArray[y, x - 1] == true)
+                    x--;
+                else
+                    y++;
+            }
+
+            return new Point(x, y - 1);
+        }
+        private Point FindTopPoint(Point firstPixel)
+        {
+            return firstPixel;
+        }
+        private Point FindRightmostPoint(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_pixelBoolArray[y, x] == true)
+            {
+                if (m_pixelBoolArray[y, x + 1] == true)
+                    x++;
+                else
+                    y++;
+            }
+
+            return new Point(x, y - 1);
+        }
+        private Point FindBottomPoint(Point rightmostPixel)
+        {
+            int x = (int)rightmostPixel.X;
+            int y = (int)rightmostPixel.Y;
+
+            // Start from rightmost point
+            while (m_pixelBoolArray[y, x] == true)
+            {
+                if (m_pixelBoolArray[y + 1, x] == true)
+                    y++;
+                else
+                    x--;
+            }
+
+            return new Point(x + 1, y);
         }
     }
 
@@ -298,12 +379,15 @@ namespace FrameCoordinatesGenerator
             };
             TextBlock textBlock = new TextBlock
             {
+                Foreground = new SolidColorBrush(Colors.Red),
                 RenderTransform = ct,
                 Width = rect.Width,
                 Height = rect.Height,
+                TextAlignment = TextAlignment.Center,
                 HorizontalAlignment = 0,
                 VerticalAlignment = 0,
                 Text = index,
+                FontSize = 10,
             };
 
             return textBlock;
@@ -323,7 +407,7 @@ namespace FrameCoordinatesGenerator
             StorageFile csvFile;
 
             csvFile = await savePicker.PickSaveFileAsync();
-            
+
             if (csvFile != null)
             {
                 try
@@ -362,8 +446,8 @@ namespace FrameCoordinatesGenerator
                         "Frame " + (i + 1).ToString(),
                         frameRects[i].X.ToString(),
                         frameRects[i].Y.ToString(),
-                        frameRects[i].Right.ToString(),
-                        frameRects[i].Bottom.ToString()
+                        (frameRects[i].Right + 1).ToString(),
+                        (frameRects[i].Bottom + 1).ToString()
                     };
 
                     csvWriter.WriteRow(row);
