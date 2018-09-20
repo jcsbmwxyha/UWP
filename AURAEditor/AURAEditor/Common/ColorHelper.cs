@@ -68,13 +68,9 @@ namespace AuraEditor.Common
             Color color;
 
             if (colorIndex == 0)
-                color = Colors.Purple;
-            else if (colorIndex == 1)
-                color = new Color { A = 127, R = 123, G = 211, B = 123 };
-            else if (colorIndex == 2)
-                color = new Color { A = 127, R = 93, G = 181, B = 93 };
-            else if (colorIndex == 3)
                 color = new Color { A = 127, R = 53, G = 53, B = 53 };
+            else
+                color = Colors.LightBlue; // trigger layer
 
             return new SolidColorBrush(color);
         }

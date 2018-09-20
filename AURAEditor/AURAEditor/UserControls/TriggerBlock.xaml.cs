@@ -29,6 +29,10 @@ namespace AuraEditor.UserControls
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
         }
+        public void Update()
+        {
+            Bindings.Update();
+        }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {

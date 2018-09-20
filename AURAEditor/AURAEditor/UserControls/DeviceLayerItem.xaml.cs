@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using AuraEditor.Dialogs;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.AuraEditorColorHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -60,6 +61,11 @@ namespace AuraEditor.UserControls
         {
             ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
             await triggerDialog.ShowAsync();
+
+            if (m_DeviceLayer.TriggerEffects.Count != 0)
+                m_DeviceLayer.UICanvas.Background = GetTimelineBackgroundColor(1);
+            else
+                m_DeviceLayer.UICanvas.Background = GetTimelineBackgroundColor(0);
         }
     }
 }

@@ -10,16 +10,7 @@ namespace AuraEditor
 {
     public class TriggerEffect : Effect
     {
-        public override double StartTime
-        {
-            get
-            {
-                return 0;
-            }
-            set
-            {
-            }
-        }
+        public override double StartTime { get; set; }
         public override double DurationTime
         {
             get

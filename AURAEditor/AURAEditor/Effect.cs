@@ -45,17 +45,6 @@ namespace AuraEditor
         public virtual Table ToTable()
         {
             return Info.ToTable();
-            //Table effectTable = CreateNewTable();
-
-            //Table initColorTable = GetInitColorTable();
-            //Table viewportTransformTable = GetViewportTransformTable(Type);
-            //Table waveTable = GetWaveTable();
-
-            //effectTable.Set("initColor", DynValue.NewTable(initColorTable));
-            //effectTable.Set("viewportTransform", DynValue.NewTable(viewportTransformTable));
-            //effectTable.Set("wave", DynValue.NewTable(waveTable));
-
-            //return effectTable;
         }
     }
 }

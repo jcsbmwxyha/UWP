@@ -159,6 +159,7 @@
                             <x:String>SquareWave</x:String>
                             <x:String>TriangleWave</x:String>
                             <x:String>SawToothleWave</x:String>
+                            <x:String>ConstantWave</x:String>
                         </ComboBox>
                         <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
                             <TextBox.Header>

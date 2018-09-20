@@ -52,10 +52,12 @@ namespace AuraEditor
             Selected = false;
             RelativeZoneRect = new Rect(
                 new Point(frameLeft, frameTop),
-                new Point(frameRight, frameBottom));
-            Frame = CreateRectangle( new Rect(
+                new Point(frameRight, frameBottom)
+                );
+            Frame = CreateRectangle(new Rect(
                     new Point(frameLeft + deviceLeft, frameTop + deviceTop),
-                    new Point(frameRight + deviceLeft, frameBottom + deviceTop)));
+                    new Point(frameRight + deviceLeft, frameBottom + deviceTop))
+                    );
             Frame.SetValue(Canvas.ZIndexProperty, led.ZIndex);
             ZIndex = led.ZIndex;
         }

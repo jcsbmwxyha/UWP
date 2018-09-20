@@ -61,7 +61,6 @@ namespace AuraEditor.Dialogs
             {
                 if (_hue != value)
                 {
-                    //ChangeTriangleColor(value);
                     _hue = value;
                 }
             }
@@ -81,7 +80,6 @@ namespace AuraEditor.Dialogs
                 TextBox_G.Text = value.G.ToString();
                 TextBox_B.Text = value.B.ToString();
                 OnColorChange?.Invoke(value);
-                //SelectedPolygonColor.Fill = new SolidColorBrush(value);
                 _currentColor = value;
             }
         }
@@ -527,9 +525,9 @@ namespace AuraEditor.Dialogs
                 storyboard.Children.Add(selesctedRingAnimation);
 
                 _preAngle = selectRingTargetAngle;
-                ChangeSelectAreaColor(selectRingTargetAngle, Saturation, Value);
                 ChangeSquareColor(selectRingTargetAngle);
             }
+            ChangeSelectAreaColor(selectRingTargetAngle, Saturation, Value);
 
             if (_preCirclePoint.X != circleTargetPoint.X || _preCirclePoint.Y != circleTargetPoint.Y)
             {

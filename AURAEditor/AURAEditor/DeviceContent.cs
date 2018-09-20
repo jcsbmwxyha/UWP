@@ -75,9 +75,9 @@ namespace AuraEditor
 
                 deviceContent.DeviceName = modelName;
 
-                if (modelName == "GLADIUS II")
+                if (modelName.ToLower() == "gladius ii")
                     deviceContent.DeviceType = 1;
-                else if (modelName == "Flare")
+                else if (modelName.ToLower() == "flare")
                     deviceContent.DeviceType = 2;
                 else
                     deviceContent.DeviceType = 0;
@@ -148,19 +148,12 @@ namespace AuraEditor
         public Device ToDevice(Point gridPosition)
         {
             Device device;
-            CompositeTransform ct;
             Image img;
             List<LightZone> zones = new List<LightZone>();
 
-            ct = new CompositeTransform
-            {
-                TranslateX = GridPixels * gridPosition.X,
-                TranslateY = GridPixels * gridPosition.Y
-            };
-
             img = new Image
             {
-                RenderTransform = ct,
+                RenderTransform = new CompositeTransform(),
                 Width = Image.PixelWidth,
                 Height = Image.PixelHeight,
                 Source = this.Image,
@@ -182,7 +175,6 @@ namespace AuraEditor
                 GridPosition = new Point(gridPosition.X, gridPosition.Y),
                 Width = GridWidth,
                 Height = GridHeight,
-                Image = img,
             };
 
             return device;

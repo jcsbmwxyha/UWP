@@ -56,9 +56,7 @@ namespace AuraEditor.Common
                 green = 0;
                 blue = x;
             }
-            //r = (red + m) * 255;
-            //g = (green + m) * 255;
-            //b = (blue + m) * 255;
+
             return new Color
             {
                 A = (byte)(255),

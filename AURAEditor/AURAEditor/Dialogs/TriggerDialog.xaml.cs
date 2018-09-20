@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.ControlHelper;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -55,7 +56,7 @@ namespace AuraEditor.Dialogs
                 }
             }
         }
-        
+
         public TriggerDialog(DeviceLayer layer)
         {
             this.InitializeComponent();
@@ -72,7 +73,7 @@ namespace AuraEditor.Dialogs
             }
 
             TriggerEffectListView.ItemsSource = m_EffectList;
-        }  
+        }
         private void AddEffectButton_Click(object sender, RoutedEventArgs e)
         {
             if (EffectComboBox.SelectedItem != null)
@@ -125,6 +126,11 @@ namespace AuraEditor.Dialogs
 
             m_EffectList[SelectedIndex].ChangeType(type);
             FillOutParameter(m_EffectList[SelectedIndex].Info);
+
+            // TODO : Use MVVM to update content
+            ListViewItem item = TriggerEffectListView.ContainerFromIndex(SelectedIndex) as ListViewItem;
+            TriggerBlock tb = FindAllControl<TriggerBlock>(item, typeof(TriggerBlock))[0];
+            tb.Update();
         }
 
         private void ColorRect_Pressed(object sender, PointerRoutedEventArgs e)
@@ -170,6 +176,9 @@ namespace AuraEditor.Dialogs
                     break;
                 case "SawToothleWave":
                     ei.Waves[0].WaveType = 5;
+                    break;
+                case "ConstantWave":
+                    ei.Waves[0].WaveType = 6;
                     break;
             }
         }
@@ -261,6 +270,11 @@ namespace AuraEditor.Dialogs
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            for (int i = 0; i < m_EffectList.Count; i++)
+            {
+                m_EffectList[i].StartTime = i * 1000;
+            }
+
             m_DeviceLayer.TriggerEffects = m_EffectList.ToList();
             this.Hide();
         }

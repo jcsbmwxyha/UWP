@@ -25,6 +25,7 @@ using AuraEditor.UserControls;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.LuaHelper;
+using System.Collections.ObjectModel;
 
 namespace AuraEditor
 {
@@ -39,7 +40,11 @@ namespace AuraEditor
         }
         public AuraCreatorManager _auraCreatorManager;
         public BitmapImage DragEffectIcon;
-
+        
+        private StorageFile m_RecentFiles_SF;
+        private StorageFile m_CurrentScript_SF;
+        public ObservableRecentList RecentFileList;
+        
         public double TimelineScrollHorOffset
         {
             get { return (double)GetValue(ScrollHorOffseProperty); }
@@ -62,11 +67,8 @@ namespace AuraEditor
         {
             _instance = this;
             this.InitializeComponent();
-
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
-            TriggerEventListView.ItemsSource = GetTriggerEffectBlocks();
-            OtherTriggerEventListView.ItemsSource = GetOtherTriggerEffectBlocks();
-
+            RecentFileList = new ObservableRecentList();
             _auraCreatorManager = AuraCreatorManager.Instance;
 
             //BackgroundWorker for Socket Server
@@ -75,8 +77,9 @@ namespace AuraEditor
             bgwSocketServer.RunWorkerAsync();
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            await FileOperations();
             IntializeSpaceGrid();
             InitializeDragEffectIcon();
             InitializeTimelineStructure();
@@ -84,19 +87,62 @@ namespace AuraEditor
             AngleImgCenter = new Point(AngleGrid.ActualWidth / 2, AngleGrid.ActualHeight / 2);
             _preAngle = 0;
             AngleTextBox.Text = "0";
+        }
 
-            // for receive cmd form Service
-            //socketstart();
+        private async Task FileOperations()
+        {
+            m_RecentFiles_SF = await TryAndGetRecentFilesSF();
+            XmlDocument recentFilesXmlDoc = await GetRecentFilesXmlDoc(m_RecentFiles_SF);
+            GetSortedRecentFiles(recentFilesXmlDoc);
+        }
+        private List<string> GetSortedRecentFiles(XmlDocument xml)
+        {
+            XmlNode recentfilesNode = xml.SelectSingleNode("recentfiles");
+            XmlNodeList fileNodes = recentfilesNode.SelectNodes("file");
+            List<string> list = new List<string>();
 
-            // For developing
-            /*
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < fileNodes.Count; i++)
             {
-                DeviceLayer dg = new DeviceLayer();
-                dg.LayerName = "123";
-                _deviceLayerManager.AddDeviceLayer(dg);
+                XmlElement element = (XmlElement)fileNodes[i];
+                RecentFileList.Add(element.GetAttribute("path"));
             }
-            */
+
+            return list;
+        }
+        private async Task<XmlDocument> GetRecentFilesXmlDoc(StorageFile sf)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(await sf.OpenStreamForReadAsync());
+
+            return xml;
+        }
+        private async Task<StorageFile> TryAndGetRecentFilesSF()
+        {
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+            folder = await EnterOrCreateFolder(folder, "AURA Creator");
+            folder = await EnterOrCreateFolder(folder, "script");
+
+            try
+            {
+                return await folder.GetFileAsync("recentfiles.xml");
+            }
+            catch
+            {
+                return await folder.CreateFileAsync("recentfiles.xml");
+            }
+        }
+        private void FileListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = FileListComboBox.SelectedIndex;
+
+            // Calling InsertHead or setting SelectedIndex will call SelectionChanged again.
+            // We should ingore it.
+            if (index == -1 || index == 0)
+                return;
+
+            string item = FileListComboBox.Items[index] as string;
+            RecentFileList.InsertHead(item);
+            FileListComboBox.SelectedIndex = 0;
         }
 
         private async void InitializeDragEffectIcon()
@@ -117,24 +163,10 @@ namespace AuraEditor
         #region Framework Element
         private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {
-            RadioButton rb = sender as RadioButton;
-            FrameworkElement fe;
-
-            if (rb.Name == "EffectRadioButton")
-                fe = EffectBlockListView;
-            else if (rb.Name == "EventRadioButton")
-                fe = EventStackPanel;
-            else if (rb.Name == "TriggerEventRadioButton")
-                fe = TriggerEventListView;
-            else // OtherTriggerEventToggleButton
-                fe = OtherTriggerEventListView;
-
-            if (fe == null)
-                return;
-            else if (fe.Visibility == Visibility.Visible)
-                fe.Visibility = Visibility.Collapsed;
+            if (EffectBlockListView.Visibility == Visibility.Visible)
+                EffectBlockListView.Visibility = Visibility.Collapsed;
             else
-                fe.Visibility = Visibility.Visible;
+                EffectBlockListView.Visibility = Visibility.Visible;
         }
         private void AdjustEffectBlockGrid_Click(object sender, RoutedEventArgs e)
         {
@@ -236,6 +268,13 @@ namespace AuraEditor
                 // The user cancelled the picking operation
                 return;
             }
+            
+            RecentFileList.InsertHead(inputFile.Path);
+            FileListComboBox.SelectedIndex = 0;
+            m_CurrentScript_SF = inputFile;
+
+            // Loading script is not ready.
+            return;
 
             string luaScript = await Windows.Storage.FileIO.ReadTextAsync(inputFile);
             luaScript = luaScript.Replace(RequireLine, "");
@@ -288,13 +327,32 @@ namespace AuraEditor
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-            folder = await EnterOrCreateFolder(folder, "AURA Creator");
-            folder = await EnterOrCreateFolder(folder, "script");
-            StorageFile sf =
-                await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            if (m_CurrentScript_SF == null)
+            {
+                SaveAsButton_Click(sender, e);
+                return;
+            }
+            else
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(m_CurrentScript_SF);
+                // write to file
+                await Windows.Storage.FileIO.WriteTextAsync(m_CurrentScript_SF, _auraCreatorManager.PrintLuaScript());
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(m_CurrentScript_SF);
+            }
 
-            await Windows.Storage.FileIO.WriteTextAsync(sf, _auraCreatorManager.PrintLuaScript());
+            //StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+            //folder = await EnterOrCreateFolder(folder, "AURA Creator");
+            //folder = await EnterOrCreateFolder(folder, "script");
+            //StorageFile sf =
+            //    await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
+            //await Windows.Storage.FileIO.WriteTextAsync(sf, _auraCreatorManager.PrintLuaScript());
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -320,6 +378,10 @@ namespace AuraEditor
                 // Completing updates may require Windows to ask for user input.
                 Windows.Storage.Provider.FileUpdateStatus status =
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(saveFile);
+
+                RecentFileList.InsertHead(saveFile.Path);
+                FileListComboBox.SelectedIndex = 0;
+                m_CurrentScript_SF = saveFile; 
             }
         }
         private async Task<StorageFolder> EnterOrCreateFolder(StorageFolder sf, string folderName)
@@ -409,38 +471,6 @@ namespace AuraEditor
             Table waveTable = effectTable.Get("wave").Table;
 
             return null;
-
-            //EffectInfo ei = new EffectInfo();
-
-            //if (!effectLuaName.Contains("Rainbow") && !effectLuaName.Contains("Smart") && !effectLuaName.Contains("ColorCycle"))
-            //{
-            //    ei.InitColor = AuraEditorColorHelper.HslToRgb(
-            //        colorTable.Get("alpha").Number,
-            //        colorTable.Get("hue").Number,
-            //        colorTable.Get("saturation").Number,
-            //        colorTable.Get("lightness").Number
-            //        );
-            //}
-
-            //switch (waveTable.Get("waveType").String)
-            //{
-            //    case "SineWave": ei.WaveType = 0; break;
-            //    case "HalfSineWave": ei.WaveType = 1; break;
-            //    case "QuarterSineWave": ei.WaveType = 2; break;
-            //    case "SquareWave": ei.WaveType = 3; break;
-            //    case "TriangleWave": ei.WaveType = 4; break;
-            //    case "SawToothleWave": ei.WaveType = 5; break;
-            //}
-
-            //ei.Min = waveTable.Get("min").Number;
-            //ei.Max = waveTable.Get("max").Number;
-            //ei.WaveLength = waveTable.Get("waveLength").Number;
-            //ei.Freq = waveTable.Get("freq").Number;
-            //ei.Phase = waveTable.Get("phase").Number;
-            //ei.Start = waveTable.Get("start").Number;
-            //ei.Velocity = waveTable.Get("velocity").Number;
-
-            //return ei;
         }
         private List<Device> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
         {
@@ -533,6 +563,10 @@ namespace AuraEditor
         private void SocketServer_DoWork(object sender, DoWorkEventArgs e)
         {
             socketstart();
+        }
+
+        private void MoreButton_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

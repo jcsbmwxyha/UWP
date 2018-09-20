@@ -79,7 +79,7 @@ namespace AuraEditor
             else if (GetEffectName(effectType) == "Breath") { usage = "point"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectType) == "ColorCycle") { usage = "point"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectType) == "Rainbow") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Strobing") { usage = "OrthogonaProject"; func = PointViewportTransformFunc; }
+            else if (GetEffectName(effectType) == "Strobing") { usage = "point"; func = PointViewportTransformFunc; }
             else if (GetEffectName(effectType) == "Comet") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }
             else if (GetEffectName(effectType) == "Reactive") { usage = "limitRadius"; func = LimitRadiusViewportTransformFunc1; }
             else if (GetEffectName(effectType) == "Laser") { usage = "distance"; func = DistanceViewportTransformFunc; }
@@ -153,7 +153,7 @@ namespace AuraEditor
             string bindToSlotString = "";
             string bindToSlotString2 = "HUE";
 
-            if (GetEffectName(effectType) == "Static") bindToSlotString = "LIGHTNESS";
+            if (GetEffectName(effectType) == "Static") bindToSlotString = "ALPHA";
             else if (GetEffectName(effectType) == "Breath") bindToSlotString = "LIGHTNESS";
             else if (GetEffectName(effectType) == "ColorCycle") bindToSlotString = "HUE";
             else if (GetEffectName(effectType) == "Rainbow") bindToSlotString = "HUE";
@@ -182,18 +182,19 @@ namespace AuraEditor
                 case 3: return "SquareWave";
                 case 4: return "TriangleWave";
                 case 5: return "SawToothleWave";
+                case 6: return "ConstantWave";
             }
 
             return "SineWave";
         }
         static private int GetDefaultWaveType(int effectType)
         {
-            if (GetEffectName(effectType) == "Static") return 4;
-            else if (GetEffectName(effectType) == "Breath") return 4;
+            if (GetEffectName(effectType) == "Static") return 6;
+            else if (GetEffectName(effectType) == "Breath") return 0;
             else if (GetEffectName(effectType) == "ColorCycle") return 2;
             else if (GetEffectName(effectType) == "Rainbow") return 2;
-            else if (GetEffectName(effectType) == "Strobing") return 4;
-            else if (GetEffectName(effectType) == "Comet") return 0;
+            else if (GetEffectName(effectType) == "Strobing") return 0;
+            else if (GetEffectName(effectType) == "Comet") return 4;
             else if (GetEffectName(effectType) == "Reactive") return 0;
             else if (GetEffectName(effectType) == "Laser") return 0;
             else if (GetEffectName(effectType) == "Radius") return 0;
@@ -207,7 +208,7 @@ namespace AuraEditor
         }
         static private double GetDefaultMax(int effectType)
         {
-            if (GetEffectName(effectType) == "Static") return 0.5;
+            if (GetEffectName(effectType) == "Static") return 1;
             else if (GetEffectName(effectType) == "Breath") return 0.5;
             else if (GetEffectName(effectType) == "ColorCycle") return 1;
             else if (GetEffectName(effectType) == "Rainbow") return 1;

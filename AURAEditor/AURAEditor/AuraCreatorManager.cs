@@ -67,13 +67,13 @@ namespace AuraEditor
         #region Layer
         public void AddDeviceLayer(DeviceLayer layer)
         {
-            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
+            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
             DeviceLayerCollection.Add(layer);
             TimelineStackPanel.Children.Add(layer.UICanvas);
         }
         public void InsertDeviceLayer(DeviceLayer layer, int index)
         {
-            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(3);
+            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
             DeviceLayerCollection.Insert(index, layer);
             TimelineStackPanel.Children.Insert(index, layer.UICanvas);
         }
@@ -251,7 +251,11 @@ namespace AuraEditor
                 if (layer.Eye == false)
                     continue;
 
-                foreach (TimelineEffect eff in layer.TimelineEffects)
+                List<Effect> effCollection = new List<Effect>();
+                effCollection.AddRange(layer.TimelineEffects);
+                effCollection.AddRange(layer.TriggerEffects);
+
+                foreach (Effect eff in effCollection)
                 {
                     // Give uniqle index for all effects
                     eff.LuaName = GetEffectName(eff.Type) + effectCount.ToString();
@@ -263,10 +267,8 @@ namespace AuraEditor
 
                     if (IsTriggerEffects(eff.Type))
                         queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
-                    else if (MainPage.MainPageInstance.RepeatMode == true)
-                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
                     else
-                        queueItemTable.Set("Trigger", DynValue.NewString("OneTime"));
+                        queueItemTable.Set("Trigger", DynValue.NewString("Period"));
 
                     queueItemTable.Set("Delay", DynValue.NewNumber(eff.StartTime));
                     queueItemTable.Set("Duration", DynValue.NewNumber(eff.DurationTime));
@@ -301,7 +303,11 @@ namespace AuraEditor
                 if (layer.Eye == false)
                     continue;
 
-                foreach (TimelineEffect eff in layer.TimelineEffects)
+                List<Effect> effCollection = new List<Effect>();
+                effCollection.AddRange(layer.TimelineEffects);
+                effCollection.AddRange(layer.TriggerEffects);
+
+                foreach (Effect eff in effCollection)
                     eventTable.Set(eff.LuaName, DynValue.NewTable(eff.ToTable()));
             }
 

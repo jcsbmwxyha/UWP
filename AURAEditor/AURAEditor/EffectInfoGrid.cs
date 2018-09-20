@@ -278,6 +278,9 @@ namespace AuraEditor
                 case "SawToothleWave":
                     ei.Waves[0].WaveType = 5;
                     break;
+                case "ConstantWave":
+                    ei.Waves[0].WaveType = 6;
+                    break;
             }
         }
 

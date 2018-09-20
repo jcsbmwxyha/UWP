@@ -124,10 +124,6 @@ namespace AuraEditor
                 }
             }
         }
-        public bool RepeatMode
-        {
-            get { return RepeatButton.IsChecked == true; }
-        }
         
         private void InitializeTimelineStructure()
         {

@@ -32,6 +32,7 @@ namespace AuraEditor
         {
             Name = name;
             TimelineEffects = new List<TimelineEffect>();
+            TriggerEffects = new List<TriggerEffect>();
             UICanvas = CreateUICanvas();
             m_ZoneDictionary = new Dictionary<int, int[]>();
             Eye = true;

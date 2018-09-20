@@ -21,7 +21,7 @@ namespace AuraEditor
         public Point GridPosition {
             get
             {
-                CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+                CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
                 return new Point(
                     ct.TranslateX / GridPixels,
@@ -35,37 +35,66 @@ namespace AuraEditor
             }
         }
         private Point _oldPixelPosition;
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public Image Image { get; set; }
+        public double Width {
+            get
+            {
+                return Border.Width / GridPixels;
+            }
+            set
+            {
+                Border.Width = value * GridPixels;
+            }
+        }
+        public double Height {
+            get
+            {
+                return Border.Height / GridPixels;
+            }
+            set
+            {
+                Border.Height = value * GridPixels;
+            }
+        }
+        private Image Image { get; set; }
+        public Border Border { get; set; }
         public LightZone[] LightZones { get; set; }
 
         public Device(Image img)
         {
             Image = img;
-            Image.Tapped += DeviceImg_Tapped;
+            //Image.Tapped += DeviceImg_Tapped;
+
+            Border = new Border();
+            Border.RenderTransform = new CompositeTransform();
+            Border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Orange);
+            Border.BorderThickness = new Thickness(0);
+            Border.Child = Image;
         }
         public void EnableManipulation()
         {
-            Image.ManipulationStarted -= ImageManipulationStarted;
-            Image.ManipulationDelta -= ImageManipulationDelta;
-            Image.ManipulationCompleted -= ImageManipulationCompleted;
-            Image.PointerEntered -= ImagePointerEntered;
-            Image.PointerExited -= ImagePointerExited;
+            Border.ManipulationStarted -= ImageManipulationStarted;
+            Border.ManipulationDelta -= ImageManipulationDelta;
+            Border.ManipulationCompleted -= ImageManipulationCompleted;
+            Border.PointerEntered -= ImagePointerEntered;
+            Border.PointerExited -= ImagePointerExited;
 
-            Image.ManipulationStarted += ImageManipulationStarted;
-            Image.ManipulationDelta += ImageManipulationDelta;
-            Image.ManipulationCompleted += ImageManipulationCompleted;
-            Image.PointerEntered += ImagePointerEntered;
-            Image.PointerExited += ImagePointerExited;
+            Border.ManipulationStarted += ImageManipulationStarted;
+            Border.ManipulationDelta += ImageManipulationDelta;
+            Border.ManipulationCompleted += ImageManipulationCompleted;
+            Border.PointerEntered += ImagePointerEntered;
+            Border.PointerExited += ImagePointerExited;
+
+            Border.BorderThickness = new Thickness(0.8);
         }
         public void DisableManipulation()
         {
-            Image.ManipulationStarted -= ImageManipulationStarted;
-            Image.ManipulationDelta -= ImageManipulationDelta;
-            Image.ManipulationCompleted -= ImageManipulationCompleted;
-            Image.PointerEntered -= ImagePointerEntered;
-            Image.PointerExited -= ImagePointerExited;
+            Border.ManipulationStarted -= ImageManipulationStarted;
+            Border.ManipulationDelta -= ImageManipulationDelta;
+            Border.ManipulationCompleted -= ImageManipulationCompleted;
+            Border.PointerEntered -= ImagePointerEntered;
+            Border.PointerExited -= ImagePointerExited;
+
+            Border.BorderThickness = new Thickness(0);
         }
 
         #region Mouse event
@@ -75,14 +104,14 @@ namespace AuraEditor
         }
         private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
             _oldPixelPosition = new Point(ct.TranslateX, ct.TranslateY);
             Image.Opacity = 0.5;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
             SetPosition(
                 ct.TranslateX + e.Delta.Translation.X,
@@ -90,7 +119,7 @@ namespace AuraEditor
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
             SetPosition(
                 RoundToGrid(ct.TranslateX),
@@ -122,22 +151,35 @@ namespace AuraEditor
 
         private void SetPosition(double x, double y)
         {
+            //SetPositionOfImage(x, y);
+            SetPositionOfBorder(x, y);
+            SetPositionOfAllZones(x, y);
+        }
+        private void SetPositionOfImage(double x, double y)
+        {
             CompositeTransform ct = Image.RenderTransform as CompositeTransform;
-            CompositeTransform zone_ct;
-
             ct.TranslateX = x;
             ct.TranslateY = y;
-
+        }
+        private void SetPositionOfBorder(double x, double y)
+        {
+            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+            ct.TranslateX = x;
+            ct.TranslateY = y;
+        }
+        private void SetPositionOfAllZones(double imageX, double imageY)
+        {
+            CompositeTransform zone_ct;
             foreach (var zone in LightZones)
             {
                 zone_ct = zone.Frame.RenderTransform as CompositeTransform;
-                zone_ct.TranslateX = ct.TranslateX + zone.RelativeZoneRect.Left;
-                zone_ct.TranslateY = ct.TranslateY + zone.RelativeZoneRect.Top;
+                zone_ct.TranslateX = imageX + zone.RelativeZoneRect.Left;
+                zone_ct.TranslateY = imageY + zone.RelativeZoneRect.Top;
             }
         }
         private void SetPositionByAnimation(double x, double y)
         {
-            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
+            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
             CompositeTransform zone_ct;
             double runTime = 300;
             double source;
@@ -146,11 +188,11 @@ namespace AuraEditor
 
             source = ct.TranslateX;
             targetX = x;
-            AnimationStart(Image.RenderTransform, "TranslateX", runTime, source, targetX);
+            AnimationStart(Border.RenderTransform, "TranslateX", runTime, source, targetX);
 
             source = ct.TranslateY;
             targetY = y;
-            AnimationStart(Image.RenderTransform, "TranslateY", runTime, source, targetY);
+            AnimationStart(Border.RenderTransform, "TranslateY", runTime, source, targetY);
 
             foreach (var zone in LightZones)
             {

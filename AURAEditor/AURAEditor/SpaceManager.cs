@@ -125,7 +125,7 @@ namespace AuraEditor
 
             foreach (Device d in devices)
             {
-                SpaceAreaCanvas.Children.Add(d.Image);
+                SpaceAreaCanvas.Children.Add(d.Border);
                 SortByZIndex(d.LightZones);
 
                 foreach (var zone in d.LightZones)

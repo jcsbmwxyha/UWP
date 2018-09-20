@@ -1075,6 +1075,9 @@
                         Content="Set Layer"
                         Click="SetLayerButton_Click"
                         Background="Gray"/>
+                <ComboBox Name="FileListComboBox" Width="450" VerticalAlignment="Center" Margin="10,0,0,0"
+                          ItemsSource="{x:Bind RecentFileList}"
+                          SelectionChanged="FileListComboBox_SelectionChanged"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
@@ -1089,6 +1092,7 @@
                         Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
                 <Button Name="MoreButton"
                         Style="{StaticResource MoreButtonStyle}"
+                            Click="MoreButton_Click"
                         Margin="3,0,0,0"/>
             </StackPanel>
         </Grid>
@@ -1112,44 +1116,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <RadioButton x:Name="EventRadioButton"
-                                 Content="Event Trigger"
-                                 HorizontalAlignment="Stretch"
-                                 GroupName="EffectOption" FontSize="20"
-                                 Foreground="White"
-                                 Click="EffectRadioButton_Click"
-                                 IsChecked="True"/>
-                <StackPanel Name="EventStackPanel">
-                    <RadioButton x:Name="TriggerEventRadioButton" Content="Event Trigger"
-                                     Click="EffectRadioButton_Click"
-                                     IsChecked="True"
-                                     GroupName="123"
-                                     Margin="20,0,0,0"
-                                     Foreground="White"/>
-                    <ListView x:Name="TriggerEventListView"
-                                  Margin="44,0">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <usercontrol:EffectBlock/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <RadioButton x:Name="OtherTriggerEventRadioButton"
-                                     Content="Other trigger events"
-                                     Click="EffectRadioButton_Click"
-                                     IsChecked="True"
-                                     Margin="20,0,0,0"
-                                     Foreground="White"/>
-                    <ListView x:Name="OtherTriggerEventListView"
-                                  Margin="44,0"
-                                  Foreground="White">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <usercontrol:EffectBlock/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
         <Grid Name="SpaceGrid" Grid.Row="1" Grid.Column="1">
@@ -1247,6 +1213,7 @@
                         <x:String>SquareWave</x:String>
                         <x:String>TriangleWave</x:String>
                         <x:String>SawToothleWave</x:String>
+                        <x:String>ConstantWave</x:String>
                     </ComboBox>
                     <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
                         <TextBox.Header>
@@ -1403,13 +1370,6 @@
                     Click="PlayButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="StopButton"/>
-            <ToggleButton Name="RepeatButton"
-                          FontSize="20" FontFamily="Segoe MDL2 Assets" Content="&#xE117;"
-                          IsChecked="True"
-                          HorizontalAlignment="Right"
-                          Background="Gray"
-                          Margin="5,0,0,0"
-                          RelativePanel.RightOf="PlayButton"/>
             <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
                        Text="00:00.00"
                        HorizontalAlignment="Right"
