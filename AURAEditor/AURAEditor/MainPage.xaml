@@ -1076,20 +1076,22 @@
                         Click="SetLayerButton_Click"
                         Background="Gray"/>
                 <ComboBox Name="FileListComboBox" Width="450" VerticalAlignment="Center" Margin="10,0,0,0"
-                          ItemsSource="{x:Bind RecentFileList}"
+                          ItemsSource="{x:Bind recentFileList.List}"
                           SelectionChanged="FileListComboBox_SelectionChanged"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Name="NewButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE160;"
+                        Margin="1,0,0,0" Click="NewButton_Click" Foreground="White"/>
                 <Button Name="SaveButton" 
                         Style="{StaticResource SaveButtonStyle}"
                         Margin="1,0,0,0"
                         Click="SaveButton_Click"/>
                 <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
                         Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
-                <Button Name="OpenFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
-                        Margin="1,0,0,0" Click="OpenFileButton_Click" Foreground="White"/>
+                <Button Name="LoadFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
+                        Margin="1,0,0,0" Click="LoadFileButton_Click" Foreground="White"/>
                 <Button Name="MoreButton"
                         Style="{StaticResource MoreButtonStyle}"
                             Click="MoreButton_Click"

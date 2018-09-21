@@ -91,6 +91,11 @@ namespace AuraEditor
         {
             return DeviceLayerCollection.Count;
         }
+        public void Reset()
+        {
+            ClearAllLayer();
+            MainPage.MainPageInstance.IntializeSpaceGrid();
+        }
         public void ClearAllLayer()
         {
             TimelineStackPanel.Children.Clear();
@@ -209,6 +214,7 @@ namespace AuraEditor
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(RequireLine);
+            sb.Append("\n\n");
             sb.Append("EventProvider = ");
             sb.Append(PrintTable(GetEventProviderTable()));
             sb.Append("\n");

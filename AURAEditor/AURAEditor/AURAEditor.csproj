@@ -105,6 +105,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AuraCreatorManager.cs" />
+    <Compile Include="Common\StorageHelper.cs" />
+    <Compile Include="FileOperations.cs" />
     <Compile Include="Common\ObservableRecentList.cs" />
     <Compile Include="Dialogs\ColorPickerDialog.xaml.cs">
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>

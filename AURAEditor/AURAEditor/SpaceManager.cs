@@ -9,18 +9,16 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.Storage;
-using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
-using Windows.Storage.Streams;
 using System.Linq;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-
 using AuraEditor.Common;
 using AuraEditor.UserControls;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.StorageHelper;
 
 namespace AuraEditor
 {
@@ -89,7 +87,7 @@ namespace AuraEditor
             }
         }
 
-        private void IntializeSpaceGrid()
+        public void IntializeSpaceGrid()
         {
             _mouseEventCtrl = IntializeMouseEventCtrl();
             SetSpaceStatus(SpaceStatus.Normal);
@@ -393,15 +391,25 @@ namespace AuraEditor
         }
         private async Task<XmlDocument> GetIngroupDevicesXmlDoc()
         {
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-            folder = await EnterOrCreateFolder(folder, "AURA Creator");
-            folder = await EnterOrCreateFolder(folder, "Devices");
-            StorageFile sf = await folder.GetFileAsync("ingroupdevice.xml");
+            StorageFile sf;
+            XmlDocument devicesXml = new XmlDocument(); ;
 
-            XmlDocument devicesXml = new XmlDocument();
-            devicesXml.Load(await sf.OpenStreamForReadAsync());
-
-            return devicesXml;
+            try
+            {
+                sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\ingroupdevice.xml");
+                devicesXml.Load(await sf.OpenStreamForReadAsync());
+                return devicesXml;
+            }
+            catch
+            {
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+                folder = await EnterOrCreateFolder(folder, "AURA Creator");
+                folder = await EnterOrCreateFolder(folder, "Devices");
+                sf = await folder.GetFileAsync("ingroupdevice.xml");
+                
+                devicesXml.Load(await sf.OpenStreamForReadAsync());
+                return devicesXml;
+            }
         }
         private string GetLocalDevice(XmlDocument devicesXml)
         {
