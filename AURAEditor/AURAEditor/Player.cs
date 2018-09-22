@@ -3,9 +3,9 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls.Primitives;
-using AuraEditor.Common;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor
 {
@@ -16,19 +16,19 @@ namespace AuraEditor
             private Storyboard IconStoryboard;
             private DispatcherTimer TimerClock;
             private DateTime baseDateTime;
-            private TextBlock ClockText;
-            private ScrollViewer IconScrollViewer;
-            private TranslateTransform IconTranslateTransform;
+            private TextBlock clockText;
+            private ScrollViewer iconScrollViewer;
+            private TranslateTransform iconTranslateTransform;
             private DoubleAnimation animation;
 
             public TimelinePlayer()
             {
                 IconStoryboard = new Storyboard();
                 IconStoryboard.Completed += IconStoryboard_Completed;
-                
-                ClockText = MainPageInstance.ClockText;
-                IconScrollViewer = MainPageInstance.IconScrollViewer;
-                IconTranslateTransform = MainPageInstance.IconTranslateTransform;
+
+                clockText = Self.ClockText;
+                iconScrollViewer = Self.IconScrollViewer;
+                iconTranslateTransform = Self.IconTranslateTransform;
 
                 TimerClock = new DispatcherTimer();
                 TimerClock.Tick += Timer_Tick;
@@ -40,17 +40,17 @@ namespace AuraEditor
             {
                 animation = new DoubleAnimation();
                 Storyboard.SetTargetProperty(animation, "X");
-                Storyboard.SetTarget(animation, MainPageInstance.IconTranslateTransform);
+                Storyboard.SetTarget(animation, iconTranslateTransform);
                 animation.EnableDependentAnimation = true;
             }
             public void Play()
             {
-                AuraCreatorManager manager = AuraCreatorManager.Instance;
-                double duration = manager.PlayTime;
+                //AuraCreatorManager manager = AuraCreatorManager.Instance;
+                double duration = AuraLayerManager.Self.PlayTime;
                 double from = 0;
-                double to = manager.RightmostPosition;
+                double to = AuraLayerManager.Self.RightmostPosition;
 
-                IconScrollViewer.Visibility = Visibility.Visible;
+                iconScrollViewer.Visibility = Visibility.Visible;
                 baseDateTime = DateTime.Now;
                 TimerClock.Start();
                 StartStoryboard(duration, from, to);
@@ -63,8 +63,8 @@ namespace AuraEditor
                 double currentTime = GetStoryCurrentTime();
                 double duration = animation.Duration.TimeSpan.TotalMilliseconds;
                 double leftTime = duration - currentTime;
-                double from = IconTranslateTransform.X * rate;
-                double to = AuraCreatorManager.Instance.RightmostPosition;
+                double from = iconTranslateTransform.X * rate;
+                double to = AuraLayerManager.Self.RightmostPosition;
 
                 StartStoryboard(leftTime, from, to);
             }
@@ -72,16 +72,16 @@ namespace AuraEditor
             {
                 IconStoryboard.Stop();
                 TimerClock.Stop();
-                IconScrollViewer.Visibility = Visibility.Collapsed;
+                iconScrollViewer.Visibility = Visibility.Collapsed;
             }
             private void IconStoryboard_Completed(object sender, object e)
             {
                 TimerClock.Stop();
-                IconScrollViewer.Visibility = Visibility.Collapsed;
+                iconScrollViewer.Visibility = Visibility.Collapsed;
             }
             private void Timer_Tick(object sender, object e)
             {
-                ClockText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
+                clockText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
             }
             private double GetStoryCurrentTime()
             {
@@ -113,7 +113,7 @@ namespace AuraEditor
                     int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(timelineZoomLevel);
                     double rate = (double)oldSecondsPerTimeUnit / newSecondsPerTimeUnit;
 
-                    _auraCreatorManager.SetTimeUnit(newSecondsPerTimeUnit);
+                    LayerManager.SetTimeUnit(newSecondsPerTimeUnit);
 
                     if (_timelinePlayer != null)
                     {
@@ -124,16 +124,16 @@ namespace AuraEditor
                 }
             }
         }
-        
-        private void InitializeTimelineStructure()
+
+        private void InitializePlayerStructure()
         {
             TimelineZoomLevel = 2;
             _timelinePlayer = new TimelinePlayer();
         }
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            await(new ServiceViewModel()).AuraEditorTrigger();
-            
+            await (new ServiceViewModel()).AuraEditorTrigger();
+
             ScrollWindowToLeftTop();
             _timelinePlayer.Play();
         }
@@ -141,6 +141,19 @@ namespace AuraEditor
         {
             _timelinePlayer.Stop();
         }
+        private void GoLeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = 0;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+        }
+        private void GoRightButton_Click(object sender, RoutedEventArgs e)
+        {
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = LayerManager.RightmostPosition;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+        }
+
         private void TrackScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
@@ -158,7 +171,7 @@ namespace AuraEditor
         }
         private void ZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            if (_auraCreatorManager != null)
+            if (LayerManager != null)
                 TimelineZoomLevel = (int)ZoomSlider.Value;
         }
         private void ScrollWindowToLeftTop()

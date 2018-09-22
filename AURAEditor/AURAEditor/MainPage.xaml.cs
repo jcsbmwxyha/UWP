@@ -5,27 +5,16 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using MoonSharp.Interpreter;
-using Windows.Storage.Pickers;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
 using Windows.Networking.Sockets;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Input;
-using Windows.ApplicationModel.Core;
-using Windows.Storage.Streams;
-using System.Xml;
 using System.ComponentModel;
-using System.Linq;
-
-using AuraEditor.Common;
 using AuraEditor.UserControls;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.LuaHelper;
-using System.Collections.ObjectModel;
+using static AuraEditor.AuraSpaceManager;
 
 namespace AuraEditor
 {
@@ -34,13 +23,14 @@ namespace AuraEditor
         BackgroundWorker bgwSocketServer;
 
         static MainPage _instance;
-        static public MainPage MainPageInstance
+        static public MainPage Self
         {
             get { return _instance; }
         }
-        public AuraCreatorManager _auraCreatorManager;
+        public AuraSpaceManager SpaceManager;
+        public AuraLayerManager LayerManager;
         public BitmapImage DragEffectIcon;
-        
+
         public double TimelineScrollHorOffset
         {
             get { return (double)GetValue(ScrollHorOffseProperty); }
@@ -64,26 +54,26 @@ namespace AuraEditor
             _instance = this;
             this.InitializeComponent();
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
-            _auraCreatorManager = AuraCreatorManager.Instance;
 
             //BackgroundWorker for Socket Server
             bgwSocketServer = new BackgroundWorker();
             bgwSocketServer.DoWork += SocketServer_DoWork;
             bgwSocketServer.RunWorkerAsync();
         }
-
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await IntializeFileOperations();
-            IntializeSpaceGrid();
+            SpaceManager = new AuraSpaceManager();
+            LayerManager = new AuraLayerManager();
             InitializeDragEffectIcon();
-            InitializeTimelineStructure();
+            InitializePlayerStructure();
 
             AngleImgCenter = new Point(AngleGrid.ActualWidth / 2, AngleGrid.ActualHeight / 2);
             _preAngle = 0;
             AngleTextBox.Text = "0";
+
+            Bindings.Update();
         }
-        
         private async void InitializeDragEffectIcon()
         {
             DragEffectIcon = new BitmapImage();
@@ -100,6 +90,44 @@ namespace AuraEditor
         }
 
         #region Framework Element
+        private void SetLayerButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeviceLayer layer = new DeviceLayer();
+            List<int> selectedIndex;
+
+            layer.Name = "Layer " + (LayerManager.GetLayerCount());
+
+            foreach (Device d in SpaceManager.GlobalDevices)
+            {
+                selectedIndex = new List<int>();
+
+                foreach (var zone in d.LightZones)
+                {
+                    if (zone.Selected == true)
+                    {
+                        selectedIndex.Add(zone.Index);
+                    }
+                }
+
+                layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
+            }
+
+            LayerManager.AddDeviceLayer(layer);
+            SpaceManager.UnselectAllZones();
+        }
+        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string value = e.AddedItems[0].ToString();
+            SpaceManager.SpaceZoomChanged(value);
+        }
+        private void DragDevImgToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            SpaceManager.SetSpaceStatus(SpaceStatus.DragingDevice);
+        }
+        private void DragDevImgToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+        }
         private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
         {
             if (EffectBlockListView.Visibility == Visibility.Visible)
@@ -174,24 +202,12 @@ namespace AuraEditor
                     if (layer.TimelineEffects.Contains(_selectedEffectLine))
                         SelectedEffectLine = null;
 
-                    _auraCreatorManager.RemoveDeviceLayer(layer);
+                    LayerManager.RemoveDeviceLayer(layer);
                 }
             }
         }
-        private void GoLeftButton_Click(object sender, RoutedEventArgs e)
-        {
-            double source = ScaleScrollViewer.HorizontalOffset;
-            double target = 0;
-            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
-        }
-        private void GoRightButton_Click(object sender, RoutedEventArgs e)
-        {
-            double source = ScaleScrollViewer.HorizontalOffset;
-            double target = _auraCreatorManager.RightmostPosition;
-            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
-        }
         #endregion
-        
+
         async void socketstart()
         {
             Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
@@ -243,14 +259,13 @@ namespace AuraEditor
                     txtresult.Text = "Service : " + message;
                 });
 
-                RescanIngroupDevices();
+                SpaceManager.RescanIngroupDevices();
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.ToString());
             }
         }
-
         private void SocketServer_DoWork(object sender, DoWorkEventArgs e)
         {
             socketstart();

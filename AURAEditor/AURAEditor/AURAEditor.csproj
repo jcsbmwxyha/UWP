@@ -104,7 +104,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AuraCreatorManager.cs" />
     <Compile Include="Common\StorageHelper.cs" />
     <Compile Include="FileOperations.cs" />
     <Compile Include="Common\ObservableRecentList.cs" />
@@ -127,10 +126,12 @@
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Effect.cs" />
+    <Compile Include="PrintLuaScriptFunctions.cs" />
+    <Compile Include="SpaceManager.cs" />
     <Compile Include="TimelineEffect.cs" />
     <Compile Include="EffectInfo.cs" />
     <Compile Include="LightZone.cs" />
-    <Compile Include="SpaceManager.cs" />
+    <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
@@ -144,7 +145,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceViewModel.cs" />
-    <Compile Include="Timeline.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="UserControls\EffectLine.xaml.cs">
       <DependentUpon>EffectLine.xaml</DependentUpon>
     </Compile>

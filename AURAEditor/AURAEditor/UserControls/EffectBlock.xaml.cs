@@ -1,23 +1,8 @@
-﻿using AuraEditor.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
-using Windows.Storage.Streams;
+﻿using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.AuraSpaceManager;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -34,20 +19,18 @@ namespace AuraEditor.UserControls
 
         private void Grid_DragStarting(UIElement sender, DragStartingEventArgs args)
         {
-            var page = MainPage.MainPageInstance;
+            var page = MainPage.Self;
 
             args.DragUI.SetContentFromBitmapImage(page.DragEffectIcon);
             args.Data.RequestedOperation = DataPackageOperation.Copy;
             args.Data.SetText(MyText);
 
-            page.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
         }
-
         private void Grid_DropCompleted(UIElement sender, DropCompletedEventArgs args)
         {
-            MainPage.MainPageInstance.SetSpaceStatus(SpaceStatus.Normal);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
         }
-
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "PointerOver", false);

@@ -55,7 +55,7 @@ namespace AuraEditor.UserControls
         }
         private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            MainPage.MainPageInstance.WatchLayer(m_DeviceLayer);
+            AuraSpaceManager.Self.WatchLayer(m_DeviceLayer);
         }
         private async void TriggerDialogButton_Click(object sender, RoutedEventArgs e)
         {

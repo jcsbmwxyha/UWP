@@ -1,91 +1,177 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="AuraEditor.EffectInfo">
-    <Position X="9.75" Y="4" Width="1.5" />
+  <Class Name="AuraEditor.MainPage">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
+    <NestedTypes>
+      <Class Name="AuraEditor.MainPage.RecentFileList" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>FileOperations.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="AuraEditor.MainPage.TimelinePlayer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Player.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <AssociationLine Name="LayerManager" Type="AuraEditor.AuraLayerManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="4.477" />
+        <Point X="1.25" Y="5.75" />
+        <Point X="3.5" Y="5.75" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>IAAAAAAAADAAAAAAEAABAAAAAAAAAAAAAAAAkAAEBAA=</HashCode>
-      <FileName>EffectInfo.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="AuraEditor.Effect">
-    <Position X="7" Y="4" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>EACAAAAAAAAAAAAgAAAAAAQAIAAAAgAEAQAAAEAAEAA=</HashCode>
-      <FileName>Effect.cs</FileName>
+      <HashCode>BJgulF0EIiAEQnChGHpBAIKIIQAnAAFgGWnAXjqKMIQ=</HashCode>
+      <FileName>EffectInfoGrid.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Layer" />
-      <Property Name="UI" />
-      <Property Name="Info" />
+      <Field Name="SpaceManager" />
+      <Field Name="LayerManager" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="AuraEditor.LightZone">
-    <Position X="7" Y="0.5" Width="1.75" />
+  <Class Name="AuraEditor.AuraSpaceManager">
+    <Position X="3.5" Y="1.25" Width="1.75" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
+    <NestedTypes>
+      <Enum Name="AuraEditor.AuraSpaceManager.SpaceStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>SpaceManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAIAAAIAAABAAEAAAAAEAM=</HashCode>
-      <FileName>LightZone.cs</FileName>
+      <HashCode>QBDEAAQAAAKECCAAAAIBCCgFJSSAQQBAIEEEABAAAQQ=</HashCode>
+      <FileName>SpaceManager.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="AuraEditor.DeviceLayer">
-    <Position X="3.5" Y="4" Width="2.25" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>ACIAAIAAAACAARAIIAQACAAIAEAABBAAAgEAKAAAAAA=</HashCode>
-      <FileName>DeviceLayer.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Field Name="Effects" />
-    </ShowAsCollectionAssociation>
-  </Class>
-  <Class Name="AuraEditor.AuraCreatorManager">
-    <Position X="0.5" Y="0.75" Width="2.5" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AiAMABCEAAAAAEQAkQCEgASAhKAAAgAAcSEAAJACIBg=</HashCode>
-      <FileName>AuraCreatorManager.cs</FileName>
-    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_MouseEventCtrl" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Field Name="GlobalDevices" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AuraEditor.AuraLayerManager">
+    <Position X="3.5" Y="4.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAEAAAAAAAAAESAkACFAAQABAAAAKAAACAAAIAAIBA=</HashCode>
+      <FileName>LayerManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
       <Property Name="DeviceLayerCollection" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="AuraEditor.Device">
-    <Position X="4.25" Y="0.5" Width="1.5" />
+    <Position X="6" Y="1.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EAAEgCAABAgQAAAAAAAAAEQAAAAAABAAAQgAAAQgAwA=</HashCode>
+      <HashCode>EAAEgEAABAgQAAAIIEAAAERAAAAAAhAAAQgAAAwgAwA=</HashCode>
       <FileName>Device.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="LightZones" />
-    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="AuraEditor.UserControls.EffectLine" Collapsed="true">
-    <Position X="7" Y="7" Width="1.5" />
+  <Class Name="AuraEditor.DeviceLayer">
+    <Position X="6.75" Y="4.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="TriggerEffects" Type="AuraEditor.TriggerEffect" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.562" Y="6.871" />
+        <Point X="7.562" Y="8.084" />
+        <Point X="8.375" Y="8.084" />
+        <Point X="8.375" Y="8.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="TimelineEffects" Type="AuraEditor.TimelineEffect" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.062" Y="6.871" />
+        <Point X="7.062" Y="8.125" />
+        <Point X="6.125" Y="8.125" />
+        <Point X="6.125" Y="8.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQQAIAEAAAAAEAQAAAAAAgAAAACQAAAAQAA=</HashCode>
-      <FileName>UserControls\EffectLine.xaml.cs</FileName>
+      <HashCode>AEIAAAAAAACAABAIIAAACAQIAEAABAAAAgEAKAgAgAA=</HashCode>
+      <FileName>DeviceLayer.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <ShowAsCollectionAssociation>
+      <Field Name="TriggerEffects" />
+      <Field Name="TimelineEffects" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AuraEditor.TriggerEffect">
+    <Position X="7.5" Y="8.5" Width="1.5" />
+    <InheritanceLine Type="AuraEditor.Effect" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.625" Y="9.112" />
+        <Point X="10.625" Y="10.693" />
+        <Point X="8.25" Y="10.693" />
+        <Point X="8.25" Y="10.318" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>TriggerEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AuraEditor.TimelineEffect">
+    <Position X="5.5" Y="8.5" Width="1.5" />
+    <InheritanceLine Type="AuraEditor.Effect" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.625" Y="9.112" />
+        <Point X="10.625" Y="10.955" />
+        <Point X="6.312" Y="10.955" />
+        <Point X="6.312" Y="10.687" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAIAAAAgAAAAAAAAAAEAA=</HashCode>
+      <FileName>TimelineEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AuraEditor.Effect">
+    <Position X="10" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAEAAAQAIAAAAgAEAQAAAEgAAAA=</HashCode>
+      <FileName>Effect.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Info" />
+      <Property Name="Layer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="AuraEditor.EffectInfo">
+    <Position X="12.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAgIAAAAAAAQAAAAgAQAA=</HashCode>
+      <FileName>EffectInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AuraEditor.Common.MouseEventCtrl" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="AuraEditor.Common.MouseEventCtrl.StatusChangedCallBack" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Common\MouseEventCtrl.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIGAAAAAAAQoAAAEAAAEADAAACSAAABAAAAAAAw=</HashCode>
+      <FileName>Common\MouseEventCtrl.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Microsoft JhengHei UI" Size="9" />
 </ClassDiagram>

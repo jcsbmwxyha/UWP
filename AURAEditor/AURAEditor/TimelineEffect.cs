@@ -21,34 +21,34 @@ namespace AuraEditor
         {
             get
             {
-                double timeUnits = UI.X / AuraCreatorManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
+                double timeUnits = UI.X / AuraLayerManager.pixelsPerTimeUnit;
+                double seconds = timeUnits * AuraLayerManager.secondsPerTimeUnit;
 
                 return seconds * 1000;
             }
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
+                double timeUnits = seconds / AuraLayerManager.secondsPerTimeUnit;
 
-                UI.X = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
+                UI.X = timeUnits * AuraLayerManager.pixelsPerTimeUnit;
             }
         }
         public override double DurationTime
         {
             get
             {
-                double timeUnits = UI.Width / AuraCreatorManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraCreatorManager.secondsPerTimeUnit;
+                double timeUnits = UI.Width / AuraLayerManager.pixelsPerTimeUnit;
+                double seconds = timeUnits * AuraLayerManager.secondsPerTimeUnit;
 
                 return seconds * 1000;
             }
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraCreatorManager.secondsPerTimeUnit;
+                double timeUnits = seconds / AuraLayerManager.secondsPerTimeUnit;
 
-                UI.Width = timeUnits * AuraCreatorManager.pixelsPerTimeUnit;
+                UI.Width = timeUnits * AuraLayerManager.pixelsPerTimeUnit;
             }
         }
 
@@ -64,7 +64,7 @@ namespace AuraEditor
             EffectLine el = new EffectLine
             {
                 Height = 34,
-                Width = AuraCreatorManager.GetPixelsPerSecond(),
+                Width = AuraLayerManager.GetPixelsPerSecond(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 ManipulationMode = ManipulationModes.TranslateX
             };

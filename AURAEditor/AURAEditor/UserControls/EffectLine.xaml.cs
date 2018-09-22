@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using AuraEditor.Common;
-using CoreCursor = Windows.UI.Core.CoreCursor;
 using Windows.UI.Core;
+using CoreCursor = Windows.UI.Core.CoreCursor;
 using static AuraEditor.Common.ControlHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
@@ -169,7 +159,7 @@ namespace AuraEditor.UserControls
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            MainPage.MainPageInstance.SelectedEffectLine = MyEffect;
+            MainPage.Self.SelectedEffectLine = MyEffect;
         }
     }
 }

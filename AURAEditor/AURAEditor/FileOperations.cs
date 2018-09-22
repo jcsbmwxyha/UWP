@@ -52,7 +52,7 @@ namespace AuraEditor
                     XmlElement element = (XmlElement)fileNodes[i];
                     list.Add(element.GetAttribute("path"));
                 }
-                
+
                 return list;
             }
 
@@ -88,9 +88,6 @@ namespace AuraEditor
             private async void UpdateXml()
             {
                 XmlDocument doc = new XmlDocument();
-
-                
-
                 XmlElement recentfilesElement = doc.CreateElement(string.Empty, "recentfiles", string.Empty);
                 doc.AppendChild(recentfilesElement);
 
@@ -101,7 +98,7 @@ namespace AuraEditor
                     recentfilesElement.AppendChild(fileElement);
                 }
 
-                string s =  doc.OuterXml;
+                string s = doc.OuterXml;
                 await SaveFile(m_XmlSF, doc.OuterXml);
             }
         }
@@ -126,7 +123,6 @@ namespace AuraEditor
         {
             recentFileList = new RecentFileList();
             await recentFileList.SetXmlAndLoadRecentFiles("C:\\ProgramData\\ASUS\\AURA Creator\\script\\recentfiles.xml");
-            Bindings.Update();
         }
 
         private async void FileListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -146,7 +142,7 @@ namespace AuraEditor
         }
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            _auraCreatorManager.Reset();
+
         }
         private async void LoadFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -168,7 +164,7 @@ namespace AuraEditor
             if (CurrentScriptPath == null)
                 SaveAsButton_Click(sender, e);
             else
-                await SaveFile(CurrentScriptPath, _auraCreatorManager.PrintLuaScript());
+                await SaveFile(CurrentScriptPath, PrintLuaScript());
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -184,63 +180,63 @@ namespace AuraEditor
 
             if (saveFile != null)
             {
-                await SaveFile(saveFile, _auraCreatorManager.PrintLuaScript());
+                await SaveFile(saveFile, PrintLuaScript());
                 CurrentScriptPath = saveFile.Path;
             }
         }
         private void MoreButton_Click(object sender, RoutedEventArgs e)
         {
         }
-        
+
         private void LoadContent(string luaScript)
         {
-            luaScript = luaScript.Replace(RequireLine, "");
+            //luaScript = luaScript.Replace(RequireLine, "");
 
-            Script script = new Script();
+            //Script script = new Script();
 
-            DynValue script_dv;
-            Table eventprovider_table;
-            Table viewport_table;
-            Table event_table;
-            Table globalspace_table;
+            //DynValue script_dv;
+            //Table eventprovider_table;
+            //Table viewport_table;
+            //Table event_table;
+            //Table globalspace_table;
 
-            script_dv = script.DoString(luaScript + "\nreturn EventProvider");
-            eventprovider_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn Viewport");
-            viewport_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn Event");
-            event_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
-            globalspace_table = script_dv.Table;
+            //script_dv = script.DoString(luaScript + "\nreturn EventProvider");
+            //eventprovider_table = script_dv.Table;
+            //script_dv = script.DoString(luaScript + "\nreturn Viewport");
+            //viewport_table = script_dv.Table;
+            //script_dv = script.DoString(luaScript + "\nreturn Event");
+            //event_table = script_dv.Table;
+            //script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
+            //globalspace_table = script_dv.Table;
 
-            _auraCreatorManager.ClearAllLayer();
+            //_auraCreatorManager.ClearAllLayer();
 
-            // Step 1 : Get global devices from GlobalSpace table and set to deviceLayerManager
-            List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
-            _auraCreatorManager.GlobalDevices = globaldevices;
+            //// Step 1 : Get global devices from GlobalSpace table and set to deviceLayerManager
+            //List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
+            //_auraCreatorManager.GlobalDevices = globaldevices;
 
-            // Step 2 : Get all device layers from EventProvider table
-            List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
-            if (deviceLayers.Count == 0)
-                return;
+            //// Step 2 : Get all device layers from EventProvider table
+            //List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
+            //if (deviceLayers.Count == 0)
+            //    return;
 
-            // Step 3 : According to device layer name, get all device zones from Viewport table
-            foreach (var layer in deviceLayers)
-            {
-                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
-                layer.AddDeviceZones(dictionary);
+            //// Step 3 : According to device layer name, get all device zones from Viewport table
+            //foreach (var layer in deviceLayers)
+            //{
+            //    Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
+            //    layer.AddDeviceZones(dictionary);
 
-                foreach (var effect in layer.TimelineEffects)
-                {
-                    EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.LuaName);
-                    effect.Info = ei;
-                }
-                _auraCreatorManager.AddDeviceLayer(layer);
-            }
+            //    foreach (var effect in layer.TimelineEffects)
+            //    {
+            //        EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.LuaName);
+            //        effect.Info = ei;
+            //    }
+            //    _auraCreatorManager.AddDeviceLayer(layer);
+            //}
 
-            RefreshSpaceGrid();
-            ClearEffectInfoGrid();
-            LayerListView.SelectedIndex = 0;
+            //RefreshSpaceGrid();
+            //ClearEffectInfoGrid();
+            //LayerListView.SelectedIndex = 0;
         }
         private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string layerName)
         {
@@ -251,7 +247,6 @@ namespace AuraEditor
             foreach (var deviceKey in layerTable.Keys)
             {
                 Table deviceTable = layerTable.Get(deviceKey.String).Table;
-                //string deviceName = deviceTable.Get("name").String;
                 int type = 0;
                 List<int> zones = new List<int>();
 

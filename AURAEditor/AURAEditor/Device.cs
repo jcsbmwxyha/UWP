@@ -11,6 +11,7 @@ using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.LuaHelper;
 using Windows.Foundation;
 using MoonSharp.Interpreter;
+using static AuraEditor.AuraSpaceManager;
 
 namespace AuraEditor
 {
@@ -18,7 +19,8 @@ namespace AuraEditor
     {
         public string Name { get; set; }
         public int Type { get; set; }
-        public Point GridPosition {
+        public Point GridPosition
+        {
             get
             {
                 CompositeTransform ct = Border.RenderTransform as CompositeTransform;
@@ -35,7 +37,8 @@ namespace AuraEditor
             }
         }
         private Point _oldPixelPosition;
-        public double Width {
+        public double Width
+        {
             get
             {
                 return Border.Width / GridPixels;
@@ -45,7 +48,8 @@ namespace AuraEditor
                 Border.Width = value * GridPixels;
             }
         }
-        public double Height {
+        public double Height
+        {
             get
             {
                 return Border.Height / GridPixels;
@@ -100,7 +104,7 @@ namespace AuraEditor
         #region Mouse event
         private void DeviceImg_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPageInstance.SetSpaceStatus(SpaceStatus.Normal);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
         }
         private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
@@ -126,9 +130,9 @@ namespace AuraEditor
                 RoundToGrid(ct.TranslateY));
             Image.Opacity = 1;
 
-            if (!MainPageInstance.IsOverlapping(this))
+            if (!AuraSpaceManager.Self.IsOverlapping(this))
             {
-                MainPageInstance.MoveDevicePosition(this,
+                AuraSpaceManager.Self.MoveDevicePosition(this,
                     RoundToGrid(ct.TranslateX - _oldPixelPosition.X),
                     RoundToGrid(ct.TranslateY - _oldPixelPosition.Y));
             }
@@ -139,19 +143,18 @@ namespace AuraEditor
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor 
+            Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
-            Window.Current.CoreWindow.PointerCursor 
+            Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
         }
         #endregion
 
         private void SetPosition(double x, double y)
         {
-            //SetPositionOfImage(x, y);
             SetPositionOfBorder(x, y);
             SetPositionOfAllZones(x, y);
         }

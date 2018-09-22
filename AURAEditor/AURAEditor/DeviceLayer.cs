@@ -139,15 +139,6 @@ namespace AuraEditor
 
             return result;
         }
-        private bool IsOverlapping(TimelineEffect effect1, TimelineEffect effect2)
-        {
-            EffectLine UI_1 = effect1.UI;
-            EffectLine UI_2 = effect2.UI;
-
-            return ControlHelper.IsOverlapping(
-                UI_1.X, UI_1.Width,
-                UI_2.X, UI_2.Width);
-        }
         public TimelineEffect FindEffectByPosition(double x)
         {
             foreach (TimelineEffect e in TimelineEffects)
@@ -188,7 +179,7 @@ namespace AuraEditor
                 TimelineEffect effect = TimelineEffects[i];
                 EffectLine UI = effect.UI;
 
-                if (roomX <= UI.X && UI.X < roomX + AuraCreatorManager.GetPixelsPerSecond())
+                if (roomX <= UI.X && UI.X < roomX + AuraLayerManager.GetPixelsPerSecond())
                 {
                     roomX = UI.X + UI.Width;
                     i = -1; // rescan every effect line
@@ -196,6 +187,15 @@ namespace AuraEditor
             }
 
             return roomX;
+        }
+        static private bool IsOverlapping(TimelineEffect effect1, TimelineEffect effect2)
+        {
+            EffectLine UI_1 = effect1.UI;
+            EffectLine UI_2 = effect2.UI;
+
+            return ControlHelper.IsOverlapping(
+                UI_1.X, UI_1.Width,
+                UI_2.X, UI_2.Width);
         }
 
         private async void Canvas_DragOver(object sender, DragEventArgs e)
@@ -224,8 +224,7 @@ namespace AuraEditor
 
         public Table ToTable()
         {
-            AuraCreatorManager manager = AuraCreatorManager.Instance;
-            List<Device> globalDevices = manager.GlobalDevices;
+            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
             Table layerTable = CreateNewTable();
 
             foreach (var d in globalDevices)

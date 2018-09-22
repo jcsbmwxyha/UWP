@@ -46,12 +46,12 @@
             <BitmapImage x:Key="More_n" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_n.png"/>
             <BitmapImage x:Key="More_h" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_h.png"/>
             <BitmapImage x:Key="More_s" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_s.png"/>
-            
+
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
-            
+
             <Style TargetType="Image" x:Key="DeviceImgStyle">
                 <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
                 <Setter Property="Stretch" Value="Fill"/>
@@ -1071,6 +1071,7 @@
                               Background="Gray"
                               Margin="0,0,5,0"/>
                 <Button Name="SetLayerButton"
+                        x:FieldModifier="Public"
                         FontSize="20" Height="40"
                         Content="Set Layer"
                         Click="SetLayerButton_Click"
@@ -1155,6 +1156,7 @@
                     Background="Gray"
                     Click="AdjustEffectInfoGrid_Click"/>
             <ScrollViewer Name="SpaceAreaScrollViewer"
+                          x:FieldModifier="public"
                           Grid.Column="0"
                           Grid.ColumnSpan="3"
                           MinZoomFactor="1"
@@ -1163,21 +1165,22 @@
                           HorizontalScrollBarVisibility="Auto"
                           VerticalScrollBarVisibility="Auto">
                 <Canvas Name="SpaceAreaCanvas"
+                        x:FieldModifier="public"
                         Width="2400"
                         Height="824"
                         HorizontalAlignment="Left">
-                    <Rectangle Name="mouseRectangle" Width="0" Height="0"
+                    <Rectangle Name="MouseRectangle" Width="0" Height="0"
                                Fill="Transparent"
-                               Stroke="Red"
-                               StrokeThickness="1"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Top"
+                               Stroke="Red" StrokeThickness="1"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"
+                               x:FieldModifier="Public"
                                Canvas.ZIndex="8">
                         <Rectangle.RenderTransform>
                             <CompositeTransform/>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Image Name="GridImage" Source="Assets/Grid.png" Stretch="None" Canvas.ZIndex="-2"/>
+                    <Image Name="GridImage" Source="Assets/Grid.png" Stretch="None" Canvas.ZIndex="-2"
+                           x:FieldModifier="Public"/>
                 </Canvas>
             </ScrollViewer>
         </Grid>
@@ -1318,7 +1321,7 @@
                                     <Button x:Name="IncreaseBtn" Content="+" Click="IncreaseBtn_Click"
                                             Foreground="White" Background="Gray" FontSize="16"/>
                                 </StackPanel>
-                                
+
                             </Grid>
                         </Grid>
                     </StackPanel>
@@ -1348,7 +1351,6 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
-
             </StackPanel>
         </ScrollViewer>
         <RelativePanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
@@ -1388,7 +1390,8 @@
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalAlignment="Left">
             <ListView x:Name="LayerListView"
-                      ItemsSource="{x:Bind _auraCreatorManager.DeviceLayerCollection}"
+                      x:FieldModifier="Public"
+                      ItemsSource="{x:Bind LayerManager.DeviceLayerCollection}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
                       HorizontalAlignment="Left">
