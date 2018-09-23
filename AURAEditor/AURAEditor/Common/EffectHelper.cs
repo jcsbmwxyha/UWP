@@ -112,7 +112,7 @@ namespace AuraEditor.Common
 
             return false;
         }
-        static public bool IsTriggerEffects(string effectName)
+        static public bool IsTriggerEffect(string effectName)
         {
             foreach (string s in _triggerEffects)
             {
@@ -122,7 +122,7 @@ namespace AuraEditor.Common
 
             return false;
         }
-        static public bool IsTriggerEffects(int index)
+        static public bool IsTriggerEffect(int index)
         {
             string effectName = GetEffectName(index);
 

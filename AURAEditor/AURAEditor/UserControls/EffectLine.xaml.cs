@@ -30,6 +30,15 @@ namespace AuraEditor.UserControls
             }
         }
         public double Right { get { return X + Width; } }
+        public bool IsSelected {
+            set
+            {
+                if(StatusToggleButton.IsChecked != value)
+                {
+                    StatusToggleButton.IsChecked = value;
+                }
+            }
+        }
 
         public enum CursorState
         {

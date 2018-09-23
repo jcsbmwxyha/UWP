@@ -112,15 +112,16 @@ namespace AuraEditor
         public AuraSpaceManager()
         {
             Self = this;
-            GlobalDevices = new List<Device>();
             m_SpaceScrollViewer = MainPage.Self.SpaceAreaScrollViewer;
             m_SpaceCanvas = MainPage.Self.SpaceAreaCanvas;
             m_GridImage = MainPage.Self.GridImage;
             m_MouseRectangle = MainPage.Self.MouseRectangle;
             m_SetLayerButton = MainPage.Self.SetLayerButton;
-
-            FillWithIngroupDevices();
             m_MouseEventCtrl = IntializeMouseEventCtrl();
+
+            GlobalDevices = new List<Device>();
+            FillWithIngroupDevices();
+
             SetSpaceStatus(SpaceStatus.Normal);
         }
 
@@ -168,6 +169,13 @@ namespace AuraEditor
 
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+        public void Reset()
+        {
+            IntializeMouseEventCtrl();
+            GlobalDevices.Clear();
+            //FillWithIngroupDevices();
+            SetSpaceStatus(SpaceStatus.Normal);
+        }
         private void SortByZIndex(LightZone[] zones)
         {
             int count = zones.Length;
@@ -204,7 +212,7 @@ namespace AuraEditor
 
             m_MouseEventCtrl.SetAllRegionsStatus(RegionStatus.Normal);
         }
-        public void WatchLayer(DeviceLayer layer)
+        public void WatchZonesOfLayer(DeviceLayer layer)
         {
             SetSpaceStatus(SpaceStatus.WatchingLayer);
             UnselectAllZones();
@@ -231,6 +239,7 @@ namespace AuraEditor
         }
         private void OnLeavingWatchingLayerMode()
         {
+            AuraLayerManager.Self.UnselectAllLayers();
             UnselectAllZones();
         }
         public bool IsOverlapping(Device testDev)
@@ -281,7 +290,7 @@ namespace AuraEditor
         }
 
         #region Ingroup devices
-        private async void FillWithIngroupDevices()
+        public async void FillWithIngroupDevices()
         {
             List<string> namesOfIngroupDevices = await GetIngroupDevices();
 
@@ -306,13 +315,6 @@ namespace AuraEditor
 
                 GlobalDevices.Add(device);
             }
-
-            // For developing
-            /*
-            deviceContent = await GetDeviceContent("GLADIUS II");
-            device = CreateDeviceFromContent(deviceContent);
-            _auraCreatorManager.GlobalDevices.Add(device);
-            */
 
             RefreshSpaceGrid();
         }

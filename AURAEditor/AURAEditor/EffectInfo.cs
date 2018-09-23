@@ -51,16 +51,17 @@ namespace AuraEditor
 
             Color c = InitColor;
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
-            DynValue randomHue_dv;
+            //DynValue randomHue_dv;
+            //
+            //if (GetEffectName(Type) == "Star")
+            //{
+            //    randomHue_dv = RegisterAndGetDV(RandomHueString);
+            //    initColor_Table.Set("hue", randomHue_dv);
+            //}
+            //else
+            //    initColor_Table.Set("hue", DynValue.NewNumber(hsl[0]));
 
-            if (GetEffectName(Type) == "Star")
-            {
-                randomHue_dv = RegisterAndGetDV(RandomHueString);
-                initColor_Table.Set("hue", randomHue_dv);
-            }
-            else
-                initColor_Table.Set("hue", DynValue.NewNumber(hsl[0]));
-
+            initColor_Table.Set("hue", DynValue.NewNumber(hsl[0]));
             initColor_Table.Set("saturation", DynValue.NewNumber(hsl[1]));
             initColor_Table.Set("lightness", DynValue.NewNumber(hsl[2]));
             initColor_Table.Set("alpha", DynValue.NewNumber(c.A / 255));
@@ -172,9 +173,24 @@ namespace AuraEditor
 
             return bindToSlotTable;
         }
-        private string WaveTypeToString(int waveType)
+        static public int StringToWaveType(string waveString)
         {
-            switch (WaveType)
+            switch (waveString)
+            {
+                case "SineWave": return 0;
+                case "HalfSineWave": return 1;
+                case "QuarterSineWave": return 2;
+                case "SquareWave": return 3;
+                case "TriangleWave": return 4;
+                case "SawToothleWave": return 5;
+                case "ConstantWave": return 6;
+            }
+
+            return 0;
+        }
+        static private string WaveTypeToString(int waveType)
+        {
+            switch (waveType)
             {
                 case 0: return "SineWave";
                 case 1: return "HalfSineWave";

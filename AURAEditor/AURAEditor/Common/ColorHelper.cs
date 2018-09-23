@@ -74,68 +74,50 @@ namespace AuraEditor.Common
 
             return new SolidColorBrush(color);
         }
-        public static Color HslToRgb(double a, double h, double s, double l)
-        {
-            byte r, g, b;
-            int hi = Convert.ToInt32(Math.Floor((h % 360) / 60)) % 6;
-            double C = (1 - Math.Abs(2 * l - 1)) * s;
-            double X = C * (1 - Math.Abs(((h % 360) / 60) % 2 - 1));
-            double m = l - (C / 2);
 
-            if (hi == 0)
+        public static Color HSLToRGB(double a, double h, double s, double l)
+        {
+            byte r = 0;
+            byte g = 0;
+            byte b = 0;
+
+            if (s == 0)
             {
-                r = Convert.ToByte((C + m) * 255);
-                g = Convert.ToByte((X + m) * 255);
-                b = Convert.ToByte((m) * 255);
-            }
-            else if (hi == 1)
-            {
-                r = Convert.ToByte((X + m) * 255);
-                g = Convert.ToByte((C + m) * 255);
-                b = Convert.ToByte((m) * 255);
-            }
-            else if (hi == 2)
-            {
-                r = Convert.ToByte((m) * 255);
-                g = Convert.ToByte((C + m) * 255);
-                b = Convert.ToByte((X + m) * 255);
-            }
-            else if (hi == 3)
-            {
-                r = Convert.ToByte((m) * 255);
-                g = Convert.ToByte((X + m) * 255);
-                b = Convert.ToByte((C + m) * 255);
-            }
-            else if (hi == 4)
-            {
-                r = Convert.ToByte((X + m) * 255);
-                g = Convert.ToByte((m) * 255);
-                b = Convert.ToByte((C + m) * 255);
+                r = g = b = (byte)(l * 255);
             }
             else
             {
-                r = Convert.ToByte((C + m) * 255);
-                g = Convert.ToByte((m) * 255);
-                b = Convert.ToByte((X + m) * 255);
+                double v1, v2;
+                double hue = (double)h;
+
+                v2 = (l < 0.5) ? (l * (1 + s)) : ((l + s) - (l * s));
+                v1 = 2 * l - v2;
+
+                r = (byte)(255 * HueToRGB(v1, v2, hue + (1.0f / 3)));
+                g = (byte)(255 * HueToRGB(v1, v2, hue));
+                b = (byte)(255 * HueToRGB(v1, v2, hue - (1.0f / 3)));
             }
 
             return Color.FromArgb(255, r, g, b);
         }
-        static private double GetColorComponent(double temp1, double temp2, double temp3)
+        private static double HueToRGB(double v1, double v2, double vH)
         {
-            if (temp3 < 0.0)
-                temp3 += 1.0;
-            else if (temp3 > 1.0)
-                temp3 -= 1.0;
+            if (vH < 0)
+                vH += 1;
 
-            if (temp3 < 1.0 / 6.0)
-                return temp1 + (temp2 - temp1) * 6.0 * temp3;
-            else if (temp3 < 0.5)
-                return temp2;
-            else if (temp3 < 2.0 / 3.0)
-                return temp1 + ((temp2 - temp1) * ((2.0 / 3.0) - temp3) * 6.0);
-            else
-                return temp1;
+            if (vH > 1)
+                vH -= 1;
+
+            if ((6 * vH) < 1)
+                return (v1 + (v2 - v1) * 6 * vH);
+
+            if ((2 * vH) < 1)
+                return v2;
+
+            if ((3 * vH) < 2)
+                return (v1 + (v2 - v1) * ((2.0f / 3) - vH) * 6);
+
+            return v1;
         }
         public static double[] RgbTOHsl(Color RGB)
         {

@@ -4,11 +4,29 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 
 namespace AuraEditor.Common
 {
     static class StorageHelper
     {
+        static public async Task<StorageFile> ShowFileOpenPickerAsync()
+        {
+            FileOpenPicker fileOpenPicker = new FileOpenPicker();
+            fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            fileOpenPicker.FileTypeFilter.Add(".lua");
+            fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
+
+            return await fileOpenPicker.PickSingleFileAsync();
+        }
+        static public async Task<StorageFile> ShowFileSavePickerAsync()
+        {
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".lua" });
+            savePicker.SuggestedFileName = "MyLuaScript";
+            return await savePicker.PickSaveFileAsync();
+        }
         static public async Task<string> LoadFile(string filePath)
         {
             StorageFile sf = await StorageFile.GetFileFromPathAsync(filePath);

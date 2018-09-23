@@ -79,12 +79,7 @@ namespace AuraEditor
         {
             return DeviceLayerCollection.Count;
         }
-        public void ClearAllLayer()
-        {
-            m_TimelineStackPanel.Children.Clear();
-            DeviceLayerCollection.Clear();
-        }
-        private void UnselectAllLayers()
+        public void UnselectAllLayers()
         {
             List<DeviceLayerItem> layers =
                 FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
@@ -95,6 +90,15 @@ namespace AuraEditor
             }
 
             m_LayerListView.SelectedIndex = -1;
+        }
+        public void Reset()
+        {
+            ClearAllLayer();
+        }
+        private void ClearAllLayer()
+        {
+            m_TimelineStackPanel.Children.Clear();
+            DeviceLayerCollection.Clear();
         }
         #endregion
 

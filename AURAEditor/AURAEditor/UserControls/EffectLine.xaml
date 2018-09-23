@@ -73,7 +73,8 @@
         <CompositeTransform/>
     </UserControl.RenderTransform>
 
-    <ToggleButton HorizontalAlignment="Left"
+    <ToggleButton Name="StatusToggleButton"
+                  HorizontalAlignment="Left"
                   Background="DarkBlue"
                   Click="EffectLine_Click"
                   ManipulationMode="TranslateX"

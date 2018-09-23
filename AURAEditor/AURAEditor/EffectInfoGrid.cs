@@ -33,9 +33,18 @@ namespace AuraEditor
             set
             {
                 if (value == null)
+                {
                     ClearEffectInfoGrid();
+                }
+                else if(_selectedEffectLine == value)
+                {
+                    _selectedEffectLine.UI.IsSelected = true;
+                }
                 else
                 {
+                    if (_selectedEffectLine != null)
+                        _selectedEffectLine.UI.IsSelected = false;
+
                     _selectedEffectLine = value;
                     UpdateEffectInfoGrid(value);
                 }

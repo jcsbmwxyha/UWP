@@ -105,6 +105,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\StorageHelper.cs" />
+    <Compile Include="Dialogs\YesNoCancelDialog.xaml.cs">
+      <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileOperations.cs" />
     <Compile Include="Common\ObservableRecentList.cs" />
     <Compile Include="Dialogs\ColorPickerDialog.xaml.cs">
@@ -349,6 +352,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\TriggerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\YesNoCancelDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

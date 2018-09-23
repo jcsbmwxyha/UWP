@@ -8,22 +8,26 @@ using Windows.Storage.Pickers;
 using Windows.Storage;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Collections.ObjectModel;
+using AuraEditor.Dialogs;
+using Windows.Foundation;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.LuaHelper;
 using static AuraEditor.Common.StorageHelper;
-using System.Collections.ObjectModel;
+using static AuraEditor.Common.AuraEditorColorHelper;
+using Windows.UI;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public class RecentFileList
+        public class RecentList
         {
             public ObservableCollection<string> List;
             public int MaxCount;
             private StorageFile m_XmlSF;
 
-            public RecentFileList()
+            public RecentList()
             {
                 List = new ObservableCollection<string>();
                 MaxCount = 5;
@@ -102,26 +106,37 @@ namespace AuraEditor
                 await SaveFile(m_XmlSF, doc.OuterXml);
             }
         }
-        private RecentFileList recentFileList;
+        private RecentList recentFileList;
+        private string _currentScriptPath;
         public string CurrentScriptPath
         {
             get
             {
-                if (FileListComboBox.SelectedIndex == -1)
-                    return null;
-
-                return recentFileList.List[0];
+                return _currentScriptPath;
             }
             set
             {
-                recentFileList.InsertHead(value);
-                FileListComboBox.SelectedIndex = 0;
+                if (value != _currentScriptPath)
+                {
+                    _currentScriptPath = value;
+
+                    if (value == null)
+                    {
+                        FileListComboBox.SelectedIndex = -1;
+                    }
+                    else
+                    {
+                        FileListComboBox.SelectedIndex = -1;
+                        recentFileList.InsertHead(value);
+                        FileListComboBox.SelectedIndex = 0;
+                    }
+                }
             }
         }
 
         private async Task IntializeFileOperations()
         {
-            recentFileList = new RecentFileList();
+            recentFileList = new RecentList();
             await recentFileList.SetXmlAndLoadRecentFiles("C:\\ProgramData\\ASUS\\AURA Creator\\script\\recentfiles.xml");
         }
 
@@ -129,34 +144,138 @@ namespace AuraEditor
         {
             int index = FileListComboBox.SelectedIndex;
 
-            // Calling InsertHead or setting SelectedIndex will call SelectionChanged again.
-            // We should ingore it.
-            if (index == -1 || index == 0)
+            // Remove selected item will cause selected index changing to -1
+            if (index == -1)
                 return;
 
-            string item = FileListComboBox.Items[index] as string;
-            string content = await LoadFile(item);
-            CurrentScriptPath = item;
-            //recentFileList.InsertHead(item);
-            FileListComboBox.SelectedIndex = 0;
-        }
-        private void NewButton_Click(object sender, RoutedEventArgs e)
-        {
+            if (index == 0)
+            {
+                if (CurrentScriptPath != null)
+                    return;
+            }
 
+            ContentDialog dialog = new YesNoCancelDialog();
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.None)
+            {
+                return;
+            }
+            else
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    if (CurrentScriptPath != null)
+                    {
+                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                    }
+                    else
+                    {
+                        StorageFile saveFile = await ShowFileSavePickerAsync();
+
+                        if (saveFile != null)
+                        {
+                            await SaveFile(saveFile, PrintLuaScript());
+                            CurrentScriptPath = saveFile.Path;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                // load file
+                string path = FileListComboBox.Items[index] as string;
+                CurrentScriptPath = path;
+                Reset();
+                await LoadContent(await LoadFile(path));
+                SpaceManager.RefreshSpaceGrid();
+            }
+        }
+        private async void NewButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new YesNoCancelDialog();
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.None)
+            {
+                return;
+            }
+            else
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    if (CurrentScriptPath != null)
+                    {
+                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                    }
+                    else
+                    {
+                        StorageFile saveFile = await ShowFileSavePickerAsync();
+
+                        if (saveFile != null)
+                        {
+                            await SaveFile(saveFile, PrintLuaScript());
+                            CurrentScriptPath = saveFile.Path;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                CurrentScriptPath = null;
+                Reset();
+                SpaceManager.FillWithIngroupDevices();
+            }
         }
         private async void LoadFileButton_Click(object sender, RoutedEventArgs e)
         {
-            FileOpenPicker fileOpenPicker = new FileOpenPicker();
-            fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            fileOpenPicker.FileTypeFilter.Add(".lua");
-            fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
+            var inputFile = await ShowFileOpenPickerAsync();
 
-            var inputFile = await fileOpenPicker.PickSingleFileAsync();
-
-            if (inputFile != null)
+            if (inputFile == null)
             {
+                return;
+            }
+
+            ContentDialog dialog = new YesNoCancelDialog();
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.None)
+            {
+                return;
+            }
+            else
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    if (CurrentScriptPath != null)
+                    {
+                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                    }
+                    else
+                    {
+                        StorageFile saveFile = await ShowFileSavePickerAsync();
+
+                        if (saveFile != null)
+                        {
+                            await SaveFile(saveFile, PrintLuaScript());
+                            CurrentScriptPath = saveFile.Path;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                // load file
                 CurrentScriptPath = inputFile.Path;
-                LoadContent(await LoadFile(inputFile));
+                Reset();
+                await LoadContent(await LoadFile(inputFile));
+                SpaceManager.RefreshSpaceGrid();
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -168,15 +287,7 @@ namespace AuraEditor
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
-            var savePicker = new FileSavePicker();
-            savePicker.SuggestedStartLocation =
-                Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-            // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".lua" });
-            // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = "MyLuaScript";
-
-            StorageFile saveFile = await savePicker.PickSaveFileAsync();
+            StorageFile saveFile = await ShowFileSavePickerAsync();
 
             if (saveFile != null)
             {
@@ -188,55 +299,51 @@ namespace AuraEditor
         {
         }
 
-        private void LoadContent(string luaScript)
+        private async Task LoadContent(string luaScript)
         {
-            //luaScript = luaScript.Replace(RequireLine, "");
+            luaScript = luaScript.Replace(RequireLine, "");
 
-            //Script script = new Script();
+            Script script = new Script();
 
-            //DynValue script_dv;
-            //Table eventprovider_table;
-            //Table viewport_table;
-            //Table event_table;
-            //Table globalspace_table;
+            DynValue script_dv;
+            Table eventprovider_table;
+            Table viewport_table;
+            Table event_table;
+            Table globalspace_table;
 
-            //script_dv = script.DoString(luaScript + "\nreturn EventProvider");
-            //eventprovider_table = script_dv.Table;
-            //script_dv = script.DoString(luaScript + "\nreturn Viewport");
-            //viewport_table = script_dv.Table;
-            //script_dv = script.DoString(luaScript + "\nreturn Event");
-            //event_table = script_dv.Table;
-            //script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
-            //globalspace_table = script_dv.Table;
+            script_dv = script.DoString(luaScript + "\nreturn EventProvider");
+            eventprovider_table = script_dv.Table;
+            script_dv = script.DoString(luaScript + "\nreturn Viewport");
+            viewport_table = script_dv.Table;
+            script_dv = script.DoString(luaScript + "\nreturn Event");
+            event_table = script_dv.Table;
+            script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
+            globalspace_table = script_dv.Table;
 
-            //_auraCreatorManager.ClearAllLayer();
+            // Step 1 : Convert GlobalSpace table to SpaceManager.GlobalDevices
+            SpaceManager.GlobalDevices = await GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
 
-            //// Step 1 : Get global devices from GlobalSpace table and set to deviceLayerManager
-            //List<Device> globaldevices = GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
-            //_auraCreatorManager.GlobalDevices = globaldevices;
+            // Step 2 : Convert EventProvider table to devicelayers
+            List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
+            if (deviceLayers.Count == 0)
+                return;
 
-            //// Step 2 : Get all device layers from EventProvider table
-            //List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
-            //if (deviceLayers.Count == 0)
-            //    return;
+            // Step 3 : According to device layer name, convert Viewport table to m_ZoneDictionary
+            foreach (var layer in deviceLayers)
+            {
+                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
+                layer.AddDeviceZones(dictionary);
 
-            //// Step 3 : According to device layer name, get all device zones from Viewport table
-            //foreach (var layer in deviceLayers)
-            //{
-            //    Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
-            //    layer.AddDeviceZones(dictionary);
-
-            //    foreach (var effect in layer.TimelineEffects)
-            //    {
-            //        EffectInfo ei = GetEffectInfoFromEventTable(event_table, effect.LuaName);
-            //        effect.Info = ei;
-            //    }
-            //    _auraCreatorManager.AddDeviceLayer(layer);
-            //}
-
-            //RefreshSpaceGrid();
-            //ClearEffectInfoGrid();
-            //LayerListView.SelectedIndex = 0;
+                // Step 4 : According to effect.LuaName, convert EventTable table to EffectInfo
+                foreach (var effect in layer.TimelineEffects)
+                {
+                    Table effectTable = event_table.Get(effect.LuaName).Table;
+                    int type = GetEffectIndex(effect.LuaName);
+                    EffectInfo ei = GetInfoFromEffectTable(type, effectTable);
+                    effect.Info = ei;
+                }
+                LayerManager.AddDeviceLayer(layer);
+            }
         }
         private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string layerName)
         {
@@ -305,15 +412,37 @@ namespace AuraEditor
 
             return layers;
         }
-        private EffectInfo GetEffectInfoFromEventTable(Table eventTable, string effectLuaName)
+        private EffectInfo GetInfoFromEffectTable(int type, Table effectTable)
         {
-            Table effectTable = eventTable.Get(effectLuaName).Table;
-            Table colorTable = effectTable.Get("initColor").Table;
             Table waveTable = effectTable.Get("wave").Table;
+            Table waveTable_1 = waveTable.Get(1).Table;
+            WaveInfo wInfo = new WaveInfo(type)
+            {
+                WaveType = WaveInfo.StringToWaveType(waveTable_1.Get("WaveType").String),
+                Min = waveTable_1.Get("min").Number,
+                Max = waveTable_1.Get("max").Number,
+                WaveLength = waveTable_1.Get("waveLength").Number,
+                Freq = waveTable_1.Get("freq").Number,
+                Phase = waveTable_1.Get("phase").Number,
+                Start = waveTable_1.Get("start").Number,
+                Velocity = waveTable_1.Get("velocity").Number,
+            };
 
-            return null;
+            Table colorTable = effectTable.Get("initColor").Table;
+            Color c = HSLToRGB(
+                colorTable.Get("alpha").Number,
+                colorTable.Get("hue").Number,
+                colorTable.Get("saturation").Number,
+                colorTable.Get("lightness").Number
+                );
+
+            EffectInfo ei = new EffectInfo(type);
+            ei.InitColor = c;
+            ei.Waves = new List<WaveInfo> { wInfo };
+
+            return ei;
         }
-        private List<Device> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
+        private async Task<List<Device>> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
         {
             List<Device> devices = new List<Device>();
 
@@ -321,24 +450,27 @@ namespace AuraEditor
             {
                 Table deviceTable = globalspaceTable.Get(deviceKey.String).Table;
 
-                int type = 0;
-                switch (deviceTable.Get("DeviceType").String)
-                {
-                    case "Notebook": type = 0; break;
-                    case "Mouse": type = 1; break;
-                    case "Keyboard": type = 2; break;
-                    case "Headset": type = 3; break;
-                }
+                string deviceName = deviceTable.Get("name").String;
+                DeviceContent deviceContent = await DeviceContent.GetDeviceContent(deviceName);
 
                 Table locationTable = deviceTable.Get("location").Table;
                 int x = (int)locationTable.Get("x").Number;
                 int y = (int)locationTable.Get("y").Number;
 
-                //Device d = new Device(deviceKey.String, type, x, y);
-                //devices.Add(d);
+                Device d = deviceContent.ToDevice(new Point(x, y));
+                devices.Add(d);
             }
 
             return devices;
+        }
+        private void Reset()
+        {
+            DragDevImgToggleButton.IsChecked = false;
+            SetLayerButton.IsEnabled = true;
+            SelectedEffectLine = null;
+            LayerManager.Reset();
+            SpaceManager.Reset();
+            TimelineZoomLevel = 2;
         }
     }
 }

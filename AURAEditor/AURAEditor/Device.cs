@@ -1,11 +1,7 @@
-﻿#define DEBUG
-using System.Collections.Generic;
-using Windows.UI.Xaml;
-using System;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using static AuraEditor.MainPage;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.LuaHelper;

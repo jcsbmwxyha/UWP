@@ -80,7 +80,7 @@ namespace AuraEditor
                     queueItemTable.Set("Effect", DynValue.NewString(eff.LuaName));
                     queueItemTable.Set("Viewport", DynValue.NewString(layer.Name));
 
-                    if (IsTriggerEffects(eff.Type))
+                    if (IsTriggerEffect(eff.Type))
                         queueItemTable.Set("Trigger", DynValue.NewString("KeyboardInput"));
                     else
                         queueItemTable.Set("Trigger", DynValue.NewString("Period"));
