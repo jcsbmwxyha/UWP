@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor
 {
@@ -17,51 +18,59 @@ namespace AuraEditor
     {
         public Shape Frame;
         public int Index;
-        public Rect RelativeZoneRect;
-        public Rect AbsoluteZoneRect
+        public int ZIndex;
+        public Rect RelativeZoneRect
         {
             get
             {
                 CompositeTransform ct = Frame.RenderTransform as CompositeTransform;
+
                 return new Rect(
-                    new Point(ct.TranslateX, ct.TranslateY),
-                    new Point(ct.TranslateX + RelativeZoneRect.Width, ct.TranslateY + RelativeZoneRect.Height)
-                    );
+                    new Point(
+                        ct.TranslateX, //x
+                        ct.TranslateY), //y
+                    new Point(
+                        ct.TranslateX + Frame.Width, //w
+                        ct.TranslateY + Frame.Height) //h
+                );
+            }
+        }
+        public Rect AbsoluteZoneRect
+        {
+            get
+            {
+                Border b = FindParentControl<Border>(Frame, typeof(Border));
+                CompositeTransform ct = b.RenderTransform as CompositeTransform;
+
+                return new Rect(
+                    new Point(
+                        ct.TranslateX + RelativeZoneRect.Left, //x
+                        ct.TranslateY + RelativeZoneRect.Top), //y
+                    new Point(
+                        ct.TranslateX + RelativeZoneRect.Left + RelativeZoneRect.Width, //w
+                        ct.TranslateY + RelativeZoneRect.Top + RelativeZoneRect.Height) //h
+                );
             }
         }
         public bool Selected;
-        public int ZIndex;
         
         public LightZone(Point deviceGridPosition, LedUI led)
         {
-            int deviceLeft;
-            int deviceTop;
-            int frameLeft;
-            int frameTop;
-            int frameRight;
-            int frameBottom;
-
-            deviceLeft = (int)deviceGridPosition.X * GridPixels;
-            deviceTop = (int)deviceGridPosition.Y * GridPixels;
-            frameLeft = led.Left;
-            frameTop = led.Top;
-            frameRight = led.Right;
-            frameBottom = led.Bottom;
+            int frameLeft = led.Left;
+            int frameTop = led.Top;
+            int frameRight = led.Right;
+            int frameBottom = led.Bottom;
 
             Index = led.Index;
             Selected = false;
-            RelativeZoneRect = new Rect(
-                new Point(frameLeft, frameTop),
-                new Point(frameRight, frameBottom)
-                );
             Frame = CreateRectangle(new Rect(
-                    new Point(frameLeft + deviceLeft, frameTop + deviceTop),
-                    new Point(frameRight + deviceLeft, frameBottom + deviceTop))
+                    new Point(frameLeft, frameTop),
+                    new Point(frameRight, frameBottom))
                     );
             Frame.SetValue(Canvas.ZIndexProperty, led.ZIndex);
             ZIndex = led.ZIndex;
         }
-        private Rectangle CreateRectangle(Windows.Foundation.Rect Rect)
+        private Rectangle CreateRectangle(Rect Rect)
         {
             CompositeTransform ct = new CompositeTransform
             {

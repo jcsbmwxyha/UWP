@@ -41,6 +41,16 @@ namespace AuraEditor
                 }
                 catch
                 {
+                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+                    folder = await EnterOrCreateFolder(folder, "AURA Creator");
+                    folder = await EnterOrCreateFolder(folder, "script");
+                    m_XmlSF = await folder.CreateFileAsync("recentfiles.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
+                    XmlDocument doc = new XmlDocument();
+                    XmlElement recentfilesElement = doc.CreateElement(string.Empty, "recentfiles", string.Empty);
+                    doc.AppendChild(recentfilesElement);
+
+                    await Windows.Storage.FileIO.WriteTextAsync(m_XmlSF, doc.OuterXml);
                 }
             }
             private async Task<List<string>> GetRecentFilePaths(StorageFile recentFileSF)
@@ -102,7 +112,6 @@ namespace AuraEditor
                     recentfilesElement.AppendChild(fileElement);
                 }
 
-                string s = doc.OuterXml;
                 await SaveFile(m_XmlSF, doc.OuterXml);
             }
         }
@@ -342,6 +351,14 @@ namespace AuraEditor
                     EffectInfo ei = GetInfoFromEffectTable(type, effectTable);
                     effect.Info = ei;
                 }
+                foreach (var effect in layer.TriggerEffects)
+                {
+                    Table effectTable = event_table.Get(effect.LuaName).Table;
+                    int type = GetEffectIndex(effect.LuaName);
+                    EffectInfo ei = GetInfoFromEffectTable(type, effectTable);
+                    effect.Info = ei;
+                }
+
                 LayerManager.AddDeviceLayer(layer);
             }
         }
@@ -383,6 +400,7 @@ namespace AuraEditor
             List<DeviceLayer> layers = new List<DeviceLayer>();
             Table queueTable = eventProviderTable.Get("queue").Table;
 
+            // TODO : Simplify here
             for (int queueIndex = 1; queueIndex <= queueTable.Length; queueIndex++)
             {
                 Table t = queueTable.Get(queueIndex).Table;
@@ -401,13 +419,24 @@ namespace AuraEditor
                 double durationTime = t.Get("Duration").Number;
                 int type = GetEffectIndex(effectLuaName);
 
-                TimelineEffect effect = new TimelineEffect(layer, type)
+                if (IsTriggerEffect(type))
                 {
-                    LuaName = effectLuaName,
-                    StartTime = startTime,
-                    DurationTime = durationTime
-                };
-                layer.AddTimelineEffect(effect);
+                    TriggerEffect effect = new TriggerEffect(layer, type)
+                    {
+                        LuaName = effectLuaName,
+                    };
+                    layer.AddTriggerEffect(effect);
+                }
+                else
+                {
+                    TimelineEffect effect = new TimelineEffect(layer, type)
+                    {
+                        LuaName = effectLuaName,
+                        StartTime = startTime,
+                        DurationTime = durationTime
+                    };
+                    layer.AddTimelineEffect(effect);
+                }
             }
 
             return layers;

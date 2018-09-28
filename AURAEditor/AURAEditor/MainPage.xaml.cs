@@ -68,7 +68,7 @@ namespace AuraEditor
             InitializeDragEffectIcon();
             InitializePlayerStructure();
 
-            AngleImgCenter = new Point(AngleGrid.ActualWidth / 2, AngleGrid.ActualHeight / 2);
+            AngleImgCenter = new Point(40, 40);
             _preAngle = 0;
             AngleTextBox.Text = "0";
 

@@ -1,17 +1,24 @@
--- It is Aura module
+--  Aura Global Variables and Functions
 
 global = {
 
-	OneTimeDone = false,
-	PeriodDone = false,
 	keystrokeStrength = 0,
 	keyPressX = 0,
 	keyPressY = 0,
+	keyLastPressTime = 0,
+	keyDoubleClickDuration = 200,
+	keyDebounceTime = 80,
 
-	RandomHue = function()
+	OneTimeDone = false,
+	PeriodDone = false,
+	LastAudioPeak = 0,
+	isPeakRising = false,
+
+	Random = function()
 		return math.random()
 	end,
 
+	
 	MataData = {
 		ViewportTransform = {
 			OrthogonaProject = { 

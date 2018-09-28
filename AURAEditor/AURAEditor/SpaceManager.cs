@@ -152,8 +152,6 @@ namespace AuraEditor
 
                 foreach (var zone in d.LightZones)
                 {
-                    m_SpaceCanvas.Children.Add(zone.Frame);
-
                     MouseDetectionRegion r = new MouseDetectionRegion()
                     {
                         RegionIndex = -1,
@@ -173,7 +171,6 @@ namespace AuraEditor
         {
             IntializeMouseEventCtrl();
             GlobalDevices.Clear();
-            //FillWithIngroupDevices();
             SetSpaceStatus(SpaceStatus.Normal);
         }
         private void SortByZIndex(LightZone[] zones)

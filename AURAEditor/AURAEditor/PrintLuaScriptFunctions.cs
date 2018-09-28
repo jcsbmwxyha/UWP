@@ -61,7 +61,7 @@ namespace AuraEditor
             effectCount = 0;
             queueIndex = 1;
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayerCollection)
+            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
             {
                 if (layer.Eye == false)
                     continue;
@@ -101,7 +101,7 @@ namespace AuraEditor
 
             viewPortTable = CreateNewTable();
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayerCollection)
+            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
             {
                 layerTable = layer.ToTable();
                 viewPortTable.Set(layer.Name, DynValue.NewTable(layerTable));
@@ -113,7 +113,7 @@ namespace AuraEditor
         {
             Table eventTable = CreateNewTable();
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayerCollection)
+            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
             {
                 if (layer.Eye == false)
                     continue;

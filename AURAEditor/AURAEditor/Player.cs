@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.ControlHelper;
+using Windows.Storage;
 
 namespace AuraEditor
 {
@@ -45,7 +46,6 @@ namespace AuraEditor
             }
             public void Play()
             {
-                //AuraCreatorManager manager = AuraCreatorManager.Instance;
                 double duration = AuraLayerManager.Self.PlayTime;
                 double from = 0;
                 double to = AuraLayerManager.Self.RightmostPosition;
@@ -77,11 +77,15 @@ namespace AuraEditor
             private void IconStoryboard_Completed(object sender, object e)
             {
                 TimerClock.Stop();
+                clockText.Text = TimeSpan.FromMilliseconds((int)AuraLayerManager.Self.PlayTime).ToString("mm\\:ss\\.ff");
                 iconScrollViewer.Visibility = Visibility.Collapsed;
             }
             private void Timer_Tick(object sender, object e)
             {
-                clockText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
+                // Even stop TimerClock, Timer_Tick() still have the chance to be called,
+                // so we should ingnore it if timer is stopped.
+                if (TimerClock.IsEnabled)
+                    clockText.Text = DateTime.Now.Subtract(baseDateTime).ToString("mm\\:ss\\.ff");
             }
             private double GetStoryCurrentTime()
             {
@@ -132,6 +136,10 @@ namespace AuraEditor
         }
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
+            StorageFile sf = await folder.CreateFileAsync("script.lua", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintLuaScript());
+
             await (new ServiceViewModel()).AuraEditorTrigger();
 
             ScrollWindowToLeftTop();

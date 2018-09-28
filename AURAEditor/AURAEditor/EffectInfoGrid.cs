@@ -54,16 +54,17 @@ namespace AuraEditor
         public void ClearEffectInfoGrid()
         {
             Title.Text = "";
+            ResetBtn.Visibility = Visibility.Collapsed;
             ColorRect.Visibility = Visibility.Collapsed;
             EffectInfoGroup.Visibility = Visibility.Collapsed;
         }
         private void UpdateEffectInfoGrid(TimelineEffect effect)
         {
             //EffectLine border = effect.UI;
-
             ShowEffectInfoGroupsByType(effect.Type);
             UpdateGroupContents(effect.Info);
-            
+            UpdateUIEffectContents(effect.UInfo);
+
             //if (border.Background is SolidColorBrush)
             //{
             //    ColorRect.Fill = (SolidColorBrush)border.Background;
@@ -72,6 +73,7 @@ namespace AuraEditor
 
         private void ShowEffectInfoGroupsByType(int effectType)
         {
+            ResetBtn.Visibility = Visibility.Visible;
             EffectInfoGroup.Visibility = Visibility.Visible;
             Title.Text = GetEffectName(effectType);
 
@@ -86,6 +88,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Collapsed;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Breath":
                     ColorRect.Visibility = Visibility.Visible;
@@ -96,6 +107,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "ColorCycle":
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -106,6 +126,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Rainbow":
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -116,6 +145,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Visible;
+                    AngleGroup.Visibility = Visibility.Visible;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Strobing":
                     ColorRect.Visibility = Visibility.Visible;
@@ -126,6 +164,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Visible;
+                    AngleGroup.Visibility = Visibility.Visible;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Comet":
                     ColorRect.Visibility = Visibility.Visible;
@@ -136,6 +183,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Visible;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Visible;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Star":
                     ColorRect.Visibility = Visibility.Visible;
@@ -146,6 +202,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Visible;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Raidus":
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -156,6 +221,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Reactive":
                     ColorRect.Visibility = Visibility.Visible;
@@ -166,6 +240,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Visible;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Laser":
                     ColorRect.Visibility = Visibility.Visible;
@@ -176,6 +259,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Visible;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Visible;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Ripple":
                     ColorRect.Visibility = Visibility.Visible;
@@ -186,6 +278,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Visible;
                     PhaseTextBox.Visibility = Visibility.Visible;
                     VelocityTextBox.Visibility = Visibility.Visible;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Visible;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Music":
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -196,6 +297,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Collapsed;
                     PhaseTextBox.Visibility = Visibility.Collapsed;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Smart":
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -206,6 +316,15 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Collapsed;
                     PhaseTextBox.Visibility = Visibility.Collapsed;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Visible;
                     break;
                 default:
                     ColorRect.Visibility = Visibility.Collapsed;
@@ -216,10 +335,17 @@ namespace AuraEditor
                     FreqTextBox.Visibility = Visibility.Collapsed;
                     PhaseTextBox.Visibility = Visibility.Collapsed;
                     VelocityTextBox.Visibility = Visibility.Collapsed;
+                    StartTextBox.Visibility = Visibility.Collapsed;
+                    //steven UI
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
             }
-            //TempoGroup.Visibility = Visibility.Collapsed;
-            //DirectionGroup.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateGroupContents(EffectInfo info)
@@ -233,6 +359,35 @@ namespace AuraEditor
             PhaseTextBox.Text = info.Waves[0].Phase.ToString();
             StartTextBox.Text = info.Waves[0].Start.ToString();
             VelocityTextBox.Text = info.Waves[0].Velocity.ToString();
+        }
+
+        private void UpdateUIEffectContents(UIInfo Uinfo)
+        {
+            RadioButtonBg.Background = new SolidColorBrush(Uinfo.InitColor);
+            if (Uinfo.ColorRandom)
+            {
+                RandomCheckBox.IsChecked = true;
+                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.IsEnabled = false;
+            }
+            else
+            {
+                RandomCheckBox.IsChecked = false;
+                RadioButtonBg.Background = new SolidColorBrush(Uinfo.InitColor);
+                RadioButtonBg.IsEnabled = true;
+            }
+            BrightnessSlider.Value = Uinfo.Waves[0].Brightness;
+            SpeedSlider.Value = Uinfo.Waves[0].Speed;
+            switch (Uinfo.Waves[0].Direction)
+            {
+                case 1: Left.IsChecked = true; break;
+                case 2: Right.IsChecked = true; break;
+                case 3: Up.IsChecked = true; break;
+                case 4: Down.IsChecked = true; break;
+            }
+            AngleStoryboardStart(Uinfo.Waves[0].Angle);
+            AngleTextBox.Text = Uinfo.Waves[0].Angle.ToString();
+
         }
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
@@ -375,6 +530,7 @@ namespace AuraEditor
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
+            SelectedEffectLine.UInfo.InitColor = newColor;
             RadioButtonBg.Background = new SolidColorBrush(newColor);
         }
 
@@ -385,9 +541,26 @@ namespace AuraEditor
 
             return colorPickerDialog.CurrentColor;
         }
+        
+        private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (RandomCheckBox.IsChecked == true)
+            {
+                SelectedEffectLine.UInfo.ColorRandom = true;
+                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.IsEnabled = false;
+            }
+            else
+            {
+                SelectedEffectLine.UInfo.ColorRandom = false;
+                RadioButtonBg.Background = new SolidColorBrush(SelectedEffectLine.UInfo.InitColor);
+                RadioButtonBg.IsEnabled = true;
+            }
+        }
 
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            UIInfo ui = SelectedEffectLine.UInfo;
             Slider slider = sender as Slider;
             if (slider != null)
             {
@@ -415,23 +588,17 @@ namespace AuraEditor
                     //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                     //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                 }
+                ui.Waves[0].Brightness = slider.Value;
             }
         }
 
         private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            UIInfo ui = SelectedEffectLine.UInfo;
             Slider slider = sender as Slider;
             if (slider != null)
             {
-                if (slider.Value == 1)
-                {
-                }
-                else if (slider.Value == 2)
-                {
-                }
-                else
-                {
-                }
+                ui.Waves[0].Speed = slider.Value;
             }
         }
 
@@ -444,6 +611,7 @@ namespace AuraEditor
             double dy = currentLocation.Y - AngleImgCenter.Y;
             double hue = Math2.ComputeH(dx, dy);
             AngleTextBox.Text = hue.ToString("F0");
+            SelectedEffectLine.UInfo.Waves[0].Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
 
         }
@@ -490,11 +658,11 @@ namespace AuraEditor
 
             if ((AngleChangeText.Text != ""))
             {
-                if (int.Parse(AngleChangeText.Text) > 360)
+                if (double.Parse(AngleChangeText.Text) > 360)
                 {
                     AngleChangeText.Text = "360";
                 }
-                else if (int.Parse(AngleChangeText.Text) < 0)
+                else if (double.Parse(AngleChangeText.Text) < 0)
                 {
                     AngleChangeText.Text = "0";
                 }
@@ -540,6 +708,7 @@ namespace AuraEditor
 
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
         {
+            UIInfo ui = SelectedEffectLine.UInfo;
             if ((AngleTextBox.Text != ""))
             {
                 double textIncrease = Convert.ToDouble(AngleTextBox.Text);
@@ -555,11 +724,13 @@ namespace AuraEditor
                     AngleTextBox.Text = textIncrease.ToString();
                     AngleStoryboardStart(textIncrease);
                 }
+                ui.Waves[0].Angle = Convert.ToDouble(AngleTextBox.Text);
             }
         }
 
         private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
         {
+            UIInfo ui = SelectedEffectLine.UInfo;
             if ((AngleTextBox.Text != ""))
             {
                 double textdecrease = Convert.ToDouble(AngleTextBox.Text);
@@ -575,7 +746,40 @@ namespace AuraEditor
                     AngleTextBox.Text = textdecrease.ToString();
                     AngleStoryboardStart(textdecrease);
                 }
+                ui.Waves[0].Angle = textdecrease;
             }
+        }
+        
+        private void DirectionBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            UIInfo ui = SelectedEffectLine.UInfo;
+            RadioButton directionBtn = sender as RadioButton;
+            switch (directionBtn.Name)
+            {
+                case "Left":
+                    ui.Waves[0].Direction = 1;
+                    break;
+                case "Right":
+                    ui.Waves[0].Direction = 2;
+                    break;
+                case "Up":
+                    ui.Waves[0].Direction = 3;
+                    break;
+                case "Down":
+                    ui.Waves[0].Direction = 4;
+                    break;
+            }
+        }
+
+        private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            UIInfo ui = SelectedEffectLine.UInfo;
+            ui.InitColor = Colors.Red;
+            ui.Waves[0].Brightness = 3;
+            ui.Waves[0].Speed = 1;
+            ui.Waves[0].Direction = 2;
+            ui.Waves[0].Angle = 90;
+            UpdateUIEffectContents(ui);
         }
     }
 }

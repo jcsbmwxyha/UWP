@@ -12,12 +12,38 @@ using static AuraEditor.Common.LuaHelper;
 using static AuraEditor.Common.ControlHelper;
 using AuraEditor.UserControls;
 using MoonSharp.Interpreter;
+using System.ComponentModel;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace AuraEditor
 {
-    public class DeviceLayer
+    public class DeviceLayer : INotifyPropertyChanged
     {
-        public string Name { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private string _name;
+        public string Name {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    RaisePropertyChanged("Name");
+                }
+            }
+        }
         public List<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
         public Canvas UICanvas;
@@ -69,6 +95,10 @@ namespace AuraEditor
         public void AddDeviceZones(int type, int[] indexes)
         {
             m_ZoneDictionary.Add(type, indexes);
+        }
+        public void AddTriggerEffect(TriggerEffect effect)
+        {
+            TriggerEffects.Add(effect);
         }
         public void AddTimelineEffect(TimelineEffect effect)
         {

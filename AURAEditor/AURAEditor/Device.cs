@@ -8,6 +8,8 @@ using static AuraEditor.Common.LuaHelper;
 using Windows.Foundation;
 using MoonSharp.Interpreter;
 using static AuraEditor.AuraSpaceManager;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI;
 
 namespace AuraEditor
 {
@@ -55,20 +57,30 @@ namespace AuraEditor
                 Border.Height = value * GridPixels;
             }
         }
-        private Image Image { get; set; }
         public Border Border { get; set; }
         public LightZone[] LightZones { get; set; }
 
-        public Device(Image img)
+        public Device(Image img, LightZone[] zones)
         {
-            Image = img;
-            //Image.Tapped += DeviceImg_Tapped;
+            LightZones = zones;
 
-            Border = new Border();
-            Border.RenderTransform = new CompositeTransform();
-            Border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Orange);
-            Border.BorderThickness = new Thickness(0);
-            Border.Child = Image;
+            Canvas childCanvas = new Canvas();
+            childCanvas.VerticalAlignment = 0;
+            childCanvas.Children.Add(img);
+
+            foreach (var zone in zones)
+            {
+                childCanvas.Children.Add(zone.Frame);
+            }
+
+            Border = new Border
+            {
+                RenderTransform = new CompositeTransform(),
+                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
+                BorderBrush = new SolidColorBrush(Windows.UI.Colors.Orange),
+                BorderThickness = new Thickness(0),
+                Child = childCanvas
+            };
         }
         public void EnableManipulation()
         {
@@ -107,7 +119,7 @@ namespace AuraEditor
             CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
             _oldPixelPosition = new Point(ct.TranslateX, ct.TranslateY);
-            Image.Opacity = 0.5;
+            Border.Opacity = 0.5;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -124,7 +136,7 @@ namespace AuraEditor
             SetPosition(
                 RoundToGrid(ct.TranslateX),
                 RoundToGrid(ct.TranslateY));
-            Image.Opacity = 1;
+            Border.Opacity = 1;
 
             if (!AuraSpaceManager.Self.IsOverlapping(this))
             {
@@ -151,35 +163,13 @@ namespace AuraEditor
 
         private void SetPosition(double x, double y)
         {
-            SetPositionOfBorder(x, y);
-            SetPositionOfAllZones(x, y);
-        }
-        private void SetPositionOfImage(double x, double y)
-        {
-            CompositeTransform ct = Image.RenderTransform as CompositeTransform;
-            ct.TranslateX = x;
-            ct.TranslateY = y;
-        }
-        private void SetPositionOfBorder(double x, double y)
-        {
             CompositeTransform ct = Border.RenderTransform as CompositeTransform;
             ct.TranslateX = x;
             ct.TranslateY = y;
-        }
-        private void SetPositionOfAllZones(double imageX, double imageY)
-        {
-            CompositeTransform zone_ct;
-            foreach (var zone in LightZones)
-            {
-                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
-                zone_ct.TranslateX = imageX + zone.RelativeZoneRect.Left;
-                zone_ct.TranslateY = imageY + zone.RelativeZoneRect.Top;
-            }
         }
         private void SetPositionByAnimation(double x, double y)
         {
             CompositeTransform ct = Border.RenderTransform as CompositeTransform;
-            CompositeTransform zone_ct;
             double runTime = 300;
             double source;
             double targetX;
@@ -192,22 +182,6 @@ namespace AuraEditor
             source = ct.TranslateY;
             targetY = y;
             AnimationStart(Border.RenderTransform, "TranslateY", runTime, source, targetY);
-
-            foreach (var zone in LightZones)
-            {
-                double targetZoneX;
-                double targetZoneY;
-
-                zone_ct = zone.Frame.RenderTransform as CompositeTransform;
-
-                source = zone_ct.TranslateX;
-                targetZoneX = targetX + zone.RelativeZoneRect.Left;
-                AnimationStart(zone.Frame.RenderTransform, "TranslateX", runTime, source, targetZoneX);
-
-                source = zone_ct.TranslateY;
-                targetZoneY = targetY + zone.RelativeZoneRect.Top;
-                AnimationStart(zone.Frame.RenderTransform, "TranslateY", runTime, source, targetZoneY);
-            }
         }
         public Table ToTable()
         {

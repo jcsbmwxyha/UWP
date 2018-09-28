@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
     <RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
-                 Content="{x:Bind m_DeviceLayer.Name}"
+                 Content="{Binding Name}"
                  FontSize="30"
                  Foreground="White"
                  Height="50"

@@ -20,6 +20,7 @@ namespace AuraEditor
         public EffectInfo Info { get; set; }
         public virtual double StartTime { get; set; }
         public virtual double DurationTime { get; set; }
+        public UIInfo UInfo { get; set; }
 
         public Effect(DeviceLayer layer, int effectType)
         {
@@ -27,6 +28,7 @@ namespace AuraEditor
             Type = effectType;
             Name = GetEffectName(effectType);
             Info = new EffectInfo(effectType);
+            UInfo = new UIInfo(effectType);
         }
         public Effect(DeviceLayer layer, string effectName)
         {
@@ -34,12 +36,14 @@ namespace AuraEditor
             Type = GetEffectIndex(effectName);
             Name = effectName;
             Info = new EffectInfo(Type);
+            UInfo = new UIInfo(Type);
         }
         public void ChangeType(int effectType)
         {
             Type = effectType;
             Name = GetEffectName(effectType);
             Info = new EffectInfo(effectType);
+            UInfo = new UIInfo(effectType);
         }
 
         public virtual Table ToTable()

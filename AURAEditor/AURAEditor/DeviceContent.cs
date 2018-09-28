@@ -167,7 +167,7 @@ namespace AuraEditor
                 zones.Add(new LightZone(gridPosition, led));
             }
 
-            device = new Device(img)
+            device = new Device(img, zones.ToArray())
             {
                 Name = this.DeviceName,
                 Type = this.DeviceType,

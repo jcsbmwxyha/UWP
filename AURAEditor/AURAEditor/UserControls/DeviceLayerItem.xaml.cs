@@ -38,7 +38,7 @@ namespace AuraEditor.UserControls
         public DeviceLayerItem()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (s, e) => Bindings.Update();
+            //this.DataContextChanged += (s, e) => Bindings.Update();
         }
 
         private void EyeToggleButton_Click(object sender, RoutedEventArgs e)

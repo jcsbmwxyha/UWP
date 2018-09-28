@@ -19,12 +19,12 @@
             <BitmapImage x:Key="Vertical_portrait_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_p.png"/>
             <BitmapImage x:Key="Vertical_portrait_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_b_btn_p.png"/>
             <BitmapImage x:Key="HorizontalScrollBarImgContent" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_system_scrollbar_Horizontal.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_l.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_mid.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_n_r.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_p_l" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_l.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_mid.png"/>
-            <BitmapImage x:Key="Horizontal_Landscape_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_scrollbar_hint_landscape_p_r.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_l_btn_n.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_n.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_r_btn_n.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_l_btn_p.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_p.png"/>
+            <BitmapImage x:Key="Horizontal_Landscape_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_r_btn_p.png"/>
             <BitmapImage x:Key="Delete_n" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_n.png"/>
             <BitmapImage x:Key="Delete_h" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_h.png"/>
             <BitmapImage x:Key="Delete_s" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_s.png"/>
@@ -1052,12 +1052,12 @@
                Grid.Column="0"
                Grid.RowSpan="3"
                Grid.ColumnSpan="3"
-               Source="Assets/asus_auraeditor_timeline_bg.png"
+               Source="Assets/asus_ac_layer_s.png"
                Stretch="Fill"/>
         <Image Grid.Row="2"
                Grid.Column="0"
                Grid.ColumnSpan="3"
-               Source="Assets/asus_auraeditor_time_bg.png"
+               Source="Assets/asus_ac_layer_n.png"
                Stretch="Fill"/>
 
         <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
@@ -1189,7 +1189,13 @@
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10,5,0,0">
-                <TextBlock Name="Title" FontSize="42" Foreground="White"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="Title" FontSize="20" Foreground="White"/>
+                    <Button Name="ResetBtn" Margin="100,0,0,0" Visibility="Collapsed"
+                            Tapped="ResetBtn_Tapped">
+                        <Image Source="Assets/EffectInfoGroup/asus_ac_reset_btn_h.png" MinHeight="20" MinWidth="20" Width="20" Height="20"/>
+                    </Button>
+                </StackPanel>
                 <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
                            PointerPressed="ColorRect_Pressed" Margin="0,10" Visibility="Collapsed">
                     <FlyoutBase.AttachedFlyout>
@@ -1255,59 +1261,66 @@
                             <TextBlock Text="Velocity:" Foreground="White"/>
                         </TextBox.Header>
                     </TextBox>
-                </StackPanel>
-                <StackPanel x:Name="ColorGroup" Orientation="Vertical">
-                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,0" Tapped="ColorRadioBtn_Tapped"/>
-                </StackPanel>
-                <StackPanel x:Name="BrightnessGroup" Orientation="Vertical">
-                    <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged" 
-										Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
-                        <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Text="0%"/>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel x:Name="SpeedGroup" Orientation="Vertical">
-                    <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged" 
-										Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
-                            <TextBlock Text="Slow" Margin="0,0,55,0" FontSize="12"/>
-                            <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
-                            <TextBlock Text="Fast" FontSize="12"/>
+
+                    <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
+                            <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click" Visibility="Collapsed">
+                                <TextBlock Text="Random" Foreground="White"/>
+                            </CheckBox>
                         </StackPanel>
-                    </Grid>
-                </StackPanel>
-                <StackPanel x:Name="DirectionGroup" Orientation="Vertical">
-                    <TextBlock Text="Direction" Margin="20,20,0,0" Foreground="White"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <RadioButton x:Name="Left" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource LeftRadioBtn}" IsChecked="True"/>
-                        <RadioButton x:Name="Right" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource RightRadioBtn}"/>
-                        <RadioButton x:Name="Up" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource UpRadioBtn}"/>
-                        <RadioButton x:Name="Down" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource DownRadioBtn}"/>
                     </StackPanel>
 
-                    <StackPanel x:Name="AngleGroup" Orientation="Vertical">
+                    <StackPanel x:Name="BrightnessGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged"
+                                Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
+                            <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Text="0%"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged" 
+										Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
+                                <TextBlock Text="Slow" Margin="0,0,55,0" FontSize="12"/>
+                                <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
+                                <TextBlock Text="Fast" FontSize="12"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel x:Name="DirectionGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Direction" Margin="20,20,0,0" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <RadioButton x:Name="Left" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource LeftRadioBtn}" Tapped="DirectionBtn_Tapped"/>
+                            <RadioButton x:Name="Right" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource RightRadioBtn}" Tapped="DirectionBtn_Tapped"/>
+                            <RadioButton x:Name="Up" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource UpRadioBtn}" Tapped="DirectionBtn_Tapped"/>
+                            <RadioButton x:Name="Down" MinWidth="20" Margin="20,0,0,0" Style="{StaticResource DownRadioBtn}" Tapped="DirectionBtn_Tapped"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Angle" Margin="20,20,0,0" Foreground="White"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid x:Name="AngleGrid" Grid.Column="0">
-                                <Image x:Name="AngleIcImg" Source="Assets/EffectInfoGroup/asus_ac_angle_ic_n.png" Width="80" Height="80"
+                            <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
+                                <Image x:Name="AngleIcImg" Source="Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
                                        RenderTransformOrigin="0.5,0.5">
                                     <Image.RenderTransform>
                                         <RotateTransform x:Name="AngleIcImgRotation"/>
                                     </Image.RenderTransform>
                                 </Image>
-                                <Image x:Name="AngleBgImg" Source="Assets/EffectInfoGroup/asus_ac_angle_bg_n.png" Width="80" Height="80"
+                                <Image x:Name="AngleBgImg" Source="Assets/EffectInfoGroup/asus_ac_angle_bg_n.png"
                                        PointerPressed="AngleBgImg_PointerPressed"
                                        PointerReleased="AngleBgImg_PointerReleased"/>
                             </Grid>
@@ -1326,7 +1339,7 @@
                         </Grid>
                     </StackPanel>
 
-                    <StackPanel x:Name="TemperatureGroup" Orientation="Vertical">
+                    <StackPanel x:Name="TemperatureGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Temperature (°C)" Margin="20,20,0,0" Foreground="White"/>
                         <StackPanel Margin="0,20,0,0">
                             <Rectangle Height="30" Width="250">
@@ -1391,7 +1404,7 @@
                       HorizontalAlignment="Left">
             <ListView x:Name="LayerListView"
                       x:FieldModifier="Public"
-                      ItemsSource="{x:Bind LayerManager.DeviceLayerCollection}"
+                      ItemsSource="{x:Bind LayerManager.DeviceLayers}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
                       HorizontalAlignment="Left">

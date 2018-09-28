@@ -19,7 +19,7 @@ namespace AuraEditor
         private Canvas m_TimelineScaleCanvas;
         private ListView m_LayerListView;
 
-        public ObservableCollection<DeviceLayer> DeviceLayerCollection { get; set; }
+        public ObservableCollection<DeviceLayer> DeviceLayers { get; set; }
         static public int secondsPerTimeUnit; // TimeUnit : the seconds between two long lines
         static public double pixelsPerTimeUnit;
         public double PlayTime
@@ -48,7 +48,7 @@ namespace AuraEditor
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
             m_LayerListView = MainPage.Self.LayerListView;
 
-            DeviceLayerCollection = new ObservableCollection<DeviceLayer>();
+            DeviceLayers = new ObservableCollection<DeviceLayer>();
             pixelsPerTimeUnit = 200;
         }
 
@@ -56,28 +56,25 @@ namespace AuraEditor
         public void AddDeviceLayer(DeviceLayer layer)
         {
             layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
-            DeviceLayerCollection.Add(layer);
+            DeviceLayers.Add(layer);
             m_TimelineStackPanel.Children.Add(layer.UICanvas);
-        }
-        public void InsertDeviceLayer(DeviceLayer layer, int index)
-        {
-            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
-            DeviceLayerCollection.Insert(index, layer);
-            m_TimelineStackPanel.Children.Insert(index, layer.UICanvas);
-        }
-        public void RemoveDeviceLayer(int index)
-        {
-            DeviceLayerCollection.RemoveAt(index);
-            m_TimelineStackPanel.Children.RemoveAt(index);
         }
         public void RemoveDeviceLayer(DeviceLayer layer)
         {
-            DeviceLayerCollection.Remove(layer);
+            DeviceLayers.Remove(layer);
             m_TimelineStackPanel.Children.Remove(layer.UICanvas);
+            ReIndexLayers();
+        }
+        private void ReIndexLayers()
+        {
+            for(int i=0;i<DeviceLayers.Count;i++)
+            {
+                DeviceLayers[i].Name = "Layer " + i.ToString();
+            }
         }
         public int GetLayerCount()
         {
-            return DeviceLayerCollection.Count;
+            return DeviceLayers.Count;
         }
         public void UnselectAllLayers()
         {
@@ -98,7 +95,7 @@ namespace AuraEditor
         private void ClearAllLayer()
         {
             m_TimelineStackPanel.Children.Clear();
-            DeviceLayerCollection.Clear();
+            DeviceLayers.Clear();
         }
         #endregion
 
@@ -114,7 +111,7 @@ namespace AuraEditor
             secondsPerTimeUnit = newSecondsPerTimeUnit;
             DrawTimelineScale();
 
-            foreach (var layer in DeviceLayerCollection)
+            foreach (var layer in DeviceLayers)
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
@@ -129,7 +126,7 @@ namespace AuraEditor
             double rightmostPosition = 0;
             TimelineEffect rightmostEffect = null;
 
-            foreach (DeviceLayer layer in DeviceLayerCollection)
+            foreach (DeviceLayer layer in DeviceLayers)
             {
                 foreach (var effect in layer.TimelineEffects)
                 {

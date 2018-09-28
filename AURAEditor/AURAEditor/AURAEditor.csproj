@@ -136,6 +136,7 @@
     <Compile Include="LightZone.cs" />
     <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
+    <Compile Include="UIInfo.cs" />
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
     </Compile>
@@ -166,6 +167,8 @@
     <Content Include="Assets\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_s.png" />
+    <Content Include="Assets\asus_ac_layer_n.png" />
+    <Content Include="Assets\asus_ac_layer_s.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
@@ -213,6 +216,7 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_m.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_r icn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_r.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_reset_btn_h.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_slider_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
@@ -254,6 +258,7 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_m.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_r icn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_r.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_reset_btn_h.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_slider_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
@@ -282,8 +287,14 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_r.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_n.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_l_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_l_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_n 4k.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_p 4k.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_m_btn_p.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_r_btn_n.png" />
+    <Content Include="Assets\Scrollbar\asus_ac_scrll_r_btn_p.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_n.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_p.png" />
     <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_l.png" />
