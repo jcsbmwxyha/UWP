@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Input;
 using static AuraEditor.Common.StorageHelper;
+using static AuraEditor.Common.LuaHelper;
 
 namespace AuraEditor
 {
@@ -513,5 +514,17 @@ namespace AuraEditor
             m_MouseEventCtrl.OnRightTapped();
         }
         #endregion
+
+        public XmlNode ToXmlNode()
+        {
+            XmlNode spaceNode = CreateXmlNodeOfFile("space");
+
+            foreach (var d in GlobalDevices)
+            {
+                spaceNode.AppendChild(d.ToXmlNode());
+            }
+
+            return spaceNode;
+        }
     }
 }

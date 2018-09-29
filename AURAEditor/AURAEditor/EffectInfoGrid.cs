@@ -36,7 +36,7 @@ namespace AuraEditor
                 {
                     ClearEffectInfoGrid();
                 }
-                else if(_selectedEffectLine == value)
+                else if (_selectedEffectLine == value)
                 {
                     _selectedEffectLine.UI.IsSelected = true;
                 }
@@ -347,7 +347,6 @@ namespace AuraEditor
                     break;
             }
         }
-
         private void UpdateGroupContents(EffectInfo info)
         {
             ColorRect.Fill = new SolidColorBrush(info.InitColor);
@@ -360,11 +359,10 @@ namespace AuraEditor
             StartTextBox.Text = info.Waves[0].Start.ToString();
             VelocityTextBox.Text = info.Waves[0].Velocity.ToString();
         }
-
         private void UpdateUIEffectContents(UIInfo Uinfo)
         {
             RadioButtonBg.Background = new SolidColorBrush(Uinfo.InitColor);
-            if (Uinfo.ColorRandom)
+            if (Uinfo.Random)
             {
                 RandomCheckBox.IsChecked = true;
                 RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
@@ -376,18 +374,17 @@ namespace AuraEditor
                 RadioButtonBg.Background = new SolidColorBrush(Uinfo.InitColor);
                 RadioButtonBg.IsEnabled = true;
             }
-            BrightnessSlider.Value = Uinfo.Waves[0].Brightness;
-            SpeedSlider.Value = Uinfo.Waves[0].Speed;
-            switch (Uinfo.Waves[0].Direction)
+            BrightnessSlider.Value = Uinfo.Brightness;
+            SpeedSlider.Value = Uinfo.Speed;
+            switch (Uinfo.Direction)
             {
                 case 1: Left.IsChecked = true; break;
                 case 2: Right.IsChecked = true; break;
                 case 3: Up.IsChecked = true; break;
                 case 4: Down.IsChecked = true; break;
             }
-            AngleStoryboardStart(Uinfo.Waves[0].Angle);
-            AngleTextBox.Text = Uinfo.Waves[0].Angle.ToString();
-
+            AngleStoryboardStart(Uinfo.Angle);
+            AngleTextBox.Text = Uinfo.Angle.ToString();
         }
 
         private void ColorPickerOk_Click(object sender, RoutedEventArgs e)
@@ -401,18 +398,15 @@ namespace AuraEditor
             //border.Background = scb;
             m_flyoutBase.Hide();
         }
-
         private void ColorPickerCancel_Click(object sender, RoutedEventArgs e)
         {
             m_flyoutBase.Hide();
         }
-
         private void ColorRect_Pressed(object sender, PointerRoutedEventArgs e)
         {
             m_flyoutBase = Flyout.GetAttachedFlyout(sender as Rectangle);
             Flyout.ShowAttachedFlyout(sender as Rectangle);
         }
-
         private void WaveTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Initialization has not been completed
@@ -447,7 +441,6 @@ namespace AuraEditor
                     break;
             }
         }
-
         private void EffectInfo_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
@@ -467,7 +460,6 @@ namespace AuraEditor
                 tb.Text = "0";
             }
         }
-
         private void EffectInfo_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             TextBox tb = sender as TextBox;
@@ -488,7 +480,7 @@ namespace AuraEditor
             {
                 return;
             }
-            
+
             EffectInfo ei = SelectedEffectLine.Info;
             ei.Waves[0].Min = double.Parse(MinTextBox.Text);
             ei.Waves[0].Max = double.Parse(MaxTextBox.Text);
@@ -498,7 +490,6 @@ namespace AuraEditor
             ei.Waves[0].Start = double.Parse(StartTextBox.Text);
             ei.Waves[0].Start = double.Parse(VelocityTextBox.Text);
         }
-
         private void EffectInfo_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox tb = sender as TextBox;
@@ -533,7 +524,6 @@ namespace AuraEditor
             SelectedEffectLine.UInfo.InitColor = newColor;
             RadioButtonBg.Background = new SolidColorBrush(newColor);
         }
-
         public async Task<Color> OpenColorPickerWindow(Color c)
         {
             ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
@@ -541,23 +531,21 @@ namespace AuraEditor
 
             return colorPickerDialog.CurrentColor;
         }
-        
         private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
         {
             if (RandomCheckBox.IsChecked == true)
             {
-                SelectedEffectLine.UInfo.ColorRandom = true;
+                SelectedEffectLine.UInfo.Random = true;
                 RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
-                SelectedEffectLine.UInfo.ColorRandom = false;
+                SelectedEffectLine.UInfo.Random = false;
                 RadioButtonBg.Background = new SolidColorBrush(SelectedEffectLine.UInfo.InitColor);
                 RadioButtonBg.IsEnabled = true;
             }
         }
-
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
@@ -588,20 +576,18 @@ namespace AuraEditor
                     //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                     //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                 }
-                ui.Waves[0].Brightness = slider.Value;
+                ui.Brightness = (int)slider.Value;
             }
         }
-
         private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
             Slider slider = sender as Slider;
             if (slider != null)
             {
-                ui.Waves[0].Speed = slider.Value;
+                ui.Speed = (int)slider.Value;
             }
         }
-
         private void AngleBgImg_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _angleImgPressing = true;
@@ -611,7 +597,7 @@ namespace AuraEditor
             double dy = currentLocation.Y - AngleImgCenter.Y;
             double hue = Math2.ComputeH(dx, dy);
             AngleTextBox.Text = hue.ToString("F0");
-            SelectedEffectLine.UInfo.Waves[0].Angle = Convert.ToDouble(AngleTextBox.Text);
+            SelectedEffectLine.UInfo.Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
 
         }
@@ -619,7 +605,6 @@ namespace AuraEditor
         {
             _angleImgPressing = false;
         }
-
         private void AngleTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             TextBox textBoxContent = sender as TextBox;
@@ -638,7 +623,6 @@ namespace AuraEditor
                 }
             }
         }
-
         private void AngleTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox AngleChangeText = sender as TextBox;
@@ -668,7 +652,6 @@ namespace AuraEditor
                 }
             }
         }
-
         private void AngleStoryboardStart(double AngleImgTargetAngle)
         {
             _angleImgPressing = true;
@@ -705,7 +688,6 @@ namespace AuraEditor
                 }
             }
         }
-
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
@@ -713,7 +695,7 @@ namespace AuraEditor
             {
                 double textIncrease = Convert.ToDouble(AngleTextBox.Text);
                 textIncrease += 5;
-                if(textIncrease > 360)
+                if (textIncrease > 360)
                 {
                     textIncrease = 360;
                     AngleTextBox.Text = textIncrease.ToString();
@@ -724,10 +706,9 @@ namespace AuraEditor
                     AngleTextBox.Text = textIncrease.ToString();
                     AngleStoryboardStart(textIncrease);
                 }
-                ui.Waves[0].Angle = Convert.ToDouble(AngleTextBox.Text);
+                ui.Angle = Convert.ToDouble(AngleTextBox.Text);
             }
         }
-
         private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
@@ -746,10 +727,9 @@ namespace AuraEditor
                     AngleTextBox.Text = textdecrease.ToString();
                     AngleStoryboardStart(textdecrease);
                 }
-                ui.Waves[0].Angle = textdecrease;
+                ui.Angle = textdecrease;
             }
         }
-        
         private void DirectionBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
@@ -757,28 +737,30 @@ namespace AuraEditor
             switch (directionBtn.Name)
             {
                 case "Left":
-                    ui.Waves[0].Direction = 1;
+                    ui.Direction = 1;
                     break;
                 case "Right":
-                    ui.Waves[0].Direction = 2;
+                    ui.Direction = 2;
                     break;
                 case "Up":
-                    ui.Waves[0].Direction = 3;
+                    ui.Direction = 3;
                     break;
                 case "Down":
-                    ui.Waves[0].Direction = 4;
+                    ui.Direction = 4;
                     break;
             }
         }
-
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             UIInfo ui = SelectedEffectLine.UInfo;
             ui.InitColor = Colors.Red;
-            ui.Waves[0].Brightness = 3;
-            ui.Waves[0].Speed = 1;
-            ui.Waves[0].Direction = 2;
-            ui.Waves[0].Angle = 90;
+            ui.Brightness = 3;
+            ui.Speed = 1;
+            ui.Direction = 2;
+            ui.Angle = 90;
+            ui.Random = false;
+            ui.High = 60;
+            ui.Low = 30;
             UpdateUIEffectContents(ui);
         }
     }

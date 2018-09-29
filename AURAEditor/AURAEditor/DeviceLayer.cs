@@ -15,6 +15,7 @@ using MoonSharp.Interpreter;
 using System.ComponentModel;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using System.Xml;
 
 namespace AuraEditor
 {
@@ -30,7 +31,8 @@ namespace AuraEditor
         }
 
         private string _name;
-        public string Name {
+        public string Name
+        {
             get
             {
                 return _name;
@@ -281,6 +283,56 @@ namespace AuraEditor
             };
 
             return usageTable;
+        }
+        public XmlNode ToXmlNode()
+        {
+            XmlNode layerNode = CreateXmlNodeOfFile("layer");
+
+            XmlAttribute attribute = CreateXmlAttributeOfFile("name");
+            attribute.Value = Name;
+            layerNode.Attributes.Append(attribute);
+
+            // devices
+            XmlNode devicesNode = CreateXmlNodeOfFile("devices");
+            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
+            foreach (var d in globalDevices)
+            {
+                XmlNode device = GetDeviceUsageXmlNode(d);
+                devicesNode.AppendChild(device);
+            }
+            layerNode.AppendChild(devicesNode);
+
+            // effects
+            XmlNode effectsNode = CreateXmlNodeOfFile("effects");
+            List<Effect> effects = new List<Effect>();
+            effects.AddRange(TimelineEffects);
+            effects.AddRange(TriggerEffects);
+            foreach (var eff in effects)
+            {
+                XmlNode effNode = eff.ToXmlNode();
+                effectsNode.AppendChild(effNode);
+            }
+            layerNode.AppendChild(effectsNode);
+
+            return layerNode;
+        }
+        private XmlNode GetDeviceUsageXmlNode(Device device)
+        {
+            XmlNode deviceNode = CreateXmlNodeOfFile("device");
+
+            XmlAttribute attribute = CreateXmlAttributeOfFile("name");
+            attribute.Value = device.Name;
+            deviceNode.Attributes.Append(attribute);
+
+            int[] zoneIndexes = m_ZoneDictionary[device.Type];
+            foreach (int index in zoneIndexes)
+            {
+                XmlNode indexNode = CreateXmlNodeOfFile("index");
+                indexNode.InnerText = index.ToString();
+                deviceNode.AppendChild(indexNode);
+            };
+
+            return deviceNode;
         }
     }
 }

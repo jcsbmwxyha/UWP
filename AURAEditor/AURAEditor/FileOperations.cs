@@ -176,7 +176,7 @@ namespace AuraEditor
                 {
                     if (CurrentScriptPath != null)
                     {
-                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                        await SaveFile(CurrentScriptPath, GetUserData());
                     }
                     else
                     {
@@ -184,7 +184,7 @@ namespace AuraEditor
 
                         if (saveFile != null)
                         {
-                            await SaveFile(saveFile, PrintLuaScript());
+                            await SaveFile(saveFile, GetUserData());
                             CurrentScriptPath = saveFile.Path;
                         }
                         else
@@ -217,7 +217,7 @@ namespace AuraEditor
                 {
                     if (CurrentScriptPath != null)
                     {
-                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                        await SaveFile(CurrentScriptPath, GetUserData());
                     }
                     else
                     {
@@ -225,7 +225,7 @@ namespace AuraEditor
 
                         if (saveFile != null)
                         {
-                            await SaveFile(saveFile, PrintLuaScript());
+                            await SaveFile(saveFile, GetUserData());
                             CurrentScriptPath = saveFile.Path;
                         }
                         else
@@ -262,7 +262,7 @@ namespace AuraEditor
                 {
                     if (CurrentScriptPath != null)
                     {
-                        await SaveFile(CurrentScriptPath, PrintLuaScript());
+                        await SaveFile(CurrentScriptPath, GetUserData());
                     }
                     else
                     {
@@ -270,7 +270,7 @@ namespace AuraEditor
 
                         if (saveFile != null)
                         {
-                            await SaveFile(saveFile, PrintLuaScript());
+                            await SaveFile(saveFile, GetUserData());
                             CurrentScriptPath = saveFile.Path;
                         }
                         else
@@ -292,7 +292,7 @@ namespace AuraEditor
             if (CurrentScriptPath == null)
                 SaveAsButton_Click(sender, e);
             else
-                await SaveFile(CurrentScriptPath, PrintLuaScript());
+                await SaveFile(CurrentScriptPath, GetUserData());
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -300,7 +300,7 @@ namespace AuraEditor
 
             if (saveFile != null)
             {
-                await SaveFile(saveFile, PrintLuaScript());
+                await SaveFile(saveFile, GetUserData());
                 CurrentScriptPath = saveFile.Path;
             }
         }
@@ -308,189 +308,123 @@ namespace AuraEditor
         {
         }
 
+        public string GetUserData()
+        {
+            XmlNode root = CreateXmlNodeOfFile("root");
+
+            root.AppendChild(SpaceManager.ToXmlNode());
+            root.AppendChild(LayerManager.ToXmlNode());
+
+            return root.OuterXml;
+        }
         private async Task LoadContent(string luaScript)
         {
-            luaScript = luaScript.Replace(RequireLine, "");
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(luaScript);
 
-            Script script = new Script();
+            XmlNode spaceNode = xml.SelectSingleNode("/root/space");
+            XmlNode layersNode = xml.SelectSingleNode("/root/layers");
 
-            DynValue script_dv;
-            Table eventprovider_table;
-            Table viewport_table;
-            Table event_table;
-            Table globalspace_table;
+            XmlNodeList deviceNodes = spaceNode.SelectNodes("device");
+            XmlNodeList layerNodes = layersNode.SelectNodes("layer");
 
-            script_dv = script.DoString(luaScript + "\nreturn EventProvider");
-            eventprovider_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn Viewport");
-            viewport_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn Event");
-            event_table = script_dv.Table;
-            script_dv = script.DoString(luaScript + "\nreturn GlobalSpace");
-            globalspace_table = script_dv.Table;
-
-            // Step 1 : Convert GlobalSpace table to SpaceManager.GlobalDevices
-            SpaceManager.GlobalDevices = await GetDeviceLocationFromGlobalSpaceTable(globalspace_table);
-
-            // Step 2 : Convert EventProvider table to devicelayers
-            List<DeviceLayer> deviceLayers = ParsingEventProviderTable(eventprovider_table);
-            if (deviceLayers.Count == 0)
-                return;
-
-            // Step 3 : According to device layer name, convert Viewport table to m_ZoneDictionary
-            foreach (var layer in deviceLayers)
-            {
-                Dictionary<int, int[]> dictionary = GetDeviceZonesFromViewportTable(viewport_table, layer.Name);
-                layer.AddDeviceZones(dictionary);
-
-                // Step 4 : According to effect.LuaName, convert EventTable table to EffectInfo
-                foreach (var effect in layer.TimelineEffects)
-                {
-                    Table effectTable = event_table.Get(effect.LuaName).Table;
-                    int type = GetEffectIndex(effect.LuaName);
-                    EffectInfo ei = GetInfoFromEffectTable(type, effectTable);
-                    effect.Info = ei;
-                }
-                foreach (var effect in layer.TriggerEffects)
-                {
-                    Table effectTable = event_table.Get(effect.LuaName).Table;
-                    int type = GetEffectIndex(effect.LuaName);
-                    EffectInfo ei = GetInfoFromEffectTable(type, effectTable);
-                    effect.Info = ei;
-                }
-
-                LayerManager.AddDeviceLayer(layer);
-            }
+            await ParsingGlobalDevices(deviceNodes);
+            ParsingLayers(layerNodes);
         }
-        private Dictionary<int, int[]> GetDeviceZonesFromViewportTable(Table viewport_table, string layerName)
-        {
-            Dictionary<int, int[]> zoneDictionary = new Dictionary<int, int[]>();
-            List<Device> devices = new List<Device>();
-            Table layerTable = viewport_table.Get(layerName).Table;
-
-            foreach (var deviceKey in layerTable.Keys)
-            {
-                Table deviceTable = layerTable.Get(deviceKey.String).Table;
-                int type = 0;
-                List<int> zones = new List<int>();
-
-                switch (deviceTable.Get("DeviceType").String)
-                {
-                    case "Notebook": type = 0; break;
-                    case "Mouse": type = 1; break;
-                    case "Keyboard": type = 2; break;
-                    case "Headset": type = 3; break;
-                }
-
-                Table usageTable = deviceTable.Get("usage").Table;
-                foreach (var index in usageTable.Keys)
-                {
-                    int physicalIndex = (int)usageTable.Get(index.Number).Number;
-
-                    zones.Add(physicalIndex);
-                }
-
-                zoneDictionary.Add(type, zones.ToArray());
-            }
-
-            return zoneDictionary;
-        }
-        private List<DeviceLayer> ParsingEventProviderTable(Table eventProviderTable)
-        {
-            List<DeviceLayer> layers = new List<DeviceLayer>();
-            Table queueTable = eventProviderTable.Get("queue").Table;
-
-            // TODO : Simplify here
-            for (int queueIndex = 1; queueIndex <= queueTable.Length; queueIndex++)
-            {
-                Table t = queueTable.Get(queueIndex).Table;
-                string layerName = t.Get("Viewport").String;
-
-                DeviceLayer layer = layers.Find(x => x.Name == layerName);
-
-                if (layer == null)
-                {
-                    layer = new DeviceLayer(layerName);
-                    layers.Add(layer);
-                }
-
-                string effectLuaName = t.Get("Effect").String;
-                double startTime = t.Get("Delay").Number;
-                double durationTime = t.Get("Duration").Number;
-                int type = GetEffectIndex(effectLuaName);
-
-                if (IsTriggerEffect(type))
-                {
-                    TriggerEffect effect = new TriggerEffect(layer, type)
-                    {
-                        LuaName = effectLuaName,
-                    };
-                    layer.AddTriggerEffect(effect);
-                }
-                else
-                {
-                    TimelineEffect effect = new TimelineEffect(layer, type)
-                    {
-                        LuaName = effectLuaName,
-                        StartTime = startTime,
-                        DurationTime = durationTime
-                    };
-                    layer.AddTimelineEffect(effect);
-                }
-            }
-
-            return layers;
-        }
-        private EffectInfo GetInfoFromEffectTable(int type, Table effectTable)
-        {
-            Table waveTable = effectTable.Get("wave").Table;
-            Table waveTable_1 = waveTable.Get(1).Table;
-            WaveInfo wInfo = new WaveInfo(type)
-            {
-                WaveType = WaveInfo.StringToWaveType(waveTable_1.Get("WaveType").String),
-                Min = waveTable_1.Get("min").Number,
-                Max = waveTable_1.Get("max").Number,
-                WaveLength = waveTable_1.Get("waveLength").Number,
-                Freq = waveTable_1.Get("freq").Number,
-                Phase = waveTable_1.Get("phase").Number,
-                Start = waveTable_1.Get("start").Number,
-                Velocity = waveTable_1.Get("velocity").Number,
-            };
-
-            Table colorTable = effectTable.Get("initColor").Table;
-            Color c = HSLToRGB(
-                colorTable.Get("alpha").Number,
-                colorTable.Get("hue").Number,
-                colorTable.Get("saturation").Number,
-                colorTable.Get("lightness").Number
-                );
-
-            EffectInfo ei = new EffectInfo(type);
-            ei.InitColor = c;
-            ei.Waves = new List<WaveInfo> { wInfo };
-
-            return ei;
-        }
-        private async Task<List<Device>> GetDeviceLocationFromGlobalSpaceTable(Table globalspaceTable)
+        private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
         {
             List<Device> devices = new List<Device>();
 
-            foreach (var deviceKey in globalspaceTable.Keys)
+            foreach (XmlNode node in deviceNodes)
             {
-                Table deviceTable = globalspaceTable.Get(deviceKey.String).Table;
+                XmlElement element = (XmlElement)node;
+                string deviceName = element.GetAttribute("name");
+                int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
+                int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
 
-                string deviceName = deviceTable.Get("name").String;
                 DeviceContent deviceContent = await DeviceContent.GetDeviceContent(deviceName);
-
-                Table locationTable = deviceTable.Get("location").Table;
-                int x = (int)locationTable.Get("x").Number;
-                int y = (int)locationTable.Get("y").Number;
-
                 Device d = deviceContent.ToDevice(new Point(x, y));
+
                 devices.Add(d);
             }
+            SpaceManager.GlobalDevices = devices;
+        }
+        private void ParsingLayers(XmlNodeList layerNodes)
+        {
+            List<DeviceLayer> layers = new List<DeviceLayer>();
 
-            return devices;
+            foreach (XmlNode node in layerNodes)
+            {
+                XmlElement element = (XmlElement)node;
+                string layerName = element.GetAttribute("name");
+                DeviceLayer layer = new DeviceLayer(layerName);
+
+                // parsing effects
+                XmlNode effectsNode = element.SelectSingleNode("effects");
+                foreach (XmlNode effectNode in effectsNode.ChildNodes)
+                {
+                    XmlElement element2 = (XmlElement)effectNode;
+                    int type = Int32.Parse(element2.SelectSingleNode("type").InnerText);
+
+                    UIInfo uIInfo = new UIInfo()
+                    {
+                        InitColor = new Color
+                        {
+                            A = Byte.Parse(element2.SelectSingleNode("a").InnerText),
+                            R = Byte.Parse(element2.SelectSingleNode("r").InnerText),
+                            G = Byte.Parse(element2.SelectSingleNode("g").InnerText),
+                            B = Byte.Parse(element2.SelectSingleNode("b").InnerText),
+                        },
+                        Type = type,
+                        Direction = Int32.Parse(element2.SelectSingleNode("direction").InnerText),
+                        Speed = Int32.Parse(element2.SelectSingleNode("speed").InnerText),
+                        Angle = Int32.Parse(element2.SelectSingleNode("angle").InnerText),
+                        Random = bool.Parse(element2.SelectSingleNode("random").InnerText),
+                        High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
+                        Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
+                    };
+
+                    if (!IsTriggerEffect(type))
+                    {
+                        TimelineEffect eff = new TimelineEffect(layer, type);
+                        eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
+                        eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
+                        eff.UInfo = uIInfo;
+                        layer.AddTimelineEffect(eff);
+                    }
+                    else
+                    {
+                        TriggerEffect eff = new TriggerEffect(layer, type);
+                        eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
+                        eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
+                        eff.UInfo = uIInfo;
+                        layer.AddTriggerEffect(eff);
+                    }
+                }
+
+                // parsing zones
+                XmlNode devicesNode = element.SelectSingleNode("devices");
+                foreach (XmlNode deviceNode in devicesNode.ChildNodes)
+                {
+                    Dictionary<int, int[]> zoneDictionary = new Dictionary<int, int[]>();
+                    List<int> zones = new List<int>();
+                    XmlElement element2 = (XmlElement)deviceNode;
+                    string name = element2.GetAttribute("name");
+                    int type = GetDeviceTypeByDeviceName(name);
+
+                    XmlNodeList indexNodes = element2.ChildNodes;
+                    foreach (XmlNode index in indexNodes)
+                    {
+                        zones.Add(Int32.Parse(index.InnerText));
+                    }
+
+                    zoneDictionary.Add(type, zones.ToArray());
+                    layer.AddDeviceZones(zoneDictionary);
+                }
+
+                layers.Add(layer);
+                LayerManager.AddDeviceLayer(layer);
+            }
         }
         private void Reset()
         {

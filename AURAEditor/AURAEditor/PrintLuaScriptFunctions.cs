@@ -4,6 +4,7 @@ using static AuraEditor.Common.LuaHelper;
 using static AuraEditor.Common.EffectHelper;
 using MoonSharp.Interpreter;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace AuraEditor
 {
@@ -11,22 +12,12 @@ namespace AuraEditor
     {
         public string PrintLuaScript()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(RequireLine);
-            sb.Append("\n\n");
-            sb.Append("EventProvider = ");
-            sb.Append(PrintTable(GetEventProviderTable()));
-            sb.Append("\n");
-            sb.Append("Viewport = ");
-            sb.Append(PrintTable(GetViewportTable()));
-            sb.Append("\n");
-            sb.Append("Event = ");
-            sb.Append(PrintTable(GetEventTable()));
-            sb.Append("\n");
-            sb.Append("GlobalSpace = ");
-            sb.Append(PrintTable(GetGlobalSpaceTable()));
-            sb.Append("\n");
-            return sb.ToString();
+            XmlNode root = CreateXmlNodeOfFile("root");
+
+            root.AppendChild(SpaceManager.ToXmlNode());
+            root.AppendChild(LayerManager.ToXmlNode());
+
+            return root.OuterXml;
         }
         private Table GetEventProviderTable()
         {
@@ -39,15 +30,6 @@ namespace AuraEditor
             eventProviderTable.Set("generateEvent", generateEventDV);
 
             return eventProviderTable;
-        }
-
-        public double GetPlayTime()
-        {
-            return LayerManager.PlayTime;
-        }
-        public double GetRightmostPosition()
-        {
-            return LayerManager.RightmostPosition;
         }
 
         private Table GetQueueTable()

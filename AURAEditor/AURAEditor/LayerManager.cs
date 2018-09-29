@@ -5,9 +5,11 @@ using Windows.UI.Xaml.Controls;
 using AuraEditor.UserControls;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.LuaHelper;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
+using System.Xml;
 
 namespace AuraEditor
 {
@@ -197,5 +199,17 @@ namespace AuraEditor
             }
         }
         #endregion
+
+        public XmlNode ToXmlNode()
+        {
+            XmlNode layers = CreateXmlNodeOfFile("layers");
+
+            foreach (var layer in DeviceLayers)
+            {
+                layers.AppendChild(layer.ToXmlNode());
+            }
+
+            return layers;
+        }
     }
 }

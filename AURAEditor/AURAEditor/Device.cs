@@ -5,11 +5,13 @@ using Windows.UI.Xaml.Input;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.EffectHelper;
 using Windows.Foundation;
 using MoonSharp.Interpreter;
 using static AuraEditor.AuraSpaceManager;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
+using System.Xml;
 
 namespace AuraEditor
 {
@@ -212,6 +214,29 @@ namespace AuraEditor
             locationTable.Set("y", DynValue.NewNumber(GridPosition.Y));
 
             return locationTable;
+        }
+
+        public XmlNode ToXmlNode()
+        {
+            XmlNode device = CreateXmlNodeOfFile("device");
+
+            XmlAttribute attribute = CreateXmlAttributeOfFile("name");
+            attribute.Value = Name;
+            device.Attributes.Append(attribute);
+
+            XmlNode type = CreateXmlNodeOfFile("type");
+            type.InnerText = Type.ToString();
+            device.AppendChild(type);
+
+            XmlNode x = CreateXmlNodeOfFile("x");
+            x.InnerText = GridPosition.X.ToString();
+            device.AppendChild(x);
+
+            XmlNode y = CreateXmlNodeOfFile("y");
+            y.InnerText = GridPosition.Y.ToString();
+            device.AppendChild(y);
+
+            return device;
         }
     }
 }

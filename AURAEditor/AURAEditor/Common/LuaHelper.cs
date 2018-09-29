@@ -4,12 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor.Common
 {
     static class LuaHelper
     {
+        static private XmlDocument m_FileXmlDoc;
+
+        static public XmlNode CreateXmlNodeOfFile(string nodeName)
+        {
+            XmlNode Node = m_FileXmlDoc.CreateElement(nodeName);
+            return Node;
+        }
+        static public XmlAttribute CreateXmlAttributeOfFile(string attributeName)
+        {
+            XmlAttribute attribute = m_FileXmlDoc.CreateAttribute(attributeName);
+            return attribute;
+        }
+
         static private Script m_Script;
         static private Dictionary<DynValue, string> m_LuaFunctionDictionary;
 
@@ -109,6 +123,7 @@ namespace AuraEditor.Common
 
         static LuaHelper()
         {
+            m_FileXmlDoc = new XmlDocument();
             m_Script = new Script();
             m_LuaFunctionDictionary = new Dictionary<DynValue, string>();
         }

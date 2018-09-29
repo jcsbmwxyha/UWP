@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Windows.UI;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.LuaHelper;
@@ -49,6 +50,20 @@ namespace AuraEditor
         public virtual Table ToTable()
         {
             return Info.ToTable();
+        }
+        public virtual XmlNode ToXmlNode()
+        {
+            XmlNode effNode = UInfo.ToXmlNode();
+
+            XmlNode startNode = CreateXmlNodeOfFile("start");
+            startNode.InnerText = StartTime.ToString();
+            effNode.AppendChild(startNode);
+
+            XmlNode durationNode = CreateXmlNodeOfFile("duration");
+            durationNode.InnerText = DurationTime.ToString();
+            effNode.AppendChild(durationNode);
+
+            return effNode;
         }
     }
 }

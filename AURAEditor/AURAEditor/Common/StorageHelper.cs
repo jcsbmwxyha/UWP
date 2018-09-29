@@ -14,7 +14,7 @@ namespace AuraEditor.Common
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();
             fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            fileOpenPicker.FileTypeFilter.Add(".lua");
+            fileOpenPicker.FileTypeFilter.Add(".xml");
             fileOpenPicker.ViewMode = PickerViewMode.Thumbnail;
 
             return await fileOpenPicker.PickSingleFileAsync();
@@ -23,7 +23,7 @@ namespace AuraEditor.Common
         {
             var savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".lua" });
+            savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".xml" });
             savePicker.SuggestedFileName = "MyLuaScript";
             return await savePicker.PickSaveFileAsync();
         }
