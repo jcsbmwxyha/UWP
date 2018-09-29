@@ -24,7 +24,7 @@ namespace AuraEditor.Common
             var savePicker = new FileSavePicker();
             savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
             savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".xml" });
-            savePicker.SuggestedFileName = "MyLuaScript";
+            savePicker.SuggestedFileName = "SaveFile";
             return await savePicker.PickSaveFileAsync();
         }
         static public async Task<string> LoadFile(string filePath)
