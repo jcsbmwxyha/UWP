@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="IntelligentScrollViewer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntelligentScrollViewer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <ScrollViewer Name="MyScrollViewer" Width="500" Height="500"
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,100,0,0">
+            <Canvas Name="MyCanvas" Width="1000" Height="1000" Background="Aqua">
+                <Rectangle Name="Rect" Width="50" Height="50" Fill="Red"
+                           ManipulationDelta="Rectangle_ManipulationDelta" ManipulationMode="TranslateX,TranslateY"
+                           PointerPressed="Rect_PointerPressed" PointerMoved="Rect_PointerMoved" PointerReleased="Rect_PointerReleased">
+                    <Rectangle.RenderTransform>
+                        <CompositeTransform/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle Name="Blue" Width="50" Height="50" Fill="Blue"
+                           ManipulationDelta="Rectangle_ManipulationDelta" ManipulationMode="TranslateX,TranslateY">
+                    <Rectangle.RenderTransform>
+                        <CompositeTransform/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Canvas>
+        </ScrollViewer>
+    </StackPanel>
+</Page>
