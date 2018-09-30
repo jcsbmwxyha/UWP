@@ -108,6 +108,8 @@ namespace AuraEditor
         private Image m_GridImage;
         private Button m_SetLayerButton;
         private MouseEventCtrl m_MouseEventCtrl;
+        private DispatcherTimer m_ScrollTimerClock;
+        private int _mouseDirection;
         public List<Device> GlobalDevices;
 
         public AuraSpaceManager()
@@ -119,24 +121,93 @@ namespace AuraEditor
             m_MouseRectangle = MainPage.Self.MouseRectangle;
             m_SetLayerButton = MainPage.Self.SetLayerButton;
             m_MouseEventCtrl = IntializeMouseEventCtrl();
+            m_ScrollTimerClock = InitializeScrollTimer();
+            _mouseDirection = 0;
 
             GlobalDevices = new List<Device>();
             FillWithIngroupDevices();
-
             SetSpaceStatus(SpaceStatus.Normal);
         }
-
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
 
             MouseEventCtrl mec = new MouseEventCtrl
             {
-                MonitorMaxRect = new Rect(new Point(0, 0), new Point(2000, 1000)),
+                MonitorMaxRect = new Rect(new Point(0, 0), new Point(m_SpaceCanvas.ActualWidth, m_SpaceCanvas.ActualHeight)),
                 DetectionRegions = regions.ToArray()
             };
 
             return mec;
+        }
+        private DispatcherTimer InitializeScrollTimer()
+        {
+            DispatcherTimer timerClock = new DispatcherTimer();
+            timerClock.Tick += Timer_Tick;
+            timerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
+
+            return timerClock;
+        }
+        private void Timer_Tick(object sender, object e)
+        {
+            int offset = 10;
+            if (_mouseDirection == 1)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    1, true);
+            }
+            else if (_mouseDirection == 2)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    1, true);
+            }
+            else if (_mouseDirection == 3)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    1, true);
+            }
+            else if (_mouseDirection == 4)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset,
+                    1, true);
+            }
+            else if (_mouseDirection == 5) {}
+            else if (_mouseDirection == 6)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset,
+                    1, true);
+            }
+            else if (_mouseDirection == 7)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    1, true);
+            }
+            else if (_mouseDirection == 8)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    1, true);
+            }
+            else if (_mouseDirection == 9)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    1, true);
+            }
         }
         public void RefreshSpaceGrid()
         {
@@ -472,6 +543,7 @@ namespace AuraEditor
             var fe = sender as FrameworkElement;
             Point Position = e.GetCurrentPoint(fe).Position;
             m_MouseEventCtrl.OnMousePressed(Position);
+            m_ScrollTimerClock.Start();
         }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
@@ -501,6 +573,47 @@ namespace AuraEditor
             ct.TranslateY = r.Y;
             m_MouseRectangle.Width = r.Width;
             m_MouseRectangle.Height = r.Height;
+
+            Rect screenRect = new Rect(
+                    m_SpaceScrollViewer.HorizontalOffset,
+                    m_SpaceScrollViewer.VerticalOffset,
+                    m_SpaceScrollViewer.ActualWidth,
+                    m_SpaceScrollViewer.ActualHeight);
+
+            if (Position.X > screenRect.Right && Position.Y > screenRect.Bottom)
+            {
+                _mouseDirection = 9;
+            }
+            else if (Position.X > screenRect.Right && Position.Y < screenRect.Top)
+            {
+                _mouseDirection = 3;
+            }
+            else if (Position.X > screenRect.Right)
+            {
+                _mouseDirection = 6;
+            }
+            else if (Position.X < screenRect.Left && Position.Y > screenRect.Bottom)
+            {
+                _mouseDirection = 7;
+            }
+            else if (Position.X < screenRect.Left && Position.Y < screenRect.Top)
+            {
+                _mouseDirection = 1;
+            }
+            else if (Position.X < screenRect.Left)
+            {
+                _mouseDirection = 4;
+            }
+            else if (Position.Y < screenRect.Top)
+            {
+                _mouseDirection = 2;
+            }
+            else if (Position.Y > screenRect.Bottom)
+            {
+                _mouseDirection = 8;
+            }
+            else
+                _mouseDirection = 5;
         }
         private void SpaceGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
@@ -508,6 +621,7 @@ namespace AuraEditor
             m_MouseEventCtrl.OnMouseReleased();
             m_MouseRectangle.Width = 0;
             m_MouseRectangle.Height = 0;
+            m_ScrollTimerClock.Stop();
         }
         private void SpaceGrid_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
