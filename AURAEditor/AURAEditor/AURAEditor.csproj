@@ -48,6 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +72,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -114,7 +116,7 @@
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\ColorHelper.cs" />
-    <Compile Include="Common\LuaHelper.cs" />
+    <Compile Include="Common\XmlHelper.cs" />
     <Compile Include="Common\ControlHelper.cs" />
     <Compile Include="Common\CsvParse.cs" />
     <Compile Include="Common\EffectHelper.cs" />
@@ -129,14 +131,13 @@
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Effect.cs" />
-    <Compile Include="PrintLuaScriptFunctions.cs" />
+    <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
     <Compile Include="TimelineEffect.cs" />
-    <Compile Include="EffectInfo.cs" />
     <Compile Include="LightZone.cs" />
     <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
-    <Compile Include="UIInfo.cs" />
+    <Compile Include="EffectInfo.cs" />
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
     </Compile>
@@ -156,6 +157,9 @@
     <Compile Include="UserControls\EffectBlock.xaml.cs">
       <DependentUpon>EffectBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\LayerCanvas.xaml.cs">
+      <DependentUpon>LayerCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
     </Compile>
@@ -164,11 +168,13 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\asus_ac_bg.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\asus_ac_effectblock_btn_s.png" />
     <Content Include="Assets\asus_ac_layer_n.png" />
     <Content Include="Assets\asus_ac_layer_s.png" />
+    <Content Include="Assets\asus_ac_stage_bg.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
     <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
@@ -201,6 +207,12 @@
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
     <Content Include="Assets\effectUI.png" />
     <Content Include="Assets\Grid.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_l_s.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_m_s.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_r_s.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_n.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_s.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_ic_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_d_l.png" />
@@ -314,6 +326,16 @@
     <Content Include="Assets\TriggerDialog\asus_ac_rearrange_ic_s.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_triggerevent_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_trigger_bg.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_h.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_n.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_s.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_plus_ic_h.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_plus_ic_n.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_plus_ic_s.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_slider.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_h.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_n.png" />
+    <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_s.png" />
     <Content Include="AURAEditor.sccd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -342,7 +364,6 @@
     <Content Include="Assets\asus_auraeditor_timeline_ic.png" />
     <Content Include="Assets\asus_auraeditor_time_bg.png" />
     <Content Include="Assets\asus_auraeditor_undo_ic.png" />
-    <Content Include="Assets\asus_gc_aura_customize_keyboard_g703_mask.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -387,6 +408,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\EffectBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\LayerCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

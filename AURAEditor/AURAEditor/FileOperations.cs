@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 using AuraEditor.Dialogs;
 using Windows.Foundation;
 using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.AuraEditorColorHelper;
 using Windows.UI;
@@ -312,15 +312,15 @@ namespace AuraEditor
         {
             XmlNode root = CreateXmlNodeOfFile("root");
 
-            root.AppendChild(SpaceManager.ToXmlNode());
-            root.AppendChild(LayerManager.ToXmlNode());
+            root.AppendChild(SpaceManager.ToXmlNodeForUserData());
+            root.AppendChild(LayerManager.ToXmlNodeForUserData());
 
             return root.OuterXml;
         }
-        private async Task LoadContent(string luaScript)
+        private async Task LoadContent(string xmlContent)
         {
             XmlDocument xml = new XmlDocument();
-            xml.LoadXml(luaScript);
+            xml.LoadXml(xmlContent);
 
             XmlNode spaceNode = xml.SelectSingleNode("/root/space");
             XmlNode layersNode = xml.SelectSingleNode("/root/layers");
@@ -366,7 +366,7 @@ namespace AuraEditor
                     XmlElement element2 = (XmlElement)effectNode;
                     int type = Int32.Parse(element2.SelectSingleNode("type").InnerText);
 
-                    UIInfo uIInfo = new UIInfo()
+                    EffectInfo info = new EffectInfo()
                     {
                         InitColor = new Color
                         {
@@ -389,7 +389,7 @@ namespace AuraEditor
                         TimelineEffect eff = new TimelineEffect(layer, type);
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
-                        eff.UInfo = uIInfo;
+                        eff.Info = info;
                         layer.AddTimelineEffect(eff);
                     }
                     else
@@ -397,7 +397,7 @@ namespace AuraEditor
                         TriggerEffect eff = new TriggerEffect(layer, type);
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
-                        eff.UInfo = uIInfo;
+                        eff.Info = info;
                         layer.AddTriggerEffect(eff);
                     }
                 }

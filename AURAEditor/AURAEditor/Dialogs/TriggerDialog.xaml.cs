@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
+using System.Threading.Tasks;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,6 +30,8 @@ namespace AuraEditor.Dialogs
         DeviceLayer m_DeviceLayer;
         ObservableCollection<TriggerEffect> m_EffectList;
         internal FlyoutBase m_flyoutBase;
+
+        bool _canChange = false;
 
         private int _selectedIndex = -1;
         public int SelectedIndex
@@ -85,27 +88,22 @@ namespace AuraEditor.Dialogs
         }
         private void FillOutParameterByIndex(int index)
         {
-            FillOutParameter(m_EffectList[index].Info);
+            FillOutUIParameter(m_EffectList[index].Info);
         }
-        private void FillOutParameter(EffectInfo info)
+        private void FillOutUIParameter(EffectInfo effectInfo)
         {
-            string effName = GetEffectName(info.Type);
+            string effName = GetEffectName(effectInfo.Type);
             if (effName == "Ripple")
                 EffectComboBox.SelectedIndex = 0;
             else if (effName == "Reactive")
                 EffectComboBox.SelectedIndex = 1;
-            if (effName == "Laser")
+            else if (effName == "Laser")
                 EffectComboBox.SelectedIndex = 2;
 
-            ColorRect.Fill = new SolidColorBrush(info.InitColor);
-            WaveTypeComboBox.SelectedIndex = info.Waves[0].WaveType;
-            MinTextBox.Text = info.Waves[0].Min.ToString();
-            MaxTextBox.Text = info.Waves[0].Max.ToString();
-            WaveLenTextBox.Text = info.Waves[0].WaveLength.ToString();
-            FreqTextBox.Text = info.Waves[0].Freq.ToString();
-            PhaseTextBox.Text = info.Waves[0].Phase.ToString();
-            StartTextBox.Text = info.Waves[0].Start.ToString();
-            VelocityTextBox.Text = info.Waves[0].Velocity.ToString();
+            ColorRect.Fill = new SolidColorBrush(effectInfo.InitColor);
+            RadioButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
+            RandomCheckBox.IsChecked = effectInfo.Random;
+            SpeedSlider.Value = effectInfo.Speed;
         }
 
         private void TriggerEffectListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -124,8 +122,11 @@ namespace AuraEditor.Dialogs
                 return;
             }
 
-            m_EffectList[SelectedIndex].ChangeType(type);
-            FillOutParameter(m_EffectList[SelectedIndex].Info);
+            if (_canChange == true)
+            {
+                m_EffectList[SelectedIndex].ChangeType(type);
+                FillOutUIParameter(m_EffectList[SelectedIndex].Info);
+            }
 
             // TODO : Use MVVM to update content
             ListViewItem item = TriggerEffectListView.ContainerFromIndex(SelectedIndex) as ListViewItem;
@@ -152,113 +153,6 @@ namespace AuraEditor.Dialogs
         {
             m_flyoutBase.Hide();
         }
-        private void WaveTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            EffectInfo ei = m_EffectList[SelectedIndex].Info;
-            string waveName = e.AddedItems[0].ToString();
-
-            switch (waveName)
-            {
-                case "SineWave":
-                    ei.Waves[0].WaveType = 0;
-                    break;
-                case "HalfSineWave":
-                    ei.Waves[0].WaveType = 1;
-                    break;
-                case "QuarterSineWave":
-                    ei.Waves[0].WaveType = 2;
-                    break;
-                case "SquareWave":
-                    ei.Waves[0].WaveType = 3;
-                    break;
-                case "TriangleWave":
-                    ei.Waves[0].WaveType = 4;
-                    break;
-                case "SawToothleWave":
-                    ei.Waves[0].WaveType = 5;
-                    break;
-                case "ConstantWave":
-                    ei.Waves[0].WaveType = 6;
-                    break;
-            }
-        }
-        private void EffectInfo_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-
-            char[] originalText = tb.Text.ToCharArray();
-            foreach (char c in originalText)
-            {
-                if (!Char.IsNumber(c) && c != '.')
-                {
-                    tb.Text = tb.Text.Replace(c.ToString(), "");
-                    break;
-                }
-            }
-
-            if (tb.Text == "")
-            {
-                tb.Text = "0";
-            }
-        }
-        private void EffectInfo_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-
-            if (e.Key != VirtualKey.Enter)
-                return;
-
-            double number = 0;
-
-            if (double.TryParse(tb.Text, out number))
-            {
-                if (number > 99999)
-                    tb.Text = "99999";
-                else
-                    tb.Text = number.ToString("0.00");
-            }
-            else
-            {
-                return;
-            }
-
-            EffectInfo ei = m_EffectList[SelectedIndex].Info;
-            ei.Waves[0].Min = double.Parse(MinTextBox.Text);
-            ei.Waves[0].Max = double.Parse(MaxTextBox.Text);
-            ei.Waves[0].WaveLength = double.Parse(WaveLenTextBox.Text);
-            ei.Waves[0].Freq = double.Parse(FreqTextBox.Text);
-            ei.Waves[0].Phase = double.Parse(PhaseTextBox.Text);
-            ei.Waves[0].Start = double.Parse(StartTextBox.Text);
-            ei.Waves[0].Start = double.Parse(VelocityTextBox.Text);
-        }
-        private void EffectInfo_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-
-            double number = 0;
-
-            if (double.TryParse(tb.Text, out number))
-            {
-                if (number > 99999)
-                    tb.Text = "99999";
-                else
-                    tb.Text = number.ToString("0.00");
-            }
-            else
-            {
-                return;
-            }
-
-            EffectInfo ei = m_EffectList[SelectedIndex].Info;
-            ei.Waves[0].Min = double.Parse(MinTextBox.Text);
-            ei.Waves[0].Max = double.Parse(MaxTextBox.Text);
-            ei.Waves[0].WaveLength = double.Parse(WaveLenTextBox.Text);
-            ei.Waves[0].Freq = double.Parse(FreqTextBox.Text);
-            ei.Waves[0].Phase = double.Parse(PhaseTextBox.Text);
-            ei.Waves[0].Start = double.Parse(StartTextBox.Text);
-            ei.Waves[0].Velocity = double.Parse(VelocityTextBox.Text);
-        }
-
         public void DeleteTriggerEffect(TriggerEffect eff)
         {
             if (m_EffectList.IndexOf(eff) == SelectedIndex)
@@ -277,6 +171,57 @@ namespace AuraEditor.Dialogs
 
             m_DeviceLayer.TriggerEffects = m_EffectList.ToList();
             this.Hide();
+        }
+
+        private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            EffectInfo Info = m_EffectList[SelectedIndex].Info;
+            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
+            Info.InitColor = newColor;
+            RadioButtonBg.Background = new SolidColorBrush(newColor);
+        }
+        public async Task<Color> OpenColorPickerWindow(Color c)
+        {
+            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
+            await colorPickerDialog.ShowAsync();
+
+            return colorPickerDialog.CurrentColor;
+        }
+        private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            EffectInfo info = m_EffectList[SelectedIndex].Info;
+            if (RandomCheckBox.IsChecked == true)
+            {
+                info.Random = true;
+                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.IsEnabled = false;
+            }
+            else
+            {
+                info.Random = false;
+                RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
+                RadioButtonBg.IsEnabled = true;
+            }
+        }
+
+        private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            EffectInfo info = m_EffectList[SelectedIndex].Info;
+            Slider slider = sender as Slider;
+            if (slider != null)
+            {
+                info.Speed = (int)slider.Value;
+            }
+        }
+
+        private void EffectInfoStackPanel_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            _canChange = true;
+        }
+
+        private void StackPanel_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            _canChange = false;
         }
     }
 }

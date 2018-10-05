@@ -249,6 +249,14 @@ namespace AuraEditor
                 }
             }
         }
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomSlider.Value += 1;
+        }
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomSlider.Value -= 1;
+        }
         #endregion
 
         async void socketstart()
@@ -299,7 +307,7 @@ namespace AuraEditor
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     //from Service message
-                    txtresult.Text = "Service : " + message;
+                    StatusTextBlock.Text = "Service : " + message;
                 });
 
                 SpaceManager.RescanIngroupDevices();

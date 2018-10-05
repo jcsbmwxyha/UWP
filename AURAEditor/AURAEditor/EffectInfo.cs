@@ -1,315 +1,454 @@
-﻿using AuraEditor.Common;
-using MoonSharp.Interpreter;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
-using static AuraEditor.Common.LuaHelper;
+﻿using Windows.UI;
+using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
+using System.Xml;
+using AuraEditor.Common;
 
 namespace AuraEditor
 {
     public class EffectInfo
     {
-        public int Type { get; }
-        public Color InitColor { get; set; }
-        public List<WaveInfo> Waves { get; set; }
-        
+        public string Name;
+        public int Type;
+        public Color InitColor;
+        public int Brightness;
+        public int Speed;
+        public double Angle;
+        public int Direction;
+        public bool Random;
+        public int High;
+        public int Low;
+
+        public EffectInfo()
+        {
+        }
+
         public EffectInfo(int type)
         {
+            Name = GetEffectName(type);
             Type = type;
             InitColor = Colors.Red;
-            Waves = new List<WaveInfo>
-            {
-                new WaveInfo(type)
-            };
+            Brightness = 3;
+            Speed = 1;
+            Direction = 2;
+            Angle = 90;
+            Random = false;
+            High = 60;
+            Low = 30;
         }
-        public Table ToTable()
-        {
-            Table effect_Table = CreateNewTable();
 
-            Table viewportTransformTable = GetViewportTransformTable(Type);
-            Table wave_Table = CreateNewTable();
-            Table initColor_Table = GetInitColorTable();
-            
-            for(int i = 0; i < Waves.Count; i++)
+        public XmlNode ToXmlNodeForScript()
+        {
+            XmlNode effectNode = CreateXmlNodeOfFile("effect");
+
+            effectNode.AppendChild(GetViewportTransformXmlNode());
+            effectNode.AppendChild(GetWaveListXmlNode());
+            effectNode.AppendChild(GetInitColorXmlNode(InitColor, Random));
+
+            return effectNode;
+        }
+        private XmlNode GetViewportTransformXmlNode()
+        {
+            XmlNode viewportTransformNode = CreateXmlNodeOfFile("viewportTransform");
+            double[] hsl = AuraEditorColorHelper.RgbTOHsl(InitColor);
+
+            XmlNode rotateNode = CreateXmlNodeOfFile("rotate");
+
+            XmlNode xNode = CreateXmlNodeOfFile("x");
+            xNode.InnerText = "0";
+            rotateNode.AppendChild(xNode);
+
+            XmlNode yNode = CreateXmlNodeOfFile("y");
+            yNode.InnerText = "0";
+            rotateNode.AppendChild(yNode);
+
+            XmlNode angleNode = CreateXmlNodeOfFile("angle");
+            angleNode.InnerText = "0";
+            rotateNode.AppendChild(angleNode);
+
+            string methodString = "";
+            XmlNode methodNode = GetMethodXmlNode(Type);
+            CreateXmlNodeOfFile("method");
+            if (GetEffectName(Type) == "Static") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Breath") { methodString = "point"; }
+            else if (GetEffectName(Type) == "ColorCycle") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Rainbow") { methodString = "OrthogonaProject"; }
+            else if (GetEffectName(Type) == "Strobing") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Comet") { methodString = "OrthogonaProject"; }
+            else if (GetEffectName(Type) == "Reactive") { methodString = "limitRadius"; }
+            else if (GetEffectName(Type) == "Laser") { methodString = "distance"; }
+            else if (GetEffectName(Type) == "Radius") { methodString = "limitRadius"; }
+            else if (GetEffectName(Type) == "Ripple") { methodString = "radius"; }
+            else if (GetEffectName(Type) == "Star") { methodString = "randomRadius"; }
+            else { methodString = "point"; }
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            attribute.Value = methodString;
+            methodNode.Attributes.Append(attribute);
+
+            viewportTransformNode.AppendChild(rotateNode);
+            viewportTransformNode.AppendChild(methodNode);
+
+            return viewportTransformNode;
+        }
+        private XmlNode GetMethodXmlNode(int effType)
+        {
+            string methodString = "point";
+            XmlNode methodNode = CreateXmlNodeOfFile("method");
+
+            if (GetEffectName(Type) == "Static") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Breath") { methodString = "point"; }
+            else if (GetEffectName(Type) == "ColorCycle") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Rainbow") { methodString = "OrthogonaProject"; }
+            else if (GetEffectName(Type) == "Strobing") { methodString = "point"; }
+            else if (GetEffectName(Type) == "Comet") { methodString = "OrthogonaProject"; }
+            else if (GetEffectName(Type) == "Reactive") { methodString = "limitRadius"; }
+            else if (GetEffectName(Type) == "Laser") { methodString = "distance"; }
+            else if (GetEffectName(Type) == "Radius") { methodString = "limitRadius"; }
+            else if (GetEffectName(Type) == "Ripple") { methodString = "radius"; }
+            else if (GetEffectName(Type) == "Star") { methodString = "randomRadius"; }
+
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            attribute.Value = methodString;
+            methodNode.Attributes.Append(attribute);
+
+            if (GetEffectName(effType) == "Ripple" ||
+                GetEffectName(effType) == "Reactive" ||
+                GetEffectName(effType) == "Laser")
             {
-                wave_Table.Set((i + 1), DynValue.NewTable(Waves[i].ToTable()));
+                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                inputNode.InnerText = "keyPressX";
+                methodNode.AppendChild(inputNode);
+
+                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                inputNode2.InnerText = "keyPressY";
+                methodNode.AppendChild(inputNode2);
             }
 
-            effect_Table.Set("initColor", DynValue.NewTable(initColor_Table));
-            effect_Table.Set("viewportTransform", DynValue.NewTable(viewportTransformTable));
-            effect_Table.Set("wave", DynValue.NewTable(wave_Table));
-            
-            return effect_Table;
+            return methodNode;
         }
-        private Table GetInitColorTable()
+        private XmlNode GetWaveListXmlNode()
         {
-            Table initColor_Table = CreateNewTable();
+            XmlNode waveListNode = CreateXmlNodeOfFile("waveList");
+            XmlNode waveNode = CreateXmlNodeOfFile("wave");
 
-            Color c = InitColor;
+            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            typeNode.InnerText = GetDefaultWaveType(Type);
+            waveNode.AppendChild(typeNode);
+
+            XmlNode maxNode = CreateXmlNodeOfFile("max");
+            maxNode.InnerText = GetMax(Type).ToString();
+            waveNode.AppendChild(maxNode);
+
+            XmlNode minNode = CreateXmlNodeOfFile("min");
+            minNode.InnerText = GetMin(Type).ToString();
+            waveNode.AppendChild(minNode);
+
+            XmlNode lengthNode = CreateXmlNodeOfFile("length");
+            lengthNode.InnerText = GetLength(Type).ToString();
+            waveNode.AppendChild(lengthNode);
+
+            XmlNode freqNode = CreateXmlNodeOfFile("freq");
+            freqNode.InnerText = GetFreq(Type, Speed);
+            waveNode.AppendChild(freqNode);
+
+            XmlNode phaseNode = CreateXmlNodeOfFile("phase");
+            phaseNode.InnerText = GetPhase(Type);
+            waveNode.AppendChild(phaseNode);
+
+            XmlNode startNode = CreateXmlNodeOfFile("start");
+            startNode.InnerText = GetStart(Type).ToString();
+            waveNode.AppendChild(startNode);
+
+            XmlNode velocityNode = CreateXmlNodeOfFile("velocity");
+            velocityNode.InnerText = GetVelocity(Type, Speed).ToString();
+            waveNode.AppendChild(velocityNode);
+
+            waveNode.AppendChild(GetDefaultBindToSlotXmlNode(Type));
+            waveListNode.AppendChild(waveNode);
+            return waveListNode;
+        }
+        static private XmlNode GetInitColorXmlNode(Color c, bool random)
+        {
+            XmlNode initColorNode = CreateXmlNodeOfFile("initColor");
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
-            //DynValue randomHue_dv;
-            //
-            //if (GetEffectName(Type) == "Star")
-            //{
-            //    randomHue_dv = RegisterAndGetDV(RandomHueString);
-            //    initColor_Table.Set("hue", randomHue_dv);
-            //}
-            //else
-            //    initColor_Table.Set("hue", DynValue.NewNumber(hsl[0]));
 
-            initColor_Table.Set("hue", DynValue.NewNumber(hsl[0]));
-            initColor_Table.Set("saturation", DynValue.NewNumber(hsl[1]));
-            initColor_Table.Set("lightness", DynValue.NewNumber(hsl[2]));
-            initColor_Table.Set("alpha", DynValue.NewNumber(c.A / 255));
-
-            return initColor_Table;
-        }
-        static public Table GetViewportTransformTable(int effectType)
-        {
-            Table viewportTransformTable = CreateNewTable();
-            Table usageTable = CreateNewTable();
-            Table rotateTable = CreateNewTable();
-            string usage = "";
-            string func = "";
-
-            if (GetEffectName(effectType) == "Static") { usage = "point"; func = PointViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Breath") { usage = "point"; func = PointViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "ColorCycle") { usage = "point"; func = PointViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Rainbow") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Strobing") { usage = "point"; func = PointViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Comet") { usage = "OrthogonaProject"; func = OrthogonaProjectViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Reactive") { usage = "limitRadius"; func = LimitRadiusViewportTransformFunc1; }
-            else if (GetEffectName(effectType) == "Laser") { usage = "distance"; func = DistanceViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Radius") { usage = "limitRadius"; func = LimitRadiusViewportTransformFunc2; }
-            else if (GetEffectName(effectType) == "Ripple") { usage = "radius"; func = RadiusViewportTransformFunc; }
-            else if (GetEffectName(effectType) == "Star") { usage = "limitRadius"; func = LimitRadiusViewportTransformFunc3; }
-            else { usage = "point"; func = PointViewportTransformFunc; }
-
-            usageTable.Set(1, DynValue.NewString(usage));
-            rotateTable.Set("x", DynValue.NewNumber(0));
-            rotateTable.Set("y", DynValue.NewNumber(0));
-            rotateTable.Set("angle", DynValue.NewNumber(0));
-
-            DynValue dv = RegisterAndGetDV(func);
-
-            viewportTransformTable.Set("usage", DynValue.NewTable(usageTable));
-            viewportTransformTable.Set("rotate", DynValue.NewTable(rotateTable));
-            viewportTransformTable.Set("func", dv);
-
-            return viewportTransformTable;
-        }
-    }
-
-    public class WaveInfo
-    {
-        public int Type { get; set; }
-        public int WaveType { get; set; }
-        public double Min { get; set; }
-        public double Max { get; set; }
-        public double WaveLength { get; set; }
-        public double Freq { get; set; }
-        public double Phase { get; set; }
-        public double Start { get; set; }
-        public double Velocity { get; set; }
-        public BindToSignalInfo BindToSignal { get; set; }
-        public CustomizedInfo Customized { get; set; }
-        
-        public WaveInfo(int type)
-        {
-            Type = type;
-            WaveType = GetDefaultWaveType(type);
-            Min = GetDefaultMin(type);
-            Max = GetDefaultMax(type);
-            WaveLength = GetDefaultWaveLen(type);
-            Freq = GetDefaultFreq(type);
-            Phase = GetDefaultPhase(type);
-            Start = 0;
-            Velocity = GetDefaultVelocity(type);
-        }
-        public Table ToTable()
-        {
-            Table waveTable = CreateNewTable();
-            Table bindToSlotTable = GetBindToSlotTable(Type);
-            
-            waveTable.Set("waveType", DynValue.NewString(WaveTypeToString(WaveType)));
-            waveTable.Set("min", DynValue.NewNumber(Min));
-            waveTable.Set("max", DynValue.NewNumber(Max));
-            waveTable.Set("waveLength", DynValue.NewNumber(WaveLength));
-            waveTable.Set("freq", DynValue.NewNumber(Freq));
-            waveTable.Set("phase", DynValue.NewNumber(Phase));
-            waveTable.Set("start", DynValue.NewNumber(Start));
-            waveTable.Set("velocity", DynValue.NewNumber(Velocity));
-
-            waveTable.Set("bindToSlot", DynValue.NewTable(bindToSlotTable));
-
-            return waveTable;
-        }
-        static private Table GetBindToSlotTable(int effectType)
-        {
-            Table bindToSlotTable = CreateNewTable();
-            string bindToSlotString = "";
-            string bindToSlotString2 = "HUE";
-
-            if (GetEffectName(effectType) == "Static") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Breath") bindToSlotString = "LIGHTNESS";
-            else if (GetEffectName(effectType) == "ColorCycle") bindToSlotString = "HUE";
-            else if (GetEffectName(effectType) == "Rainbow") bindToSlotString = "HUE";
-            else if (GetEffectName(effectType) == "Strobing") bindToSlotString = "LIGHTNESS";
-            else if (GetEffectName(effectType) == "Comet") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Reactive") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Laser") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Radius") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Ripple") bindToSlotString = "ALPHA";
-            else if (GetEffectName(effectType) == "Star") bindToSlotString = "LIGHTNESS";
-
-            bindToSlotTable.Set(1, DynValue.NewString(bindToSlotString));
-
-            if (GetEffectName(effectType) == "Comet" || GetEffectName(effectType) == "Reactive" || GetEffectName(effectType) == "Ripple")
-                bindToSlotTable.Set(2, DynValue.NewString(bindToSlotString2));
-
-            return bindToSlotTable;
-        }
-        static public int StringToWaveType(string waveString)
-        {
-            switch (waveString)
+            XmlNode hueNode = CreateXmlNodeOfFile("hue");
+            if (random == true)
             {
-                case "SineWave": return 0;
-                case "HalfSineWave": return 1;
-                case "QuarterSineWave": return 2;
-                case "SquareWave": return 3;
-                case "TriangleWave": return 4;
-                case "SawToothleWave": return 5;
-                case "ConstantWave": return 6;
+                hueNode.InnerText = "Random";
             }
-
-            return 0;
-        }
-        static private string WaveTypeToString(int waveType)
-        {
-            switch (waveType)
+            else
             {
-                case 0: return "SineWave";
-                case 1: return "HalfSineWave";
-                case 2: return "QuarterSineWave";
-                case 3: return "SquareWave";
-                case 4: return "TriangleWave";
-                case 5: return "SawToothleWave";
-                case 6: return "ConstantWave";
+                hueNode.InnerText = hsl[0].ToString();
             }
+            initColorNode.AppendChild(hueNode);
+
+            XmlNode saturationNode = CreateXmlNodeOfFile("saturation");
+            saturationNode.InnerText = hsl[1].ToString();
+            initColorNode.AppendChild(saturationNode);
+
+            XmlNode lightnessNode = CreateXmlNodeOfFile("lightness");
+            lightnessNode.InnerText = hsl[2].ToString();
+            initColorNode.AppendChild(lightnessNode);
+
+            XmlNode alphaNode = CreateXmlNodeOfFile("alpha");
+            alphaNode.InnerText = (c.A / 255).ToString();
+            initColorNode.AppendChild(alphaNode);
+
+            return initColorNode;
+        }
+        static private string GetDefaultWaveType(int effType)
+        {
+            if (GetEffectName(effType) == "Static") return "ConstantWave";
+            else if (GetEffectName(effType) == "Breath") return "SineWave";
+            else if (GetEffectName(effType) == "ColorCycle") return "QuarterSineWave";
+            else if (GetEffectName(effType) == "Rainbow") return "QuarterSineWave";
+            else if (GetEffectName(effType) == "Strobing") return "SineWave";
+            else if (GetEffectName(effType) == "Comet") return "TriangleWave";
+            else if (GetEffectName(effType) == "Reactive") return "SineWave";
+            else if (GetEffectName(effType) == "Laser") return "SineWave";
+            else if (GetEffectName(effType) == "Radius") return "SineWave";
+            else if (GetEffectName(effType) == "Ripple") return "SineWave";
+            else if (GetEffectName(effType) == "Star") return "SineWave";
 
             return "SineWave";
         }
-        static private int GetDefaultWaveType(int effectType)
+        static private double GetMax(int effType)
         {
-            if (GetEffectName(effectType) == "Static") return 6;
-            else if (GetEffectName(effectType) == "Breath") return 0;
-            else if (GetEffectName(effectType) == "ColorCycle") return 2;
-            else if (GetEffectName(effectType) == "Rainbow") return 2;
-            else if (GetEffectName(effectType) == "Strobing") return 0;
-            else if (GetEffectName(effectType) == "Comet") return 4;
-            else if (GetEffectName(effectType) == "Reactive") return 0;
-            else if (GetEffectName(effectType) == "Laser") return 0;
-            else if (GetEffectName(effectType) == "Radius") return 0;
-            else if (GetEffectName(effectType) == "Ripple") return 0;
-            else if (GetEffectName(effectType) == "Star") return 0;
-            return 0;
+            if (GetEffectName(effType) == "Breath") return 0.5;
+            else if (GetEffectName(effType) == "Strobing") return 0.5;
+            else if (GetEffectName(effType) == "Comet") return 0.1;
+            else if (GetEffectName(effType) == "Star") return 0.7;
+            return 1;
         }
-        static private double GetDefaultMin(int effectType)
+        static private double GetMin(int effType)
         {
             return 0;
         }
-        static private double GetDefaultMax(int effectType)
+        static private double GetLength(int effType)
         {
-            if (GetEffectName(effectType) == "Static") return 1;
-            else if (GetEffectName(effectType) == "Breath") return 0.5;
-            else if (GetEffectName(effectType) == "ColorCycle") return 1;
-            else if (GetEffectName(effectType) == "Rainbow") return 1;
-            else if (GetEffectName(effectType) == "Strobing") return 0.5;
-            else if (GetEffectName(effectType) == "Comet") return 1;
-            else if (GetEffectName(effectType) == "Reactive") return 1;
-            else if (GetEffectName(effectType) == "Laser") return 1;
-            else if (GetEffectName(effectType) == "Radius") return 1;
-            else if (GetEffectName(effectType) == "Ripple") return 1;
-            else if (GetEffectName(effectType) == "Star") return 0.5;
-            return 0;
-        }
-        static private double GetDefaultWaveLen(int effectType)
-        {
-            if (GetEffectName(effectType) == "Static") return 23;
-            else if (GetEffectName(effectType) == "Breath") return 23;
-            else if (GetEffectName(effectType) == "ColorCycle") return 23;
-            else if (GetEffectName(effectType) == "Rainbow") return 64;
-            else if (GetEffectName(effectType) == "Strobing") return 23;
-            else if (GetEffectName(effectType) == "Comet") return 2;
-            else if (GetEffectName(effectType) == "Reactive") return 1;
-            else if (GetEffectName(effectType) == "Laser") return 8;
-            else if (GetEffectName(effectType) == "Radius") return 0;
-            else if (GetEffectName(effectType) == "Ripple") return 40;
-            else if (GetEffectName(effectType) == "Star") return 10;
-            return 0;
-        }
-        static private double GetDefaultFreq(int effectType)
-        {
-            if (GetEffectName(effectType) == "Static") return 0;
-            else if (GetEffectName(effectType) == "Breath") return 0.2;
-            else if (GetEffectName(effectType) == "ColorCycle") return -0.01;
-            else if (GetEffectName(effectType) == "Rainbow") return 0.04;
-            else if (GetEffectName(effectType) == "Strobing") return 2;
-            else if (GetEffectName(effectType) == "Comet") return 1;
-            else if (GetEffectName(effectType) == "Reactive") return 1;
-            else if (GetEffectName(effectType) == "Laser") return 0.1;
-            else if (GetEffectName(effectType) == "Radius") return 0;
-            else if (GetEffectName(effectType) == "Ripple") return 1;
-            else if (GetEffectName(effectType) == "Star") return 0.5;
-            return 0;
-        }
-        static private double GetDefaultPhase(int effectType)
-        {
-            return 0;
-        }
-        static private double GetDefaultVelocity(int effectType)
-        {
-            if (GetEffectName(effectType) == "Static") return 0;
-            else if (GetEffectName(effectType) == "Breath") return 0;
-            else if (GetEffectName(effectType) == "ColorCycle") return 0;
-            else if (GetEffectName(effectType) == "Rainbow") return 0;
-            else if (GetEffectName(effectType) == "Strobing") return 0;
-            else if (GetEffectName(effectType) == "Comet") return 20;
-            else if (GetEffectName(effectType) == "Reactive") return 0;
-            else if (GetEffectName(effectType) == "Laser") return 20;
-            else if (GetEffectName(effectType) == "Radius") return 0;
-            else if (GetEffectName(effectType) == "Ripple") return 5;
-            else if (GetEffectName(effectType) == "Star") return 0;
-            return 0;
-        }
-    }   
+            if (GetEffectName(effType) == "Static") return 10;
+            else if (GetEffectName(effType) == "Breath") return 23;
+            else if (GetEffectName(effType) == "ColorCycle") return 23;
+            else if (GetEffectName(effType) == "Rainbow") return 64;
+            else if (GetEffectName(effType) == "Strobing") return 23;
+            else if (GetEffectName(effType) == "Comet") return 3;
+            else if (GetEffectName(effType) == "Reactive") return 1;
+            else if (GetEffectName(effType) == "Laser") return 10;
+            else if (GetEffectName(effType) == "Ripple") return 10;
+            else if (GetEffectName(effType) == "Star") return 10;
 
-    public class BindToSignalInfo
-    {
-        public string Source;
-        public string Target;
-        public double Amplify;
-        public double Offset;
-
-        public Table ToTable()
-        {
-            Table bindToSignal_Table = CreateNewTable();
-
-            return bindToSignal_Table;
+            return 10;
         }
-    }
-
-    public class CustomizedInfo
-    {
-        public Table ToTable()
+        static private string GetFreq(int effType, int speed)
         {
-            Table customized_Table = CreateNewTable();
+            double result = 0;
 
-            return customized_Table;
+            if (speed == 0)
+            {
+                if (GetEffectName(effType) == "Breath") result = 0.1;
+                else if (GetEffectName(effType) == "ColorCycle") result = -0.02;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.01;
+                else if (GetEffectName(effType) == "Strobing") result = 0.2;
+                else if (GetEffectName(effType) == "Comet") result = 0.01;
+                else if (GetEffectName(effType) == "Reactive") result = 1;
+                else if (GetEffectName(effType) == "Laser") return "Random";
+                else if (GetEffectName(effType) == "Ripple") result = 1;
+                else if (GetEffectName(effType) == "Star") return "Random";
+            }
+            else if (speed == 1)
+            {
+                if (GetEffectName(effType) == "Breath") result = 0.2;
+                else if (GetEffectName(effType) == "ColorCycle") result = -0.04;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.02;
+                else if (GetEffectName(effType) == "Strobing") result = 0.4;
+                else if (GetEffectName(effType) == "Comet") result = 0.02;
+                else if (GetEffectName(effType) == "Reactive") result = 2;
+                else if (GetEffectName(effType) == "Laser") return "Random";
+                else if (GetEffectName(effType) == "Ripple") result = 2;
+                else if (GetEffectName(effType) == "Star") return "Random";
+            }
+            else if (speed == 2)
+            {
+                if (GetEffectName(effType) == "Breath") result = 0.4;
+                else if (GetEffectName(effType) == "ColorCycle") result = -0.08;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.04;
+                else if (GetEffectName(effType) == "Strobing") result = 0.8;
+                else if (GetEffectName(effType) == "Comet") result = 0.04;
+                else if (GetEffectName(effType) == "Reactive") result = 4;
+                else if (GetEffectName(effType) == "Laser") return "Random";
+                else if (GetEffectName(effType) == "Ripple") result = 4;
+                else if (GetEffectName(effType) == "Star") return "Random";
+            }
+
+            return result.ToString();
+        }
+        static private string GetPhase(int effType)
+        {
+            if (GetEffectName(effType) == "Star")
+                return "Random";
+
+            return "0";
+        }
+        static private double GetStart(int effType)
+        {
+            if (GetEffectName(effType) == "Comet") return -5;
+
+            return 0;
+        }
+        static private double GetVelocity(int effType, int speed)
+        {
+            if (speed == 0)
+            {
+                if (GetEffectName(effType) == "Comet") return 10;
+                else if (GetEffectName(effType) == "Laser") return 10;
+                else if (GetEffectName(effType) == "Ripple") return 15;
+            }
+            else if (speed == 1)
+            {
+                if (GetEffectName(effType) == "Comet") return 15;
+                else if (GetEffectName(effType) == "Laser") return 15;
+                else if (GetEffectName(effType) == "Ripple") return 10;
+            }
+            else if (speed == 2)
+            {
+                if (GetEffectName(effType) == "Comet") return 20;
+                else if (GetEffectName(effType) == "Laser") return 20;
+                else if (GetEffectName(effType) == "Ripple") return 15;
+            }
+
+            return 0;
+        }
+        static private XmlNode GetDefaultBindToSlotXmlNode(int effType)
+        {
+            XmlNode bindToSlotXmlNode = CreateXmlNodeOfFile("bindToSlot");
+            XmlNode slotNode = CreateXmlNodeOfFile("slot");
+
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+
+            if (GetEffectName(effType) == "Static")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Breath")
+            {
+                attribute.Value = "LIGHTNESS";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "ColorCycle")
+            {
+                attribute.Value = "HUE";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Rainbow")
+            {
+                attribute.Value = "HUE";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Strobing")
+            {
+                attribute.Value = "LIGHTNESS";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Comet")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Reactive")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Laser")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Radius")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Ripple")
+            {
+                attribute.Value = "ALPHA";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Star")
+            {
+                attribute.Value = "LIGHTNESS";
+                slotNode.Attributes.Append(attribute);
+            }
+            bindToSlotXmlNode.AppendChild(slotNode);
+
+            // second slot
+            if (GetEffectName(effType) == "Ripple")
+            {
+                XmlNode slotNode2 = CreateXmlNodeOfFile("slot");
+                XmlAttribute attribute2 = CreateXmlAttributeOfFile("key");
+                attribute2.Value = "HUE";
+                slotNode2.Attributes.Append(attribute2);
+                bindToSlotXmlNode.AppendChild(slotNode2);
+            }
+
+            return bindToSlotXmlNode;
+        }
+
+        public XmlNode ToXmlNodeForUserData()
+        {
+            XmlNode effectNode = CreateXmlNodeOfFile("effect");
+
+            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            typeNode.InnerText = Type.ToString();
+            effectNode.AppendChild(typeNode);
+
+            XmlNode aNode = CreateXmlNodeOfFile("a");
+            aNode.InnerText = InitColor.A.ToString();
+            effectNode.AppendChild(aNode);
+
+            XmlNode rNode = CreateXmlNodeOfFile("r");
+            rNode.InnerText = InitColor.R.ToString();
+            effectNode.AppendChild(rNode);
+
+            XmlNode gNode = CreateXmlNodeOfFile("g");
+            gNode.InnerText = InitColor.G.ToString();
+            effectNode.AppendChild(gNode);
+
+            XmlNode bNode = CreateXmlNodeOfFile("b");
+            bNode.InnerText = InitColor.B.ToString();
+            effectNode.AppendChild(bNode);
+
+            XmlNode brightnessNode = CreateXmlNodeOfFile("brightness");
+            brightnessNode.InnerText = Brightness.ToString();
+            effectNode.AppendChild(brightnessNode);
+
+            XmlNode speedNode = CreateXmlNodeOfFile("speed");
+            speedNode.InnerText = Speed.ToString();
+            effectNode.AppendChild(speedNode);
+
+            XmlNode angleNode = CreateXmlNodeOfFile("angle");
+            angleNode.InnerText = Angle.ToString();
+            effectNode.AppendChild(angleNode);
+
+            XmlNode directionNode = CreateXmlNodeOfFile("direction");
+            directionNode.InnerText = Direction.ToString();
+            effectNode.AppendChild(directionNode);
+
+            XmlNode randomNode = CreateXmlNodeOfFile("random");
+            randomNode.InnerText = Random.ToString();
+            effectNode.AppendChild(randomNode);
+
+            XmlNode highNode = CreateXmlNodeOfFile("high");
+            highNode.InnerText = High.ToString();
+            effectNode.AppendChild(highNode);
+
+            XmlNode lowNode = CreateXmlNodeOfFile("low");
+            lowNode.InnerText = Low.ToString();
+            effectNode.AppendChild(lowNode);
+
+            return effectNode;
         }
     }
 }

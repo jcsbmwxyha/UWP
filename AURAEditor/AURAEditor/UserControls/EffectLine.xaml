@@ -78,6 +78,7 @@
                   Background="DarkBlue"
                   Click="EffectLine_Click"
                   ManipulationMode="TranslateX"
+                  ManipulationStarted="EffectLine_ManipulationStarted"
                   ManipulationDelta="EffectLine_ManipulationDelta"
                   ManipulationCompleted="EffectLine_ManipulationCompleted"
                   PointerMoved="EffectLine_PointerMoved"

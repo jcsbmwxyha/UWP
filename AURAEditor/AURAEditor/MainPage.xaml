@@ -46,6 +46,12 @@
             <BitmapImage x:Key="More_n" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_n.png"/>
             <BitmapImage x:Key="More_h" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_h.png"/>
             <BitmapImage x:Key="More_s" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_s.png"/>
+            <BitmapImage x:Key="Plus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_n.png"/>
+            <BitmapImage x:Key="Plus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_h.png"/>
+            <BitmapImage x:Key="Plus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_s.png"/>
+            <BitmapImage x:Key="Minus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_n.png"/>
+            <BitmapImage x:Key="Minus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_h.png"/>
+            <BitmapImage x:Key="Minus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_s.png"/>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
@@ -63,8 +69,8 @@
                 <Setter Property="AllowDrop" Value="True" />
             </Style>
             <Style x:Key="BasicButton" TargetType="Button">
-                <Setter Property="Width" Value="30" />
-                <Setter Property="Height" Value="30" />
+                <Setter Property="Width" Value="24" />
+                <Setter Property="Height" Value="24" />
             </Style>
             <Style x:Key="DeleteButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
                 <Setter Property="Template">
@@ -297,6 +303,72 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style x:Key="PlusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="MinusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <Style TargetType="ListViewItem">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -403,6 +475,83 @@
                                             </Rectangle.Fill>
                                         </Rectangle>
                                         <Thumb x:Name="HorizontalThumb" Background="Black" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid x:Name="VerticalTemplate" Visibility="Collapsed">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="15" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="15" />
+                                        </Grid.ColumnDefinitions>
+                                        <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
+                                        <Rectangle x:Name="VerticalDecreaseRect" Grid.Row="1">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                    <GradientStop Color="Red" Offset="0.0"/>
+                                                    <GradientStop Color="Yellow" Offset="0.75"/>
+                                                    <GradientStop Color="White" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Thumb x:Name="VerticalThumb" Background="{ThemeResource SystemControlForegroundAccentBrush}" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ZoomSliderStyle" TargetType="Slider">
+                <Setter Property="Background" Value="Gray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+                <Setter Property="FontSize" Value="30" />
+                <Setter Property="ManipulationMode" Value="None" />
+                <Setter Property="UseSystemFocusVisuals" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style TargetType="Thumb" x:Key="SliderThumbStyle">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Background" Value="Plum" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="20" Margin="-0,-2,0,0">
+                                                        <Rectangle.Fill>
+                                                            <ImageBrush ImageSource="Assets/ZoomSlider/asus_ac_slider_btn_n.png"/>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Grid x:Name="SliderContainer" Background="Transparent" Control.IsTemplateFocusTarget="True">
+                                    <Grid x:Name="HorizontalTemplate" MinHeight="45">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="15" />
+                                        </Grid.RowDefinitions>
+                                        <Rectangle x:Name="HorizontalTrackRect" Fill="White"
+                                                   Height="2" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,0"/>
+                                        <Rectangle x:Name="HorizontalDecreaseRect" Grid.Row="1" Fill="White"/>
+                                        <Thumb x:Name="HorizontalThumb" Background="Black"
+                                               Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}"
+                                               Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"/>
                                     </Grid>
                                     <Grid x:Name="VerticalTemplate" Visibility="Collapsed">
                                         <Grid.RowDefinitions>
@@ -1033,34 +1182,26 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="12*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="5*"/>
+            <RowDefinition Height="0.9*"/>
+            <RowDefinition Height="4.5*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="290"/>
         </Grid.ColumnDefinitions>
 
         <!--Backgroud image-->
-        <!--<Image Source="Assets/asus_auraeditor_bg.png"
-               Grid.ColumnSpan="3"
-               Grid.RowSpan="5"
-               Stretch="Fill"/>-->
-        <Image Grid.Row="2"
-               Grid.Column="0"
-               Grid.RowSpan="3"
-               Grid.ColumnSpan="3"
-               Source="Assets/asus_ac_layer_s.png"
-               Stretch="Fill"/>
+        <Image Source="Assets/asus_ac_bg.png"
+               Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
         <Image Grid.Row="2"
                Grid.Column="0"
                Grid.ColumnSpan="3"
-               Source="Assets/asus_ac_layer_n.png"
+               Source="Assets/asus_auraeditor_time_bg.png"
                Stretch="Fill"/>
 
-        <Grid x:Name="R0C1" Grid.Column="1" BorderBrush="black" BorderThickness="1">
+        <Grid x:Name="ActionBar_Column1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <ToggleButton Name="DragDevImgToggleButton"
                               FontSize="20" Height="40"
@@ -1081,7 +1222,7 @@
                           SelectionChanged="FileListComboBox_SelectionChanged"/>
             </StackPanel>
         </Grid>
-        <Grid x:Name="R0C2" Grid.Column="2" BorderBrush="black" BorderThickness="1">
+        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Button Name="NewButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE160;"
                         Margin="1,0,0,0" Click="NewButton_Click" Foreground="White"/>
@@ -1092,11 +1233,11 @@
                 <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
                         Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
                 <Button Name="LoadFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
-                        Margin="1,0,0,0" Click="LoadFileButton_Click" Foreground="White"/>
+                        Margin="-10,0,0,0" Click="LoadFileButton_Click" Foreground="White"/>
                 <Button Name="MoreButton"
                         Style="{StaticResource MoreButtonStyle}"
                             Click="MoreButton_Click"
-                        Margin="3,0,0,0"/>
+                        Margin="0,0,0,0"/>
             </StackPanel>
         </Grid>
         <ScrollViewer Name="EffectBlockScrollViewer"
@@ -1127,43 +1268,36 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
             <ComboBox x:Name="SpaceZoomComboxBox"
+                      VerticalAlignment="Bottom"
                       SelectionChanged="SpaceZoomComboxBox_SelectionChanged"
                       PlaceholderText="0 %"
                       Width="100"
                       Grid.ColumnSpan="3"
+                      Grid.RowSpan="2"
                       Background="Gray"
                       Canvas.ZIndex="6">
                 <x:String>0 %</x:String>
                 <x:String>50 %</x:String>
                 <x:String>100 %</x:String>
             </ComboBox>
-            <Button Content="-"
+            <Button Content="-" Background="Gray" Width="10" Height="60"
                     VerticalAlignment="Center"
-                    Grid.Column="0"
-                    Height="60"
-                    Width="10"
-                    Canvas.ZIndex="5"
-                    Background="Gray"
+                    Grid.Column="0" Canvas.ZIndex="5"
                     Click="AdjustEffectBlockGrid_Click"/>
-            <Button Content="-"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Grid.Column="2"
-                    Height="60"
-                    Width="10"
-                    Canvas.ZIndex="5"
-                    Background="Gray"
+            <Button Content="-" Background="Gray" Width="10" Height="60"
+                    VerticalAlignment="Center" HorizontalAlignment="Right"
+                    Grid.Column="2" Canvas.ZIndex="5"
                     Click="AdjustEffectInfoGrid_Click"/>
             <ScrollViewer Name="SpaceAreaScrollViewer"
                           x:FieldModifier="public"
-                          Grid.Column="0"
-                          Grid.ColumnSpan="3"
-                          MinZoomFactor="1"
-                          MaxZoomFactor="100"
-                          ZoomMode="Enabled"
-                          HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto">
+                          Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3"
+                          MinZoomFactor="1" MaxZoomFactor="100" ZoomMode="Enabled"
+                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Canvas Name="SpaceAreaCanvas"
                         x:FieldModifier="public"
                         Width="2400"
@@ -1183,6 +1317,8 @@
                            x:FieldModifier="Public"/>
                 </Canvas>
             </ScrollViewer>
+            <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Canvas.ZIndex="-3"
+                   Source="Assets/asus_ac_stage_bg.png" Stretch="Fill"/>
         </Grid>
         <ScrollViewer Name="EffectInfoScrollViewer"
                       Grid.Row="1" Grid.Column="2"
@@ -1196,72 +1332,7 @@
                         <Image Source="Assets/EffectInfoGroup/asus_ac_reset_btn_h.png" MinHeight="20" MinWidth="20" Width="20" Height="20"/>
                     </Button>
                 </StackPanel>
-                <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
-                           PointerPressed="ColorRect_Pressed" Margin="0,10" Visibility="Collapsed">
-                    <FlyoutBase.AttachedFlyout>
-                        <Flyout Placement="Top">
-                            <StackPanel>
-                                <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
-                                             IsColorChannelTextInputVisible="False"
-                                             IsHexInputVisible="False"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="OK" Click="ColorPickerOk_Click"/>
-                                    <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Flyout>
-                    </FlyoutBase.AttachedFlyout>
-                </Rectangle>
                 <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
-                    <ComboBox Name="WaveTypeComboBox" SelectionChanged="WaveTypeComboBox_SelectionChanged"
-                              PlaceholderText="Pick a wave type" Width="190">
-                        <ComboBox.Header>
-                            <TextBlock Text="Wave Type:" Foreground="White"/>
-                        </ComboBox.Header>
-                        <x:String>SineWave</x:String>
-                        <x:String>HalfSineWave</x:String>
-                        <x:String>QuarterSineWave</x:String>
-                        <x:String>SquareWave</x:String>
-                        <x:String>TriangleWave</x:String>
-                        <x:String>SawToothleWave</x:String>
-                        <x:String>ConstantWave</x:String>
-                    </ComboBox>
-                    <TextBox Name="MinTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Min:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="MaxTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Max:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="WaveLenTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="WaveLen:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="FreqTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Freq:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="PhaseTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Phase:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="StartTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Start:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-                    <TextBox Name="VelocityTextBox" HorizontalAlignment="Left" FontSize="14" Width="60" PlaceholderText="" TextChanged="EffectInfo_TextChanged" KeyDown="EffectInfo_KeyDown" LostFocus="EffectInfo_LostFocus">
-                        <TextBox.Header>
-                            <TextBlock Text="Velocity:" Foreground="White"/>
-                        </TextBox.Header>
-                    </TextBox>
-
                     <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                         <StackPanel Orientation="Horizontal">
@@ -1311,7 +1382,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
                                 <Image x:Name="AngleIcImg" Source="Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
@@ -1334,7 +1405,6 @@
                                     <Button x:Name="IncreaseBtn" Content="+" Click="IncreaseBtn_Click"
                                             Foreground="White" Background="Gray" FontSize="16"/>
                                 </StackPanel>
-
                             </Grid>
                         </Grid>
                     </StackPanel>
@@ -1370,23 +1440,18 @@
             <Button Name="GoLeftButton"
                     Style="{StaticResource GoLeftButtonStyle}"
                     Click="GoLeftButton_Click"
-                    Margin="3,0,0,0"
+                    Margin="10,0,0,0"
                     RelativePanel.AlignLeftWithPanel="True"/>
-            <Button Name="GoRightButton"
-                    Style="{StaticResource GoRightButtonStyle}"
-                    Click="GoRightButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="GoLeftButton"/>
-            <Button Name="StopButton"
-                    Style="{StaticResource StopButtonStyle}"
-                    Click="StopButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="GoRightButton"/>
             <Button Name="PlayButton"
                     Style="{StaticResource PlayButtonStyle}"
                     Click="PlayButton_Click"
                     Margin="3,0,0,0"
-                    RelativePanel.RightOf="StopButton"/>
+                    RelativePanel.RightOf="GoLeftButton"/>
+            <Button Name="GoRightButton"
+                    Style="{StaticResource GoRightButtonStyle}"
+                    Click="GoRightButton_Click"
+                    Margin="3,0,0,0"
+                    RelativePanel.RightOf="PlayButton"/>
             <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
                        Text="00:00.00"
                        HorizontalAlignment="Right"
@@ -1457,7 +1522,6 @@
                       ViewChanged="TrackScrollViewer_ViewChanged">
             <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
         </ScrollViewer>
-
         <Grid Grid.Column="0"
               Grid.Row="4">
             <Button x:Name="TrashCanButton" 
@@ -1466,18 +1530,18 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"/>
         </Grid>
-        <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
-            <Slider Name="ZoomSlider"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Maximum="6"
-                    Minimum="1"
-                    RelativePanel.AlignRightWithPanel="True"
-                    Width="100"
-                    Margin="0,0,20,0"
-                    Value="2"
+        <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
+            <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.LeftOf="ZoomSlider"
+                    Click="MinusButton_Click"/>
+            <Slider Name="ZoomSlider" Style="{StaticResource ZoomSliderStyle}"
+                    HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.LeftOf="PlusButton"
+                    Maximum="6" Minimum="1" Value="2"
+                    Width="200" Margin="5,-4,5,0"
                     ValueChanged="ZoomSlider_ValueChanged"/>
+            <Button Name="PlusButton" Style="{StaticResource PlusButtonStyle}" RelativePanel.AlignRightWithPanel="True"
+                    Click="PlusButton_Click" Margin="0,0,5,0"/>
         </RelativePanel>
-        <TextBox x:Name="txtresult" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168"/>
+        
+        <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
     </Grid>
 </Page>

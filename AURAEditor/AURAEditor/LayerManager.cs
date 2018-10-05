@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 using AuraEditor.UserControls;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.XmlHelper;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
@@ -200,13 +200,13 @@ namespace AuraEditor
         }
         #endregion
 
-        public XmlNode ToXmlNode()
+        public XmlNode ToXmlNodeForUserData()
         {
             XmlNode layers = CreateXmlNodeOfFile("layers");
 
             foreach (var layer in DeviceLayers)
             {
-                layers.AppendChild(layer.ToXmlNode());
+                layers.AppendChild(layer.ToXmlNodeForUserData());
             }
 
             return layers;

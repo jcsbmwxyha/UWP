@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
-using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
 using Windows.Foundation;
 using MoonSharp.Interpreter;
@@ -185,13 +185,16 @@ namespace AuraEditor
             targetY = y;
             AnimationStart(Border.RenderTransform, "TranslateY", runTime, source, targetY);
         }
-        public Table ToTable()
+
+        public XmlNode ToXmlNodeForScript()
         {
-            Table deviceTable = CreateNewTable();
-            Table locationTable = GetLocationTable();
+            XmlNode deviceNode = CreateXmlNodeOfFile("device");
+
+            XmlNode modelNode = CreateXmlNodeOfFile("model");
+            modelNode.InnerText = Name.ToString();
+            deviceNode.AppendChild(modelNode);
 
             string type = "";
-
             switch (Type)
             {
                 case 0: type = "Notebook"; break;
@@ -199,44 +202,51 @@ namespace AuraEditor
                 case 2: type = "Keyboard"; break;
                 case 3: type = "Headset"; break;
             }
+            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            typeNode.InnerText = type.ToString();
+            deviceNode.AppendChild(typeNode);
 
-            deviceTable.Set("name", DynValue.NewString(Name));
-            deviceTable.Set("DeviceType", DynValue.NewString(type));
-            deviceTable.Set("location", DynValue.NewTable(locationTable));
+            XmlNode locationNode = GetLocationXmlNode();
+            deviceNode.AppendChild(locationNode);
 
-            return deviceTable;
+            return deviceNode;
         }
-        private Table GetLocationTable()
+        private XmlNode GetLocationXmlNode()
         {
-            Table locationTable = CreateNewTable();
+            XmlNode locationNode = CreateXmlNodeOfFile("location");
 
-            locationTable.Set("x", DynValue.NewNumber(GridPosition.X));
-            locationTable.Set("y", DynValue.NewNumber(GridPosition.Y));
+            XmlNode xNode = CreateXmlNodeOfFile("x");
+            xNode.InnerText = GridPosition.X.ToString();
+            locationNode.AppendChild(xNode);
 
-            return locationTable;
+            XmlNode yNode = CreateXmlNodeOfFile("y");
+            yNode.InnerText = GridPosition.Y.ToString();
+            locationNode.AppendChild(yNode);
+
+            return locationNode;
         }
 
-        public XmlNode ToXmlNode()
+        public XmlNode ToXmlNodeForUserData()
         {
-            XmlNode device = CreateXmlNodeOfFile("device");
+            XmlNode deviceNode = CreateXmlNodeOfFile("device");
 
             XmlAttribute attribute = CreateXmlAttributeOfFile("name");
             attribute.Value = Name;
-            device.Attributes.Append(attribute);
+            deviceNode.Attributes.Append(attribute);
 
-            XmlNode type = CreateXmlNodeOfFile("type");
-            type.InnerText = Type.ToString();
-            device.AppendChild(type);
+            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            typeNode.InnerText = Type.ToString();
+            deviceNode.AppendChild(typeNode);
 
-            XmlNode x = CreateXmlNodeOfFile("x");
-            x.InnerText = GridPosition.X.ToString();
-            device.AppendChild(x);
+            XmlNode xNode = CreateXmlNodeOfFile("x");
+            xNode.InnerText = GridPosition.X.ToString();
+            deviceNode.AppendChild(xNode);
 
-            XmlNode y = CreateXmlNodeOfFile("y");
-            y.InnerText = GridPosition.Y.ToString();
-            device.AppendChild(y);
+            XmlNode yNode = CreateXmlNodeOfFile("y");
+            yNode.InnerText = GridPosition.Y.ToString();
+            deviceNode.AppendChild(yNode);
 
-            return device;
+            return deviceNode;
         }
     }
 }

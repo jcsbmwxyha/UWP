@@ -8,7 +8,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.LuaHelper;
+using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.ControlHelper;
 using AuraEditor.UserControls;
 using MoonSharp.Interpreter;
@@ -48,7 +48,7 @@ namespace AuraEditor
         }
         public List<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
-        public Canvas UICanvas;
+        public LayerCanvas UICanvas;
         public bool Eye { get; set; }
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()
@@ -61,7 +61,11 @@ namespace AuraEditor
             Name = name;
             TimelineEffects = new List<TimelineEffect>();
             TriggerEffects = new List<TriggerEffect>();
-            UICanvas = CreateUICanvas();
+            UICanvas = new LayerCanvas();
+            UICanvas.Width = 5000;
+            UICanvas.Height = 50;
+            UICanvas.MyCanvas.DragOver += Canvas_DragOver;
+            UICanvas.MyCanvas.Drop += Canvas_Drop;
             m_ZoneDictionary = new Dictionary<int, int[]>();
             Eye = true;
         }
@@ -105,7 +109,7 @@ namespace AuraEditor
         public void AddTimelineEffect(TimelineEffect effect)
         {
             TimelineEffects.Add(effect);
-            UICanvas.Children.Add(effect.UI);
+            UICanvas.AddElement(effect.UI);
             AnimationStart(effect.UI, "Opacity", 300, 0, 1);
         }
 
@@ -254,37 +258,43 @@ namespace AuraEditor
             }
         }
 
-        public Table ToTable()
+        public XmlNode ToXmlNodeForScript()
         {
             List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
-            Table layerTable = CreateNewTable();
+            XmlNode groupoNode = CreateXmlNodeOfFile("group");
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            attribute.Value = Name;
+            groupoNode.Attributes.Append(attribute);
 
             foreach (var d in globalDevices)
             {
-                Table deviceTable = d.ToTable();
-                Table usageTable = GetUsageTable(d.Type);
+                XmlNode deviceNode = d.ToXmlNodeForScript();
+                XmlNode usageNode = GetUsageXmlNode(d.Type);
 
-                deviceTable.Set("usage", DynValue.NewTable(usageTable));
-                layerTable.Set(d.Name, DynValue.NewTable(deviceTable));
+                deviceNode.AppendChild(usageNode);
+                groupoNode.AppendChild(deviceNode);
             }
 
-            return layerTable;
+            return groupoNode;
         }
-        private Table GetUsageTable(int deviceType)
+        private XmlNode GetUsageXmlNode(int deviceType)
         {
-            Table usageTable = CreateNewTable();
+            XmlNode usageNode = CreateXmlNodeOfFile("usage");
             int[] zoneIndexes = m_ZoneDictionary[deviceType];
-            int count = 1;
 
             foreach (int index in zoneIndexes)
             {
-                usageTable.Set(count, DynValue.NewNumber(index));
-                count++;
+                XmlNode ledNode = CreateXmlNodeOfFile("led");
+                XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+                attribute.Value = index.ToString();
+                ledNode.Attributes.Append(attribute);
+                usageNode.AppendChild(ledNode);
             };
 
-            return usageTable;
+            return usageNode;
         }
-        public XmlNode ToXmlNode()
+
+        public XmlNode ToXmlNodeForUserData()
         {
             XmlNode layerNode = CreateXmlNodeOfFile("layer");
 
@@ -297,8 +307,8 @@ namespace AuraEditor
             List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
             foreach (var d in globalDevices)
             {
-                XmlNode device = GetDeviceUsageXmlNode(d);
-                devicesNode.AppendChild(device);
+                XmlNode deviceNode = GetDeviceUsageXmlNode(d);
+                devicesNode.AppendChild(deviceNode);
             }
             layerNode.AppendChild(devicesNode);
 
@@ -309,7 +319,7 @@ namespace AuraEditor
             effects.AddRange(TriggerEffects);
             foreach (var eff in effects)
             {
-                XmlNode effNode = eff.ToXmlNode();
+                XmlNode effNode = eff.ToXmlNodeForUserData();
                 effectsNode.AppendChild(effNode);
             }
             layerNode.AppendChild(effectsNode);
