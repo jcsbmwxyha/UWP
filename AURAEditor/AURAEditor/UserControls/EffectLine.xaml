@@ -14,9 +14,9 @@
             <BitmapImage x:Key="LPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_n.png"/>
             <BitmapImage x:Key="MPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_n.png"/>
             <BitmapImage x:Key="RPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_n.png"/>
-            <BitmapImage x:Key="LPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_s.png"/>
-            <BitmapImage x:Key="MPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
-            <BitmapImage x:Key="RPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
+            <BitmapImage x:Key="LPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_nh.png"/>
+            <BitmapImage x:Key="MPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_nh.png"/>
+            <BitmapImage x:Key="RPart_h" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_nh.png"/>
             <BitmapImage x:Key="LPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_s.png"/>
             <BitmapImage x:Key="MPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
             <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>

@@ -158,11 +158,6 @@ namespace AuraEditor
             LayerManager.AddDeviceLayer(layer);
             SpaceManager.UnselectAllZones();
         }
-        private void SpaceZoomComboxBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string value = e.AddedItems[0].ToString();
-            SpaceManager.SpaceZoomChanged(value);
-        }
         private void DragDevImgToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             SpaceManager.SetSpaceStatus(SpaceStatus.DragingDevice);
@@ -320,6 +315,22 @@ namespace AuraEditor
         private void SocketServer_DoWork(object sender, DoWorkEventArgs e)
         {
             socketstart();
+        }
+
+        private void SpaceZoom_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as MenuFlyoutItem;
+            string itemName = item.Name;
+
+            switch (itemName)
+            {
+                case "Zoom_0":
+                    SpaceManager.SpaceZoomChanged("0 %"); break;
+                case "Zoom_50":
+                    SpaceManager.SpaceZoomChanged("50 %"); break;
+                case "Zoom_100":
+                    SpaceManager.SpaceZoomChanged("100 %"); break;
+            }
         }
     }
 }

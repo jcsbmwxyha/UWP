@@ -194,7 +194,7 @@
         </ResourceDictionary>
     </ContentDialog.Resources>
 
-    <Grid Width="470" Height="900">
+    <Grid Width="470" Height="750">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="13*"/>
@@ -204,31 +204,35 @@
         <Image Grid.RowSpan="3"
                Source="ms-appx:///Assets/TriggerDialog/asus_ac_triggerevent_bg.png"
                Stretch="Fill"/>
-        <RelativePanel Margin="5,10,0,0">
+        <RelativePanel Margin="10,15,10,0">
             <TextBlock Text="Set Trigger Event" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
-            <Button Content="X" RelativePanel.AlignRightWithPanel="True" Foreground="White" Background="DarkGray"
+            <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}"
                     Click="OKButton_Click"/>
         </RelativePanel>
         <StackPanel Grid.Row="1" Width="450" VerticalAlignment="Top" Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal" PointerEntered="StackPanel_PointerEntered">
                 <TextBlock Text="Action : " VerticalAlignment="Center" Foreground="White"/>
-                <ComboBox Name="ActionComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0" SelectedIndex="0">
-                    <x:String>One Click</x:String>
-                    <x:String>Double Click</x:String>
-                </ComboBox>
+                <Button x:Name="TriggerActionButton" Content="On Click" Foreground="White"
+                    Width="150" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
+                    Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="TriggerActionMenuFlyout" Placement="Bottom">
+                            <MenuFlyoutItem x:Name="On_Click" Text="On Click"/>
+                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
             </StackPanel>
+            <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,13,0,0"/>
             <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
-                <TextBlock  Text="Effect order :"
-                            VerticalAlignment="Center"
-                            Foreground="White"/>
-                <Button Name="AddEffectButton" Foreground="White" Background="DarkGray"
-                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0"/>
+                <TextBlock  Text="Effect order :" VerticalAlignment="Center" Foreground="White"/>
+                <Button Name="AddEffectButton" Foreground="White" Background="DarkGray" Style="{StaticResource RogButtonStyle}"
+                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="140" Height="50"/>
             </StackPanel>
-            <ListView Name="TriggerEffectListView" PointerEntered="StackPanel_PointerEntered"
-                      BorderBrush="White" BorderThickness="2"
-                      CanReorderItems="True" AllowDrop="True"
-                      Height="170" SelectedIndex="{Binding SelectedIndex}"
-                      Margin="0,10,0,0" SelectionChanged="TriggerEffectListView_SelectionChanged">
+            <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True"
+                      Height="170" Margin="0,10,0,0" SelectedIndex="{Binding SelectedIndex}"
+                      PointerEntered="StackPanel_PointerEntered"
+                      SelectionChanged="TriggerEffectListView_SelectionChanged">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Padding" Value="0,0,0,0"/>
@@ -241,6 +245,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,20,0,0"/>
             <StackPanel Name="EffectInfoStackPanel" Visibility="Collapsed" PointerEntered="EffectInfoStackPanel_PointerEntered">
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock Text="Effect :" VerticalAlignment="Center"
@@ -252,9 +257,8 @@
                         <x:String>Laser</x:String>
                     </ComboBox>
                 </StackPanel>
-                <ScrollViewer  Height="420">
-                    <StackPanel Name="EffectInfo"
-                            BorderThickness="2" BorderBrush="White" Margin="0,10,0,0">
+                <ScrollViewer Height="420">
+                    <StackPanel Name="EffectInfoPanel" Margin="0,10,0,0" Height="600">
                         <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
                            PointerPressed="ColorRect_Pressed" Margin="0,10">
                             <FlyoutBase.AttachedFlyout>
@@ -300,12 +304,8 @@
                 </ScrollViewer>
             </StackPanel>
         </StackPanel>
-        <Button Grid.Row="2"
-                Content="OK"
-                Margin="0,10,0,0"
-                HorizontalAlignment="Center"
-                Foreground="White"
-                Background="DarkGray"
-                Click="OKButton_Click"/>
+        <Image Grid.Row="2" Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,-50,0,0"/>
+        <Button Grid.Row="2" Content="OK" Margin="0,20,0,0" HorizontalAlignment="Center" Width="100" Foreground="White"
+                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click"/>
     </Grid>
 </ContentDialog>

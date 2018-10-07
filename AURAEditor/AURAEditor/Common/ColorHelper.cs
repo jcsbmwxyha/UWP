@@ -63,17 +63,6 @@ namespace AuraEditor.Common
             lgb.EndPoint = new Point(1, 0);
             return lgb;
         }
-        public static Brush GetTimelineBackgroundColor(int colorIndex)
-        {
-            Color color;
-
-            if (colorIndex == 0)
-                color = new Color { A = 127, R = 53, G = 53, B = 53 };
-            else
-                color = Colors.LightBlue; // trigger layer
-
-            return new SolidColorBrush(color);
-        }
 
         public static Color HSLToRGB(double a, double h, double s, double l)
         {

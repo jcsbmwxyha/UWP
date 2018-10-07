@@ -518,7 +518,7 @@ namespace AuraEditor
             {
                 case "0 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 1, true);
+                        m_SpaceScrollViewer.VerticalOffset, -2f, true);
                     break;
                 case "50 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,

@@ -7,5 +7,226 @@
     <Application.Resources>
         <x:Double x:Key="ContentDialogMaxWidth">1500</x:Double>
         <x:Double x:Key="ContentDialogMaxHeight">900</x:Double>
+        
+        <Style x:Key="RogButtonStyle"  TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogComboBoxButton_n_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogComboBoxButton_n_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogComboBoxButton_n_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogComboBoxButton_h_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogComboBoxButton_h_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogComboBoxButton_h_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogComboBoxButton_p_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogComboBoxButton_p_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogComboBoxButton_p_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <BitmapImage x:Key="RogStyleButton2_n_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_n_l.png"/>
+        <BitmapImage x:Key="RogStyleButton2_h_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_h_l.png"/>
+        <BitmapImage x:Key="RogStyleButton2_p_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_p_l.png"/>
+        <BitmapImage x:Key="RogStyleButton2_d_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_d_l.png"/>
+        <BitmapImage x:Key="RogStyleButton2_n_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_n_m.png"/>
+        <BitmapImage x:Key="RogStyleButton2_h_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_h_m.png"/>
+        <BitmapImage x:Key="RogStyleButton2_p_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_p_m.png"/>
+        <BitmapImage x:Key="RogStyleButton2_d_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_d_m.png"/>
+        <BitmapImage x:Key="RogStyleButton2_n_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_n_r.png"/>
+        <BitmapImage x:Key="RogStyleButton2_h_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_h_r.png"/>
+        <BitmapImage x:Key="RogStyleButton2_p_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_p_r.png"/>
+        <BitmapImage x:Key="RogStyleButton2_d_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_d_r.png"/>
+        <Style x:Key="RogButtonStyle2"  TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_n_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_n_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_n_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_h_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_h_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_h_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_p_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_p_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_p_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_d_l}"/>
+                                            <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_d_m}"/>
+                                            <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_d_r}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <BitmapImage x:Key="RogComboBoxButton_n_l" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_n_l.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_h_l" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_h_l.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_p_l" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_p_l.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_n_m" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_n_m.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_h_m" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_h_m.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_p_m" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_p_m.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_n_r" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_n_r.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_h_r" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_h_r.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_p_r" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_p_r.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_n_i" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_list_item_n_r.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_h_i" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_list_item_h_r.png"/>
+        <BitmapImage x:Key="RogComboBoxButton_p_i" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_list_item_p_r.png"/>
+        <Style x:Key="RogComboBoxButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_h_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_h_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_h_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_h_i}"/>
+                                            <Setter Target="CBBcontent.Foreground" Value="Red"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_p_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_p_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_p_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_p_i}"/>
+                                            <Setter Target="CBBcontent.Foreground" Value="Blue"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_p_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_p_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_p_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_p_i}"/>
+                                            <Setter Target="CBBcontent.Foreground" Value="Red"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource RogComboBoxButton_n_l}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource RogComboBoxButton_n_m}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_r}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="PPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_i}"  Height="{TemplateBinding Height}"/>
+                                <ContentPresenter x:Name="CBBcontent" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="RogDialogCloseButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="MyBorder">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="MyText.Foreground" Value="White"/>
+                                            <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="MyText.Foreground" Value="Gray"/>
+                                            <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="MyText.Foreground" Value="Red"/>
+                                            <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <TextBlock Name="MyText"
+                                                   FontWeight="Bold"
+                                                   Text="&#xE10A;"
+                                                   HorizontalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Application.Resources>
 </Application>

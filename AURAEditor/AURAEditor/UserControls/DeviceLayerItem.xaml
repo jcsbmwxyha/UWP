@@ -8,15 +8,60 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
 
+            <BitmapImage x:Key="TriggerButton_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
+            <BitmapImage x:Key="TriggerButton_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
+            <BitmapImage x:Key="TriggerButton_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
+
+            <Style x:Key="TriggerButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_p}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
                  Content="{Binding Name}"
                  FontSize="30"
                  Foreground="White"
                  Height="50"
                  VerticalAlignment="Center"
-                 Checked="DeviceLayerRadioButton_Checked">
-        <ToggleButton.Template>
+                 Checked="DeviceLayerRadioButton_Checked"
+                 Unchecked="DeviceLayerRadioButton_Unchecked"
+                 PointerEntered="DeviceLayerRadioButton_PointerEntered"
+                 PointerExited="DeviceLayerRadioButton_PointerExited">
+        <RadioButton.Template>
             <ControlTemplate TargetType="ToggleButton">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -24,8 +69,9 @@
                         <ColumnDefinition Width="256"/>
                     </Grid.ColumnDefinitions>
                     <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup>
-                            <VisualState x:Name="Normal"/>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                            </VisualState>
                             <VisualState x:Name="PointerOver">
                                 <VisualState.Setters>
                                     <Setter Target="LayerBg_Head.Source" Value="../Assets/Layer/asus_ac_layer_bg_l_s.png"/>
@@ -45,6 +91,18 @@
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
+                        <VisualStateGroup x:Name="TriggerStates">
+                            <VisualState x:Name="NoTrigger">
+                                <VisualState.Setters>
+                                    <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Trigger">
+                                <VisualState.Setters>
+                                    <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
                     <Image Name="LayerBg_Head"
                            Grid.Column="0"
@@ -55,6 +113,9 @@
                            Grid.ColumnSpan="2"
                            Stretch="Fill"
                            VerticalAlignment="Center"/>
+                    <Image Name="Triggerline_head" Grid.Column="1" Width="10" Height="10"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed"
+                           Source="ms-appx:///Assets/Layer/asus_ac_triggerline_head.png"/>
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
@@ -62,10 +123,8 @@
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
                         <ToggleButton Name="EyeToggleButton"
-                                  Grid.Column="0"
-                                  Margin="20,0,0,0"
-                                  Click="EyeToggleButton_Click"
-                                  IsChecked="True">
+                                      Grid.Column="0" Margin="20,0,0,0"
+                                      Click="EyeToggleButton_Click" IsChecked="True">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <StackPanel Orientation="Horizontal">
@@ -74,17 +133,22 @@
                                                 <VisualState x:Name="Normal"/>
                                                 <VisualState x:Name="PointerOver">
                                                     <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_off_ic.png"/>
+                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_h_ic.png"/>
                                                     </VisualState.Setters>
                                                 </VisualState>
                                                 <VisualState x:Name="CheckedPointerOver">
                                                     <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_h_ic.png"/>
                                                     </VisualState.Setters>
                                                 </VisualState>
                                                 <VisualState x:Name="Checked">
                                                     <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/asus_auraeditor_eye_on_ic.png"/>
+                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_on_n_ic.png"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="Unchecked">
+                                                    <VisualState.Setters>
+                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_n_ic.png"/>
                                                     </VisualState.Setters>
                                                 </VisualState>
                                             </VisualStateGroup>
@@ -96,7 +160,8 @@
                                                 </ControlTemplate>
                                             </ToggleButton.Template>
                                         </ToggleButton>
-                                        <Image Name="Eye" Source="../Assets/asus_auraeditor_eye_off_ic.png" Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
+                                        <Image Name="Eye" Source="../Assets/Button/asus_ac_eye_off_n_ic.png"
+                                               Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </ControlTemplate>
                             </ToggleButton.Template>
@@ -106,14 +171,11 @@
                                FontSize="20"
                                Margin="22,0,0,0"
                                VerticalAlignment="Center"/>
-                        <Button Name="TriggerDialogButton"
-                            Grid.Column="2" 
-                            Content="&#xEDB0;" FontSize="24" FontFamily="Segoe MDL2 Assets" 
-                            Foreground="Orange"
-                            Click="TriggerDialogButton_Click"/>
+                        <Button Name="TriggerDialogButton" Style="{StaticResource TriggerButtonStyle}" Grid.Column="2"
+                                Width="20" Height="20" Click="TriggerDialogButton_Click"/>
                     </Grid>
                 </Grid>
             </ControlTemplate>
-        </ToggleButton.Template>
+        </RadioButton.Template>
     </RadioButton>
 </UserControl>

@@ -414,47 +414,8 @@
         <Image x:Name="BackgroundImage" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" Grid.RowSpan="3"/>
         <RelativePanel Grid.Row="0" Canvas.ZIndex="4">
             <TextBlock Text="Color Picker" Foreground="White" RelativePanel.AlignLeftWithPanel="True" Canvas.ZIndex="4" Margin="22,10,0,0"/>
-            <Button RelativePanel.AlignRightWithPanel="True" Width="30" Margin="0,10,10,0" Click="CancelBtn_Click">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Name="MyBorder">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup x:Name="CommonStates">
-                                                <VisualState x:Name="Normal">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="MyText.Foreground" Value="White"/>
-                                                        <Setter Target="MyBorder.Background" Value="Transparent"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="PointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="MyText.Foreground" Value="Gray"/>
-                                                        <Setter Target="MyBorder.Background" Value="Transparent"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="Pressed">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="MyText.Foreground" Value="Red"/>
-                                                        <Setter Target="MyBorder.Background" Value="Transparent"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <TextBlock Name="MyText"
-                                                   FontWeight="Bold"
-                                                   Text="&#xE10A;"
-                                                   HorizontalAlignment="Center"
-                                                   FontFamily="Segoe MDL2 Assets"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <Button RelativePanel.AlignRightWithPanel="True" Width="30" Margin="0,10,10,0" Click="CancelBtn_Click"
+                     Style="{StaticResource RogDialogCloseButton}"/>
         </RelativePanel>
 
         <Grid Grid.Row="1">

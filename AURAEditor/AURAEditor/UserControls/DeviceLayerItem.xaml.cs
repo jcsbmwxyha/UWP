@@ -63,9 +63,41 @@ namespace AuraEditor.UserControls
             await triggerDialog.ShowAsync();
 
             if (m_DeviceLayer.TriggerEffects.Count != 0)
-                m_DeviceLayer.UICanvas.Background = GetTimelineBackgroundColor(1);
+            {
+                m_DeviceLayer.UICanvas.GoToState("Trigger");
+                VisualStateManager.GoToState(DeviceLayerRadioButton, "Trigger", false);
+            }
             else
-                m_DeviceLayer.UICanvas.Background = GetTimelineBackgroundColor(0);
+            {
+                m_DeviceLayer.UICanvas.GoToState("NoTrigger");
+                VisualStateManager.GoToState(DeviceLayerRadioButton, "NoTrigger", false);
+            }
+        }
+        private void DeviceLayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            m_DeviceLayer.UICanvas.GoToState("Normal");
+        }
+        private void DeviceLayerRadioButton_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (DeviceLayerRadioButton.IsChecked == true)
+            {
+                m_DeviceLayer.UICanvas.GoToState("CheckedPointerOver");
+            }
+            else
+            {
+                m_DeviceLayer.UICanvas.GoToState("PointerOver");
+            }
+        }
+        private void DeviceLayerRadioButton_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (DeviceLayerRadioButton.IsChecked == true)
+            {
+                m_DeviceLayer.UICanvas.GoToState("Checked");
+            }
+            else
+            {
+                m_DeviceLayer.UICanvas.GoToState("Normal");
+            }
         }
     }
 }

@@ -27,5 +27,9 @@ namespace AuraEditor.UserControls
         {
             MyCanvas.Children.Add(fe);
         }
+        public void GoToState(string State)
+        {
+            VisualStateManager.GoToState(this, State, false);
+        }
     }
 }

@@ -57,7 +57,6 @@ namespace AuraEditor
         #region Layer
         public void AddDeviceLayer(DeviceLayer layer)
         {
-            layer.UICanvas.Background = AuraEditorColorHelper.GetTimelineBackgroundColor(0);
             DeviceLayers.Add(layer);
             m_TimelineStackPanel.Children.Add(layer.UICanvas);
         }

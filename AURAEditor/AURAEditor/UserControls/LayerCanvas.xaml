@@ -11,7 +11,7 @@
 
     <Grid> 
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal"/>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
@@ -31,6 +31,46 @@
                         <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
                     </VisualState.Setters>
                 </VisualState>
+                <!--<VisualState x:Name="TriggerNormal">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>--><!--
+                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TriggerPointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TriggerCheckedPointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TriggerChecked">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>-->
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="TriggerStates">
+                <VisualState x:Name="NoTrigger">
+                    <VisualState.Setters>
+                        <Setter Target="Triggerline_body.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Trigger">
+                    <VisualState.Setters>
+                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
@@ -38,19 +78,18 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4"/>
         </Grid.ColumnDefinitions>
-        
-        <Image Name="LayerBg_Head"
-                           Grid.Column="0"
-                           Stretch="Fill"
-                           VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Tail"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
+
+        <Image Name="LayerBg_Mid"
+               Grid.Column="0"
                Stretch="Fill"
                VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Tail"
+               Grid.Column="1"
+               Stretch="Fill"
+               VerticalAlignment="Center"/>
+        <Image Name="Triggerline_body" Grid.ColumnSpan="2" Height="10" Stretch="Fill" Visibility="Collapsed"
+               VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_body.png"/>
         <Canvas Name="MyCanvas" Grid.ColumnSpan="2" HorizontalAlignment="Left" AllowDrop="True" Background="Transparent"
-                Width="5000" Height="44" x:FieldModifier="public">
-            
-        </Canvas>
+                Width="5000" Height="44" x:FieldModifier="public"/>
     </Grid>
 </UserControl>
