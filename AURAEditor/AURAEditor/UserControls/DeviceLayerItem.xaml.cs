@@ -66,11 +66,13 @@ namespace AuraEditor.UserControls
             {
                 m_DeviceLayer.UICanvas.GoToState("Trigger");
                 VisualStateManager.GoToState(DeviceLayerRadioButton, "Trigger", false);
+                VisualStateManager.GoToState(this, "Trigger", false);
             }
             else
             {
                 m_DeviceLayer.UICanvas.GoToState("NoTrigger");
                 VisualStateManager.GoToState(DeviceLayerRadioButton, "NoTrigger", false);
+                VisualStateManager.GoToState(this, "NoTrigger", false);
             }
         }
         private void DeviceLayerRadioButton_Unchecked(object sender, RoutedEventArgs e)

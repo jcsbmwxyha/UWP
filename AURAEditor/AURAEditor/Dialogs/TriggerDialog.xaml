@@ -229,22 +229,25 @@
                 <Button Name="AddEffectButton" Foreground="White" Background="DarkGray" Style="{StaticResource RogButtonStyle}"
                         Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="140" Height="50"/>
             </StackPanel>
-            <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True"
+            <Grid>
+                <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
+                <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True" VerticalAlignment="Top"
                       Height="170" Margin="0,10,0,0" SelectedIndex="{Binding SelectedIndex}"
                       PointerEntered="StackPanel_PointerEntered"
                       SelectionChanged="TriggerEffectListView_SelectionChanged">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Padding" Value="0,0,0,0"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0,0,0,0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <local:TriggerBlock Width="480" HorizontalAlignment="Left"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:TriggerBlock Width="480" HorizontalAlignment="Left"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
             <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,20,0,0"/>
             <StackPanel Name="EffectInfoStackPanel" Visibility="Collapsed" PointerEntered="EffectInfoStackPanel_PointerEntered">
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">

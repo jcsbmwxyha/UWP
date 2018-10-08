@@ -325,11 +325,11 @@ namespace AuraEditor
             switch (itemName)
             {
                 case "Zoom_0":
-                    SpaceManager.SpaceZoomChanged("0 %"); break;
+                    SpaceManager.SpaceZoomChanged("0 %"); SpaceZoomButton.Content = "0 %"; break;
                 case "Zoom_50":
-                    SpaceManager.SpaceZoomChanged("50 %"); break;
+                    SpaceManager.SpaceZoomChanged("50 %"); SpaceZoomButton.Content = "50 %"; break;
                 case "Zoom_100":
-                    SpaceManager.SpaceZoomChanged("100 %"); break;
+                    SpaceManager.SpaceZoomChanged("100 %"); SpaceZoomButton.Content = "100 %"; break;
             }
         }
     }

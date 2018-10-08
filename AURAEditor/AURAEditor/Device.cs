@@ -128,8 +128,8 @@ namespace AuraEditor
             CompositeTransform ct = Border.RenderTransform as CompositeTransform;
 
             SetPosition(
-                ct.TranslateX + e.Delta.Translation.X,
-                ct.TranslateY + e.Delta.Translation.Y);
+                ct.TranslateX + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
+                ct.TranslateY + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {

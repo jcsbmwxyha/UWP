@@ -12,11 +12,14 @@
     <UserControl.Resources>
         <ResourceDictionary>
 
-            <BitmapImage x:Key="TriggerButton_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
-            <BitmapImage x:Key="TriggerButton_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
-            <BitmapImage x:Key="TriggerButton_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
+            <BitmapImage x:Key="TriggerButtonOn_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
+            <BitmapImage x:Key="TriggerButtonOn_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
+            <BitmapImage x:Key="TriggerButtonOn_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
+            <BitmapImage x:Key="TriggerButtonOff_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_d.png"/>
+            <BitmapImage x:Key="TriggerButtonOff_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_n.png"/>
+            <BitmapImage x:Key="TriggerButtonOff_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_p.png"/>
 
-            <Style x:Key="TriggerButtonStyle"  TargetType="Button">
+            <Style x:Key="TriggerStatusOnButtonStyle"  TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -25,23 +28,56 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_n}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_n}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_h}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_h}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource TriggerButton_p}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_p}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
+                                    <Image Name="TriggerButton" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="TriggerStatusOffButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_p}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="TriggerButton" Stretch="Fill"/>
                                     <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </Grid>
                             </Border>
@@ -95,11 +131,15 @@
                             <VisualState x:Name="NoTrigger">
                                 <VisualState.Setters>
                                     <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
+                                    <Setter Target="TriggerStatusOnButton.Visibility" Value="Collapsed"/>
+                                    <Setter Target="TriggerStatusOffButton.Visibility" Value="Visible"/>
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Trigger">
                                 <VisualState.Setters>
                                     <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
+                                    <Setter Target="TriggerStatusOnButton.Visibility" Value="Visible"/>
+                                    <Setter Target="TriggerStatusOffButton.Visibility" Value="Collapsed"/>
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
@@ -171,7 +211,9 @@
                                FontSize="20"
                                Margin="22,0,0,0"
                                VerticalAlignment="Center"/>
-                        <Button Name="TriggerDialogButton" Style="{StaticResource TriggerButtonStyle}" Grid.Column="2"
+                        <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}" Grid.Column="2"
+                                Width="20" Height="20" Click="TriggerDialogButton_Click" Visibility="Collapsed"/>
+                        <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" Grid.Column="2"
                                 Width="20" Height="20" Click="TriggerDialogButton_Click"/>
                     </Grid>
                 </Grid>

@@ -1314,8 +1314,8 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="SpaceZoomButton" Content="0 %" Foreground="White" Grid.Row="1"
-                    Width="100" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
+            <Button x:Name="SpaceZoomButton" Content="50 %" Foreground="White" Grid.Row="1"
+                    Width="110" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
@@ -1330,7 +1330,7 @@
                           Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3"
                           MinZoomFactor="0.5" MaxZoomFactor="100" ZoomMode="Enabled"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas Name="SpaceAreaCanvas"
+                <Canvas Name="SpaceAreaCanvas"  VerticalAlignment="Top"
                         x:FieldModifier="public"
                         Width="2400"
                         Height="824"

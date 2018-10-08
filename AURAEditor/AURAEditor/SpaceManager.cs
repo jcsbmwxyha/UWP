@@ -110,6 +110,7 @@ namespace AuraEditor
         private MouseEventCtrl m_MouseEventCtrl;
         private DispatcherTimer m_ScrollTimerClock;
         private int _mouseDirection;
+        public float SpaceZoomFactor { get; private set; }
         public List<Device> GlobalDevices;
 
         public AuraSpaceManager()
@@ -123,6 +124,7 @@ namespace AuraEditor
             m_MouseEventCtrl = IntializeMouseEventCtrl();
             m_ScrollTimerClock = InitializeScrollTimer();
             _mouseDirection = 0;
+            SpaceZoomFactor = 1;
 
             GlobalDevices = new List<Device>();
             FillWithIngroupDevices();
@@ -134,7 +136,7 @@ namespace AuraEditor
 
             MouseEventCtrl mec = new MouseEventCtrl
             {
-                MonitorMaxRect = new Rect(new Point(0, 0), new Point(m_SpaceCanvas.ActualWidth, m_SpaceCanvas.ActualHeight)),
+                MonitorMaxRect = new Rect(new Point(0, 0), new Point(2700, 1500)),//new Point(m_SpaceCanvas.ActualWidth, m_SpaceCanvas.ActualHeight)),
                 DetectionRegions = regions.ToArray()
             };
 
@@ -156,28 +158,28 @@ namespace AuraEditor
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset - offset,
                     m_SpaceScrollViewer.VerticalOffset - offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 2)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset,
                     m_SpaceScrollViewer.VerticalOffset - offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 3)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset + offset,
                     m_SpaceScrollViewer.VerticalOffset - offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 4)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset - offset,
                     m_SpaceScrollViewer.VerticalOffset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 5) {}
             else if (_mouseDirection == 6)
@@ -185,28 +187,28 @@ namespace AuraEditor
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset + offset,
                     m_SpaceScrollViewer.VerticalOffset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 7)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset - offset,
                     m_SpaceScrollViewer.VerticalOffset + offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 8)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset,
                     m_SpaceScrollViewer.VerticalOffset + offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
             else if (_mouseDirection == 9)
             {
                 m_SpaceScrollViewer.ChangeView(
                     m_SpaceScrollViewer.HorizontalOffset + offset,
                     m_SpaceScrollViewer.VerticalOffset + offset,
-                    1, true);
+                    SpaceZoomFactor, true);
             }
         }
         public void RefreshSpaceGrid()
@@ -518,15 +520,18 @@ namespace AuraEditor
             {
                 case "0 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, -2f, true);
+                        m_SpaceScrollViewer.VerticalOffset, 0.5f, true);
+                    SpaceZoomFactor = 0.5f;
                     break;
                 case "50 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 1.5f, true);
+                        m_SpaceScrollViewer.VerticalOffset, 1f, true);
+                    SpaceZoomFactor = 1f;
                     break;
                 case "100 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
                         m_SpaceScrollViewer.VerticalOffset, 2, true);
+                    SpaceZoomFactor = 2;
                     break;
             }
         }
@@ -575,10 +580,10 @@ namespace AuraEditor
             m_MouseRectangle.Height = r.Height;
 
             Rect screenRect = new Rect(
-                    m_SpaceScrollViewer.HorizontalOffset,
-                    m_SpaceScrollViewer.VerticalOffset,
-                    m_SpaceScrollViewer.ActualWidth,
-                    m_SpaceScrollViewer.ActualHeight);
+                    m_SpaceScrollViewer.HorizontalOffset / SpaceZoomFactor,
+                    m_SpaceScrollViewer.VerticalOffset / SpaceZoomFactor,
+                    m_SpaceScrollViewer.ActualWidth / SpaceZoomFactor,
+                    m_SpaceScrollViewer.ActualHeight / SpaceZoomFactor);
 
             if (Position.X > screenRect.Right && Position.Y > screenRect.Bottom)
             {
