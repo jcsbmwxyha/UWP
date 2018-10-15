@@ -106,7 +106,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\StorageHelper.cs" />
+    <Compile Include="Dialogs\NamingDialog.xaml.cs">
+      <DependentUpon>NamingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\YesNoCancelDialog.xaml.cs">
       <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
     </Compile>
@@ -131,6 +135,7 @@
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Effect.cs" />
+    <Compile Include="PatternColorSet.cs" />
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
     <Compile Include="TimelineEffect.cs" />
@@ -138,11 +143,9 @@
     <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
     <Compile Include="EffectInfo.cs" />
+    <Compile Include="UserControls\ColorPointBt.xaml.cs" />
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\NamedDialog.xaml.cs">
-      <DependentUpon>NamedDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EffectInfoGrid.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -262,6 +265,9 @@
     <Content Include="Assets\Line\asus_ac_shortline_bg.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_ic_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_colorpick_ic_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_colorpick_ic_s.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_colorpick_mask.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_d_l.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_d_m.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_d_r.png" />
@@ -275,6 +281,9 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_m.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_r icn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_control header_text box_type_n_r.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_drawerdown_ic_h.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_drawerdown_ic_n.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_drawerdown_ic_s.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_reset_btn_h.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_slider_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
@@ -304,6 +313,9 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_r.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_ic_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_colorpick_ic_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_colorpick_ic_s.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_colorpick_mask.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_d_l.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_d_m.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_d_r.png" />
@@ -317,6 +329,9 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_m.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_r icn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_control header_text box_type_n_r.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_drawerdown_ic_h.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_drawerdown_ic_n.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_drawerdown_ic_s.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_reset_btn_h.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_slider_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
@@ -430,6 +445,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\NamingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\TriggerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -438,11 +457,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\DeviceLayerItem.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="UserControls\ColorPointBt.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogs\NamedDialog.xaml">
+    <Page Include="UserControls\DeviceLayerItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

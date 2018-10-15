@@ -2,11 +2,9 @@
 using AuraEditor.Dialogs;
 using AuraEditor.UserControls;
 using System;
-using System.Diagnostics;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,12 +13,16 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.ControlHelper;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
+        public List<ColorPoint> ColorPoints = new List<ColorPoint>();
+
         internal FlyoutBase m_flyoutBase;
 
         private TimelineEffect _selectedEffectLine;
@@ -74,6 +76,7 @@ namespace AuraEditor
                 case "Static":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -83,6 +86,7 @@ namespace AuraEditor
                 case "Breath":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -92,6 +96,7 @@ namespace AuraEditor
                 case "ColorCycle":
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -101,24 +106,27 @@ namespace AuraEditor
                 case "Rainbow":
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Visible;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Strobing":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Comet":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -128,6 +136,7 @@ namespace AuraEditor
                 case "Star":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -137,6 +146,7 @@ namespace AuraEditor
                 case "Raidus":
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -146,6 +156,7 @@ namespace AuraEditor
                 case "Reactive":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -155,6 +166,7 @@ namespace AuraEditor
                 case "Laser":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -164,6 +176,7 @@ namespace AuraEditor
                 case "Ripple":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
+                    PatternGroup.Visibility = Visibility.Visible;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -173,6 +186,7 @@ namespace AuraEditor
                 case "Music":
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -182,6 +196,7 @@ namespace AuraEditor
                 case "Smart":
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -191,6 +206,7 @@ namespace AuraEditor
                 default:
                     ColorGroup.Visibility = Visibility.Collapsed;
                     RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
                     DirectionGroup.Visibility = Visibility.Collapsed;
@@ -471,6 +487,120 @@ namespace AuraEditor
             ui.High = 60;
             ui.Low = 30;
             UpdateUIEffectContents(ui);
+        }
+
+        private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
+        {
+            MenuFlyoutItem mf = sender as MenuFlyoutItem;
+            PatternCanvas.Children.Clear();
+            ColorPoints.Clear();
+
+            foreach (var item in DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1])
+            {
+                ColorPoints.Add(new ColorPoint(item));
+            }
+            ShowColorPointUI(ColorPoints);
+            MultiPointRectangle.Fill = PatternButton.Background = mf.Foreground;
+        }
+
+        private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
+        {
+            PatternCanvas.Children.Clear();
+            ColorPoints.Clear();
+
+            foreach (var item in CustomizeColorPoints)
+            {
+                ColorPoints.Add(new ColorPoint(item));
+            }
+            ShowColorPointUI(ColorPoints);
+            MultiPointRectangle.Fill = PatternButton.Background = CustomizeRainbow.Foreground;
+        }
+
+        public void ShowColorPointUI(List<ColorPoint> cl)
+        {
+            for (int i = 0; i < cl.Count; i++)
+            {
+                PatternCanvas.Children.Add(cl[i].UI);
+            }
+        }
+
+        private void PlusItemBt(object sender, RoutedEventArgs e)
+        {
+            ColorPoint newColorPointBt = new ColorPoint();
+            AddColorPoint(newColorPointBt);
+            ReDrawMultiPointRectangle();
+        }
+
+        public void AddColorPoint(ColorPoint colorPoint)
+        {
+            int curIndex = 0;
+            if (ColorPoints.Count < 7)
+            {
+                foreach (var item in ColorPoints)
+                {
+                    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
+
+                    if (items[0].IsChecked == true)
+                    {
+                        curIndex = ColorPoints.IndexOf(item);
+                        if ((curIndex + 1) == ColorPoints.Count)
+                        {
+                            if ((ColorPoints[curIndex].UI.X - ColorPoints[curIndex - 1].UI.X) < 25)
+                            {
+                                ColorPoints.Add(colorPoint);
+                                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
+                                return;
+                            }
+                            else
+                            {
+                                colorPoint.UI.X = (ColorPoints[curIndex - 1].UI.X + ColorPoints[curIndex].UI.X) / 2;
+                                ColorPoints.Insert(curIndex, colorPoint);
+                            }
+                        }
+                        else
+                        {
+                            if ((ColorPoints[curIndex + 1].UI.X - ColorPoints[curIndex].UI.X) < 25)
+                            {
+                                ColorPoints.Add(colorPoint);
+                                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
+                                return;
+                            }
+                            else
+                            {
+                                colorPoint.UI.X = (ColorPoints[curIndex].UI.X + ColorPoints[curIndex + 1].UI.X) / 2;
+                                ColorPoints.Insert(curIndex + 1, colorPoint);
+                            }
+                        }
+                        colorPoint.Color = item.Color;
+                        PatternCanvas.Children.Add(colorPoint.UI);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void MinusItemBt(object sender, RoutedEventArgs e)
+        {
+            RemoveColorPoint();
+            ReDrawMultiPointRectangle();
+        }
+
+        public void RemoveColorPoint()
+        {
+            if (ColorPoints.Count > 2)
+            {
+                foreach (var item in ColorPoints)
+                {
+                    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
+
+                    if (items[0].IsChecked == true)
+                    {
+                        ColorPoints.Remove(item);
+                        PatternCanvas.Children.Remove(item.UI);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

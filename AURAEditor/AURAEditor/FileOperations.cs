@@ -3,239 +3,263 @@ using System.Collections.Generic;
 using System.IO;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using MoonSharp.Interpreter;
-using Windows.Storage.Pickers;
 using Windows.Storage;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Collections.ObjectModel;
 using AuraEditor.Dialogs;
 using Windows.Foundation;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.StorageHelper;
-using static AuraEditor.Common.AuraEditorColorHelper;
+using static AuraEditor.Common.Definitions;
 using Windows.UI;
+using Windows.UI.Core.Preview;
+using Windows.ApplicationModel.Core;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public class RecentList
+        private bool needSave;
+        private StorageFile m_UserFileListXml;
+        private StorageFolder m_UserFileFolder;
+        private List<string> GetUserFilenames()
         {
-            public ObservableCollection<string> List;
-            public int MaxCount;
-            private StorageFile m_XmlSF;
-
-            public RecentList()
+            List<string> filenames = new List<string>();
+            foreach (var item in FileListMenuFlyout.Items)
             {
-                List = new ObservableCollection<string>();
-                MaxCount = 5;
+                MenuFlyoutItem mfi = item as MenuFlyoutItem;
+                filenames.Add(mfi.Text);
             }
-            public async Task SetXmlAndLoadRecentFiles(string path)
-            {
-                try
-                {
-                    m_XmlSF = await StorageFile.GetFileFromPathAsync(path);
-                    List = new ObservableCollection<string>(await GetRecentFilePaths(m_XmlSF));
-                }
-                catch
-                {
-                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-                    folder = await EnterOrCreateFolder(folder, "AURA Creator");
-                    folder = await EnterOrCreateFolder(folder, "script");
-                    m_XmlSF = await folder.CreateFileAsync("recentfiles.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-
-                    XmlDocument doc = new XmlDocument();
-                    XmlElement recentfilesElement = doc.CreateElement(string.Empty, "recentfiles", string.Empty);
-                    doc.AppendChild(recentfilesElement);
-
-                    await Windows.Storage.FileIO.WriteTextAsync(m_XmlSF, doc.OuterXml);
-                }
-            }
-            private async Task<List<string>> GetRecentFilePaths(StorageFile recentFileSF)
-            {
-                List<string> list = new List<string>();
-                XmlDocument xml = new XmlDocument();
-                xml.Load(await recentFileSF.OpenStreamForReadAsync());
-                XmlNode recentfilesNode = xml.SelectSingleNode("recentfiles");
-                XmlNodeList fileNodes = recentfilesNode.SelectNodes("file");
-
-                for (int i = 0; i < fileNodes.Count; i++)
-                {
-                    XmlElement element = (XmlElement)fileNodes[i];
-                    list.Add(element.GetAttribute("path"));
-                }
-
-                return list;
-            }
-
-            public void InsertHead(string item)
-            {
-                for (int i = 0; i < List.Count; i++)
-                {
-                    if (List[i] == item)
-                    {
-                        List.RemoveAt(i);
-                        break;
-                    }
-                }
-
-                List.Insert(0, item);
-
-                if (List.Count > MaxCount)
-                {
-                    List.RemoveAt(MaxCount);
-                }
-                UpdateXml();
-            }
-            public void InsertTail(string item)
-            {
-                if (List.Count == MaxCount)
-                {
-                    return;
-                }
-
-                List.Add(item);
-                UpdateXml();
-            }
-            private async void UpdateXml()
-            {
-                XmlDocument doc = new XmlDocument();
-                XmlElement recentfilesElement = doc.CreateElement(string.Empty, "recentfiles", string.Empty);
-                doc.AppendChild(recentfilesElement);
-
-                foreach (var filepath in List)
-                {
-                    XmlElement fileElement = doc.CreateElement(string.Empty, "file", string.Empty);
-                    fileElement.SetAttribute("path", filepath);
-                    recentfilesElement.AppendChild(fileElement);
-                }
-
-                await SaveFile(m_XmlSF, doc.OuterXml);
-            }
+            return filenames;
         }
-        private RecentList recentFileList;
-        private string _currentScriptPath;
-        public string CurrentScriptPath
+        public string CurrentUserFilename
         {
             get
             {
-                return _currentScriptPath;
+                return FileListButton.Content as string;
             }
             set
             {
-                if (value != _currentScriptPath)
+                if (value != FileListButton.Content as string)
                 {
-                    _currentScriptPath = value;
+                    FileListButton.Content = value;
 
-                    if (value == null)
+                    if (value == "")
                     {
-                        FileListComboBox.SelectedIndex = -1;
+                        return;
                     }
-                    else
+
+                    foreach (var filename in GetUserFilenames())
                     {
-                        FileListComboBox.SelectedIndex = -1;
-                        recentFileList.InsertHead(value);
-                        FileListComboBox.SelectedIndex = 0;
+                        if (filename == value)
+                        {
+                            return;
+                        }
                     }
+
+                    MenuFlyoutItem new_mfi = new MenuFlyoutItem();
+                    new_mfi.Text = value;
+                    new_mfi.Click += FileItem_Click;
+                    FileListMenuFlyout.Items.Add(new_mfi);
+                    UpdateListXml();
                 }
             }
+        }
+        private async void UpdateListXml()
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlElement userfilesElement = doc.CreateElement(string.Empty, "userfiles", string.Empty);
+            doc.AppendChild(userfilesElement);
+
+            foreach (var item in FileListMenuFlyout.Items)
+            {
+                MenuFlyoutItem mfi = item as MenuFlyoutItem;
+                string filename = mfi.Text;
+
+                XmlElement fileElement = doc.CreateElement(string.Empty, "file", string.Empty);
+                fileElement.SetAttribute("name", filename);
+                userfilesElement.AppendChild(fileElement);
+            }
+
+            await SaveFile(m_UserFileListXml, doc.OuterXml);
         }
 
         private async Task IntializeFileOperations()
         {
-            recentFileList = new RecentList();
-            await recentFileList.SetXmlAndLoadRecentFiles("C:\\ProgramData\\ASUS\\AURA Creator\\script\\recentfiles.xml");
+            needSave = true;
+            await GetOrCreateListXml();
+            await GetOrCreateFolderOfFiles();
+            await TestOrCreateScriptFolder();
         }
-
-        private async void FileListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async Task GetOrCreateListXml()
         {
-            int index = FileListComboBox.SelectedIndex;
-
-            // Remove selected item will cause selected index changing to -1
-            if (index == -1)
-                return;
-
-            if (index == 0)
+            try
             {
-                if (CurrentScriptPath != null)
-                    return;
+                m_UserFileListXml = await StorageFile.GetFileFromPathAsync(UserFileListXmlPath);
+            }
+            catch
+            {
+                // XML doesn't exist
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+                folder = await EnterOrCreateFolder(folder, "AURA Creator");
+                m_UserFileListXml = await folder.CreateFileAsync("UserFiles.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
+                XmlDocument doc = new XmlDocument();
+                XmlElement recentfilesElement = doc.CreateElement(string.Empty, "userfiles", string.Empty);
+                doc.AppendChild(recentfilesElement);
+
+                await Windows.Storage.FileIO.WriteTextAsync(m_UserFileListXml, doc.OuterXml);
+            }
+        }
+        private async Task GetOrCreateFolderOfFiles()
+        {
+            try
+            {
+                m_UserFileFolder = await StorageFolder.GetFolderFromPathAsync(UserFilesDefaultFolderPath);
+                List<string> filenameList = new List<string>(await GetAllFilenames(m_UserFileListXml));
+
+                foreach (var filename in filenameList)
+                {
+                    MenuFlyoutItem mfi = new MenuFlyoutItem();
+                    mfi.Text = filename;
+                    mfi.Click += FileItem_Click;
+                    FileListMenuFlyout.Items.Add(mfi);
+                }
+            }
+            catch
+            {
+                // Folder doesn't exist
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+                folder = await EnterOrCreateFolder(folder, "AURA Creator");
+                folder = await EnterOrCreateFolder(folder, "UserFiles");
+                m_UserFileFolder = folder;
+            }
+        }
+        private async Task TestOrCreateScriptFolder()
+        {
+            try
+            {
+                await StorageFolder.GetFolderFromPathAsync(DefaultScriptFolder);
+            }
+            catch
+            {
+                // Folder doesn't exist
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
+                folder = await EnterOrCreateFolder(folder, "AURA Creator");
+                folder = await EnterOrCreateFolder(folder, "script");
+            }
+        }
+        private async Task<List<string>> GetAllFilenames(StorageFile userFileSF)
+        {
+            List<string> list = new List<string>();
+            XmlDocument xml = new XmlDocument();
+            xml.Load(await userFileSF.OpenStreamForReadAsync());
+            XmlNode userfilesNode = xml.SelectSingleNode("userfiles");
+            XmlNodeList fileNodes = userfilesNode.SelectNodes("file");
+
+            for (int i = 0; i < fileNodes.Count; i++)
+            {
+                XmlElement element = (XmlElement)fileNodes[i];
+                list.Add(element.GetAttribute("name"));
             }
 
-            ContentDialog dialog = new YesNoCancelDialog();
-            ContentDialogResult result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.None)
+            return list;
+        }
+        private async Task<bool> SaveCurrentUserFile()
+        {
+            if (CurrentUserFilename != "")
             {
-                return;
+                await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
             }
             else
             {
-                if (result == ContentDialogResult.Primary)
+                NamingDialog dialog = new NamingDialog(GetUserFilenames());
+                ContentDialogResult namingResult = await dialog.ShowAsync();
+
+                if (dialog.Result == true)
                 {
-                    if (CurrentScriptPath != null)
-                    {
-                        await SaveFile(CurrentScriptPath, GetUserData());
-                    }
-                    else
-                    {
-                        StorageFile saveFile = await ShowFileSavePickerAsync();
-
-                        if (saveFile != null)
-                        {
-                            await SaveFile(saveFile, GetUserData());
-                            CurrentScriptPath = saveFile.Path;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
+                    CurrentUserFilename = dialog.TheName;
+                    await m_UserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
+                    await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
                 }
+                else
+                {
+                    return false;
+                }
+            }
 
-                // load file
-                string path = FileListComboBox.Items[index] as string;
-                CurrentScriptPath = path;
-                Reset();
-                await LoadContent(await LoadFile(path));
-                SpaceManager.RefreshSpaceGrid();
+            return true;
+        }
+        private async Task LoadUserFile(string filename)
+        {
+            string filepath = UserFilesDefaultFolderPath + filename + ".xml";
+            Reset();
+            await LoadContent(await LoadFile(filepath));
+            SpaceManager.RefreshSpaceGrid();
+        }
+        private async void FileItem_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as MenuFlyoutItem;
+            string selectedName = item.Text;
+
+            if (selectedName == CurrentUserFilename)
+                return;
+
+            ContentDialogResult result = ContentDialogResult.Secondary;
+
+            if (needSave)
+            {
+                YesNoCancelDialog dialog = new YesNoCancelDialog
+                {
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result == ContentDialogResult.Primary)
+            {
+                bool successful = await SaveCurrentUserFile();
+                if (successful)
+                {
+                    await LoadUserFile(selectedName);
+                    CurrentUserFilename = selectedName;
+                }
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+                await LoadUserFile(selectedName);
+                CurrentUserFilename = selectedName;
             }
         }
         private async void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new YesNoCancelDialog();
-            ContentDialogResult result = await dialog.ShowAsync();
+            ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (result == ContentDialogResult.None)
+            if (needSave)
             {
-                return;
-            }
-            else
-            {
-                if (result == ContentDialogResult.Primary)
+                YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    if (CurrentScriptPath != null)
-                    {
-                        await SaveFile(CurrentScriptPath, GetUserData());
-                    }
-                    else
-                    {
-                        StorageFile saveFile = await ShowFileSavePickerAsync();
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
 
-                        if (saveFile != null)
-                        {
-                            await SaveFile(saveFile, GetUserData());
-                            CurrentScriptPath = saveFile.Path;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
+            if (result == ContentDialogResult.Primary)
+            {
+                bool successful = await SaveCurrentUserFile();
+                if (successful)
+                {
+                    CurrentUserFilename = "";
+                    Reset();
+                    SpaceManager.FillWithIngroupDevices();
                 }
-
-                CurrentScriptPath = null;
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+                CurrentUserFilename = "";
                 Reset();
                 SpaceManager.FillWithIngroupDevices();
             }
@@ -249,50 +273,59 @@ namespace AuraEditor
                 return;
             }
 
-            ContentDialog dialog = new YesNoCancelDialog();
-            ContentDialogResult result = await dialog.ShowAsync();
+            ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (result == ContentDialogResult.None)
+            if (needSave)
             {
-                return;
-            }
-            else
-            {
-                if (result == ContentDialogResult.Primary)
+                YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    if (CurrentScriptPath != null)
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result == ContentDialogResult.Primary)
+            {
+                if (CurrentUserFilename != "")
+                {
+                    await SaveFile(CurrentUserFilename, GetUserData());
+                }
+                else
+                {
+                    StorageFile saveFile = await ShowFileSavePickerAsync();
+
+                    if (saveFile != null)
                     {
-                        await SaveFile(CurrentScriptPath, GetUserData());
+                        await SaveFile(saveFile, GetUserData());
+                        CurrentUserFilename = saveFile.Path;
                     }
                     else
                     {
-                        StorageFile saveFile = await ShowFileSavePickerAsync();
-
-                        if (saveFile != null)
-                        {
-                            await SaveFile(saveFile, GetUserData());
-                            CurrentScriptPath = saveFile.Path;
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
 
                 // load file
-                CurrentScriptPath = inputFile.Path;
+                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                CurrentUserFilename = copyfile.Name.Replace(".xml", "");
                 Reset();
-                await LoadContent(await LoadFile(inputFile));
+                await LoadContent(await LoadFile(copyfile));
+                SpaceManager.RefreshSpaceGrid();
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+                // load file
+                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                CurrentUserFilename = copyfile.Name.Replace(".xml","");
+                Reset();
+                await LoadContent(await LoadFile(copyfile));
                 SpaceManager.RefreshSpaceGrid();
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentScriptPath == null)
-                SaveAsButton_Click(sender, e);
-            else
-                await SaveFile(CurrentScriptPath, GetUserData());
+            await SaveCurrentUserFile();
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -301,13 +334,91 @@ namespace AuraEditor
             if (saveFile != null)
             {
                 await SaveFile(saveFile, GetUserData());
-                CurrentScriptPath = saveFile.Path;
+            }
+        }
+        private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
+        {
+            e.Handled = true;
+            ContentDialogResult result = ContentDialogResult.Secondary;
+
+            if (needSave)
+            {
+                YesNoCancelDialog dialog = new YesNoCancelDialog
+                {
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result == ContentDialogResult.Primary)
+            {
+                await SaveCurrentUserFile();
+                CoreApplication.Exit();
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+                CoreApplication.Exit();
             }
         }
         private void MoreButton_Click(object sender, RoutedEventArgs e)
         {
         }
+        private async void RenameItem_Click(object sender, RoutedEventArgs e)
+        {
+            NamingDialog dialog = new NamingDialog(CurrentUserFilename, GetUserFilenames());
+            ContentDialogResult namingResult = await dialog.ShowAsync();
 
+            if (CurrentUserFilename == dialog.TheName)
+                return;
+
+            StorageFile file = await m_UserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await file.RenameAsync(dialog.TheName + ".xml");
+
+            foreach (var item in FileListMenuFlyout.Items)
+            {
+                MenuFlyoutItem mfi = item as MenuFlyoutItem;
+                if (mfi.Text == CurrentUserFilename)
+                {
+                    mfi.Text = dialog.TheName;
+                    CurrentUserFilename = mfi.Text;
+                };
+            }
+
+            UpdateListXml();
+        }
+        private async void DeleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentUserFilename == "")
+                return;
+
+            YesNoCancelDialog dialog = new YesNoCancelDialog
+            {
+                Title = "Save File",
+                DialogContent = "Do you want to save the changes?"
+            };
+            ContentDialogResult result = await dialog.ShowAsync();
+            if (result != ContentDialogResult.Primary)
+                return;
+
+            StorageFile file = await m_UserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
+            foreach (var item in FileListMenuFlyout.Items)
+            {
+                MenuFlyoutItem mfi = item as MenuFlyoutItem;
+                if (mfi.Text == CurrentUserFilename)
+                {
+                    FileListMenuFlyout.Items.Remove(mfi);
+                    break;
+                };
+            }
+
+            CurrentUserFilename = "";
+            Reset();
+            SpaceManager.FillWithIngroupDevices();
+            UpdateListXml();
+        }
         public string GetUserData()
         {
             XmlNode root = CreateXmlNodeOfFile("root");

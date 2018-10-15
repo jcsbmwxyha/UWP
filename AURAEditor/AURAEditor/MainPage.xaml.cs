@@ -14,11 +14,8 @@ using System.ComponentModel;
 using AuraEditor.UserControls;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.AuraSpaceManager;
 using Windows.UI.Core.Preview;
-using AuraEditor.Dialogs;
-using Windows.ApplicationModel.Core;
 
 namespace AuraEditor
 {
@@ -66,43 +63,6 @@ namespace AuraEditor
             bgwSocketServer.DoWork += SocketServer_DoWork;
             bgwSocketServer.RunWorkerAsync();
         }
-        private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
-        {
-            e.Handled = true;
-
-            ContentDialog dialog = new YesNoCancelDialog();
-            ContentDialogResult result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.None)
-            {
-            }
-            else if (result == ContentDialogResult.Secondary)
-            {
-                CoreApplication.Exit();
-            }
-            if (result == ContentDialogResult.Primary)
-            {
-                if (CurrentScriptPath != null)
-                {
-                    await SaveFile(CurrentScriptPath, GetUserData());
-                }
-                else
-                {
-                    StorageFile saveFile = await ShowFileSavePickerAsync();
-
-                    if (saveFile != null)
-                    {
-                        await SaveFile(saveFile, GetUserData());
-                        CurrentScriptPath = saveFile.Path;
-                        CoreApplication.Exit();
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
-        }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await IntializeFileOperations();
@@ -110,11 +70,12 @@ namespace AuraEditor
             LayerManager = new AuraLayerManager();
             InitializeDragEffectIcon();
             InitializePlayerStructure();
+            SetDefaultPattern();
 
             AngleImgCenter = new Point(40, 40);
             _preAngle = 0;
             AngleTextBox.Text = "0";
-
+            
             Bindings.Update();
         }
         private async void InitializeDragEffectIcon()
@@ -241,6 +202,7 @@ namespace AuraEditor
                         SelectedEffectLine = null;
 
                     LayerManager.RemoveDeviceLayer(layer);
+                    SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
                 }
             }
         }

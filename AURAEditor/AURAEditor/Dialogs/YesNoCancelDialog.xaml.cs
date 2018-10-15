@@ -19,6 +19,20 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class YesNoCancelDialog : ContentDialog
     {
+        public string DialogTitle
+        {
+            set
+            {
+                this.Title = value;
+            }
+        }
+        public string DialogContent {
+            set
+            {
+                ContentTextBlock.Text = value;
+            }
+        }
+
         public YesNoCancelDialog()
         {
             this.InitializeComponent();

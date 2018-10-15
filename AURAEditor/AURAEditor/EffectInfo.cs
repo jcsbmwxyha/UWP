@@ -65,26 +65,8 @@ namespace AuraEditor
             XmlNode angleNode = CreateXmlNodeOfFile("angle");
             angleNode.InnerText = "0";
             rotateNode.AppendChild(angleNode);
-
-            string methodString = "";
+            
             XmlNode methodNode = GetMethodXmlNode(Type);
-            CreateXmlNodeOfFile("method");
-            if (GetEffectName(Type) == "Static") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Breath") { methodString = "point"; }
-            else if (GetEffectName(Type) == "ColorCycle") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Rainbow") { methodString = "OrthogonaProject"; }
-            else if (GetEffectName(Type) == "Strobing") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Comet") { methodString = "OrthogonaProject"; }
-            else if (GetEffectName(Type) == "Reactive") { methodString = "limitRadius"; }
-            else if (GetEffectName(Type) == "Laser") { methodString = "distance"; }
-            else if (GetEffectName(Type) == "Radius") { methodString = "limitRadius"; }
-            else if (GetEffectName(Type) == "Ripple") { methodString = "radius"; }
-            else if (GetEffectName(Type) == "Star") { methodString = "randomRadius"; }
-            else { methodString = "point"; }
-            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            attribute.Value = methodString;
-            methodNode.Attributes.Append(attribute);
-
             viewportTransformNode.AppendChild(rotateNode);
             viewportTransformNode.AppendChild(methodNode);
 

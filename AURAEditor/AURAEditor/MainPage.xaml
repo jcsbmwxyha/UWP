@@ -1210,6 +1210,115 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="MenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
+                <Setter Property="RequestedTheme" Value="Default"/>
+                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeHighBrush}" />
+                <Setter Property="BorderThickness" Value="{ThemeResource FlyoutBorderThemeThickness}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutPresenterThemePadding}" />
+                <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+                <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
+                <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+                <Setter Property="MinWidth" Value="{ThemeResource FlyoutThemeMinWidth}" />
+                <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
+                <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuFlyoutPresenter">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ScrollViewer x:Name="MenuFlyoutPresenterScrollViewer"
+                                              Padding="{TemplateBinding Padding}"
+                                              Margin="{TemplateBinding BorderThickness}"
+                                              HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                              IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                                              IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                                              ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                                              AutomationProperties.AccessibilityView="Raw">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                                <Border x:Name="MenuFlyoutPresenterBorder"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="MenuFlyoutItem" x:Key="MenuFlyoutItemStyle">
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuFlyoutItem">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
+                                                <Setter Target="ColorRectangle.Stroke" Value="Blue"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
+                                                <Setter Target="ColorRectangle.Stroke" Value="DimGray"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Rectangle x:Name="ColorRectangle" StrokeThickness="1" Stroke="White"  Width="200" Height="16" Fill="{TemplateBinding Foreground}"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button" x:Key="PatternButtonStyle">
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="PatternBtnImg.Source" Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_h.png"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="PatternBtnImg.Source"  Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_s.png"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <RelativePanel>
+                                    <Rectangle Name="R" Width="200" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{TemplateBinding Background}"/>
+                                    <Image Name="PatternBtnImg" Source="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_n.png" RelativePanel.RightOf="R"/>
+                                </RelativePanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -1249,34 +1358,35 @@
                 <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}"
                         x:FieldModifier="Public" Width="160" Height="40" FontSize="20" Foreground="White"
                         Content="Set Layer" Click="SetLayerButton_Click"/>
-                <ComboBox Name="FileListComboBox" Width="450" VerticalAlignment="Center" Margin="10,0,0,0"
-                          ItemsSource="{x:Bind recentFileList.List}"
-                          SelectionChanged="FileListComboBox_SelectionChanged"/>
-                <Button x:Name="FileListButton" Content="Aura File 1" Foreground="White"
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Name="SaveButton" 
+                        Style="{StaticResource SaveButtonStyle}"
+                        Margin="1,0,0,0"
+                        Click="SaveButton_Click"/>
+                <Button x:Name="FileListButton" Content="" Foreground="White"
                     Width="200" Height="50" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom">
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
-            </StackPanel>
-        </Grid>
-        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Name="NewButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE160;"
-                        Margin="1,0,0,0" Click="NewButton_Click" Foreground="White"/>
-                <Button Name="SaveButton" 
-                        Style="{StaticResource SaveButtonStyle}"
-                        Margin="1,0,0,0"
-                        Click="SaveButton_Click"/>
-                <Button Name="SaveAsButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE28F;"
-                        Margin="1,0,0,0" Click="SaveAsButton_Click" Foreground="White"/>
-                <Button Name="LoadFileButton" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xED43;"
-                        Margin="-10,0,0,0" Click="LoadFileButton_Click" Foreground="White"/>
                 <Button Name="MoreButton"
                         Style="{StaticResource MoreButtonStyle}"
-                            Click="MoreButton_Click"
-                        Margin="0,0,0,0"/>
+                        Click="MoreButton_Click"
+                        Margin="0,0,0,0">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="Bottom">
+                            <MenuFlyoutItem Text="Rename" Click="RenameItem_Click"/>
+                            <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click"/>
+                            <MenuFlyoutItem Text="Create New" Click="NewButton_Click"/>
+                            <MenuFlyoutItem Text="Import" Click="LoadFileButton_Click"/>
+                            <MenuFlyoutItem Text="Export" Click="SaveAsButton_Click"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
             </StackPanel>
         </Grid>
         <Button Width="60" Height="15" Style="{StaticResource SidePanelButtonStyle}"
@@ -1372,6 +1482,32 @@
                             <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click" Visibility="Collapsed">
                                 <TextBlock Text="Random" Foreground="White"/>
                             </CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="Collapsed">
+                        <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+                        <Button x:Name="PatternButton" Height="16" Margin="20,20,0,0" Style="{StaticResource PatternButtonStyle}">
+                            <Button.Flyout>
+                                <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource MenuFlyoutPresenterStyle}" Placement="Bottom">
+                                    <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutSeparator Margin="0,5,0,5" Background="Black"/>
+                                    <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource MenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+                        <StackPanel Orientation="Vertical">
+                            <Canvas x:Name="PatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                                <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16"/>
+                                <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
 
@@ -1573,7 +1709,7 @@
             <Button Name="PlusButton" Style="{StaticResource PlusButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Click="PlusButton_Click" Margin="0,0,5,0"/>
         </RelativePanel>
-        
+
         <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
     </Grid>
 </Page>
