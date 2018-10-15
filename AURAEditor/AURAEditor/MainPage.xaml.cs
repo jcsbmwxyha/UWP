@@ -118,6 +118,7 @@ namespace AuraEditor
 
             LayerManager.AddDeviceLayer(layer);
             SpaceManager.UnselectAllZones();
+            NeedSave = true;
         }
         private void DragDevImgToggleButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -203,6 +204,7 @@ namespace AuraEditor
 
                     LayerManager.RemoveDeviceLayer(layer);
                     SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+                    NeedSave = true;
                 }
             }
         }

@@ -20,7 +20,7 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        private bool needSave;
+        public bool NeedSave;
         private StorageFile m_UserFileListXml;
         private StorageFolder m_UserFileFolder;
         private List<string> GetUserFilenames()
@@ -87,7 +87,7 @@ namespace AuraEditor
 
         private async Task IntializeFileOperations()
         {
-            needSave = true;
+            NeedSave = false;
             await GetOrCreateListXml();
             await GetOrCreateFolderOfFiles();
             await TestOrCreateScriptFolder();
@@ -197,6 +197,7 @@ namespace AuraEditor
             Reset();
             await LoadContent(await LoadFile(filepath));
             SpaceManager.RefreshSpaceGrid();
+            NeedSave = false;
         }
         private async void FileItem_Click(object sender, RoutedEventArgs e)
         {
@@ -208,7 +209,7 @@ namespace AuraEditor
 
             ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (needSave)
+            if (NeedSave)
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
@@ -237,7 +238,7 @@ namespace AuraEditor
         {
             ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (needSave)
+            if (NeedSave)
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
@@ -255,6 +256,7 @@ namespace AuraEditor
                     CurrentUserFilename = "";
                     Reset();
                     SpaceManager.FillWithIngroupDevices();
+                    NeedSave = false;
                 }
             }
             else if (result == ContentDialogResult.Secondary)
@@ -262,6 +264,7 @@ namespace AuraEditor
                 CurrentUserFilename = "";
                 Reset();
                 SpaceManager.FillWithIngroupDevices();
+                NeedSave = false;
             }
         }
         private async void LoadFileButton_Click(object sender, RoutedEventArgs e)
@@ -275,7 +278,7 @@ namespace AuraEditor
 
             ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (needSave)
+            if (NeedSave)
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
@@ -312,20 +315,20 @@ namespace AuraEditor
                 Reset();
                 await LoadContent(await LoadFile(copyfile));
                 SpaceManager.RefreshSpaceGrid();
+                NeedSave = false;
             }
             else if (result == ContentDialogResult.Secondary)
             {
                 // load file
                 StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
                 CurrentUserFilename = copyfile.Name.Replace(".xml","");
-                Reset();
-                await LoadContent(await LoadFile(copyfile));
-                SpaceManager.RefreshSpaceGrid();
+                await LoadUserFile(CurrentUserFilename);
             }
         }
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             await SaveCurrentUserFile();
+            NeedSave = false;
         }
         private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -341,7 +344,7 @@ namespace AuraEditor
             e.Handled = true;
             ContentDialogResult result = ContentDialogResult.Secondary;
 
-            if (needSave)
+            if (NeedSave)
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
@@ -394,8 +397,8 @@ namespace AuraEditor
 
             YesNoCancelDialog dialog = new YesNoCancelDialog
             {
-                Title = "Save File",
-                DialogContent = "Do you want to save the changes?"
+                Title = "Delete File",
+                DialogContent = "Delete this file ?"
             };
             ContentDialogResult result = await dialog.ShowAsync();
             if (result != ContentDialogResult.Primary)

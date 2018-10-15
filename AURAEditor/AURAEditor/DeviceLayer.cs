@@ -255,6 +255,7 @@ namespace AuraEditor
 
                 TimelineEffect effect = new TimelineEffect(this, type);
                 AddTimelineEffect(effect);
+                MainPage.Self.NeedSave = true;
             }
         }
 

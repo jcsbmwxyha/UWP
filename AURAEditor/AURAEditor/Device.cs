@@ -150,6 +150,8 @@ namespace AuraEditor
             {
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
+
+            MainPage.Self.NeedSave = true;
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {

@@ -23,8 +23,6 @@ namespace AuraEditor
     {
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
 
-        internal FlyoutBase m_flyoutBase;
-
         private TimelineEffect _selectedEffectLine;
         public TimelineEffect SelectedEffectLine
         {
@@ -44,6 +42,7 @@ namespace AuraEditor
                 }
                 else
                 {
+                    NeedSave = true;
                     if (_selectedEffectLine != null)
                         _selectedEffectLine.UI.IsSelected = false;
 
@@ -324,7 +323,6 @@ namespace AuraEditor
             AngleTextBox.Text = hue.ToString("F0");
             SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
-
         }
         private void AngleBgImg_PointerReleased(object sender, PointerRoutedEventArgs e)
         {

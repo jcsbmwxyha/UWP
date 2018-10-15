@@ -217,6 +217,7 @@ namespace AuraEditor.UserControls
 
             MyEffect.Layer.InsertEffectLine(MyEffect);
             mouseState = CursorState.None;
+            MainPage.Self.NeedSave = true;
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {

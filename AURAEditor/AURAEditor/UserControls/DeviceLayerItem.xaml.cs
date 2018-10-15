@@ -74,6 +74,8 @@ namespace AuraEditor.UserControls
                 VisualStateManager.GoToState(DeviceLayerRadioButton, "NoTrigger", false);
                 VisualStateManager.GoToState(this, "NoTrigger", false);
             }
+
+            MainPage.Self.NeedSave = true;
         }
         private void DeviceLayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
