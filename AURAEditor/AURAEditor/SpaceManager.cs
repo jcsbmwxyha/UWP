@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Input;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor
 {
@@ -112,6 +113,7 @@ namespace AuraEditor
         private int _mouseDirection;
         public float SpaceZoomFactor { get; private set; }
         public List<Device> GlobalDevices;
+        public List<Device> TempDevices;
 
         public AuraSpaceManager()
         {
@@ -127,6 +129,7 @@ namespace AuraEditor
             SpaceZoomFactor = 1;
 
             GlobalDevices = new List<Device>();
+            TempDevices = new List<Device>();
             FillWithIngroupDevices();
             SetSpaceStatus(SpaceStatus.Normal);
         }
@@ -265,7 +268,7 @@ namespace AuraEditor
                 }
             }
         }
-        public void MoveDevicePosition(Device device, double offsetX, double offsetY)
+        public void MoveDeviceMousePosition(Device device, double offsetX, double offsetY)
         {
             m_MouseEventCtrl.MoveGroupRects(device.Type, offsetX, offsetY);
         }
@@ -296,6 +299,9 @@ namespace AuraEditor
                 Device d = GetGlobalDeviceByType(pair.Key);
                 int[] indexes = pair.Value;
 
+                if (d == null)
+                    continue;
+
                 foreach (var zone in d.LightZones)
                 {
                     Shape shape = zone.Frame;
@@ -312,6 +318,31 @@ namespace AuraEditor
         {
             AuraLayerManager.Self.UnselectAllLayers();
             UnselectAllZones();
+        }
+        public void DeleteOverlappingTempDevice(Device testDev)
+        {
+            List<Device> _tempDevices = new List<Device>(TempDevices);
+            foreach (var d in _tempDevices)
+            {
+                if (testDev.Equals(d))
+                    continue;
+
+                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.Width, d.GridPosition.X, d.Width) &&
+                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.Height, d.GridPosition.Y, d.Height))
+                {
+                    TempDevices.Remove(d);
+                    AuraLayerManager.Self.ClearDeviceData(d.Type);
+                }
+            }
+        }
+        public void ClearTempDeviceData()
+        {
+            List<Device> _tempDevices = new List<Device>(TempDevices);
+            foreach (var d in _tempDevices)
+            {
+                TempDevices.Remove(d);
+                AuraLayerManager.Self.ClearDeviceData(d.Type);
+            }
         }
         public bool IsOverlapping(Device testDev)
         {
@@ -363,39 +394,34 @@ namespace AuraEditor
         #region Ingroup devices
         public async void FillWithIngroupDevices()
         {
-            List<string> namesOfIngroupDevices = await GetIngroupDevices();
+            List<XmlNode> namesOfIngroupDevices = await GetIngroupDevices();
 
             DeviceContent deviceContent;
             Device device;
 
-            for (int i = 0; i < namesOfIngroupDevices.Count; i++)
+            foreach (var node in namesOfIngroupDevices)
             {
-                deviceContent = await DeviceContent.GetDeviceContent(namesOfIngroupDevices[i]);
+                deviceContent = await DeviceContent.GetDeviceContent(node);
 
                 if (deviceContent == null)
                     continue;
 
-                if (i == 0) // local
-                    device = deviceContent.ToDevice();
-                else // other
-                {
-                    Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
-                    Point p = GetFreeRoomPositionForRect(r);
-                    device = deviceContent.ToDevice(p);
-                }
+                Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
+                Point p = GetFreeRoomPositionForRect(r);
+                device = deviceContent.ToDevice(p);
 
                 GlobalDevices.Add(device);
             }
 
             RefreshSpaceGrid();
         }
-        private async Task<List<string>> GetIngroupDevices()
+        private async Task<List<XmlNode>> GetIngroupDevices()
         {
             XmlDocument xmlDoc = await GetIngroupDevicesXmlDoc();
 
-            List<string> results = new List<string>();
-            string localDevice = GetLocalDevice(xmlDoc);
-            List<string> otherDevices = GetOtherDevice(xmlDoc);
+            List<XmlNode> results = new List<XmlNode>();
+            XmlNode localDevice = GetLocalDevice(xmlDoc);
+            List<XmlNode> otherDevices = GetOtherDevice(xmlDoc);
 
             // Put local at first
             results.Add(localDevice);
@@ -425,45 +451,110 @@ namespace AuraEditor
                 return devicesXml;
             }
         }
-        private string GetLocalDevice(XmlDocument devicesXml)
+        private XmlNode GetLocalDevice(XmlDocument devicesXml)
         {
             XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
             XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
-            string result = "";
 
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
 
-                if (element.GetAttribute("local") == "1")
+                if (element.GetAttribute("type") == "Aac_NBDT")
                 {
-                    return element.GetAttribute("name");
+                    return node;
                 }
             }
 
-            return result;
+            return null;
         }
-        private List<string> GetOtherDevice(XmlDocument devicesXml)
+        private List<XmlNode> GetOtherDevice(XmlDocument devicesXml)
         {
             XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
             XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
-            List<string> results = new List<string>();
+            List<XmlNode> others = new List<XmlNode>();
 
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
 
-                if (element.GetAttribute("local") != "1")
+                if (element.GetAttribute("type") != "Aac_NBDT")
                 {
-                    results.Add(element.GetAttribute("name"));
+                    others.Add(node);
                 }
+            }
+
+            return FilterOtherDeviceNodes(others);
+        }
+
+        private List<XmlNode> FilterOtherDeviceNodes(List<XmlNode> others)
+        {
+            List<XmlNode> results = new List<XmlNode>();
+
+            // 1. Determine temp data keep or not
+            List<Device> _tempDevices = new List<Device>(TempDevices);
+            foreach (Device temp_d in _tempDevices)
+            {
+                XmlNode node = others.Find(x => (x as XmlElement).GetAttribute("name") == temp_d.Name);
+
+                // temp in ingroups?
+                if (node != null)
+                {
+                    // kick others
+                    results.Add(node);
+                    others.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type));
+                    TempDevices.Remove(temp_d);
+                    GlobalDevices.Add(temp_d);
+                }
+                else
+                {
+                    if (others.Find(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type)) != null)
+                    {
+                        // Because new device will replace temp device
+                        TempDevices.Remove(temp_d);
+                        AuraLayerManager.Self.ClearDeviceData(temp_d.Type);
+                        // delete temp data
+                    }
+                }
+            }
+
+            // 2. Keep device nodes which are plugging, and kick others
+            foreach (Device global_d in GlobalDevices)
+            {
+                XmlNode node = others.Find(x => (x as XmlElement).GetAttribute("name") == global_d.Name);
+
+                if (node != null)
+                {
+                    // kick others
+                    results.Add(node);
+                    others.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(global_d.Type));
+                }
+            }
+
+            // 3. Only retain one node for every type
+            for (int i = 0; i < others.Count; i++)
+            {
+                XmlElement elem = (XmlElement)others[i];
+                bool CanAddThisNode = true;
+
+                for (int j = 0; j < i; j++)
+                {
+                    XmlElement elem2 = (XmlElement)others[j];
+
+                    if (elem.GetAttribute("type") == elem2.GetAttribute("type"))
+                        CanAddThisNode = false;
+                }
+
+                if (CanAddThisNode)
+                    results.Add(others[i]);
             }
 
             return results;
         }
+
         public async void RescanIngroupDevices()
         {
-            List<string> namesOfIngroupDevices = await GetIngroupDevices();
+            List<XmlNode> ingroupDeviceNodes = await GetIngroupDevices();
             List<string> namesOfGlobalDevices = new List<string>();
 
             foreach (var d in GlobalDevices)
@@ -471,24 +562,34 @@ namespace AuraEditor
                 namesOfGlobalDevices.Add(d.Name);
             }
 
-            var needToAdd = namesOfIngroupDevices.Except(namesOfGlobalDevices);
-            var needToRemove = namesOfGlobalDevices.Except(namesOfIngroupDevices);
+            List<XmlNode> needToAdd = new List<XmlNode>(ingroupDeviceNodes);
+            foreach(var name in namesOfGlobalDevices)
+            {
+                needToAdd.RemoveAll(x => (x as XmlElement).GetAttribute("name") == name);
+            }
+
+            List<string> needToRemove = new List<string>(namesOfGlobalDevices);
+            foreach (var node in ingroupDeviceNodes)
+            {
+                needToRemove.RemoveAll(x => x == (node as XmlElement).GetAttribute("name"));
+            }
 
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                foreach (var d_name in needToRemove)
+                foreach (var name in needToRemove)
                 {
-                    Device device = GlobalDevices.Find(x => x.Name == d_name);
+                    Device device = GlobalDevices.Find(x => x.Name == name);
 
                     if (device != null)
                     {
+                        TempDevices.Add(device);
                         GlobalDevices.Remove(device);
                     }
                 }
 
-                foreach (var d_name in needToAdd)
+                foreach (var node in needToAdd)
                 {
-                    DeviceContent deviceContent = await DeviceContent.GetDeviceContent(d_name);
+                    DeviceContent deviceContent = await DeviceContent.GetDeviceContent(node);
 
                     if (deviceContent == null)
                         continue;

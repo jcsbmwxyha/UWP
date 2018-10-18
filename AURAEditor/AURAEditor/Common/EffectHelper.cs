@@ -19,7 +19,6 @@ namespace AuraEditor.Common
         };
         static string[] _triggerEffects =
         {
-            "Raidus",
             "Reactive",
             "Laser",
             "Ripple",
@@ -122,6 +121,10 @@ namespace AuraEditor.Common
 
             return false;
         }
+        static public string[] GetTriggerEffect()
+        {
+            return _triggerEffects;
+        }
         static public bool IsTriggerEffect(int index)
         {
             string effectName = GetEffectName(index);
@@ -134,40 +137,24 @@ namespace AuraEditor.Common
 
             return false;
         }
-        static public int GetDeviceTypeByDeviceName(string deviceName)
+
+        static public int GetTypeByTypeName(string typeName)
         {
-            deviceName = deviceName.ToUpper();
-            if (deviceName == "G703GI") return 0;
-            if (deviceName == "GL504GM") return 0;
-            if (deviceName == "GL504GS") return 0;
-            if (deviceName == "G703VI") return 0;
-            if (deviceName == "GM501GS") return 0;
-
-            if (deviceName == "GLADIUS II") return 1;
-            if (deviceName == "PUGIO") return 1;
-
-            if (deviceName == "FLARE") return 2;
-            if (deviceName == "GL12CM") return 4;
+            if (typeName == "Aac_NBDT") return 0;
+            if (typeName == "Mouse") return 1;
+            if (typeName == "Keyboard") return 2;
+            if (typeName == "ASUS HeadSet") return 3;
+            if (typeName == "Display") return 4;
             return 0;
         }
-        static public int GetDeviceTypeByTypeName(string deviceName)
+        static public string GetTypeNameByType(int type)
         {
-            deviceName = deviceName.ToLower();
-            if (deviceName == "notebook") return 0;
-            if (deviceName == "mouse") return 1;
-            if (deviceName == "keyboard") return 2;
-            if (deviceName == "headset") return 3;
-            if (deviceName == "desktop") return 4;
-            return 0;
-        }
-        static public string GetTypeNameByType(int deviceType)
-        {
-            if (deviceType == 0) return "notebook";
-            if (deviceType == 1) return "mouse";
-            if (deviceType == 2) return "keyboard";
-            if (deviceType == 3) return "headset";
-            if (deviceType == 4) return "desktop";
-            return "notebook";
+            if (type == 0) return "Aac_NBDT";
+            if (type == 1) return "Mouse";
+            if (type == 2) return "Keyboard";
+            if (type == 3) return "ASUS HeadSet";
+            if (type == 4) return "Display";
+            return "Aac_NBDT";
         }
     }
 }

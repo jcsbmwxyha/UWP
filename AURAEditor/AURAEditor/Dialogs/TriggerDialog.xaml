@@ -73,9 +73,20 @@
     
     <ContentDialog.Resources>
         <ResourceDictionary>
+            <BitmapImage x:Key="Plus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_n.png"/>
+            <BitmapImage x:Key="Plus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_h.png"/>
+            <BitmapImage x:Key="Plus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_s.png"/>
+            <BitmapImage x:Key="Minus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_n.png"/>
+            <BitmapImage x:Key="Minus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_h.png"/>
+            <BitmapImage x:Key="Minus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_s.png"/>
+            
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontSize" Value="16"/>
+            </Style>
+            <Style x:Key="BasicButton" TargetType="Button">
+                <Setter Property="Width" Value="24" />
+                <Setter Property="Height" Value="24" />
             </Style>
             <Style x:Key="SliderStyle" TargetType="Slider">
                 <Setter Property="Background" Value="Gray" />
@@ -191,6 +202,182 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="MenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
+                <Setter Property="RequestedTheme" Value="Default"/>
+                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeHighBrush}" />
+                <Setter Property="BorderThickness" Value="{ThemeResource FlyoutBorderThemeThickness}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutPresenterThemePadding}" />
+                <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+                <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
+                <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+                <Setter Property="MinWidth" Value="{ThemeResource FlyoutThemeMinWidth}" />
+                <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
+                <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuFlyoutPresenter">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ScrollViewer x:Name="MenuFlyoutPresenterScrollViewer"
+                                              Padding="{TemplateBinding Padding}"
+                                              Margin="{TemplateBinding BorderThickness}"
+                                              HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                              IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                                              IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                                              ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                                              AutomationProperties.AccessibilityView="Raw">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                                <Border x:Name="MenuFlyoutPresenterBorder"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="MenuFlyoutItem" x:Key="MenuFlyoutItemStyle">
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuFlyoutItem">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
+                                                <Setter Target="ColorRectangle.Stroke" Value="Blue"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
+                                                <Setter Target="ColorRectangle.Stroke" Value="DimGray"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Rectangle x:Name="ColorRectangle" StrokeThickness="1" Stroke="White"  Width="200" Height="16" Fill="{TemplateBinding Foreground}"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button" x:Key="PatternButtonStyle">
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="PatternBtnImg.Source" Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_h.png"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="PatternBtnImg.Source"  Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_s.png"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <RelativePanel>
+                                    <Rectangle Name="R" Width="200" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{TemplateBinding Background}"/>
+                                    <Image Name="PatternBtnImg" Source="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_n.png" RelativePanel.RightOf="R"/>
+                                </RelativePanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PlusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Plus_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="MinusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Minus_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </ContentDialog.Resources>
 
@@ -210,15 +397,15 @@
                     Click="OKButton_Click"/>
         </RelativePanel>
         <StackPanel Grid.Row="1" Width="450" VerticalAlignment="Top" Margin="0,10,0,0">
-            <StackPanel Orientation="Horizontal" PointerEntered="StackPanel_PointerEntered">
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Action : " VerticalAlignment="Center" Foreground="White"/>
-                <Button x:Name="TriggerActionButton" Content="On Click" Foreground="White"
+                <Button x:Name="TriggerActionButton" Content="One Click" Foreground="White"
                     Width="150" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="TriggerActionMenuFlyout" Placement="Bottom">
-                            <MenuFlyoutItem x:Name="On_Click" Text="On Click"/>
-                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click"/>
+                            <MenuFlyoutItem x:Name="One_Click" Text="One Click" Click="ActionButton_Click"/>
+                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click" Click="ActionButton_Click"/>
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
@@ -232,9 +419,8 @@
             <Grid>
                 <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
                 <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True" VerticalAlignment="Top"
-                      Height="170" Margin="0,10,0,0" SelectedIndex="{Binding SelectedIndex}"
-                      PointerEntered="StackPanel_PointerEntered"
-                      SelectionChanged="TriggerEffectListView_SelectionChanged">
+                          Height="170" Margin="0,10,0,0" SelectedIndex="{Binding SelectedIndex}" 
+                          SelectionChanged="TriggerEffectListView_SelectionChanged">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Padding" Value="0,0,0,0"/>
@@ -249,45 +435,63 @@
                 </ListView>
             </Grid>
             <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,20,0,0"/>
-            <StackPanel Name="EffectInfoStackPanel" Visibility="Collapsed" PointerEntered="EffectInfoStackPanel_PointerEntered">
+            <StackPanel Name="EffectInfoStackPanel" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock Text="Effect :" VerticalAlignment="Center"
                            Foreground="White"/>
-                    <ComboBox Name="EffectComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0"
+                    <!--<ComboBox Name="EffectComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0"
                               SelectedIndex="0" SelectionChanged="EffectComboBox_SelectionChanged">
                         <x:String>Ripple</x:String>
                         <x:String>Reactive</x:String>
                         <x:String>Laser</x:String>
-                    </ComboBox>
+                    </ComboBox>-->
+                    <Button x:Name="EffectSelectionButton" Foreground="White" Width="190" Height="50"
+                            Style="{StaticResource RogComboBoxButtonStyle}">
+                        <Button.Flyout>
+                            <MenuFlyout x:Name="EffectSelectionMenuFlyout" Placement="Bottom"/>
+                        </Button.Flyout>
+                    </Button>
                 </StackPanel>
                 <ScrollViewer Height="420">
                     <StackPanel Name="EffectInfoPanel" Margin="0,10,0,0" Height="600">
-                        <Rectangle x:Name="ColorRect" Height="80" Width="80" Fill="Black"
-                           PointerPressed="ColorRect_Pressed" Margin="0,10">
-                            <FlyoutBase.AttachedFlyout>
-                                <Flyout Placement="Top">
-                                    <StackPanel>
-                                        <ColorPicker x:Name="ColorPicker" ColorSpectrumShape="Ring"
-                                             IsColorChannelTextInputVisible="False"
-                                             IsHexInputVisible="False"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Content="OK" Click="ColorPickerOk_Click"/>
-                                            <Button Content="Cancel" Click="ColorPickerCancel_Click" Margin="20,0,0,0"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Flyout>
-                            </FlyoutBase.AttachedFlyout>
-                        </Rectangle>
-                        <StackPanel x:Name="ColorGroup" Orientation="Vertical">
+                        <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
                             <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                             <StackPanel Orientation="Horizontal">
-                                <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped" Visibility="Collapsed"/>
+                                <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
                                 <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click">
                                     <TextBlock Text="Random" Foreground="White"/>
                                 </CheckBox>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="SpeedGroup" Orientation="Vertical">
+                        <StackPanel x:Name="PatternGroup" Orientation="Horizontal" Visibility="Collapsed">
+                            <RadioButton x:Name="PatternRadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped" Visibility="Collapsed"/>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+                                <Button x:Name="PatternButton" Height="16" Margin="20,20,0,0" Style="{StaticResource PatternButtonStyle}">
+                                    <Button.Flyout>
+                                        <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource MenuFlyoutPresenterStyle}" Placement="Bottom">
+                                            <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutSeparator Margin="0,5,0,5" Background="Black"/>
+                                            <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource MenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                        </MenuFlyout>
+                                    </Button.Flyout>
+                                </Button>
+                                <StackPanel Orientation="Vertical">
+                                    <Canvas x:Name="TriggerPatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                                        <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16"/>
+                                        <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="Collapsed">
                             <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                             <Grid>
                                 <Grid.RowDefinitions>

@@ -33,7 +33,7 @@ namespace AuraEditor
         IntPtr rpcClient;
         long error = 0L;
         //private bool DEBUG = true;
-        string cmd = @"C:\ProgramData\Asus\AURA Creator\script\script.lua";
+        string cmd = @"C:\ProgramData\Asus\AURA Creator\script\lastscript.xml";
         int num = 0, returnnum = 0;
 
         public async Task EffectNumber(int value)

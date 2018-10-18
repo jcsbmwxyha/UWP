@@ -17,11 +17,12 @@ namespace AuraEditor
         public List<ColorPoint> DefaultColorPoints5 = new List<ColorPoint>();
         public List<ColorPoint> DefaultColorPoints6 = new List<ColorPoint>();
         public List<List<ColorPoint>> DefaultColorList = new List<List<ColorPoint>>();
+        public List<List<ColorPoint>> DefaultColorList1 = new List<List<ColorPoint>>();
         public List<ColorPoint> CustomizeColorPoints = new List<ColorPoint>();
 
         int width = 13;
 
-        private void SetDefaultPatternList()
+        public void SetDefaultPatternList()
         {
             ColorPoint cp11 = new ColorPoint();
             ColorPoint cp12 = new ColorPoint();
@@ -50,7 +51,7 @@ namespace AuraEditor
             ColorPoint cp65 = new ColorPoint();
             ColorPoint cp66 = new ColorPoint();
             ColorPoint cp67 = new ColorPoint();
-
+            
             cp11.Color = HexToColor("#FFFFFFFF");
             cp11.Offset = 0.0;
             cp12.Color = HexToColor("#FF4E4E4E");
@@ -149,23 +150,28 @@ namespace AuraEditor
                 SetListBorder(item);
             }
         }
-        private void SetDefaultPattern()
+
+        public List<List<ColorPoint>> CallDefaultList()
         {
-            SetDefaultPatternList();
+            return DefaultColorList;
+        }
+        public void SetDefaultPattern()
+        {
+            DefaultColorList1 = CallDefaultList();
             CustomizeRainbow.Foreground = new SolidColorBrush(Colors.White);
 
             //Button Color
             LinearGradientBrush Pattern1 = new LinearGradientBrush();
             Pattern1.StartPoint = new Point(0, 0.5);
             Pattern1.EndPoint = new Point(1, 0.5);
-            for(int i = 0; i < DefaultColorPoints1.Count; i++)
+            for(int i = 0; i < DefaultColorList[0].Count; i++)
             {
-                Pattern1.GradientStops.Add(new GradientStop { Color = DefaultColorPoints1[i].Color, Offset = DefaultColorPoints1[i].Offset});
+                Pattern1.GradientStops.Add(new GradientStop { Color = DefaultColorList1[0][i].Color, Offset = DefaultColorList1[0][i].Offset});
             }
 
             // Use the brush to paint the rectangle.
             PatternButton.Background = MultiPointRectangle.Fill = DefaultRainbow1.Foreground = Pattern1;
-            foreach (var item in DefaultColorPoints1)
+            foreach (var item in DefaultColorList[0])
             {
                 ColorPoints.Add(new ColorPoint(item));
             }
@@ -176,9 +182,9 @@ namespace AuraEditor
             LinearGradientBrush Pattern2 = new LinearGradientBrush();
             Pattern2.StartPoint = new Point(0, 0.5);
             Pattern2.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPoints2.Count; i++)
+            for (int i = 0; i < DefaultColorList[1].Count; i++)
             {
-                Pattern2.GradientStops.Add(new GradientStop { Color = DefaultColorPoints2[i].Color, Offset = DefaultColorPoints2[i].Offset });
+                Pattern2.GradientStops.Add(new GradientStop { Color = DefaultColorList1[1][i].Color, Offset = DefaultColorList1[1][i].Offset });
             }
 
             // Use the brush to paint the rectangle.
@@ -188,9 +194,9 @@ namespace AuraEditor
             LinearGradientBrush Pattern3 = new LinearGradientBrush();
             Pattern3.StartPoint = new Point(0, 0.5);
             Pattern3.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPoints3.Count; i++)
+            for (int i = 0; i < DefaultColorList[2].Count; i++)
             {
-                Pattern3.GradientStops.Add(new GradientStop { Color = DefaultColorPoints3[i].Color, Offset = DefaultColorPoints3[i].Offset });
+                Pattern3.GradientStops.Add(new GradientStop { Color = DefaultColorList1[2][i].Color, Offset = DefaultColorList1[2][i].Offset });
             }
 
             // Use the brush to paint the rectangle.
@@ -200,9 +206,9 @@ namespace AuraEditor
             LinearGradientBrush Pattern4 = new LinearGradientBrush();
             Pattern4.StartPoint = new Point(0, 0.5);
             Pattern4.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPoints4.Count; i++)
+            for (int i = 0; i < DefaultColorList[3].Count; i++)
             {
-                Pattern4.GradientStops.Add(new GradientStop { Color = DefaultColorPoints4[i].Color, Offset = DefaultColorPoints4[i].Offset });
+                Pattern4.GradientStops.Add(new GradientStop { Color = DefaultColorList1[3][i].Color, Offset = DefaultColorList1[3][i].Offset });
             }
 
             // Use the brush to paint the rectangle.
@@ -212,9 +218,9 @@ namespace AuraEditor
             LinearGradientBrush Pattern5 = new LinearGradientBrush();
             Pattern5.StartPoint = new Point(0, 0.5);
             Pattern5.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPoints5.Count; i++)
+            for (int i = 0; i < DefaultColorList[4].Count; i++)
             {
-                Pattern5.GradientStops.Add(new GradientStop { Color = DefaultColorPoints5[i].Color, Offset = DefaultColorPoints5[i].Offset });
+                Pattern5.GradientStops.Add(new GradientStop { Color = DefaultColorList1[4][i].Color, Offset = DefaultColorList1[4][i].Offset });
             }
 
             // Use the brush to paint the rectangle.
@@ -224,9 +230,9 @@ namespace AuraEditor
             LinearGradientBrush Pattern6 = new LinearGradientBrush();
             Pattern6.StartPoint = new Point(0, 0.5);
             Pattern6.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPoints6.Count; i++)
+            for (int i = 0; i < DefaultColorList[5].Count; i++)
             {
-                Pattern6.GradientStops.Add(new GradientStop { Color = DefaultColorPoints6[i].Color, Offset = DefaultColorPoints6[i].Offset });
+                Pattern6.GradientStops.Add(new GradientStop { Color = DefaultColorList1[5][i].Color, Offset = DefaultColorList1[5][i].Offset });
             }
 
             // Use the brush to paint the rectangle.
@@ -235,6 +241,7 @@ namespace AuraEditor
 
         public void ReDrawMultiPointRectangle()
         {
+            EffectInfo ui = SelectedEffectLine.Info;
             LinearGradientBrush Pattern = new LinearGradientBrush();
             Pattern.StartPoint = new Point(0, 0.5);
             Pattern.EndPoint = new Point(1, 0.5);
@@ -246,6 +253,7 @@ namespace AuraEditor
 
             PatternButton.Background = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
             CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
+            ui.ColorPointList = new List<ColorPoint>(ColorPoints);
             SetListBorder(ColorPoints);
         }
 

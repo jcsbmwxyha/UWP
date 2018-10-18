@@ -98,6 +98,13 @@ namespace AuraEditor
             m_TimelineStackPanel.Children.Clear();
             DeviceLayers.Clear();
         }
+        public void ClearDeviceData(int deviceType)
+        {
+            foreach(var layer in DeviceLayers)
+            {
+                layer.GetZoneDictionary().Remove(deviceType);
+            }
+        }
         #endregion
 
         #region Timeline scale
@@ -201,14 +208,14 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForUserData()
         {
-            XmlNode layers = CreateXmlNodeOfFile("layers");
+            XmlNode layersNode = CreateXmlNodeOfFile("layers");
 
             foreach (var layer in DeviceLayers)
             {
-                layers.AppendChild(layer.ToXmlNodeForUserData());
+                layersNode.AppendChild(layer.ToXmlNodeForUserData());
             }
 
-            return layers;
+            return layersNode;
         }
     }
 }

@@ -14,6 +14,8 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class ColorPointBt : UserControl
     {
+        public delegate void ReDrawCallBack();
+        public ReDrawCallBack OnRedraw;
         public double X
         {
             get
@@ -49,7 +51,7 @@ namespace AuraEditor.UserControls
                 return;
             }
             X += e.Delta.Translation.X;
-            MainPage.Self.ReDrawMultiPointRectangle();
+            OnRedraw?.Invoke();
         }
 
         private async void ColorPointBtn_DoubleTapped(object sender, RoutedEventArgs e)
@@ -57,7 +59,7 @@ namespace AuraEditor.UserControls
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)ColorPointBg.Background).Color);
 
             ColorPointBg.Background = new SolidColorBrush(newColor);
-            MainPage.Self.ReDrawMultiPointRectangle();
+            OnRedraw?.Invoke();
         }
 
         public async Task<Color> OpenColorPickerWindow(Color c)

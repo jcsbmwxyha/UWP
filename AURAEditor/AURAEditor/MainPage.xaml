@@ -1375,15 +1375,14 @@
                 </Button>
                 <Button Name="MoreButton"
                         Style="{StaticResource MoreButtonStyle}"
-                        Click="MoreButton_Click"
                         Margin="0,0,0,0">
                     <Button.Flyout>
                         <MenuFlyout Placement="Bottom">
                             <MenuFlyoutItem Text="Rename" Click="RenameItem_Click"/>
                             <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click"/>
-                            <MenuFlyoutItem Text="Create New" Click="NewButton_Click"/>
-                            <MenuFlyoutItem Text="Import" Click="LoadFileButton_Click"/>
-                            <MenuFlyoutItem Text="Export" Click="SaveAsButton_Click"/>
+                            <MenuFlyoutItem Text="Create New" Click="NewFileButton_Click"/>
+                            <MenuFlyoutItem Text="Import" Click="ImportButton_Click"/>
+                            <MenuFlyoutItem Text="Export" Click="ExportButton_Click"/>
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
@@ -1711,5 +1710,6 @@
         </RelativePanel>
 
         <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
+        <!--<Button Name="DebugButton" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
     </Grid>
 </Page>

@@ -1,28 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using MoonSharp.Interpreter;
-using Windows.Storage.Pickers;
-using AuraEditor.Common;
-using Windows.Storage;
-using Windows.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
-using Windows.Networking.Sockets;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Input;
-using Windows.ApplicationModel.Core;
-using Windows.Storage.Streams;
-using static AuraEditor.Common.Definitions;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.EffectHelper;
 using System.Xml;
-using System.ComponentModel;
-using System.Linq;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
+using Windows.Storage.Streams;
+using AuraEditor.Common;
+using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -54,17 +44,22 @@ namespace AuraEditor
         {
             Leds = new List<LedUI>();
         }
-
-        static public async Task<DeviceContent> GetDeviceContent(string modelName)
+        
+        static public async Task<DeviceContent> GetDeviceContent(XmlNode node)
         {
             try
             {
                 DeviceContent deviceContent = new DeviceContent();
                 string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
+                
+                XmlElement elem = (XmlElement)node;
+                string modelName = elem.GetAttribute("name");
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+
+                deviceContent.DeviceName = modelName;
+                deviceContent.DeviceType = GetTypeByTypeName(elem.GetAttribute("type"));
 
                 int exist_Column = 0;
                 int leftTopX_Column = 0;
@@ -72,16 +67,7 @@ namespace AuraEditor
                 int rightBottomX_Column = 0;
                 int rightBottomY_Column = 0;
                 int z_Column = 0;
-
-                deviceContent.DeviceName = modelName;
-
-                if (modelName.ToLower() == "gladius ii")
-                    deviceContent.DeviceType = 1;
-                else if (modelName.ToLower() == "flare")
-                    deviceContent.DeviceType = 2;
-                else
-                    deviceContent.DeviceType = 0;
-
+                
                 if (csvFile != null)
                 {
                     using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))

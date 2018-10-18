@@ -56,7 +56,7 @@ namespace AuraEditor.UserControls
             SizeRight = 3,
         }
         private CursorState _mouseState;
-        public CursorState mouseState
+        private CursorState mouseState
         {
             get
             {
@@ -158,7 +158,7 @@ namespace AuraEditor.UserControls
             if (mouseState == CursorState.SizeAll)
                 _allPosition = e.Position.X;
         }
-        void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        private void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (mouseState == CursorState.SizeAll)
             {
@@ -193,7 +193,7 @@ namespace AuraEditor.UserControls
                 Width -= move;
             }
         }
-        void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             double keepWidth;
             _isPressed = false;

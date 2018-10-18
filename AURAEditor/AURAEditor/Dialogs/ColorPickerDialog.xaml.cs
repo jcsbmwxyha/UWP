@@ -101,10 +101,34 @@ namespace AuraEditor.Dialogs
         }
 
         public static RecentColor[] g_RecentColor = new RecentColor[8];
+        public int ComeFrom = 1;
 
         public ColorPickerDialog(Color c)
         {
             this.InitializeComponent();
+            ComeFrom = 1;
+            RecentCount = 0;
+            _preAngle = 0;
+            _preCirclePoint = new Point(0, 0);
+            PreColor = c;
+            _currentColor = PreColor;
+            for (int i = 0; i < 8; i++)
+                g_RecentColor[i] = new RecentColor();
+            Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
+            Task curtask = Task.Run(async () => await CreateColorRingImage());
+            curtask.Wait();
+            Task curtask1 = Task.Run(async () => await SelectColorAreaImage());
+            curtask1.Wait();
+            Task curtask2 = Task.Run(async () => await CreateSquareImage());
+            curtask2.Wait();
+        }
+
+        private DeviceLayer m_DeviceLayer;
+        public ColorPickerDialog(Color c, DeviceLayer DeviceLayer)
+        {
+            this.InitializeComponent();
+            ComeFrom = 2;
+            m_DeviceLayer = DeviceLayer;
             RecentCount = 0;
             _preAngle = 0;
             _preCirclePoint = new Point(0, 0);
@@ -157,19 +181,34 @@ namespace AuraEditor.Dialogs
             ChangeSquareColor(Hue);
         }
 
-        private void CancelBtn_Click(object sender, RoutedEventArgs e)
+        private async void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.SizeChanged -= CurrentWindow_SizeChanged;
-            this.Hide();
+            if (ComeFrom == 1)
+            {
+                //From Main Page
+                this.Hide();
+            }
+            else if(ComeFrom == 2)
+            {
+                //From Trigger Dialog
+                this.Hide();
+                ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
+                await triggerDialog.ShowAsync();
+            }
+            else
+            {
+                this.Hide();
+            }
         }
 
-        private void RBtnDefault_Tapped(object sender, TappedRoutedEventArgs e)
+        private void RBtnDefault_Click(object sender, RoutedEventArgs e)
         {
             RadioButton Rbtn = sender as RadioButton;
             EnterColor(((SolidColorBrush)Rbtn.Background).Color);
         }
 
-        private void RBtnRecent_Tapped(object sender, TappedRoutedEventArgs e)
+        private void RBtnRecent_Click(object sender, RoutedEventArgs e)
         {
             RadioButton Rbtn = sender as RadioButton;
             EnterColor(((SolidColorBrush)Rbtn.Background).Color);

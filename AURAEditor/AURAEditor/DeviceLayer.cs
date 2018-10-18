@@ -1,9 +1,6 @@
 ﻿using AuraEditor.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -11,10 +8,7 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.ControlHelper;
 using AuraEditor.UserControls;
-using MoonSharp.Interpreter;
 using System.ComponentModel;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
 using System.Xml;
 
 namespace AuraEditor
@@ -46,15 +40,19 @@ namespace AuraEditor
                 }
             }
         }
+
         public List<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
         public LayerCanvas UICanvas;
         public bool Eye { get; set; }
+
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()
         {
             return m_ZoneDictionary;
         }
+
+        public string TriggerAction;
 
         public DeviceLayer(string name = "")
         {
@@ -68,6 +66,7 @@ namespace AuraEditor
             UICanvas.MyCanvas.Drop += Canvas_Drop;
             m_ZoneDictionary = new Dictionary<int, int[]>();
             Eye = true;
+            TriggerAction = "One Click";
         }
         private Canvas CreateUICanvas()
         {
@@ -303,6 +302,10 @@ namespace AuraEditor
             attribute.Value = Name;
             layerNode.Attributes.Append(attribute);
 
+            XmlAttribute triggerAttribute = CreateXmlAttributeOfFile("trigger");
+            triggerAttribute.Value = TriggerAction;
+            layerNode.Attributes.Append(triggerAttribute);
+
             // devices
             XmlNode devicesNode = CreateXmlNodeOfFile("devices");
             List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
@@ -335,13 +338,20 @@ namespace AuraEditor
             attribute.Value = device.Name;
             deviceNode.Attributes.Append(attribute);
 
-            int[] zoneIndexes = m_ZoneDictionary[device.Type];
-            foreach (int index in zoneIndexes)
+            XmlAttribute attributeType = CreateXmlAttributeOfFile("type");
+            attributeType.Value = GetTypeNameByType(device.Type);
+            deviceNode.Attributes.Append(attributeType);
+
+            if (m_ZoneDictionary.ContainsKey(device.Type))
             {
-                XmlNode indexNode = CreateXmlNodeOfFile("index");
-                indexNode.InnerText = index.ToString();
-                deviceNode.AppendChild(indexNode);
-            };
+                int[] zoneIndexes = m_ZoneDictionary[device.Type];
+                foreach (int index in zoneIndexes)
+                {
+                    XmlNode indexNode = CreateXmlNodeOfFile("index");
+                    indexNode.InnerText = index.ToString();
+                    deviceNode.AppendChild(indexNode);
+                };
+            }
 
             return deviceNode;
         }

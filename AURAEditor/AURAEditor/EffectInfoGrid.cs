@@ -142,16 +142,6 @@ namespace AuraEditor
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
-                case "Raidus":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
                 case "Reactive":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;
@@ -240,6 +230,14 @@ namespace AuraEditor
             }
             AngleStoryboardStart(info.Angle);
             AngleTextBox.Text = info.Angle.ToString();
+            PatternCanvas.Children.Clear();
+            ColorPoints.Clear();
+            foreach (var item in info.ColorPointList)
+            {
+                ColorPoints.Add(new ColorPoint(item));
+            }
+            ShowColorPointUI(ColorPoints);
+            ReDrawMultiPointRectangle();
         }
 
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
@@ -484,40 +482,48 @@ namespace AuraEditor
             ui.Random = false;
             ui.High = 60;
             ui.Low = 30;
+            ui.ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[0]);
             UpdateUIEffectContents(ui);
         }
 
         private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            PatternCanvas.Children.Clear();
-            ColorPoints.Clear();
-
-            foreach (var item in DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1])
-            {
-                ColorPoints.Add(new ColorPoint(item));
-            }
-            ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternButton.Background = mf.Foreground;
+            ClearAndDraw(mf, DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1]);
         }
 
         private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
         {
-            PatternCanvas.Children.Clear();
-            ColorPoints.Clear();
+            MenuFlyoutItem mf = sender as MenuFlyoutItem;
+            ClearAndDraw(mf, CustomizeColorPoints);
+        }
 
-            foreach (var item in CustomizeColorPoints)
+        private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPoint> cp)
+        {
+            EffectInfo ui = SelectedEffectLine.Info;
+            PatternCanvas.Children.Clear();
+            foreach (var item in ColorPoints)
+            {
+                item.UI.OnRedraw -= ReDrawMultiPointRectangle;
+            }
+            ColorPoints.Clear();
+            if(ui.ColorPointList != null)
+                ui.ColorPointList.Clear();
+
+            foreach (var item in cp)
             {
                 ColorPoints.Add(new ColorPoint(item));
+                ui.ColorPointList.Add(new ColorPoint(item));
             }
             ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternButton.Background = CustomizeRainbow.Foreground;
+            MultiPointRectangle.Fill = PatternButton.Background = mf.Foreground;
         }
 
         public void ShowColorPointUI(List<ColorPoint> cl)
         {
             for (int i = 0; i < cl.Count; i++)
             {
+                cl[i].UI.OnRedraw += ReDrawMultiPointRectangle; ;
                 PatternCanvas.Children.Add(cl[i].UI);
             }
         }
@@ -526,6 +532,7 @@ namespace AuraEditor
         {
             ColorPoint newColorPointBt = new ColorPoint();
             AddColorPoint(newColorPointBt);
+            newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
             ReDrawMultiPointRectangle();
         }
 
@@ -593,6 +600,7 @@ namespace AuraEditor
 
                     if (items[0].IsChecked == true)
                     {
+                        item.UI.OnRedraw -= ReDrawMultiPointRectangle;
                         ColorPoints.Remove(item);
                         PatternCanvas.Children.Remove(item.UI);
                         break;

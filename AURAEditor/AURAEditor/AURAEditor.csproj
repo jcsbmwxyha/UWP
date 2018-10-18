@@ -143,7 +143,9 @@
     <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
     <Compile Include="EffectInfo.cs" />
-    <Compile Include="UserControls\ColorPointBt.xaml.cs" />
+    <Compile Include="UserControls\ColorPointBt.xaml.cs">
+      <DependentUpon>ColorPointBt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
     </Compile>
@@ -458,8 +460,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ColorPointBt.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DeviceLayerItem.xaml">
       <SubType>Designer</SubType>

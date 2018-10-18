@@ -531,15 +531,15 @@
             <StackPanel Orientation="Vertical" Grid.Row="0">
                 <TextBlock Text="Default" Foreground="White" FontSize="16"/>
                 <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,19,0,0">
-                    <RadioButton x:Name="RBtnDefault1" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#FF0000"/>
-                    <RadioButton x:Name="RBtnDefault2" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#FF6400"/>
-                    <RadioButton x:Name="RBtnDefault3" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#FFFF00"/>
-                    <RadioButton x:Name="RBtnDefault4" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#00FF00"/>
-                    <RadioButton x:Name="RBtnDefault5" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#00FFFF"/>
-                    <RadioButton x:Name="RBtnDefault6" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#0000FF"/>
-                    <RadioButton x:Name="RBtnDefault7" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#FF00FF"/>
-                    <RadioButton x:Name="RBtnDefault8" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#FFFFFF"/>
-                    <RadioButton x:Name="RBtnDefault9" Tapped="RBtnDefault_Tapped" Style="{StaticResource ColorBtn}" Background="#000000"/>
+                    <RadioButton x:Name="RBtnDefault1" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#FF0000"/>
+                    <RadioButton x:Name="RBtnDefault2" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#FF6400"/>
+                    <RadioButton x:Name="RBtnDefault3" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#FFFF00"/>
+                    <RadioButton x:Name="RBtnDefault4" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#00FF00"/>
+                    <RadioButton x:Name="RBtnDefault5" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#00FFFF"/>
+                    <RadioButton x:Name="RBtnDefault6" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#0000FF"/>
+                    <RadioButton x:Name="RBtnDefault7" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#FF00FF"/>
+                    <RadioButton x:Name="RBtnDefault8" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#FFFFFF"/>
+                    <RadioButton x:Name="RBtnDefault9" Click="RBtnDefault_Click" Style="{StaticResource ColorBtn}" Background="#000000"/>
                 </VariableSizedWrapGrid>
                 <Grid Margin="0,24,68,0" Height="1" Width="520">
                     <Grid.ColumnDefinitions>
@@ -556,14 +556,14 @@
                 <TextBlock x:Uid="Recent" Text="Recent" Foreground="White"/>
                 <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,19,0,0">
                     <Button x:Name="AddRecentBtn" Style="{StaticResource AddRecentButton}" Click="AddRecentBtn_Click"/>
-                    <RadioButton x:Name="RBtnRecent_1" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_2" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_3" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_4" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_5" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_6" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_7" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
-                    <RadioButton x:Name="RBtnRecent_8" Style="{StaticResource ColorBtn}" Tapped="RBtnRecent_Tapped" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_1" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_2" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_3" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_4" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_5" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_6" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_7" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
+                    <RadioButton x:Name="RBtnRecent_8" Style="{StaticResource ColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
                 </VariableSizedWrapGrid>
             </StackPanel>
         </Grid>

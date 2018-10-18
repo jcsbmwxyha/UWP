@@ -1,22 +1,28 @@
 ﻿using AuraEditor.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
-using static AuraEditor.Common.Definitions;
+using Windows.Graphics.Imaging;
+using System.Runtime.InteropServices;
 using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor
 {
     public class LightZone
     {
+        [ComImport]
+        [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        unsafe interface IMemoryBufferByteAccess
+        {
+            void GetBuffer(out byte* buffer, out uint capacity);
+        }
+
         public Shape Frame;
+        SoftwareBitmap MyBitmap;
         public int Index;
         public int ZIndex;
         public Rect RelativeZoneRect
@@ -53,7 +59,7 @@ namespace AuraEditor
             }
         }
         public bool Selected;
-        
+
         public LightZone(Point deviceGridPosition, LedUI led)
         {
             int frameLeft = led.Left;
@@ -120,6 +126,61 @@ namespace AuraEditor
                 Frame.Stroke = new SolidColorBrush(Colors.Red);
                 Frame.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
                 Selected = true;
+            }
+        }
+        public unsafe void SpecialFrame_StatusChanged(int regionIndex, RegionStatus status)
+        {
+            Color color;
+            if (status == RegionStatus.Normal)
+            {
+                color = Colors.Black;
+                Selected = false;
+            }
+            else if (status == RegionStatus.NormalHover)
+            {
+                color = Colors.Black;
+                Selected = false;
+            }
+            else if (status == RegionStatus.Selected)
+            {
+                color = Colors.Red;
+                Selected = true;
+            }
+            else
+            {
+                color = Colors.Red;
+                Selected = true;
+            }
+
+            using (BitmapBuffer buffer = MyBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            {
+                using (var reference = buffer.CreateReference())
+                {
+                    byte* dataInBytes;
+                    uint capacity;
+                     ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                    // Fill-in the BGRA plane
+                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+                    double imgWidth = bufferLayout.Width;
+                    double imgHeight = bufferLayout.Height;
+                    double imgCenterW = bufferLayout.Width / 2;
+                    double imgCenterH = bufferLayout.Height / 2;
+
+                    for (int row = 0; row < imgHeight; row++)
+                    {
+                        for (int col = 0; col < imgWidth; col++)
+                        {
+                            int pixelIndex = bufferLayout.Stride * row + 4 * col;
+                            if (dataInBytes[pixelIndex + 3] != 0)
+                            {
+                                dataInBytes[pixelIndex + 0] = (byte)color.B;
+                                dataInBytes[pixelIndex + 1] = (byte)color.G;
+                                dataInBytes[pixelIndex + 2] = (byte)color.R;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

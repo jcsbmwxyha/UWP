@@ -85,6 +85,7 @@ namespace AuraEditor
             await SaveFile(m_UserFileListXml, doc.OuterXml);
         }
 
+        #region Intialize
         private async Task IntializeFileOperations()
         {
             NeedSave = false;
@@ -166,182 +167,16 @@ namespace AuraEditor
 
             return list;
         }
-        private async Task<bool> SaveCurrentUserFile()
-        {
-            if (CurrentUserFilename != "")
-            {
-                await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
-            }
-            else
-            {
-                NamingDialog dialog = new NamingDialog(GetUserFilenames());
-                ContentDialogResult namingResult = await dialog.ShowAsync();
+        #endregion
 
-                if (dialog.Result == true)
-                {
-                    CurrentUserFilename = dialog.TheName;
-                    await m_UserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
-                    await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        private async Task LoadUserFile(string filename)
-        {
-            string filepath = UserFilesDefaultFolderPath + filename + ".xml";
-            Reset();
-            await LoadContent(await LoadFile(filepath));
-            SpaceManager.RefreshSpaceGrid();
-            NeedSave = false;
-        }
-        private async void FileItem_Click(object sender, RoutedEventArgs e)
-        {
-            var item = sender as MenuFlyoutItem;
-            string selectedName = item.Text;
-
-            if (selectedName == CurrentUserFilename)
-                return;
-
-            ContentDialogResult result = ContentDialogResult.Secondary;
-
-            if (NeedSave)
-            {
-                YesNoCancelDialog dialog = new YesNoCancelDialog
-                {
-                    Title = "Save File",
-                    DialogContent = "Do you want to save the changes?"
-                };
-                result = await dialog.ShowAsync();
-            }
-
-            if (result == ContentDialogResult.Primary)
-            {
-                bool successful = await SaveCurrentUserFile();
-                if (successful)
-                {
-                    await LoadUserFile(selectedName);
-                    CurrentUserFilename = selectedName;
-                }
-            }
-            else if (result == ContentDialogResult.Secondary)
-            {
-                await LoadUserFile(selectedName);
-                CurrentUserFilename = selectedName;
-            }
-        }
-        private async void NewButton_Click(object sender, RoutedEventArgs e)
-        {
-            ContentDialogResult result = ContentDialogResult.Secondary;
-
-            if (NeedSave)
-            {
-                YesNoCancelDialog dialog = new YesNoCancelDialog
-                {
-                    Title = "Save File",
-                    DialogContent = "Do you want to save the changes?"
-                };
-                result = await dialog.ShowAsync();
-            }
-
-            if (result == ContentDialogResult.Primary)
-            {
-                bool successful = await SaveCurrentUserFile();
-                if (successful)
-                {
-                    CurrentUserFilename = "";
-                    Reset();
-                    SpaceManager.FillWithIngroupDevices();
-                    NeedSave = false;
-                }
-            }
-            else if (result == ContentDialogResult.Secondary)
-            {
-                CurrentUserFilename = "";
-                Reset();
-                SpaceManager.FillWithIngroupDevices();
-                NeedSave = false;
-            }
-        }
-        private async void LoadFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            var inputFile = await ShowFileOpenPickerAsync();
-
-            if (inputFile == null)
-            {
-                return;
-            }
-
-            ContentDialogResult result = ContentDialogResult.Secondary;
-
-            if (NeedSave)
-            {
-                YesNoCancelDialog dialog = new YesNoCancelDialog
-                {
-                    Title = "Save File",
-                    DialogContent = "Do you want to save the changes?"
-                };
-                result = await dialog.ShowAsync();
-            }
-
-            if (result == ContentDialogResult.Primary)
-            {
-                if (CurrentUserFilename != "")
-                {
-                    await SaveFile(CurrentUserFilename, GetUserData());
-                }
-                else
-                {
-                    StorageFile saveFile = await ShowFileSavePickerAsync();
-
-                    if (saveFile != null)
-                    {
-                        await SaveFile(saveFile, GetUserData());
-                        CurrentUserFilename = saveFile.Path;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-                // load file
-                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
-                CurrentUserFilename = copyfile.Name.Replace(".xml", "");
-                Reset();
-                await LoadContent(await LoadFile(copyfile));
-                SpaceManager.RefreshSpaceGrid();
-                NeedSave = false;
-            }
-            else if (result == ContentDialogResult.Secondary)
-            {
-                // load file
-                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
-                CurrentUserFilename = copyfile.Name.Replace(".xml","");
-                await LoadUserFile(CurrentUserFilename);
-            }
-        }
+        #region Framework element
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             await SaveCurrentUserFile();
             NeedSave = false;
         }
-        private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
+        private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
-            StorageFile saveFile = await ShowFileSavePickerAsync();
-
-            if (saveFile != null)
-            {
-                await SaveFile(saveFile, GetUserData());
-            }
-        }
-        private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
-        {
-            e.Handled = true;
             ContentDialogResult result = ContentDialogResult.Secondary;
 
             if (NeedSave)
@@ -354,18 +189,21 @@ namespace AuraEditor
                 result = await dialog.ShowAsync();
             }
 
-            if (result == ContentDialogResult.Primary)
+            if (result != ContentDialogResult.None)
             {
-                await SaveCurrentUserFile();
-                CoreApplication.Exit();
+                if (result == ContentDialogResult.Primary)
+                {
+                    bool successful = await SaveCurrentUserFile();
+
+                    if (!successful)
+                        return;
+                }
+
+                CurrentUserFilename = "";
+                Reset();
+                SpaceManager.FillWithIngroupDevices();
+                NeedSave = false;
             }
-            else if (result == ContentDialogResult.Secondary)
-            {
-                CoreApplication.Exit();
-            }
-        }
-        private void MoreButton_Click(object sender, RoutedEventArgs e)
-        {
         }
         private async void RenameItem_Click(object sender, RoutedEventArgs e)
         {
@@ -422,7 +260,139 @@ namespace AuraEditor
             SpaceManager.FillWithIngroupDevices();
             UpdateListXml();
         }
-        public string GetUserData()
+        private async void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var inputFile = await ShowFileOpenPickerAsync();
+
+            if (inputFile == null)
+            {
+                return;
+            }
+
+            ContentDialogResult result = ContentDialogResult.Secondary;
+
+            if (NeedSave)
+            {
+                YesNoCancelDialog dialog = new YesNoCancelDialog
+                {
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result != ContentDialogResult.None)
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    bool successful = await SaveCurrentUserFile();
+
+                    if (!successful)
+                        return;
+                }
+
+                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                CurrentUserFilename = copyfile.Name.Replace(".xml", "");
+                await LoadUserFile(CurrentUserFilename);
+            }
+        }
+        private async void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            StorageFile saveFile = await ShowFileSavePickerAsync();
+
+            if (saveFile != null)
+            {
+                SpaceManager.ClearTempDeviceData();
+                await SaveFile(saveFile, GetUserData());
+            }
+        }
+        private async void FileItem_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as MenuFlyoutItem;
+            string selectedName = item.Text;
+
+            if (selectedName == CurrentUserFilename)
+                return;
+
+            ContentDialogResult result = ContentDialogResult.Secondary;
+
+            if (NeedSave)
+            {
+                YesNoCancelDialog dialog = new YesNoCancelDialog
+                {
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result != ContentDialogResult.None)
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    bool successful = await SaveCurrentUserFile();
+
+                    if (!successful)
+                        return;
+                }
+
+                await LoadUserFile(selectedName);
+                CurrentUserFilename = selectedName;
+            }
+        }
+        private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
+        {
+            e.Handled = true;
+            ContentDialogResult result = ContentDialogResult.Secondary;
+
+            if (NeedSave)
+            {
+                YesNoCancelDialog dialog = new YesNoCancelDialog
+                {
+                    Title = "Save File",
+                    DialogContent = "Do you want to save the changes?"
+                };
+                result = await dialog.ShowAsync();
+            }
+
+            if (result != ContentDialogResult.None)
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    bool successful = await SaveCurrentUserFile();
+
+                    if (!successful)
+                        return;
+                }
+
+                CoreApplication.Exit();
+            }
+        }
+        #endregion
+
+        private async Task<bool> SaveCurrentUserFile()
+        {
+            if (CurrentUserFilename == "")
+            {
+                NamingDialog dialog = new NamingDialog(GetUserFilenames());
+                ContentDialogResult namingResult = await dialog.ShowAsync();
+
+                if (dialog.Result == true)
+                {
+                    CurrentUserFilename = dialog.TheName;
+                    await m_UserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            SpaceManager.ClearTempDeviceData();
+            await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
+            return true;
+        }
+        private string GetUserData()
         {
             XmlNode root = CreateXmlNodeOfFile("root");
 
@@ -430,6 +400,15 @@ namespace AuraEditor
             root.AppendChild(LayerManager.ToXmlNodeForUserData());
 
             return root.OuterXml;
+        }
+
+        private async Task LoadUserFile(string filename)
+        {
+            string filepath = UserFilesDefaultFolderPath + filename + ".xml";
+            Reset();
+            await LoadContent(await LoadFile(filepath));
+            SpaceManager.RefreshSpaceGrid();
+            NeedSave = false;
         }
         private async Task LoadContent(string xmlContent)
         {
@@ -444,6 +423,7 @@ namespace AuraEditor
 
             await ParsingGlobalDevices(deviceNodes);
             ParsingLayers(layerNodes);
+            SpaceManager.RescanIngroupDevices();
         }
         private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
         {
@@ -452,11 +432,10 @@ namespace AuraEditor
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
-                string deviceName = element.GetAttribute("name");
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
 
-                DeviceContent deviceContent = await DeviceContent.GetDeviceContent(deviceName);
+                DeviceContent deviceContent = await DeviceContent.GetDeviceContent(node);
                 Device d = deviceContent.ToDevice(new Point(x, y));
 
                 devices.Add(d);
@@ -472,6 +451,8 @@ namespace AuraEditor
                 XmlElement element = (XmlElement)node;
                 string layerName = element.GetAttribute("name");
                 DeviceLayer layer = new DeviceLayer(layerName);
+
+                layer.TriggerAction = element.GetAttribute("trigger");
 
                 // parsing effects
                 XmlNode effectsNode = element.SelectSingleNode("effects");
@@ -523,8 +504,8 @@ namespace AuraEditor
                     Dictionary<int, int[]> zoneDictionary = new Dictionary<int, int[]>();
                     List<int> zones = new List<int>();
                     XmlElement element2 = (XmlElement)deviceNode;
-                    string name = element2.GetAttribute("name");
-                    int type = GetDeviceTypeByDeviceName(name);
+                    string typeName = element2.GetAttribute("type");
+                    int type = GetTypeByTypeName(typeName);
 
                     XmlNodeList indexNodes = element2.ChildNodes;
                     foreach (XmlNode index in indexNodes)
@@ -540,6 +521,7 @@ namespace AuraEditor
                 LayerManager.AddDeviceLayer(layer);
             }
         }
+
         private void Reset()
         {
             DragDevImgToggleButton.IsChecked = false;

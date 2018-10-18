@@ -62,6 +62,8 @@ namespace AuraEditor
             bgwSocketServer = new BackgroundWorker();
             bgwSocketServer.DoWork += SocketServer_DoWork;
             bgwSocketServer.RunWorkerAsync();
+
+            SetDefaultPatternList();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -113,7 +115,8 @@ namespace AuraEditor
                     }
                 }
 
-                layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
+                if (selectedIndex.Count != 0)
+                    layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
             }
 
             LayerManager.AddDeviceLayer(layer);
@@ -295,6 +298,11 @@ namespace AuraEditor
                 case "Zoom_100":
                     SpaceManager.SpaceZoomChanged("100 %"); SpaceZoomButton.Content = "100 %"; break;
             }
+        }
+
+        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        {
+            SpaceManager.RescanIngroupDevices();
         }
     }
 }

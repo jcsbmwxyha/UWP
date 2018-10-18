@@ -142,7 +142,8 @@ namespace AuraEditor
 
             if (!AuraSpaceManager.Self.IsOverlapping(this))
             {
-                AuraSpaceManager.Self.MoveDevicePosition(this,
+                AuraSpaceManager.Self.DeleteOverlappingTempDevice(this);
+                AuraSpaceManager.Self.MoveDeviceMousePosition(this,
                     RoundToGrid(ct.TranslateX - _oldPixelPosition.X),
                     RoundToGrid(ct.TranslateY - _oldPixelPosition.Y));
             }
@@ -232,13 +233,17 @@ namespace AuraEditor
         {
             XmlNode deviceNode = CreateXmlNodeOfFile("device");
 
-            XmlAttribute attribute = CreateXmlAttributeOfFile("name");
-            attribute.Value = Name;
-            deviceNode.Attributes.Append(attribute);
+            XmlAttribute attributeName = CreateXmlAttributeOfFile("name");
+            attributeName.Value = Name;
+            deviceNode.Attributes.Append(attributeName);
 
-            XmlNode typeNode = CreateXmlNodeOfFile("type");
-            typeNode.InnerText = Type.ToString();
-            deviceNode.AppendChild(typeNode);
+            XmlAttribute attributeType = CreateXmlAttributeOfFile("type");
+            attributeType.Value = GetTypeNameByType(Type);
+            deviceNode.Attributes.Append(attributeType);
+
+            //XmlNode typeNode = CreateXmlNodeOfFile("type");
+            //typeNode.InnerText = Type.ToString();
+            //deviceNode.AppendChild(typeNode);
 
             XmlNode xNode = CreateXmlNodeOfFile("x");
             xNode.InnerText = GridPosition.X.ToString();

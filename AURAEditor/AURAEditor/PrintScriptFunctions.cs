@@ -72,7 +72,7 @@ namespace AuraEditor
                     if (IsTriggerEffect(eff.Type))
                     {
                         XmlNode triggerNode = CreateXmlNodeOfFile("trigger");
-                        triggerNode.InnerText = "KeyboardInput";
+                        triggerNode.InnerText = layer.TriggerAction.Replace(" ","");
                         effectNode.AppendChild(triggerNode);
                     }
                     else

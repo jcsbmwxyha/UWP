@@ -3,6 +3,7 @@ using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
 using System.Xml;
 using AuraEditor.Common;
+using System.Collections.Generic;
 
 namespace AuraEditor
 {
@@ -18,6 +19,7 @@ namespace AuraEditor
         public bool Random;
         public int High;
         public int Low;
+        public List<ColorPoint> ColorPointList;
 
         public EffectInfo()
         {
@@ -35,6 +37,7 @@ namespace AuraEditor
             Random = false;
             High = 60;
             Low = 30;
+            ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[0]);
         }
 
         public XmlNode ToXmlNodeForScript()
@@ -47,6 +50,7 @@ namespace AuraEditor
 
             return effectNode;
         }
+        #region viewportTransform Node
         private XmlNode GetViewportTransformXmlNode()
         {
             XmlNode viewportTransformNode = CreateXmlNodeOfFile("viewportTransform");
@@ -63,7 +67,7 @@ namespace AuraEditor
             rotateNode.AppendChild(yNode);
 
             XmlNode angleNode = CreateXmlNodeOfFile("angle");
-            angleNode.InnerText = "0";
+            angleNode.InnerText = (((Angle - 90) / 360) * -1).ToString();
             rotateNode.AppendChild(angleNode);
             
             XmlNode methodNode = GetMethodXmlNode(Type);
@@ -72,30 +76,29 @@ namespace AuraEditor
 
             return viewportTransformNode;
         }
-        private XmlNode GetMethodXmlNode(int effType)
+        static private XmlNode GetMethodXmlNode(int effType)
         {
             string methodString = "point";
             XmlNode methodNode = CreateXmlNodeOfFile("method");
 
-            if (GetEffectName(Type) == "Static") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Breath") { methodString = "point"; }
-            else if (GetEffectName(Type) == "ColorCycle") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Rainbow") { methodString = "OrthogonaProject"; }
-            else if (GetEffectName(Type) == "Strobing") { methodString = "point"; }
-            else if (GetEffectName(Type) == "Comet") { methodString = "OrthogonaProject"; }
-            else if (GetEffectName(Type) == "Reactive") { methodString = "limitRadius"; }
-            else if (GetEffectName(Type) == "Laser") { methodString = "distance"; }
-            else if (GetEffectName(Type) == "Radius") { methodString = "limitRadius"; }
-            else if (GetEffectName(Type) == "Ripple") { methodString = "radius"; }
-            else if (GetEffectName(Type) == "Star") { methodString = "randomRadius"; }
 
-            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            attribute.Value = methodString;
-            methodNode.Attributes.Append(attribute);
+            if (GetEffectName(effType) == "Static" ||
+                GetEffectName(effType) == "Breath" ||
+                GetEffectName(effType) == "ColorCycle" ||
+                GetEffectName(effType) == "Strobing")
+            {
+                methodString = "point";
+            }
+            else if (GetEffectName(effType) == "Rainbow" ||
+                     GetEffectName(effType) == "Comet")
+            {
+                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                inputNode.InnerText = "0";
+                methodNode.AppendChild(inputNode);
 
-            if (GetEffectName(effType) == "Ripple" ||
-                GetEffectName(effType) == "Reactive" ||
-                GetEffectName(effType) == "Laser")
+                methodString = "OrthogonaProject";
+            }
+            else if (GetEffectName(effType) == "Reactive")
             {
                 XmlNode inputNode = CreateXmlNodeOfFile("input");
                 inputNode.InnerText = "keyPressX";
@@ -104,17 +107,66 @@ namespace AuraEditor
                 XmlNode inputNode2 = CreateXmlNodeOfFile("input");
                 inputNode2.InnerText = "keyPressY";
                 methodNode.AppendChild(inputNode2);
+
+                XmlNode inputNode3 = CreateXmlNodeOfFile("input");
+                inputNode3.InnerText = "0.5";
+                methodNode.AppendChild(inputNode3);
+
+                methodString = "limitRadius";
+            }
+            else if (GetEffectName(effType) == "Laser")
+            {
+                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                inputNode.InnerText = "keyPressX";
+                methodNode.AppendChild(inputNode);
+
+                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                inputNode2.InnerText = "keyPressY";
+                methodNode.AppendChild(inputNode2);
+
+                methodString = "distance";
+            }
+            else if (GetEffectName(effType) == "Ripple")
+            {
+                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                inputNode.InnerText = "keyPressX";
+                methodNode.AppendChild(inputNode);
+
+                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                inputNode2.InnerText = "keyPressY";
+                methodNode.AppendChild(inputNode2);
+
+                methodString = "radius";
+            }
+            else if(GetEffectName(effType) == "Star")
+            {
+                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                inputNode.InnerText = "6";
+                methodNode.AppendChild(inputNode);
+
+                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                inputNode2.InnerText = "1";
+                methodNode.AppendChild(inputNode2);
+
+                methodString = "randomRadius";
             }
 
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            attribute.Value = methodString;
+            methodNode.Attributes.Append(attribute);
+            
             return methodNode;
         }
+        #endregion
+
+        #region waveList Node
         private XmlNode GetWaveListXmlNode()
         {
             XmlNode waveListNode = CreateXmlNodeOfFile("waveList");
             XmlNode waveNode = CreateXmlNodeOfFile("wave");
 
             XmlNode typeNode = CreateXmlNodeOfFile("type");
-            typeNode.InnerText = GetDefaultWaveType(Type);
+            typeNode.InnerText = GetWaveType(Type);
             waveNode.AppendChild(typeNode);
 
             XmlNode maxNode = CreateXmlNodeOfFile("max");
@@ -145,51 +197,120 @@ namespace AuraEditor
             velocityNode.InnerText = GetVelocity(Type, Speed).ToString();
             waveNode.AppendChild(velocityNode);
 
-            waveNode.AppendChild(GetDefaultBindToSlotXmlNode(Type));
-            waveListNode.AppendChild(waveNode);
-            return waveListNode;
-        }
-        static private XmlNode GetInitColorXmlNode(Color c, bool random)
-        {
-            XmlNode initColorNode = CreateXmlNodeOfFile("initColor");
-            double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
+            XmlNode isCycleNode = CreateXmlNodeOfFile("isCycle");
+            isCycleNode.InnerText = GetIsCycle(Type).ToString();
+            waveNode.AppendChild(isCycleNode);
 
-            XmlNode hueNode = CreateXmlNodeOfFile("hue");
-            if (random == true)
+            if (GetEffectName(Type) == "Rainbow")
             {
-                hueNode.InnerText = "Random";
+                waveNode.AppendChild(GetBindToSlotXmlNode(Type, "HUE"));
+                waveNode.AppendChild(GetCustomized(ColorPointList, 0));
             }
             else
             {
-                hueNode.InnerText = hsl[0].ToString();
+                waveNode.AppendChild(GetBindToSlotXmlNode(Type));
             }
-            initColorNode.AppendChild(hueNode);
+            waveListNode.AppendChild(waveNode);
 
-            XmlNode saturationNode = CreateXmlNodeOfFile("saturation");
-            saturationNode.InnerText = hsl[1].ToString();
-            initColorNode.AppendChild(saturationNode);
+            if (GetEffectName(Type) == "Rainbow")
+            {
+                XmlNode waveNode1 = CreateXmlNodeOfFile("wave");
 
-            XmlNode lightnessNode = CreateXmlNodeOfFile("lightness");
-            lightnessNode.InnerText = hsl[2].ToString();
-            initColorNode.AppendChild(lightnessNode);
+                XmlNode typeNode1 = CreateXmlNodeOfFile("type");
+                typeNode1.InnerText = GetWaveType(Type);
+                waveNode1.AppendChild(typeNode1);
 
-            XmlNode alphaNode = CreateXmlNodeOfFile("alpha");
-            alphaNode.InnerText = (c.A / 255).ToString();
-            initColorNode.AppendChild(alphaNode);
+                XmlNode maxNode1 = CreateXmlNodeOfFile("max");
+                maxNode1.InnerText = GetMax(Type).ToString();
+                waveNode1.AppendChild(maxNode1);
 
-            return initColorNode;
+                XmlNode minNode1 = CreateXmlNodeOfFile("min");
+                minNode1.InnerText = GetMin(Type).ToString();
+                waveNode1.AppendChild(minNode1);
+
+                XmlNode lengthNode1 = CreateXmlNodeOfFile("length");
+                lengthNode1.InnerText = GetLength(Type).ToString();
+                waveNode1.AppendChild(lengthNode1);
+
+                XmlNode freqNode1 = CreateXmlNodeOfFile("freq");
+                freqNode1.InnerText = GetFreq(Type, Speed);
+                waveNode1.AppendChild(freqNode1);
+
+                XmlNode phaseNode1 = CreateXmlNodeOfFile("phase");
+                phaseNode1.InnerText = GetPhase(Type);
+                waveNode1.AppendChild(phaseNode1);
+
+                XmlNode startNode1 = CreateXmlNodeOfFile("start");
+                startNode1.InnerText = GetStart(Type).ToString();
+                waveNode1.AppendChild(startNode1);
+
+                XmlNode velocityNode1 = CreateXmlNodeOfFile("velocity");
+                velocityNode1.InnerText = GetVelocity(Type, Speed).ToString();
+                waveNode1.AppendChild(velocityNode1);
+
+                XmlNode isCycleNode1 = CreateXmlNodeOfFile("isCycle");
+                isCycleNode1.InnerText = GetIsCycle(Type).ToString();
+                waveNode1.AppendChild(isCycleNode1);
+
+                waveNode1.AppendChild(GetBindToSlotXmlNode(Type, "SATURATION"));
+                waveNode1.AppendChild(GetCustomized(ColorPointList, 1));
+                waveListNode.AppendChild(waveNode1);
+
+                XmlNode waveNode2 = CreateXmlNodeOfFile("wave");
+
+                XmlNode typeNode2 = CreateXmlNodeOfFile("type");
+                typeNode2.InnerText = GetWaveType(Type);
+                waveNode2.AppendChild(typeNode2);
+
+                XmlNode maxNode2 = CreateXmlNodeOfFile("max");
+                maxNode2.InnerText = GetMax(Type).ToString();
+                waveNode2.AppendChild(maxNode2);
+
+                XmlNode minNode2 = CreateXmlNodeOfFile("min");
+                minNode2.InnerText = GetMin(Type).ToString();
+                waveNode2.AppendChild(minNode2);
+
+                XmlNode lengthNode2 = CreateXmlNodeOfFile("length");
+                lengthNode2.InnerText = GetLength(Type).ToString();
+                waveNode2.AppendChild(lengthNode2);
+
+                XmlNode freqNode2 = CreateXmlNodeOfFile("freq");
+                freqNode2.InnerText = GetFreq(Type, Speed);
+                waveNode2.AppendChild(freqNode2);
+
+                XmlNode phaseNode2 = CreateXmlNodeOfFile("phase");
+                phaseNode2.InnerText = GetPhase(Type);
+                waveNode2.AppendChild(phaseNode2);
+
+                XmlNode startNode2 = CreateXmlNodeOfFile("start");
+                startNode2.InnerText = GetStart(Type).ToString();
+                waveNode2.AppendChild(startNode2);
+
+                XmlNode velocityNode2 = CreateXmlNodeOfFile("velocity");
+                velocityNode2.InnerText = GetVelocity(Type, Speed).ToString();
+                waveNode2.AppendChild(velocityNode2);
+
+                XmlNode isCycleNode2 = CreateXmlNodeOfFile("isCycle");
+                isCycleNode2.InnerText = GetIsCycle(Type).ToString();
+                waveNode2.AppendChild(isCycleNode2);
+
+                waveNode2.AppendChild(GetBindToSlotXmlNode(Type, "LIGHTNESS"));
+                waveNode2.AppendChild(GetCustomized(ColorPointList, 2));
+                waveListNode.AppendChild(waveNode2);
+            }
+
+            return waveListNode;
         }
-        static private string GetDefaultWaveType(int effType)
+        static private string GetWaveType(int effType)
         {
             if (GetEffectName(effType) == "Static") return "ConstantWave";
             else if (GetEffectName(effType) == "Breath") return "SineWave";
             else if (GetEffectName(effType) == "ColorCycle") return "QuarterSineWave";
-            else if (GetEffectName(effType) == "Rainbow") return "QuarterSineWave";
-            else if (GetEffectName(effType) == "Strobing") return "SineWave";
+            else if (GetEffectName(effType) == "Rainbow") return "CustomStepWave";
+            else if (GetEffectName(effType) == "Strobing") return "SawtoothWave";
             else if (GetEffectName(effType) == "Comet") return "TriangleWave";
             else if (GetEffectName(effType) == "Reactive") return "SineWave";
             else if (GetEffectName(effType) == "Laser") return "SineWave";
-            else if (GetEffectName(effType) == "Radius") return "SineWave";
             else if (GetEffectName(effType) == "Ripple") return "SineWave";
             else if (GetEffectName(effType) == "Star") return "SineWave";
 
@@ -230,8 +351,8 @@ namespace AuraEditor
             {
                 if (GetEffectName(effType) == "Breath") result = 0.1;
                 else if (GetEffectName(effType) == "ColorCycle") result = -0.02;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.01;
-                else if (GetEffectName(effType) == "Strobing") result = 0.2;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.04;
+                else if (GetEffectName(effType) == "Strobing") result = 0.8;
                 else if (GetEffectName(effType) == "Comet") result = 0.01;
                 else if (GetEffectName(effType) == "Reactive") result = 1;
                 else if (GetEffectName(effType) == "Laser") return "Random";
@@ -242,8 +363,8 @@ namespace AuraEditor
             {
                 if (GetEffectName(effType) == "Breath") result = 0.2;
                 else if (GetEffectName(effType) == "ColorCycle") result = -0.04;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.02;
-                else if (GetEffectName(effType) == "Strobing") result = 0.4;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.08;
+                else if (GetEffectName(effType) == "Strobing") result = 1.2;
                 else if (GetEffectName(effType) == "Comet") result = 0.02;
                 else if (GetEffectName(effType) == "Reactive") result = 2;
                 else if (GetEffectName(effType) == "Laser") return "Random";
@@ -254,8 +375,8 @@ namespace AuraEditor
             {
                 if (GetEffectName(effType) == "Breath") result = 0.4;
                 else if (GetEffectName(effType) == "ColorCycle") result = -0.08;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.04;
-                else if (GetEffectName(effType) == "Strobing") result = 0.8;
+                else if (GetEffectName(effType) == "Rainbow") result = 0.1;
+                else if (GetEffectName(effType) == "Strobing") result = 1.6;
                 else if (GetEffectName(effType) == "Comet") result = 0.04;
                 else if (GetEffectName(effType) == "Reactive") result = 4;
                 else if (GetEffectName(effType) == "Laser") return "Random";
@@ -301,7 +422,14 @@ namespace AuraEditor
 
             return 0;
         }
-        static private XmlNode GetDefaultBindToSlotXmlNode(int effType)
+        static private int GetIsCycle(int effType)
+        {
+            if (GetEffectName(effType) == "Comet") return 1;
+
+            return 0;
+        }
+
+        static private XmlNode GetBindToSlotXmlNode(int effType)
         {
             XmlNode bindToSlotXmlNode = CreateXmlNodeOfFile("bindToSlot");
             XmlNode slotNode = CreateXmlNodeOfFile("slot");
@@ -348,11 +476,6 @@ namespace AuraEditor
                 attribute.Value = "ALPHA";
                 slotNode.Attributes.Append(attribute);
             }
-            else if (GetEffectName(effType) == "Radius")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
             else if (GetEffectName(effType) == "Ripple")
             {
                 attribute.Value = "ALPHA";
@@ -366,17 +489,103 @@ namespace AuraEditor
             bindToSlotXmlNode.AppendChild(slotNode);
 
             // second slot
-            if (GetEffectName(effType) == "Ripple")
-            {
-                XmlNode slotNode2 = CreateXmlNodeOfFile("slot");
-                XmlAttribute attribute2 = CreateXmlAttributeOfFile("key");
-                attribute2.Value = "HUE";
-                slotNode2.Attributes.Append(attribute2);
-                bindToSlotXmlNode.AppendChild(slotNode2);
-            }
+            //if (GetEffectName(effType) == "Ripple")
+            //{
+            //    XmlNode slotNode2 = CreateXmlNodeOfFile("slot");
+            //    XmlAttribute attribute2 = CreateXmlAttributeOfFile("key");
+            //    attribute2.Value = "HUE";
+            //    slotNode2.Attributes.Append(attribute2);
+            //    bindToSlotXmlNode.AppendChild(slotNode2);
+            //}
 
             return bindToSlotXmlNode;
         }
+        static private XmlNode GetBindToSlotXmlNode(int effType, string slotkey)
+        {
+            XmlNode bindToSlotXmlNode = CreateXmlNodeOfFile("bindToSlot");
+            XmlNode slotNode = CreateXmlNodeOfFile("slot");
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+
+            attribute.Value = slotkey;
+            slotNode.Attributes.Append(attribute);
+            bindToSlotXmlNode.AppendChild(slotNode);
+
+            return bindToSlotXmlNode;
+        }
+
+        static private XmlNode GetCustomized(List<ColorPoint> ColorPointList, int hsv)
+        {
+            XmlNode customizedNode = CreateXmlNodeOfFile("customized");
+            double Scaledown = (double)(ColorPointList.Count - 1) / (double)ColorPointList.Count;
+
+            for (int i = 0; i<ColorPointList.Count; i++)
+            {
+                double ScaledownOffset = ColorPointList[i].Offset * Scaledown * ColorPointList[ColorPointList.Count - 1].Offset;
+                if (i == 0)
+                {
+                    customizedNode.AppendChild(SetNodeInfoXmlNode(i, 0, ColorPointList[i].Color, hsv));
+                }
+                customizedNode.AppendChild(SetNodeInfoXmlNode(i, ScaledownOffset, ColorPointList[i].Color, hsv));
+                if (i == (ColorPointList.Count - 1))
+                {
+                    customizedNode.AppendChild(SetNodeInfoXmlNode(i, 1, ColorPointList[0].Color, hsv));
+                }
+            }
+            return customizedNode;
+        }
+        static private XmlNode SetNodeInfoXmlNode(int key, double offset, Color c, int hsv)
+        {
+            XmlNode nodeXmlNode = CreateXmlNodeOfFile("node");
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            XmlNode phaseXmlNode = CreateXmlNodeOfFile("phase");
+            XmlNode fxXmlNode = CreateXmlNodeOfFile("fx");
+            double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
+
+            attribute.Value = key.ToString();
+            nodeXmlNode.Attributes.Append(attribute);
+            phaseXmlNode.InnerText = offset.ToString();
+            nodeXmlNode.AppendChild(phaseXmlNode);
+            fxXmlNode.InnerText = hsl[hsv].ToString();
+            nodeXmlNode.AppendChild(fxXmlNode);
+
+            return nodeXmlNode;
+        }
+
+
+    #endregion
+
+    #region initColor
+    static private XmlNode GetInitColorXmlNode(Color c, bool random)
+        {
+            XmlNode initColorNode = CreateXmlNodeOfFile("initColor");
+            double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
+
+            XmlNode hueNode = CreateXmlNodeOfFile("hue");
+            if (random == true)
+            {
+                hueNode.InnerText = "Random";
+            }
+            else
+            {
+                hueNode.InnerText = hsl[0].ToString();
+            }
+            initColorNode.AppendChild(hueNode);
+
+            XmlNode saturationNode = CreateXmlNodeOfFile("saturation");
+            saturationNode.InnerText = hsl[1].ToString();
+            initColorNode.AppendChild(saturationNode);
+
+            XmlNode lightnessNode = CreateXmlNodeOfFile("lightness");
+            lightnessNode.InnerText = hsl[2].ToString();
+            initColorNode.AppendChild(lightnessNode);
+
+            XmlNode alphaNode = CreateXmlNodeOfFile("alpha");
+            alphaNode.InnerText = (c.A / 255).ToString();
+            initColorNode.AppendChild(alphaNode);
+
+            return initColorNode;
+        }
+        #endregion
 
         public XmlNode ToXmlNodeForUserData()
         {
