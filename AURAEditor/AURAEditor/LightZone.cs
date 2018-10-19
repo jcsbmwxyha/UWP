@@ -8,6 +8,12 @@ using Windows.UI.Xaml.Shapes;
 using Windows.Graphics.Imaging;
 using System.Runtime.InteropServices;
 using static AuraEditor.Common.ControlHelper;
+using Windows.Storage;
+using System.Threading.Tasks;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Core;
+using Windows.ApplicationModel.Core;
 
 namespace AuraEditor
 {
@@ -22,14 +28,16 @@ namespace AuraEditor
         }
 
         public Shape Frame;
-        SoftwareBitmap MyBitmap;
+        public Image SpecialFrame;
+        private SoftwareBitmap specialFrameSB;
+
         public int Index;
         public int ZIndex;
         public Rect RelativeZoneRect
         {
             get
             {
-                CompositeTransform ct = Frame.RenderTransform as CompositeTransform;
+                CompositeTransform ct;ct = Frame.RenderTransform as CompositeTransform;
 
                 return new Rect(
                     new Point(
@@ -45,7 +53,11 @@ namespace AuraEditor
         {
             get
             {
-                Border b = FindParentControl<Border>(Frame, typeof(Border));
+                Border b;
+                if (SpecialFrame != null)
+                    b = FindParentControl<Border>(SpecialFrame, typeof(Border));
+                else
+                    b = FindParentControl<Border>(Frame, typeof(Border));
                 CompositeTransform ct = b.RenderTransform as CompositeTransform;
 
                 return new Rect(
@@ -76,6 +88,31 @@ namespace AuraEditor
             Frame.SetValue(Canvas.ZIndexProperty, led.ZIndex);
             ZIndex = led.ZIndex;
         }
+
+        public async Task CreateSpecialFrame(string path)
+        {
+            StorageFile pngFile = await StorageFile.GetFileFromPathAsync(path);
+
+            using (IRandomAccessStream stream = await pngFile.OpenAsync(FileAccessMode.Read))
+            {
+                // Create the decoder from the stream
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+
+                // Get the SoftwareBitmap representation of the file
+                specialFrameSB = await decoder.GetSoftwareBitmapAsync();
+            }
+
+            SoftwareBitmapSource source = new SoftwareBitmapSource();
+            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            await source.SetBitmapAsync(specialFrameSB);
+
+            SpecialFrame = new Image();
+            CompositeTransform ct = new CompositeTransform();
+            //ct.TranslateX
+            SpecialFrame.RenderTransform = new CompositeTransform();
+            SpecialFrame.Source = source;
+        }
+
         private Rectangle CreateRectangle(Rect Rect)
         {
             CompositeTransform ct = new CompositeTransform
@@ -128,7 +165,7 @@ namespace AuraEditor
                 Selected = true;
             }
         }
-        public unsafe void SpecialFrame_StatusChanged(int regionIndex, RegionStatus status)
+        public async void SpecialFrame_StatusChanged(int regionIndex, RegionStatus status)
         {
             Color color;
             if (status == RegionStatus.Normal)
@@ -138,7 +175,7 @@ namespace AuraEditor
             }
             else if (status == RegionStatus.NormalHover)
             {
-                color = Colors.Black;
+                color = Colors.Green;
                 Selected = false;
             }
             else if (status == RegionStatus.Selected)
@@ -152,13 +189,23 @@ namespace AuraEditor
                 Selected = true;
             }
 
-            using (BitmapBuffer buffer = MyBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            ChangeSpecialFrameColor(color);
+            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(specialFrameSB);
+            SpecialFrame.Source = source;
+        }
+        private unsafe void ChangeSpecialFrameColor(Color c)
+        {
+            using (BitmapBuffer buffer = specialFrameSB.LockBuffer(BitmapBufferAccessMode.Write))
             {
                 using (var reference = buffer.CreateReference())
                 {
                     byte* dataInBytes;
                     uint capacity;
-                     ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
 
                     // Fill-in the BGRA plane
                     BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
@@ -174,9 +221,9 @@ namespace AuraEditor
                             int pixelIndex = bufferLayout.Stride * row + 4 * col;
                             if (dataInBytes[pixelIndex + 3] != 0)
                             {
-                                dataInBytes[pixelIndex + 0] = (byte)color.B;
-                                dataInBytes[pixelIndex + 1] = (byte)color.G;
-                                dataInBytes[pixelIndex + 2] = (byte)color.R;
+                                dataInBytes[pixelIndex + 0] = (byte)c.B;
+                                dataInBytes[pixelIndex + 1] = (byte)c.G;
+                                dataInBytes[pixelIndex + 2] = (byte)c.R;
                             }
                         }
                     }

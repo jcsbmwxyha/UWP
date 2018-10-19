@@ -30,6 +30,7 @@ namespace AuraEditor
         public int Right;
         public int Bottom;
         public int ZIndex;
+        public string PNG_Path;
     }
     public class DeviceContent
     {
@@ -44,14 +45,14 @@ namespace AuraEditor
         {
             Leds = new List<LedUI>();
         }
-        
+
         static public async Task<DeviceContent> GetDeviceContent(XmlNode node)
         {
             try
             {
                 DeviceContent deviceContent = new DeviceContent();
                 string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-                
+
                 XmlElement elem = (XmlElement)node;
                 string modelName = elem.GetAttribute("name");
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
@@ -67,7 +68,8 @@ namespace AuraEditor
                 int rightBottomX_Column = 0;
                 int rightBottomY_Column = 0;
                 int z_Column = 0;
-                
+                int png_Column = 0;
+
                 if (csvFile != null)
                 {
                     using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
@@ -85,6 +87,7 @@ namespace AuraEditor
                                     else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
                                     else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
                                     else if (row[i].ToLower() == "z_index") { z_Column = i; }
+                                    else if (row[i].ToLower() == "png") { png_Column = i; }
                                 }
                             }
                             else if (row[0].ToLower().Contains("led "))
@@ -92,16 +95,20 @@ namespace AuraEditor
                                 if (row[exist_Column] != "1")
                                     continue;
 
-                                deviceContent.Leds.Add(
-                                    new LedUI()
-                                    {
-                                        Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
-                                        Left = Int32.Parse(row[leftTopX_Column]),
-                                        Top = Int32.Parse(row[leftTopY_Column]),
-                                        Right = Int32.Parse(row[rightBottomX_Column]),
-                                        Bottom = Int32.Parse(row[rightBottomY_Column]),
-                                        ZIndex = Int32.Parse(row[z_Column]),
-                                    });
+                                LedUI ledui = new LedUI()
+                                {
+                                    Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                    Left = Int32.Parse(row[leftTopX_Column]),
+                                    Top = Int32.Parse(row[leftTopY_Column]),
+                                    Right = Int32.Parse(row[rightBottomX_Column]),
+                                    Bottom = Int32.Parse(row[rightBottomY_Column]),
+                                    ZIndex = Int32.Parse(row[z_Column]),
+                                };
+
+                                if (row[png_Column] != "")
+                                    ledui.PNG_Path = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
+
+                                deviceContent.Leds.Add(ledui);
                             }
                         }
                     }
@@ -127,11 +134,11 @@ namespace AuraEditor
                 return null;
             }
         }
-        public Device ToDevice()
+        public async Task<Device> ToDevice()
         {
-            return ToDevice(new Point(0, 0));
+            return await ToDevice(new Point(0, 0));
         }
-        public Device ToDevice(Point gridPosition)
+        public async Task<Device> ToDevice(Point gridPosition)
         {
             Device device;
             Image img;
@@ -150,7 +157,10 @@ namespace AuraEditor
             for (int idx = 0; idx < this.Leds.Count; idx++)
             {
                 LedUI led = this.Leds[idx];
-                zones.Add(new LightZone(gridPosition, led));
+                LightZone lz = new LightZone(gridPosition, led);
+                if (led.PNG_Path != null)
+                    await lz.CreateSpecialFrame(led.PNG_Path);
+                zones.Add(lz);
             }
 
             device = new Device(img, zones.ToArray())

@@ -235,9 +235,14 @@ namespace AuraEditor
                         DetectionRect = zone.AbsoluteZoneRect,
                         Hover = false,
                         Selected = zone.Selected,
-                        Callback = zone.Frame_StatusChanged,
                         GroupIndex = d.Type
                     };
+
+                    if (zone.SpecialFrame != null)
+                        r.Callback = zone.SpecialFrame_StatusChanged;
+                    else
+                        r.Callback = zone.Frame_StatusChanged;
+
                     regions.Add(r);
                 }
             }
@@ -408,7 +413,7 @@ namespace AuraEditor
 
                 Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
                 Point p = GetFreeRoomPositionForRect(r);
-                device = deviceContent.ToDevice(p);
+                device = await deviceContent.ToDevice(p);
 
                 GlobalDevices.Add(device);
             }
@@ -596,7 +601,7 @@ namespace AuraEditor
 
                     Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
                     Point p = GetFreeRoomPositionForRect(r);
-                    Device device = deviceContent.ToDevice(p);
+                    Device device = await deviceContent.ToDevice(p);
 
                     GlobalDevices.Add(device);
                 }

@@ -436,7 +436,7 @@ namespace AuraEditor
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
 
                 DeviceContent deviceContent = await DeviceContent.GetDeviceContent(node);
-                Device d = deviceContent.ToDevice(new Point(x, y));
+                Device d = await deviceContent.ToDevice(new Point(x, y));
 
                 devices.Add(d);
             }
