@@ -138,6 +138,7 @@
     <Compile Include="PatternColorSet.cs" />
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
+    <Compile Include="SpecialLightZone.cs" />
     <Compile Include="TimelineEffect.cs" />
     <Compile Include="LightZone.cs" />
     <Compile Include="LayerManager.cs" />

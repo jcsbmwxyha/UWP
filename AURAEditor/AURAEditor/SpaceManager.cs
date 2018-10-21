@@ -238,10 +238,7 @@ namespace AuraEditor
                         GroupIndex = d.Type
                     };
 
-                    if (zone.SpecialFrame != null)
-                        r.Callback = zone.SpecialFrame_StatusChanged;
-                    else
-                        r.Callback = zone.Frame_StatusChanged;
+                    r.Callback = zone.Frame_StatusChanged;
 
                     regions.Add(r);
                 }
@@ -283,9 +280,7 @@ namespace AuraEditor
             {
                 foreach (var zone in d.LightZones)
                 {
-                    Shape shape = zone.Frame;
-                    shape.Stroke = new SolidColorBrush(Colors.Black);
-                    shape.Fill = new SolidColorBrush(Colors.Transparent);
+                    zone.Frame_StatusChanged(RegionStatus.Normal);
                 }
             }
 
@@ -309,12 +304,9 @@ namespace AuraEditor
 
                 foreach (var zone in d.LightZones)
                 {
-                    Shape shape = zone.Frame;
-
                     if (Array.Find(indexes, x => x == zone.Index) > 0)
                     {
-                        shape.Stroke = new SolidColorBrush(Colors.Yellow);
-                        shape.Fill = new SolidColorBrush(Colors.Transparent);
+                        zone.Frame_StatusChanged(RegionStatus.Watching);
                     }
                 }
             }

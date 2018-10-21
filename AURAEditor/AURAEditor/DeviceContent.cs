@@ -157,10 +157,19 @@ namespace AuraEditor
             for (int idx = 0; idx < this.Leds.Count; idx++)
             {
                 LedUI led = this.Leds[idx];
-                LightZone lz = new LightZone(gridPosition, led);
-                if (led.PNG_Path != null)
-                    await lz.CreateSpecialFrame(led.PNG_Path);
-                zones.Add(lz);
+                LightZone lz;
+
+                if (led.PNG_Path == null)
+                {
+                    lz = new LightZone(led);
+                    zones.Add(lz);
+                }
+                else
+                {
+                    SpecialLightZone slz = new SpecialLightZone(led);
+                    await slz.CreateSpecialFrame(led);
+                    zones.Add(slz);
+                }
             }
 
             device = new Device(img, zones.ToArray())

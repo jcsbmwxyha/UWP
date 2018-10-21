@@ -72,10 +72,7 @@ namespace AuraEditor
 
             foreach (var zone in zones)
             {
-                if(zone.SpecialFrame != null)
-                    childCanvas.Children.Add(zone.SpecialFrame);
-                else
-                    childCanvas.Children.Add(zone.Frame);
+                childCanvas.Children.Add(zone.MyFrameworkElement);
             }
 
             Border = new Border

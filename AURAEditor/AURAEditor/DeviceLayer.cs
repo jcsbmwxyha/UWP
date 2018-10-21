@@ -280,6 +280,10 @@ namespace AuraEditor
         private XmlNode GetUsageXmlNode(int deviceType)
         {
             XmlNode usageNode = CreateXmlNodeOfFile("usage");
+
+            if (!m_ZoneDictionary.ContainsKey(deviceType))
+                return usageNode;
+
             int[] zoneIndexes = m_ZoneDictionary[deviceType];
 
             foreach (int index in zoneIndexes)

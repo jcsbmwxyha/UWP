@@ -12,7 +12,8 @@ namespace AuraEditor.Common
         Normal = 0,
         NormalHover,
         Selected,
-        SelectedHover
+        SelectedHover,
+        Watching,
     }
 
     class MouseDetectionRegion
@@ -69,13 +70,13 @@ namespace AuraEditor.Common
             else if (!hover && selected) status = RegionStatus.Selected;
             else status = RegionStatus.SelectedHover;
 
-            Callback?.Invoke(RegionIndex, status);
+            Callback?.Invoke(status);
         }
     }
 
     class MouseEventCtrl
     {
-        public delegate void StatusChangedCallBack(int regionIndex, RegionStatus status);
+        public delegate void StatusChangedCallBack(RegionStatus status);
         Point _pressPoint;
         List<int> _beforeMouseSelectedIndexes;
         List<int> _currentMouseSelectedIndexes;
