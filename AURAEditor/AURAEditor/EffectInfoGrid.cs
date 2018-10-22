@@ -142,6 +142,26 @@ namespace AuraEditor
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
+                case "Tide":
+                    ColorGroup.Visibility = Visibility.Visible;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Visible;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Visible;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
+                    break;
+                case "Raidus":
+                    ColorGroup.Visibility = Visibility.Collapsed;
+                    RandomCheckBox.Visibility = Visibility.Collapsed;
+                    PatternGroup.Visibility = Visibility.Collapsed;
+                    BrightnessGroup.Visibility = Visibility.Collapsed;
+                    SpeedGroup.Visibility = Visibility.Collapsed;
+                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Collapsed;
+                    TemperatureGroup.Visibility = Visibility.Collapsed;
+                    break;
                 case "Reactive":
                     ColorGroup.Visibility = Visibility.Visible;
                     RandomCheckBox.Visibility = Visibility.Visible;

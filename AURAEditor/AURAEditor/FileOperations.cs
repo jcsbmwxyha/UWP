@@ -183,10 +183,11 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    Title = "Save File",
+                    DialogTitle = "Save File",
                     DialogContent = "Do you want to save the changes?"
                 };
-                result = await dialog.ShowAsync();
+                await dialog.ShowAsync();
+                result = dialog.Result;
             }
 
             if (result != ContentDialogResult.None)
@@ -235,10 +236,13 @@ namespace AuraEditor
 
             YesNoCancelDialog dialog = new YesNoCancelDialog
             {
-                Title = "Delete File",
+                DialogTitle = "Delete File",
                 DialogContent = "Delete this file ?"
             };
-            ContentDialogResult result = await dialog.ShowAsync();
+
+            await dialog.ShowAsync();
+            ContentDialogResult result = dialog.Result;
+
             if (result != ContentDialogResult.Primary)
                 return;
 
@@ -275,10 +279,11 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    Title = "Save File",
+                    DialogTitle = "Save File",
                     DialogContent = "Do you want to save the changes?"
                 };
-                result = await dialog.ShowAsync();
+                await dialog.ShowAsync();
+                result = dialog.Result;
             }
 
             if (result != ContentDialogResult.None)
@@ -320,10 +325,11 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    Title = "Save File",
+                    DialogTitle = "Save File",
                     DialogContent = "Do you want to save the changes?"
                 };
-                result = await dialog.ShowAsync();
+                await dialog.ShowAsync();
+                result = dialog.Result;
             }
 
             if (result != ContentDialogResult.None)
@@ -349,10 +355,11 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    Title = "Save File",
+                    DialogTitle = "Save File",
                     DialogContent = "Do you want to save the changes?"
                 };
-                result = await dialog.ShowAsync();
+                await dialog.ShowAsync();
+                result = dialog.Result;
             }
 
             if (result != ContentDialogResult.None)
@@ -461,6 +468,23 @@ namespace AuraEditor
                     XmlElement element2 = (XmlElement)effectNode;
                     int type = Int32.Parse(element2.SelectSingleNode("type").InnerText);
 
+                    List<ColorPoint> colorPoints = new List<ColorPoint>();
+                    XmlNode colorPointListNode = element2.SelectSingleNode("colorPointList");
+                    foreach (XmlNode colorpoint in colorPointListNode.ChildNodes)
+                    {
+                        ColorPoint cp = new ColorPoint();
+                        XmlElement element3 = (XmlElement)colorpoint;
+                        cp.Color = new Color
+                        {
+                            A = Byte.Parse(element3.SelectSingleNode("a").InnerText),
+                            R = Byte.Parse(element3.SelectSingleNode("r").InnerText),
+                            G = Byte.Parse(element3.SelectSingleNode("g").InnerText),
+                            B = Byte.Parse(element3.SelectSingleNode("b").InnerText),
+                        };
+                        cp.Offset = double.Parse(element3.SelectSingleNode("offset").InnerText);
+                        colorPoints.Add(cp);
+                    }
+
                     EffectInfo info = new EffectInfo()
                     {
                         InitColor = new Color
@@ -477,6 +501,7 @@ namespace AuraEditor
                         Random = bool.Parse(element2.SelectSingleNode("random").InnerText),
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
+                        ColorPointList = new List<ColorPoint>(colorPoints),
                     };
 
                     if (!IsTriggerEffect(type))

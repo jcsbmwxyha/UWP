@@ -116,25 +116,28 @@
             <RelativePanel Height="0"/>
         </DataTemplate>
     </ContentDialog.TitleTemplate>
-    <Grid Background="White" BorderBrush="Blue" BorderThickness="1">
-        <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="10">
-            <TextBlock Text="Naming"/>
-            <TextBox Name="NamingTextBox" Text="{x:Bind TheName, Mode=TwoWay}" Margin="0,10,0,0"/>
+    <Grid Background="Black">
+        <StackPanel Background="Black" Margin="10">
+            <TextBlock Text="Naming" Foreground="White" FontSize="18"/>
+            <TextBox Name="NamingTextBox" Text="{x:Bind TheName, Mode=TwoWay}" Margin="0,26,0,0" Style="{StaticResource RogTextBoxStyle}" Height="40"/>
             <TextBlock Name="StatusTextBlock" Text="" Foreground="Red"/>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20">
                 <Button x:Name="OKButton"
-                    Content="OK"
-                    Click="OKButton_Click"
-                    RelativePanel.AlignRightWithPanel="True"
-                    RelativePanel.AlignTopWithPanel="True"
-                    Width="130" 
-                    Height="30"/>
+                        Content="OK"
+                        Foreground="White"
+                        Click="OKButton_Click"
+                        RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.AlignTopWithPanel="True"
+                        Width="130" 
+                        Height="30" Style="{StaticResource RogButtonStyle2}"/>
                 <Button x:Name="CancelButton"
-                    Content="Cancel"
-                    Click="CancelButton_Click"
-                    RelativePanel.AlignRightWithPanel="True"
-                    RelativePanel.AlignTopWithPanel="True"
-                    Width="130" Height="30" Margin="20,0,0,0"/>
+                        Content="Cancel"
+                        Foreground="White"
+                        Click="CancelButton_Click"
+                        RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.AlignTopWithPanel="True"
+                        Width="130" Height="30" Margin="20,0,0,0"
+                        Style="{StaticResource RogButtonStyle2}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

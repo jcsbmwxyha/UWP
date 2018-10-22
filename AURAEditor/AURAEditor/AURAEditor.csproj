@@ -200,6 +200,12 @@
     <Content Include="Assets\Button\asus_ac_delect_btn_n.png" />
     <Content Include="Assets\Button\asus_ac_delect_btn_s.png" />
     <Content Include="Assets\Button\asus_ac_eye_off_h_ic.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_l_h.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_l_n.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_l_p.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_r_h.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_r_n.png" />
+    <Content Include="Assets\Button\asus_ac_hint_btn_r_p.png" />
     <Content Include="Assets\Button\asus_ac_more_btn_h.png" />
     <Content Include="Assets\Button\asus_ac_more_btn_n.png" />
     <Content Include="Assets\Button\asus_ac_more_btn_s.png" />
@@ -266,6 +272,7 @@
     <Content Include="Assets\Layer\asus_ac_triggerline_body.png" />
     <Content Include="Assets\Layer\asus_ac_triggerline_head.png" />
     <Content Include="Assets\Line\asus_ac_shortline_bg.png" />
+    <Content Include="Assets\Line\asus_ac_shortline_v_bg.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_ic_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_colorpick_ic_n.png" />

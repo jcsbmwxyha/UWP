@@ -90,7 +90,8 @@ namespace AuraEditor
                 methodString = "point";
             }
             else if (GetEffectName(effType) == "Rainbow" ||
-                     GetEffectName(effType) == "Comet")
+                     GetEffectName(effType) == "Comet" ||
+                     GetEffectName(effType) == "Tide")
             {
                 XmlNode inputNode = CreateXmlNodeOfFile("input");
                 inputNode.InnerText = "0";
@@ -141,11 +142,11 @@ namespace AuraEditor
             else if(GetEffectName(effType) == "Star")
             {
                 XmlNode inputNode = CreateXmlNodeOfFile("input");
-                inputNode.InnerText = "6";
+                inputNode.InnerText = "10";
                 methodNode.AppendChild(inputNode);
 
                 XmlNode inputNode2 = CreateXmlNodeOfFile("input");
-                inputNode2.InnerText = "1";
+                inputNode2.InnerText = "0.5";
                 methodNode.AppendChild(inputNode2);
 
                 methodString = "randomRadius";
@@ -181,9 +182,18 @@ namespace AuraEditor
             lengthNode.InnerText = GetLength(Type).ToString();
             waveNode.AppendChild(lengthNode);
 
-            XmlNode freqNode = CreateXmlNodeOfFile("freq");
-            freqNode.InnerText = GetFreq(Type, Speed);
-            waveNode.AppendChild(freqNode);
+            if (GetEffectName(Type) == "Tide")
+            {
+                XmlNode freqNode = CreateXmlNodeOfFile("freq");
+                freqNode.InnerText = (0.25).ToString();
+                waveNode.AppendChild(freqNode);
+            }
+            else
+            {
+                XmlNode freqNode = CreateXmlNodeOfFile("freq");
+                freqNode.InnerText = GetFreq(Type, Speed);
+                waveNode.AppendChild(freqNode);
+            }
 
             XmlNode phaseNode = CreateXmlNodeOfFile("phase");
             phaseNode.InnerText = GetPhase(Type);
@@ -200,6 +210,11 @@ namespace AuraEditor
             XmlNode isCycleNode = CreateXmlNodeOfFile("isCycle");
             isCycleNode.InnerText = GetIsCycle(Type).ToString();
             waveNode.AppendChild(isCycleNode);
+
+            if (GetEffectName(Type) == "Tide")
+            {
+                waveNode.AppendChild(GetBindToSignalXmlNode(Type, Speed));
+            }
 
             if (GetEffectName(Type) == "Rainbow")
             {
@@ -313,6 +328,7 @@ namespace AuraEditor
             else if (GetEffectName(effType) == "Laser") return "SineWave";
             else if (GetEffectName(effType) == "Ripple") return "SineWave";
             else if (GetEffectName(effType) == "Star") return "SineWave";
+            else if (GetEffectName(effType) == "Tide") return "SineWave";
 
             return "SineWave";
         }
@@ -321,11 +337,14 @@ namespace AuraEditor
             if (GetEffectName(effType) == "Breath") return 0.5;
             else if (GetEffectName(effType) == "Strobing") return 0.5;
             else if (GetEffectName(effType) == "Comet") return 0.1;
-            else if (GetEffectName(effType) == "Star") return 0.7;
+            else if (GetEffectName(effType) == "Star") return 1;
+            else if (GetEffectName(effType) == "Tide") return 0.4;
             return 1;
         }
         static private double GetMin(int effType)
         {
+            if (GetEffectName(effType) == "Star") return 0.7;
+            else if (GetEffectName(effType) == "Tide") return 0.2;
             return 0;
         }
         static private double GetLength(int effType)
@@ -339,7 +358,8 @@ namespace AuraEditor
             else if (GetEffectName(effType) == "Reactive") return 1;
             else if (GetEffectName(effType) == "Laser") return 10;
             else if (GetEffectName(effType) == "Ripple") return 10;
-            else if (GetEffectName(effType) == "Star") return 10;
+            else if (GetEffectName(effType) == "Star") return 2;
+            else if (GetEffectName(effType) == "Tide") return 22;
 
             return 10;
         }
@@ -358,6 +378,7 @@ namespace AuraEditor
                 else if (GetEffectName(effType) == "Laser") return "Random";
                 else if (GetEffectName(effType) == "Ripple") result = 1;
                 else if (GetEffectName(effType) == "Star") return "Random";
+                else if (GetEffectName(effType) == "Tide") result = 0.05;
             }
             else if (speed == 1)
             {
@@ -370,6 +391,7 @@ namespace AuraEditor
                 else if (GetEffectName(effType) == "Laser") return "Random";
                 else if (GetEffectName(effType) == "Ripple") result = 2;
                 else if (GetEffectName(effType) == "Star") return "Random";
+                else if (GetEffectName(effType) == "Tide") result = 0.1;
             }
             else if (speed == 2)
             {
@@ -382,6 +404,7 @@ namespace AuraEditor
                 else if (GetEffectName(effType) == "Laser") return "Random";
                 else if (GetEffectName(effType) == "Ripple") result = 4;
                 else if (GetEffectName(effType) == "Star") return "Random";
+                else if (GetEffectName(effType) == "Tide") result = 0.3;
             }
 
             return result.ToString();
@@ -395,7 +418,7 @@ namespace AuraEditor
         }
         static private double GetStart(int effType)
         {
-            if (GetEffectName(effType) == "Comet") return -5;
+            if (GetEffectName(effType) == "Tide") return -5;
 
             return 0;
         }
@@ -405,19 +428,19 @@ namespace AuraEditor
             {
                 if (GetEffectName(effType) == "Comet") return 10;
                 else if (GetEffectName(effType) == "Laser") return 10;
-                else if (GetEffectName(effType) == "Ripple") return 15;
+                else if (GetEffectName(effType) == "Ripple") return 10;
             }
             else if (speed == 1)
             {
                 if (GetEffectName(effType) == "Comet") return 15;
                 else if (GetEffectName(effType) == "Laser") return 15;
-                else if (GetEffectName(effType) == "Ripple") return 10;
+                else if (GetEffectName(effType) == "Ripple") return 15;
             }
             else if (speed == 2)
             {
                 if (GetEffectName(effType) == "Comet") return 20;
                 else if (GetEffectName(effType) == "Laser") return 20;
-                else if (GetEffectName(effType) == "Ripple") return 15;
+                else if (GetEffectName(effType) == "Ripple") return 20;
             }
 
             return 0;
@@ -427,6 +450,48 @@ namespace AuraEditor
             if (GetEffectName(effType) == "Comet") return 1;
 
             return 0;
+        }
+        static private XmlNode GetBindToSignalXmlNode(int effType, int speed)
+        {
+            XmlNode bindToSignalXmlNode = CreateXmlNodeOfFile("bindToSignal");
+
+            XmlNode sourceNode = CreateXmlNodeOfFile("source");
+            sourceNode.InnerText = "Formula";
+            bindToSignalXmlNode.AppendChild(sourceNode);
+
+            XmlNode targetNode = CreateXmlNodeOfFile("target");
+            targetNode.InnerText = "length";
+            bindToSignalXmlNode.AppendChild(targetNode);
+
+            XmlNode amplifyNode = CreateXmlNodeOfFile("amplify");
+            amplifyNode.InnerText = "1";
+            bindToSignalXmlNode.AppendChild(amplifyNode);
+
+            XmlNode offsetNode = CreateXmlNodeOfFile("offset");
+            offsetNode.InnerText = "0";
+            bindToSignalXmlNode.AppendChild(offsetNode);
+
+            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            typeNode.InnerText = GetWaveType(effType);
+            bindToSignalXmlNode.AppendChild(typeNode);
+
+            XmlNode maxNode = CreateXmlNodeOfFile("max");
+            maxNode.InnerText = "29";
+            bindToSignalXmlNode.AppendChild(maxNode);
+
+            XmlNode minNode = CreateXmlNodeOfFile("min");
+            minNode.InnerText = "0";
+            bindToSignalXmlNode.AppendChild(minNode);
+
+            XmlNode lengthNode = CreateXmlNodeOfFile("length");
+            lengthNode.InnerText = "25";
+            bindToSignalXmlNode.AppendChild(lengthNode);
+            
+            XmlNode freqNode = CreateXmlNodeOfFile("freq");
+            freqNode.InnerText = GetFreq(effType, speed);
+            bindToSignalXmlNode.AppendChild(freqNode);
+
+            return bindToSignalXmlNode;
         }
 
         static private XmlNode GetBindToSlotXmlNode(int effType)
@@ -484,6 +549,11 @@ namespace AuraEditor
             else if (GetEffectName(effType) == "Star")
             {
                 attribute.Value = "LIGHTNESS";
+                slotNode.Attributes.Append(attribute);
+            }
+            else if (GetEffectName(effType) == "Tide")
+            {
+                attribute.Value = "ALPHA";
                 slotNode.Attributes.Append(attribute);
             }
             bindToSlotXmlNode.AppendChild(slotNode);
@@ -638,6 +708,35 @@ namespace AuraEditor
             XmlNode lowNode = CreateXmlNodeOfFile("low");
             lowNode.InnerText = Low.ToString();
             effectNode.AppendChild(lowNode);
+
+            XmlNode colorPointListNode = CreateXmlNodeOfFile("colorPointList");
+            foreach (var item in ColorPointList)
+            {
+                XmlNode colorPointNode = CreateXmlNodeOfFile("colorPoint");
+
+                XmlNode colorANode = CreateXmlNodeOfFile("a");
+                colorANode.InnerText = item.Color.A.ToString();
+                colorPointNode.AppendChild(colorANode);
+
+                XmlNode colorRNode = CreateXmlNodeOfFile("r");
+                colorRNode.InnerText = item.Color.R.ToString();
+                colorPointNode.AppendChild(colorRNode);
+
+                XmlNode colorGNode = CreateXmlNodeOfFile("g");
+                colorGNode.InnerText = item.Color.G.ToString();
+                colorPointNode.AppendChild(colorGNode);
+
+                XmlNode colorBNode = CreateXmlNodeOfFile("b");
+                colorBNode.InnerText = item.Color.B.ToString();
+                colorPointNode.AppendChild(colorBNode);
+
+                XmlNode offsetNode = CreateXmlNodeOfFile("offset");
+                offsetNode.InnerText = item.Offset.ToString();
+                colorPointNode.AppendChild(offsetNode);
+
+                colorPointListNode.AppendChild(colorPointNode);
+            }
+            effectNode.AppendChild(colorPointListNode);
 
             return effectNode;
         }

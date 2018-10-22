@@ -38,9 +38,9 @@
                                         </VisualState>
                                         <VisualState x:Name="CheckedPointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="LPart.Source" Value="{ThemeResource LPart_h}"/>
-                                                <Setter Target="MPart.Source" Value="{ThemeResource MPart_h}"/>
-                                                <Setter Target="RPart.Source" Value="{ThemeResource RPart_h}"/>
+                                                <Setter Target="LPart.Source" Value="{ThemeResource LPart_s}"/>
+                                                <Setter Target="MPart.Source" Value="{ThemeResource MPart_s}"/>
+                                                <Setter Target="RPart.Source" Value="{ThemeResource RPart_s}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Checked">

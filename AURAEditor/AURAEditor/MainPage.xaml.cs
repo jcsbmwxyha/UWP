@@ -131,13 +131,6 @@ namespace AuraEditor
         {
             SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
         }
-        private void EffectRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (EffectBlockListView.Visibility == Visibility.Visible)
-                EffectBlockListView.Visibility = Visibility.Collapsed;
-            else
-                EffectBlockListView.Visibility = Visibility.Visible;
-        }
         private void AdjustEffectBlockGrid_Click(object sender, RoutedEventArgs e)
         {
             int columnSpans = Grid.GetColumnSpan(SpaceGrid);

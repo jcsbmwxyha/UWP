@@ -245,11 +245,13 @@ namespace AuraEditor
             }
 
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
+            UnselectAllZones();
         }
         public void Reset()
         {
             IntializeMouseEventCtrl();
             GlobalDevices.Clear();
+            TempDevices.Clear();
             SetSpaceStatus(SpaceStatus.Normal);
         }
         private void SortByZIndex(LightZone[] zones)

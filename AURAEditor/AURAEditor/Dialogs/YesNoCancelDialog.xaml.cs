@@ -19,11 +19,13 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class YesNoCancelDialog : ContentDialog
     {
+        public ContentDialogResult Result;
+
         public string DialogTitle
         {
             set
             {
-                this.Title = value;
+                TitleTextBlock.Text = value;
             }
         }
         public string DialogContent {
@@ -35,15 +37,19 @@ namespace AuraEditor.Dialogs
 
         public YesNoCancelDialog()
         {
+            Result = ContentDialogResult.None;
             this.InitializeComponent();
         }
 
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void YesButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            Result = ContentDialogResult.Primary;
+            this.Hide();
         }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void NoButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            Result = ContentDialogResult.Secondary;
+            this.Hide();
         }
     }
 }

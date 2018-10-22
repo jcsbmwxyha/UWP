@@ -16,6 +16,7 @@ namespace AuraEditor.Common
             "Strobing",
             "Comet",
             "Star",
+            "Tide",
         };
         static string[] _triggerEffects =
         {

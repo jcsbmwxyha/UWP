@@ -55,6 +55,12 @@
             <BitmapImage x:Key="SidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_n.png"/>
             <BitmapImage x:Key="SidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_h.png"/>
             <BitmapImage x:Key="SidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_p.png"/>
+            <BitmapImage x:Key="LeftSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_n.png"/>
+            <BitmapImage x:Key="LeftSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_h.png"/>
+            <BitmapImage x:Key="LeftSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_p.png"/>
+            <BitmapImage x:Key="RightSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_n.png"/>
+            <BitmapImage x:Key="RightSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_h.png"/>
+            <BitmapImage x:Key="RightSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_p.png"/>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
@@ -1177,7 +1183,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="SidePanelButtonStyle"  TargetType="Button">
+            <Style x:Key="LeftSidePanelButtonStyle"  TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -1186,17 +1192,17 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource SidePanel_n}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_n}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource SidePanel_h}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_h}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource SidePanel_s}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_s}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -1210,7 +1216,39 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
+            <Style x:Key="RightSidePanelButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <Style x:Key="MenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
                 <Setter Property="RequestedTheme" Value="Default"/>
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
@@ -1252,7 +1290,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
             <Style TargetType="MenuFlyoutItem" x:Key="MenuFlyoutItemStyle">
                 <Setter Property="Background" Value="Black" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -1346,18 +1383,14 @@
                Stretch="Fill"/>
 
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <ToggleButton Name="DragDevImgToggleButton"
-                              FontSize="20" Height="40"
-                              FontFamily="Segoe MDL2 Assets"
-                              Content="&#xECE9;"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
+                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" 
+                        x:FieldModifier="Public" Width="180" Height="40" FontSize="20" Foreground="White"
+                        Content="Set as layer" Click="SetLayerButton_Click"/>
+                <ToggleButton Name="DragDevImgToggleButton" Style="{StaticResource RogToggleButtonStyle}"
+                              Content="&#xECE9;" FontSize="20" FontFamily="Segoe MDL2 Assets" Height="40" Background="Gray" Margin="20,0,5,0"
                               Checked="DragDevImgToggleButton_Checked"
-                              Unchecked="DragDevImgToggleButton_Unchecked"
-                              Background="Gray"
-                              Margin="0,0,5,0"/>
-                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}"
-                        x:FieldModifier="Public" Width="160" Height="40" FontSize="20" Foreground="White"
-                        Content="Set Layer" Click="SetLayerButton_Click"/>
+                              Unchecked="DragDevImgToggleButton_Unchecked"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="ActionBar_Column2" Grid.Column="2">
@@ -1388,28 +1421,13 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <Button Width="60" Height="15" Style="{StaticResource SidePanelButtonStyle}"
-                VerticalAlignment="Top"
-                Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5"
-                Click="AdjustEffectBlockGrid_Click"/>
-        <Button Width="60" Height="15" Style="{StaticResource SidePanelButtonStyle}"
-                VerticalAlignment="Top" HorizontalAlignment="Right"
-                Grid.Row="1" Grid.Column="2"  Canvas.ZIndex="5"
-                Click="AdjustEffectInfoGrid_Click"/>
         <ScrollViewer Name="EffectBlockScrollViewer"
                       Grid.Row="1" Grid.Column="0"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" >
-            <StackPanel>
-                <RadioButton x:Name="EffectRadioButton"
-                                 Content="Effects"
-                                 GroupName="EffectOption"
-                                 Click="EffectRadioButton_Click"
-                                 IsChecked="True"
-                                 FontSize="20"
-                                 Foreground="White"/>
-                <ListView x:Name="EffectBlockListView"
-                              Margin="22,4">
+            <StackPanel Margin="22,10">
+                <TextBlock Text="Effects" FontSize="20" Foreground="Gray"/>
+                <ListView x:Name="EffectBlockListView" Margin="0,10,0,0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <usercontrol:EffectBlock/>
@@ -1423,7 +1441,22 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="SpaceZoomButton" Content="50 %" Foreground="White" Grid.Row="1"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Button Width="10" Height="50" Style="{StaticResource LeftSidePanelButtonStyle}"
+                VerticalAlignment="Top"
+                Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5"
+                Click="AdjustEffectBlockGrid_Click"/>
+            <Image Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png" Width="1" Stretch="Fill" HorizontalAlignment="Right"/>
+            <Button Width="10" Height="50" Style="{StaticResource RightSidePanelButtonStyle}"
+                VerticalAlignment="Top" HorizontalAlignment="Right"
+                Grid.Row="1" Grid.Column="2"  Canvas.ZIndex="5"
+                Click="AdjustEffectInfoGrid_Click"/>
+            <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png" Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
+            <Button x:Name="SpaceZoomButton" Content="50 %" Foreground="White" Grid.Row="1" Grid.Column="1"
                     Width="110" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
                 <Button.Flyout>
@@ -1436,7 +1469,7 @@
             </Button>
             <ScrollViewer Name="SpaceAreaScrollViewer"
                           x:FieldModifier="public"
-                          Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3"
+                          Grid.Column="1" Grid.RowSpan="2"
                           MinZoomFactor="0.5" MaxZoomFactor="100" ZoomMode="Enabled"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Canvas Name="SpaceAreaCanvas"  VerticalAlignment="Top"
@@ -1458,7 +1491,7 @@
                            x:FieldModifier="Public"/>
                 </Canvas>
             </ScrollViewer>
-            <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Canvas.ZIndex="-3"
+            <Image Grid.Row="1" Grid.Column="1" Canvas.ZIndex="-3"
                    Source="Assets/asus_ac_stage_bg.png" Stretch="Fill"/>
         </Grid>
         <ScrollViewer Name="EffectInfoScrollViewer"

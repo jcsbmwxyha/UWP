@@ -439,12 +439,6 @@
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock Text="Effect :" VerticalAlignment="Center"
                            Foreground="White"/>
-                    <!--<ComboBox Name="EffectComboBox" VerticalAlignment="Center" Width="190" Margin="20,0,0,0"
-                              SelectedIndex="0" SelectionChanged="EffectComboBox_SelectionChanged">
-                        <x:String>Ripple</x:String>
-                        <x:String>Reactive</x:String>
-                        <x:String>Laser</x:String>
-                    </ComboBox>-->
                     <Button x:Name="EffectSelectionButton" Foreground="White" Width="190" Height="50"
                             Style="{StaticResource RogComboBoxButtonStyle}">
                         <Button.Flyout>

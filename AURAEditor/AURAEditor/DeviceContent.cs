@@ -62,13 +62,13 @@ namespace AuraEditor
                 deviceContent.DeviceName = modelName;
                 deviceContent.DeviceType = GetTypeByTypeName(elem.GetAttribute("type"));
 
-                int exist_Column = 0;
-                int leftTopX_Column = 0;
-                int leftTopY_Column = 0;
-                int rightBottomX_Column = 0;
-                int rightBottomY_Column = 0;
-                int z_Column = 0;
-                int png_Column = 0;
+                int exist_Column = -1;
+                int leftTopX_Column = -1;
+                int leftTopY_Column = -1;
+                int rightBottomX_Column = -1;
+                int rightBottomY_Column = -1;
+                int z_Column = -1;
+                int png_Column = -1;
 
                 if (csvFile != null)
                 {
@@ -105,7 +105,7 @@ namespace AuraEditor
                                     ZIndex = Int32.Parse(row[z_Column]),
                                 };
 
-                                if (row[png_Column] != "")
+                                if (png_Column != -1 && row[png_Column] != "")
                                     ledui.PNG_Path = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
 
                                 deviceContent.Leds.Add(ledui);
