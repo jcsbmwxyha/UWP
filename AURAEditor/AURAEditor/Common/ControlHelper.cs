@@ -79,6 +79,32 @@ namespace AuraEditor.Common
 
             return ResultCollection;
         }
+        public static T FindFirstControl<T>(UIElement parent, Type targetType) where T : FrameworkElement
+        {
+            if (parent == null)
+                return null;
+
+            if (parent.GetType() == targetType)
+            {
+                return (T)parent;
+            }
+
+            T result = null;
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+
+            for (int i = 0; i < count; i++)
+            {
+                UIElement child = (UIElement)VisualTreeHelper.GetChild(parent, i);
+
+                if (FindFirstControl<T>(child, targetType) != null)
+                {
+                    result = FindFirstControl<T>(child, targetType);
+                    break;
+                }
+            }
+
+            return result;
+        }
         public static async void ShowMess(string res)
         {
             var messDialog = new MessageDialog(res);

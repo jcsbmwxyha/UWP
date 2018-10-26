@@ -101,6 +101,11 @@ namespace AuraEditor
         {
             m_ZoneDictionary.Add(type, indexes);
         }
+        public void SetDeviceZones(int type, int[] indexes)
+        {
+            m_ZoneDictionary.Remove(type);
+            m_ZoneDictionary.Add(type, indexes);
+        }
         public void AddTriggerEffect(TriggerEffect effect)
         {
             TriggerEffects.Add(effect);

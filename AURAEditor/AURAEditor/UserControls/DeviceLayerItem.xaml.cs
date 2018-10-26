@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using AuraEditor.Dialogs;
 using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.AuraEditorColorHelper;
+using static AuraEditor.AuraSpaceManager;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -19,7 +13,6 @@ namespace AuraEditor.UserControls
     public sealed partial class DeviceLayerItem : UserControl
     {
         private DeviceLayer m_DeviceLayer { get { return this.DataContext as DeviceLayer; } }
-
         public bool IsChecked
         {
             get
@@ -52,13 +45,12 @@ namespace AuraEditor.UserControls
                 else
                     m_DeviceLayer.Eye = true;
             }
-        }
-        private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            AuraSpaceManager.Self.WatchZonesOfLayer(m_DeviceLayer);
+
+            SelectMe();
         }
         private async void TriggerDialogButton_Click(object sender, RoutedEventArgs e)
         {
+            SelectMe();
             ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
             await triggerDialog.ShowAsync();
 
@@ -66,16 +58,34 @@ namespace AuraEditor.UserControls
             {
                 m_DeviceLayer.UICanvas.GoToState("Trigger");
                 VisualStateManager.GoToState(DeviceLayerRadioButton, "Trigger", false);
-                VisualStateManager.GoToState(this, "Trigger", false);
             }
             else
             {
                 m_DeviceLayer.UICanvas.GoToState("NoTrigger");
                 VisualStateManager.GoToState(DeviceLayerRadioButton, "NoTrigger", false);
-                VisualStateManager.GoToState(this, "NoTrigger", false);
             }
 
             MainPage.Self.NeedSave = true;
+        }
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectMe();
+            AuraSpaceManager.Self.ReEdit(m_DeviceLayer);
+            MainPage.Self.ReEdit(m_DeviceLayer);
+        }
+
+        #region State change
+        private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DeviceLayerRadioButton.IsChecked == true)
+            {
+                m_DeviceLayer.UICanvas.GoToState("Checked");
+            }
+            else
+            {
+                m_DeviceLayer.UICanvas.GoToState("Normal");
+            }
+            AuraSpaceManager.Self.WatchCurrentLayer();
         }
         private void DeviceLayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -103,5 +113,10 @@ namespace AuraEditor.UserControls
                 m_DeviceLayer.UICanvas.GoToState("Normal");
             }
         }
+        private void SelectMe()
+        {
+            DeviceLayerRadioButton.IsChecked = true;
+        }
+        #endregion
     }
 }

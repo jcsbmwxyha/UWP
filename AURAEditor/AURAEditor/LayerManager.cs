@@ -77,6 +77,19 @@ namespace AuraEditor
         {
             return DeviceLayers.Count;
         }
+        public DeviceLayer GetSelectedLayer()
+        {
+            List<DeviceLayerItem> layers =
+                FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
+
+            foreach (var layer in layers)
+            {
+                if (layer.IsChecked == true)
+                    return layer.DataContext as DeviceLayer;
+            }
+
+            return null;
+        }
         public void UnselectAllLayers()
         {
             List<DeviceLayerItem> layers =

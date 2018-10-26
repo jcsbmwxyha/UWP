@@ -46,6 +46,93 @@ namespace AuraEditor
             Leds = new List<LedUI>();
         }
 
+        static public async Task<DeviceContent> GetDeviceContent(SyncDevice syncDevice)
+        {
+            try
+            {
+                DeviceContent deviceContent = new DeviceContent();
+                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+
+                string modelName = syncDevice.Name;
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
+                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+
+                deviceContent.DeviceName = modelName;
+                deviceContent.DeviceType = GetTypeByTypeName(syncDevice.Type);
+
+                int exist_Column = -1;
+                int leftTopX_Column = -1;
+                int leftTopY_Column = -1;
+                int rightBottomX_Column = -1;
+                int rightBottomY_Column = -1;
+                int z_Column = -1;
+                int png_Column = -1;
+
+                if (csvFile != null)
+                {
+                    using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
+                    {
+                        CsvRow row = new CsvRow();
+                        while (csvReader.ReadRow(row))
+                        {
+                            if (row[0].ToLower() == "parameters")
+                            {
+                                for (int i = 0; i < row.Count; i++)
+                                {
+                                    if (row[i].ToLower() == "exist") { exist_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
+                                    else if (row[i].ToLower() == "z_index") { z_Column = i; }
+                                    else if (row[i].ToLower() == "png") { png_Column = i; }
+                                }
+                            }
+                            else if (row[0].ToLower().Contains("led "))
+                            {
+                                if (row[exist_Column] != "1")
+                                    continue;
+
+                                LedUI ledui = new LedUI()
+                                {
+                                    Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                    Left = Int32.Parse(row[leftTopX_Column]),
+                                    Top = Int32.Parse(row[leftTopY_Column]),
+                                    Right = Int32.Parse(row[rightBottomX_Column]),
+                                    Bottom = Int32.Parse(row[rightBottomY_Column]),
+                                    ZIndex = Int32.Parse(row[z_Column]),
+                                };
+
+                                if (png_Column != -1 && row[png_Column] != "")
+                                    ledui.PNG_Path = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
+
+                                deviceContent.Leds.Add(ledui);
+                            }
+                        }
+                    }
+                }
+
+                if (pngFile != null)
+                {
+                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
+
+                        bitmapImage.SetSource(fileStream);
+                        deviceContent.Image = bitmapImage;
+                        deviceContent.GridWidth = bitmapImage.PixelWidth / GridPixels;
+                        deviceContent.GridHeight = bitmapImage.PixelHeight / GridPixels;
+                    }
+                }
+
+                return deviceContent;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         static public async Task<DeviceContent> GetDeviceContent(XmlNode node)
         {
             try

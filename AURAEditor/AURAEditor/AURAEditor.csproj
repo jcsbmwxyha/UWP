@@ -108,6 +108,9 @@
     </Compile>
     <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\StorageHelper.cs" />
+    <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
+      <DependentUpon>ConnectedDevicesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NamingDialog.xaml.cs">
       <DependentUpon>NamingDialog.xaml</DependentUpon>
     </Compile>
@@ -139,6 +142,7 @@
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
     <Compile Include="SpecialLightZone.cs" />
+    <Compile Include="SyncDevice.cs" />
     <Compile Include="TimelineEffect.cs" />
     <Compile Include="LightZone.cs" />
     <Compile Include="LayerManager.cs" />
@@ -146,6 +150,9 @@
     <Compile Include="EffectInfo.cs" />
     <Compile Include="UserControls\ColorPointBt.xaml.cs">
       <DependentUpon>ColorPointBt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ConnectedDeviceBlock.xaml.cs">
+      <DependentUpon>ConnectedDeviceBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
       <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
@@ -233,6 +240,9 @@
     <Content Include="Assets\Button\asus_ac_sidepanel_btn_h.png" />
     <Content Include="Assets\Button\asus_ac_sidepanel_btn_n.png" />
     <Content Include="Assets\Button\asus_ac_sidepanel_btn_p.png" />
+    <Content Include="Assets\Button\asus_auraeditor_edit_h_ic.png" />
+    <Content Include="Assets\Button\asus_auraeditor_edit_n_ic.png" />
+    <Content Include="Assets\Button\asus_auraeditor_edit_s_ic.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_d_l.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_d_m.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_d_r.png" />
@@ -263,9 +273,17 @@
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
     <Content Include="Assets\effectUI.png" />
     <Content Include="Assets\Grid.png" />
+    <Content Include="Assets\LargeTile.scale-100.png" />
+    <Content Include="Assets\LargeTile.scale-125.png" />
+    <Content Include="Assets\LargeTile.scale-150.png" />
+    <Content Include="Assets\LargeTile.scale-200.png" />
+    <Content Include="Assets\LargeTile.scale-400.png" />
     <Content Include="Assets\Layer\asus_ac_layer_bg.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_l_h.png" />
     <Content Include="Assets\Layer\asus_ac_layer_bg_l_s.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_m_h.png" />
     <Content Include="Assets\Layer\asus_ac_layer_bg_m_s.png" />
+    <Content Include="Assets\Layer\asus_ac_layer_bg_r_h.png" />
     <Content Include="Assets\Layer\asus_ac_layer_bg_r_s.png" />
     <Content Include="Assets\Layer\asus_ac_layer_n.png" />
     <Content Include="Assets\Layer\asus_ac_layer_s.png" />
@@ -273,6 +291,45 @@
     <Content Include="Assets\Layer\asus_ac_triggerline_head.png" />
     <Content Include="Assets\Line\asus_ac_shortline_bg.png" />
     <Content Include="Assets\Line\asus_ac_shortline_v_bg.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\asus_ac_cd_bg.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\asus_ac_deviceslist_bg.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\asus_ac_deviceslist_h.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\asus_ac_deviceslist_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\asus_ac_deviceslist_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_aiocooler_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_aiocooler_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_desktop_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_desktop_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_graphiccrad_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_graphiccrad_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_harddrive_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_harddrive_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_headset_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_headset_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_keyboard_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_keyboard_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_laptop_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_laptop_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_led_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_led_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mic_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mic_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_monitor_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_monitor_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_motherboard_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_motherboard_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mousepad_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mousepad_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mouse_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_mouse_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_odd_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_odd_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_others_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_others_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_phone_ic_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_phone_ic_s.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_spotlight_icon_n.png" />
+    <Content Include="Assets\scale-100\ConnectedDevices\icons\asus_ac_spotlight_icon_s.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_angle_ic_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_ac_colorpick_ic_n.png" />
@@ -321,6 +378,51 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_d.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_n.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_p.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_unselect_d.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_unselect_n.png" />
+    <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_unselect_p.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\asus_ac_cd_bg.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\asus_ac_deviceslist_bg.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\asus_ac_deviceslist_h.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\asus_ac_deviceslist_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\asus_ac_deviceslist_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_aiocooler_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_aiocooler_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_desktop_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_desktop_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_graphiccrad_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_graphiccrad_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_harddrive_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_harddrive_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_headset_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_headset_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_keyboard_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_keyboard_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_laptop_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_laptop_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_led_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_led_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mic_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mic_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_monitor_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_monitor_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_motherboard_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_motherboard_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mousepad_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mousepad_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mouse_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_mouse_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_odd_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_odd_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_others_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_others_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_phone_ic_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_phone_ic_s.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_spotlight_icon_n.png" />
+    <Content Include="Assets\scale-200\ConnectedDevices\icons\asus_ac_spotlight_icon_s.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_bg_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_angle_ic_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_ac_colorpick_ic_n.png" />
@@ -369,6 +471,12 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_d.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_n.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_p.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_unselect_d.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_unselect_n.png" />
+    <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_unselect_p.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_n.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_b_btn_p.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_l_btn_n.png" />
@@ -389,6 +497,37 @@
     <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_r.png" />
     <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Horizontal.png" />
     <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Vertical.png" />
+    <Content Include="Assets\SmallTile.scale-100.png" />
+    <Content Include="Assets\SmallTile.scale-125.png" />
+    <Content Include="Assets\SmallTile.scale-150.png" />
+    <Content Include="Assets\SmallTile.scale-200.png" />
+    <Content Include="Assets\SmallTile.scale-400.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\Square150x150Logo.scale-150.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_f.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_n.png" />
@@ -398,6 +537,10 @@
     <Content Include="Assets\TriggerDialog\asus_ac_rearrange_ic_s.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_triggerevent_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_trigger_bg.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-150.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_h.png" />
     <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_n.png" />
     <Content Include="Assets\ZoomSlider\asus_ac_minus_ic_s.png" />
@@ -442,7 +585,6 @@
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="RpcClient.dll" />
   </ItemGroup>
@@ -452,6 +594,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Dialogs\ColorPickerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ConnectedDevicesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -468,6 +614,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ColorPointBt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ConnectedDeviceBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

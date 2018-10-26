@@ -8,57 +8,36 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
-
-    <Grid> 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="LayerBg_m_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_h.png"/>
+            <BitmapImage x:Key="LayerBg_r_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_h.png"/>
+            <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+            <BitmapImage x:Key="LayerBg_r_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal"/>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_h}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                     <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_s}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Checked">
                     <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_s}"/>
                     </VisualState.Setters>
                 </VisualState>
-                <!--<VisualState x:Name="TriggerNormal">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>--><!--
-                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="TriggerPointerOver">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
-                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="TriggerCheckedPointerOver">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
-                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="TriggerChecked">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="../Assets/Layer/asus_ac_layer_bg_r_s.png"/>
-                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>-->
             </VisualStateGroup>
             <VisualStateGroup x:Name="TriggerStates">
                 <VisualState x:Name="NoTrigger">
@@ -76,7 +55,7 @@
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="1"/>
         </Grid.ColumnDefinitions>
 
         <Image Name="LayerBg_Mid"

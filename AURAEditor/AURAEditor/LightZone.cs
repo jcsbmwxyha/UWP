@@ -58,6 +58,7 @@ namespace AuraEditor
                 );
             }
         }
+        public bool Hover;
         public bool Selected;
 
         public LightZone(LedUI led)
@@ -102,7 +103,49 @@ namespace AuraEditor
 
             return rectangle;
         }
-        virtual public async void Frame_StatusChanged(RegionStatus status)
+        virtual public void OnReceiveMouseEvent(MouseEvent mouseEvent)
+        {
+            if (mouseEvent == MouseEvent.Click)
+            {
+                if (Selected == true)
+                {
+                    if (Hover == true)
+                        ChangeStatus(RegionStatus.NormalHover);
+                    else
+                        ChangeStatus(RegionStatus.Normal);
+                }
+                else
+                {
+                    if (Hover == true)
+                        ChangeStatus(RegionStatus.SelectedHover);
+                    else
+                        ChangeStatus(RegionStatus.Selected);
+                }
+            }
+            else if (mouseEvent == MouseEvent.Hover)
+            {
+                if (Selected == true)
+                {
+                    ChangeStatus(RegionStatus.SelectedHover);
+                }
+                else
+                {
+                    ChangeStatus(RegionStatus.NormalHover);
+                }
+            }
+            else // Unhover
+            {
+                if (Selected == true)
+                {
+                    ChangeStatus(RegionStatus.Selected);
+                }
+                else
+                {
+                    ChangeStatus(RegionStatus.Normal);
+                }
+            }
+        }
+        virtual public async void ChangeStatus(RegionStatus status)
         {
             Shape shape = MyFrameworkElement as Shape;
 
@@ -111,30 +154,35 @@ namespace AuraEditor
                 shape.Stroke = new SolidColorBrush(Colors.Black);
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = false;
+                Hover = false;
             }
             else if (status == RegionStatus.NormalHover)
             {
                 shape.Stroke = new SolidColorBrush(Colors.Black);
                 shape.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
                 Selected = false;
+                Hover = true;
             }
             else if (status == RegionStatus.Selected)
             {
                 shape.Stroke = new SolidColorBrush(Colors.Red);
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
+                Hover = false;
+            }
+            else if (status == RegionStatus.SelectedHover)
+            {
+                shape.Stroke = new SolidColorBrush(Colors.Red);
+                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
+                Selected = true;
+                Hover = true;
             }
             else if (status == RegionStatus.Watching)
             {
                 shape.Stroke = new SolidColorBrush(Colors.Yellow);
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
-            }
-            else
-            {
-                shape.Stroke = new SolidColorBrush(Colors.Red);
-                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
-                Selected = true;
+                Hover = false;
             }
         }
     }

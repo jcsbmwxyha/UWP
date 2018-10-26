@@ -71,7 +71,7 @@ namespace AuraEditor
             MyFrameworkElement = image;
         }
 
-        override public async void Frame_StatusChanged(RegionStatus status)
+        override public async void ChangeStatus(RegionStatus status)
         {
             Color color;
             if (status == RegionStatus.Normal)

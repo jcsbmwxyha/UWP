@@ -122,22 +122,13 @@
             <TextBox Name="NamingTextBox" Text="{x:Bind TheName, Mode=TwoWay}" Margin="0,26,0,0" Style="{StaticResource RogTextBoxStyle}" Height="40"/>
             <TextBlock Name="StatusTextBlock" Text="" Foreground="Red"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20">
-                <Button x:Name="OKButton"
-                        Content="OK"
-                        Foreground="White"
-                        Click="OKButton_Click"
-                        RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignTopWithPanel="True"
-                        Width="130" 
-                        Height="30" Style="{StaticResource RogButtonStyle2}"/>
+                <Button x:Name="OKButton" Content="OK" Click="OKButton_Click"
+                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
+                        Width="130" Style="{StaticResource RogButtonStyle2}"/>
                 <Button x:Name="CancelButton"
-                        Content="Cancel"
-                        Foreground="White"
-                        Click="CancelButton_Click"
-                        RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignTopWithPanel="True"
-                        Width="130" Height="30" Margin="20,0,0,0"
-                        Style="{StaticResource RogButtonStyle2}"/>
+                        Content="Cancel" Click="CancelButton_Click"
+                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
+                        Width="130" Margin="20,0,0,0" Style="{StaticResource RogButtonStyle2}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

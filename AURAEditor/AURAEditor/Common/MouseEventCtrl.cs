@@ -7,6 +7,12 @@ using Windows.Foundation;
 
 namespace AuraEditor.Common
 {
+    public enum MouseEvent
+    {
+        Hover = 0,
+        Unhover,
+        Click,
+    }
     public enum RegionStatus
     {
         Normal = 0,
@@ -18,38 +24,10 @@ namespace AuraEditor.Common
 
     class MouseDetectionRegion
     {
-        public MouseEventCtrl.StatusChangedCallBack Callback { get; set; }
+        public MouseEventCtrl.MouseEventCallBack Callback { get; set; }
         public Rect DetectionRect { get; set; }
         public int RegionIndex { get; set; }
         public int GroupIndex { get; set; }
-
-        bool hover;
-        public bool IsHover => hover;
-        public bool Hover
-        {
-            set
-            {
-                if (hover != value)
-                {
-                    hover = value;
-                    OnStatusChanged();
-                }
-            }
-        }
-
-        bool selected;
-        public bool IsSelected => selected;
-        public bool Selected
-        {
-            set
-            {
-                if (selected != value)
-                {
-                    selected = value;
-                    OnStatusChanged();
-                }
-            }
-        }
 
         public void MoveRect(double moveXOffset, double moveYOffset)
         {
@@ -61,25 +39,18 @@ namespace AuraEditor.Common
 
             DetectionRect = r;
         }
-        public void OnStatusChanged()
+        public void SendMouseEvent(MouseEvent mouseEvent)
         {
-            RegionStatus status;
-
-            if (!hover && !selected) status = RegionStatus.Normal;
-            else if (hover && !selected) status = RegionStatus.NormalHover;
-            else if (!hover && selected) status = RegionStatus.Selected;
-            else status = RegionStatus.SelectedHover;
-
-            Callback?.Invoke(status);
+            Callback?.Invoke(mouseEvent);
         }
     }
 
     class MouseEventCtrl
     {
-        public delegate void StatusChangedCallBack(RegionStatus status);
+        public delegate void MouseEventCallBack(MouseEvent me);
         Point _pressPoint;
-        List<int> _beforeMouseSelectedIndexes;
-        List<int> _currentMouseSelectedIndexes;
+        List<int> beforeIndexesInMouseRegion;
+        List<int> currentIndexesInMouseRegion;
 
         private Rect _monitorMaxRect;
         public Rect MonitorMaxRect
@@ -87,7 +58,7 @@ namespace AuraEditor.Common
             get => _monitorMaxRect;
             set => _monitorMaxRect = value;
         }
-        
+
         private MouseDetectionRegion[] _detectionRegions;
         public MouseDetectionRegion[] DetectionRegions
         {
@@ -104,22 +75,22 @@ namespace AuraEditor.Common
                 if (_currentHoverIndex != value)
                 {
                     if (_currentHoverIndex != -1)
-                        DetectionRegions[_currentHoverIndex].Hover = false;
+                        DetectionRegions[_currentHoverIndex].SendMouseEvent(MouseEvent.Unhover);
                     if (value != -1)
-                        DetectionRegions[value].Hover = true;
+                        DetectionRegions[value].SendMouseEvent(MouseEvent.Hover);
                     _currentHoverIndex = value;
                 }
             }
         }
-        
+
         public Rect MouseRect { get; set; }
 
         public MouseEventCtrl()
         {
             _pressPoint = new Point(0, 0);
             _monitorMaxRect = new Rect(new Point(0, 0), new Point(0, 0));
-            _beforeMouseSelectedIndexes = new List<int>();
-            _currentMouseSelectedIndexes = new List<int>();
+            beforeIndexesInMouseRegion = new List<int>();
+            currentIndexesInMouseRegion = new List<int>();
             _currentHoverIndex = -1;
         }
 
@@ -129,7 +100,7 @@ namespace AuraEditor.Common
             {
                 if (DetectionRegions[i].DetectionRect.Contains(p))
                 {
-                    DetectionRegions[i].Selected = !DetectionRegions[i].IsSelected;
+                    DetectionRegions[i].SendMouseEvent(MouseEvent.Click);
                     break;
                 }
             }
@@ -193,7 +164,7 @@ namespace AuraEditor.Common
             mouseRect.Y = y;
 
             // Detect intersection
-            _currentMouseSelectedIndexes.Clear();
+            currentIndexesInMouseRegion.Clear();
             for (int i = 0; i < DetectionRegions.Length; i++)
             {
                 Rect r = DetectionRegions[i].DetectionRect;
@@ -201,34 +172,26 @@ namespace AuraEditor.Common
 
                 if (r != Rect.Empty)
                 {
-                    _currentMouseSelectedIndexes.Add(i);
+                    currentIndexesInMouseRegion.Add(i);
                 }
             }
 
-            // Get outside and inside region index, and then toggle its Selected
-            int[] outsideIndexes = _beforeMouseSelectedIndexes.Except(_currentMouseSelectedIndexes).ToArray();
-            int[] insideIndexes = _currentMouseSelectedIndexes.Except(_beforeMouseSelectedIndexes).ToArray();
+            // Set theory (A-B) U (B-A) : need to click 
+            List<int> needToClick = new List<int>(beforeIndexesInMouseRegion.Except(currentIndexesInMouseRegion));
+            needToClick.AddRange(currentIndexesInMouseRegion.Except(beforeIndexesInMouseRegion));
 
-            for (int i = 0; i < outsideIndexes.Length; i++)
-            {
-                int index = outsideIndexes[i];
-                DetectionRegions[index].Selected = !DetectionRegions[index].IsSelected;
-            }
-            for (int i = 0; i < insideIndexes.Length; i++)
-            {
-                int index = insideIndexes[i];
-                DetectionRegions[index].Selected = !DetectionRegions[index].IsSelected;
-            }
+            foreach (var index in needToClick)
+                DetectionRegions[index].SendMouseEvent(MouseEvent.Click);
 
-            _beforeMouseSelectedIndexes = new List<int>(_currentMouseSelectedIndexes);
+            beforeIndexesInMouseRegion = new List<int>(currentIndexesInMouseRegion);
             MouseRect = mouseRect;
         }
         public void OnMouseReleased()
         {
             Rect mouseRect = MouseRect;
 
-            _currentMouseSelectedIndexes.Clear();
-            _beforeMouseSelectedIndexes.Clear();
+            currentIndexesInMouseRegion.Clear();
+            beforeIndexesInMouseRegion.Clear();
             _pressPoint.X = -1;
             _pressPoint.Y = -1;
             mouseRect.Width = 0;
@@ -238,51 +201,15 @@ namespace AuraEditor.Common
         }
         public void OnRightTapped()
         {
-            for (int i = 0; i < DetectionRegions.Length; i++)
-            {
-                DetectionRegions[i].Selected = false;
-            }
-        }
-
-        public int[] GetSelectedIndexes()
-        {
-            List<int> selectedIndex = new List<int>();
-            foreach (var r in DetectionRegions)
-            {
-                if (r.IsSelected == true)
-                    selectedIndex.Add(r.RegionIndex);
-            }
-
-            return selectedIndex.ToArray();
         }
         public void MoveGroupRects(int groupIndex, double moveXOffset, double moveYOffset)
         {
-            foreach(var reg in DetectionRegions)
+            foreach (var reg in DetectionRegions)
             {
                 if (reg.GroupIndex == groupIndex)
                 {
                     reg.MoveRect(moveXOffset, moveYOffset);
                 }
-            }
-        }
-        public void SetAllRegionsStatus(RegionStatus status)
-        {
-            bool hover;
-            bool selected;
-
-            if (status == RegionStatus.Normal)
-            { hover = false; selected = false; }
-            else if (status == RegionStatus.NormalHover)
-            { hover = true; selected = false; }
-            else if (status == RegionStatus.Selected)
-            { hover = false; selected = true; }
-            else
-            { hover = true; selected = true; }
-
-            foreach (var reg in DetectionRegions)
-            {
-                reg.Hover = hover;
-                reg.Selected = selected;
             }
         }
     }

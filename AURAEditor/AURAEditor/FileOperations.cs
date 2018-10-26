@@ -174,6 +174,13 @@ namespace AuraEditor
         {
             await SaveCurrentUserFile();
             NeedSave = false;
+
+            // Apply after saving file
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
+            StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintScriptXml(true));
+
+            await (new ServiceViewModel()).AuraEditorTrigger();
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -202,7 +209,7 @@ namespace AuraEditor
 
                 CurrentUserFilename = "";
                 Reset();
-                SpaceManager.FillWithIngroupDevices();
+                SpaceManager.FillStageWithDevices();
                 NeedSave = false;
             }
         }
@@ -261,7 +268,7 @@ namespace AuraEditor
 
             CurrentUserFilename = "";
             Reset();
-            SpaceManager.FillWithIngroupDevices();
+            SpaceManager.FillStageWithDevices();
             UpdateListXml();
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
@@ -430,7 +437,6 @@ namespace AuraEditor
 
             await ParsingGlobalDevices(deviceNodes);
             ParsingLayers(layerNodes);
-            SpaceManager.RescanIngroupDevices();
         }
         private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
         {
@@ -549,7 +555,6 @@ namespace AuraEditor
 
         private void Reset()
         {
-            DragDevImgToggleButton.IsChecked = false;
             SetLayerButton.IsEnabled = true;
             SelectedEffectLine = null;
             LayerManager.Reset();

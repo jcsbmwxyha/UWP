@@ -1384,13 +1384,10 @@
 
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
-                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" 
-                        x:FieldModifier="Public" Width="180" Height="40" FontSize="20" Foreground="White"
-                        Content="Set as layer" Click="SetLayerButton_Click"/>
-                <ToggleButton Name="DragDevImgToggleButton" Style="{StaticResource RogToggleButtonStyle}"
-                              Content="&#xECE9;" FontSize="20" FontFamily="Segoe MDL2 Assets" Height="40" Background="Gray" Margin="20,0,5,0"
-                              Checked="DragDevImgToggleButton_Checked"
-                              Unchecked="DragDevImgToggleButton_Unchecked"/>
+                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}"
+                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click"/>
+                <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
+                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
             </StackPanel>
         </Grid>
         <Grid x:Name="ActionBar_Column2" Grid.Column="2">
@@ -1400,7 +1397,7 @@
                         Margin="1,0,0,0"
                         Click="SaveButton_Click"/>
                 <Button x:Name="FileListButton" Content="" Foreground="White"
-                    Width="200" Height="50" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                    Width="200" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom">
                         </MenuFlyout>
@@ -1457,11 +1454,11 @@
                 Click="AdjustEffectInfoGrid_Click"/>
             <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png" Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
             <Button x:Name="SpaceZoomButton" Content="50 %" Foreground="White" Grid.Row="1" Grid.Column="1"
-                    Width="110" Height="50" Canvas.ZIndex="6" VerticalAlignment="Bottom"
+                    Width="110" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
-                        <MenuFlyoutItem x:Name="Zoom_0" Text="0 %" Click="SpaceZoom_Click"/>
+                        <MenuFlyoutItem x:Name="Zoom_0" Text="33 %" Click="SpaceZoom_Click"/>
                         <MenuFlyoutItem x:Name="Zoom_50" Text="50 %" Click="SpaceZoom_Click"/>
                         <MenuFlyoutItem x:Name="Zoom_100" Text="100 %" Click="SpaceZoom_Click"/>
                     </MenuFlyout>
@@ -1595,15 +1592,14 @@
                                        PointerPressed="AngleBgImg_PointerPressed"
                                        PointerReleased="AngleBgImg_PointerReleased"/>
                             </Grid>
-                            <Grid Grid.Column="1">
+                            <Grid Grid.Column="1" Margin="25,0,0,0">
+                                <Rectangle Width="90" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="DecreaseBtn" Content="-" Click="DecreaseBtn_Click"
-                                            Foreground="White" Background="Gray" FontSize="16"/>
-                                    <TextBox x:Name="AngleTextBox" Width="20" Height="20" HorizontalAlignment="Left"
-                                         KeyDown="AngleTextBox_KeyDown"
+                                    <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
+                                    <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="42" HorizontalAlignment="Left"
+                                         KeyDown="AngleTextBox_KeyDown" Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold"
                                          TextChanged="AngleTextBox_TextChanged"/>
-                                    <Button x:Name="IncreaseBtn" Content="+" Click="IncreaseBtn_Click"
-                                            Foreground="White" Background="Gray" FontSize="16"/>
+                                    <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -1742,7 +1738,25 @@
                     Click="PlusButton_Click" Margin="0,0,5,0"/>
         </RelativePanel>
 
-        <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
-        <!--<Button Name="DebugButton" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
+        <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
+        <!--<Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
+        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
+                Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
+        
+        <Grid Name="EditBar" Background="DarkCyan" Visibility="Collapsed" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="290"/>
+            </Grid.ColumnDefinitions>
+            <RelativePanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20"/>
+                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.LeftOf="EditCancelButton" Width="180" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
+                <Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>
+            </RelativePanel>
+        </Grid>
+        <Grid Name="MaskGrid1" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="1"/>
+        <Grid Name="MaskGrid2" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="1" Grid.Column="2"/>
+        <Grid Name="MaskGrid3" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
     </Grid>
 </Page>

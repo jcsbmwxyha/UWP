@@ -141,15 +141,7 @@ namespace AuraEditor
             }
             else if(GetEffectName(effType) == "Star")
             {
-                XmlNode inputNode = CreateXmlNodeOfFile("input");
-                inputNode.InnerText = "10";
-                methodNode.AppendChild(inputNode);
-
-                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
-                inputNode2.InnerText = "0.5";
-                methodNode.AppendChild(inputNode2);
-
-                methodString = "randomRadius";
+                methodString = "shuffle";
             }
 
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
@@ -358,7 +350,7 @@ namespace AuraEditor
             else if (GetEffectName(effType) == "Reactive") return 1;
             else if (GetEffectName(effType) == "Laser") return 10;
             else if (GetEffectName(effType) == "Ripple") return 10;
-            else if (GetEffectName(effType) == "Star") return 2;
+            else if (GetEffectName(effType) == "Star") return 32;
             else if (GetEffectName(effType) == "Tide") return 22;
 
             return 10;
@@ -429,18 +421,21 @@ namespace AuraEditor
                 if (GetEffectName(effType) == "Comet") return 10;
                 else if (GetEffectName(effType) == "Laser") return 10;
                 else if (GetEffectName(effType) == "Ripple") return 10;
+                else if (GetEffectName(effType) == "Star") return 2;
             }
             else if (speed == 1)
             {
                 if (GetEffectName(effType) == "Comet") return 15;
                 else if (GetEffectName(effType) == "Laser") return 15;
                 else if (GetEffectName(effType) == "Ripple") return 15;
+                else if (GetEffectName(effType) == "Star") return 4;
             }
             else if (speed == 2)
             {
                 if (GetEffectName(effType) == "Comet") return 20;
                 else if (GetEffectName(effType) == "Laser") return 20;
                 else if (GetEffectName(effType) == "Ripple") return 20;
+                else if (GetEffectName(effType) == "Star") return 6;
             }
 
             return 0;
@@ -448,6 +443,7 @@ namespace AuraEditor
         static private int GetIsCycle(int effType)
         {
             if (GetEffectName(effType) == "Comet") return 1;
+            else if (GetEffectName(effType) == "Star") return 1;
 
             return 0;
         }
@@ -548,7 +544,7 @@ namespace AuraEditor
             }
             else if (GetEffectName(effType) == "Star")
             {
-                attribute.Value = "LIGHTNESS";
+                attribute.Value = "ALPHA";
                 slotNode.Attributes.Append(attribute);
             }
             else if (GetEffectName(effType) == "Tide")

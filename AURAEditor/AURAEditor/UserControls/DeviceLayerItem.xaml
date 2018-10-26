@@ -12,13 +12,70 @@
     <UserControl.Resources>
         <ResourceDictionary>
 
+            <BitmapImage x:Key="EyeToggleButton_on_n" UriSource="ms-appx:///Assets/Button/asus_ac_eye_on_n_ic.png"/>
+            <BitmapImage x:Key="EyeToggleButton_on_h" UriSource="ms-appx:///Assets/Button/asus_ac_eye_on_n_ic.png"/>
+            <BitmapImage x:Key="EyeToggleButton_off_n" UriSource="ms-appx:///Assets/Button/asus_ac_eye_off_n_ic.png"/>
+            <BitmapImage x:Key="EyeToggleButton_off_h" UriSource="ms-appx:///Assets/Button/asus_ac_eye_off_h_ic.png"/>
+            <Style x:Key="EyeToggleButtonStyle"  TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <StackPanel Orientation="Horizontal">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup>
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_off_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_off_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_off_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_on_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="CheckedPointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_on_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="CheckedPressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_on_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <ToggleButton>
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <Image Name="Eye" Source="../Assets/Button/asus_ac_eye_off_n_ic.png"
+                                               Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <BitmapImage x:Key="TriggerButtonOn_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
             <BitmapImage x:Key="TriggerButtonOn_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
             <BitmapImage x:Key="TriggerButtonOn_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
             <BitmapImage x:Key="TriggerButtonOff_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_d.png"/>
             <BitmapImage x:Key="TriggerButtonOff_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_n.png"/>
             <BitmapImage x:Key="TriggerButtonOff_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_p.png"/>
-
             <Style x:Key="TriggerStatusOnButtonStyle"  TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -85,6 +142,48 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <BitmapImage x:Key="ReEdit_n" UriSource="ms-appx:///Assets/Button/asus_auraeditor_edit_n_ic.png"/>
+            <BitmapImage x:Key="ReEdit_h" UriSource="ms-appx:///Assets/Button/asus_auraeditor_edit_h_ic.png"/>
+            <BitmapImage x:Key="ReEdit_p" UriSource="ms-appx:///Assets/Button/asus_auraeditor_edit_p_ic.png"/>
+            <Style x:Key="ReEditButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource ReEdit_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource ReEdit_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource ReEdit_p}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="TriggerButton" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <BitmapImage x:Key="LayerBg_l_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_h.png"/>
+            <BitmapImage x:Key="LayerBg_m_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_h.png"/>
+            <BitmapImage x:Key="LayerBg_l_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_s.png"/>
+            <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
@@ -98,11 +197,11 @@
                  PointerEntered="DeviceLayerRadioButton_PointerEntered"
                  PointerExited="DeviceLayerRadioButton_PointerExited">
         <RadioButton.Template>
-            <ControlTemplate TargetType="ToggleButton">
+            <ControlTemplate TargetType="RadioButton">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4"/>
-                        <ColumnDefinition Width="256"/>
+                        <ColumnDefinition Width="1"/>
+                        <ColumnDefinition Width="259"/>
                     </Grid.ColumnDefinitions>
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="CommonStates">
@@ -110,20 +209,20 @@
                             </VisualState>
                             <VisualState x:Name="PointerOver">
                                 <VisualState.Setters>
-                                    <Setter Target="LayerBg_Head.Source" Value="../Assets/Layer/asus_ac_layer_bg_l_s.png"/>
-                                    <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                                    <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_h}"/>
+                                    <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="CheckedPointerOver">
                                 <VisualState.Setters>
-                                    <Setter Target="LayerBg_Head.Source" Value="../Assets/Layer/asus_ac_layer_bg_l_s.png"/>
-                                    <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                                    <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                                    <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Checked">
                                 <VisualState.Setters>
-                                    <Setter Target="LayerBg_Head.Source" Value="../Assets/Layer/asus_ac_layer_bg_l_s.png"/>
-                                    <Setter Target="LayerBg_Mid.Source" Value="../Assets/Layer/asus_ac_layer_bg_m_s.png"/>
+                                    <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                                    <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
@@ -162,55 +261,16 @@
                             <ColumnDefinition Width="160"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="EyeToggleButton"
-                                      Grid.Column="0" Margin="20,0,0,0"
-                                      Click="EyeToggleButton_Click" IsChecked="True">
-                            <ToggleButton.Template>
-                                <ControlTemplate TargetType="ToggleButton">
-                                    <StackPanel Orientation="Horizontal">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup>
-                                                <VisualState x:Name="Normal"/>
-                                                <VisualState x:Name="PointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_h_ic.png"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="CheckedPointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_h_ic.png"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="Checked">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_on_n_ic.png"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                                <VisualState x:Name="Unchecked">
-                                                    <VisualState.Setters>
-                                                        <Setter Target="Eye.Source" Value="../Assets/Button/asus_ac_eye_off_n_ic.png"/>
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <ToggleButton>
-                                            <ToggleButton.Template>
-                                                <ControlTemplate TargetType="ToggleButton">
-
-                                                </ControlTemplate>
-                                            </ToggleButton.Template>
-                                        </ToggleButton>
-                                        <Image Name="Eye" Source="../Assets/Button/asus_ac_eye_off_n_ic.png"
-                                               Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </ControlTemplate>
-                            </ToggleButton.Template>
+                        <ToggleButton Name="EyeToggleButton" Width="28" Height="26" Grid.Column="0" Margin="16,0,0,0"
+                                      Click="EyeToggleButton_Click" IsChecked="True" Style="{StaticResource EyeToggleButtonStyle}">
                         </ToggleButton>
                         <TextBlock Text="{TemplateBinding Content}"
                                Grid.Column="1"
-                               FontSize="20"
+                               FontSize="16"
                                Margin="22,0,0,0"
                                VerticalAlignment="Center"/>
+                        <Button Name="EditButton" Grid.Column="1" Style="{StaticResource ReEditButtonStyle}" Margin="0,0,10,0"
+                                HorizontalAlignment="Right" Width="20" Height="20" Click="EditButton_Click"/>
                         <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}" Grid.Column="2"
                                 Width="20" Height="20" Click="TriggerDialogButton_Click" Visibility="Collapsed"/>
                         <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" Grid.Column="2"

@@ -68,7 +68,8 @@
         <BitmapImage x:Key="RogStyleButton2_p_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_p_r.png"/>
         <BitmapImage x:Key="RogStyleButton2_d_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_d_r.png"/>
         <Style x:Key="RogButtonStyle2"  TargetType="Button">
-            <Setter Property="Height" Value="40"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -114,7 +115,7 @@
                                 <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
                                 <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
                                 <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
-                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -307,7 +308,7 @@
         <BitmapImage x:Key="RogComboBoxButton_h_i" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_list_item_h_r.png"/>
         <BitmapImage x:Key="RogComboBoxButton_p_i" UriSource="ms-appx:///Assets/ComboBox/asus_ac_control_header_list_item_p_r.png"/>
         <Style x:Key="RogComboBoxButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="Height" Value="42"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -353,7 +354,7 @@
                                 <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource RogComboBoxButton_n_l}" Height="{TemplateBinding Height}" Stretch="Fill"/>
                                 <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource RogComboBoxButton_n_m}" Height="{TemplateBinding Height}" Stretch="Fill"/>
                                 <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_r}" Height="{TemplateBinding Height}" Stretch="Fill"/>
-                                <Image x:Name="PPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_i}"  Height="{TemplateBinding Height}"/>
+                                <Image x:Name="PPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_i}" Height="{TemplateBinding Height}"/>
                                 <ContentPresenter x:Name="CBBcontent" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
                             </Grid>
                         </Border>
@@ -613,5 +614,61 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <BitmapImage x:Key="RogToggleButton_s_d" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_select_d.png"/>
+        <BitmapImage x:Key="RogToggleButton_s_n" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_select_n.png"/>
+        <BitmapImage x:Key="RogToggleButton_s_p" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_select_p.png"/>
+        <BitmapImage x:Key="RogToggleButton_u_d" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_unselect_d.png"/>
+        <BitmapImage x:Key="RogToggleButton_u_n" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_unselect_n.png"/>
+        <BitmapImage x:Key="RogToggleButton_u_p" UriSource="ms-appx:///Assets/ToggleButton/asus_ac_reset_unselect_p.png"/>
+        <Style x:Key="RogToggleButtonStyle1" TargetType="ToggleButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_u_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_u_d}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_u_p}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Checked">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_s_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedPointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_s_d}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedPressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="ToggleButton.Source" Value="{ThemeResource RogToggleButton_s_p}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Image Name="ToggleButton" Stretch="Fill"/>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Application.Resources>
 </Application>

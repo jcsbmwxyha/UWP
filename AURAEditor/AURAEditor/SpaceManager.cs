@@ -19,6 +19,7 @@ using Windows.UI.Input;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
+using AuraEditor.Dialogs;
 
 namespace AuraEditor
 {
@@ -34,9 +35,10 @@ namespace AuraEditor
             DragingDevice = 2,
             WatchingLayer = 3,
             DragingEffectBlock = 4,
+            ReEditing = 5,
         }
         private SpaceStatus spaceGridStatus;
-        public SpaceStatus GetSpaceGridCurrentStatus()
+        public SpaceStatus GetSpaceStatus()
         {
             return spaceGridStatus;
         }
@@ -44,11 +46,6 @@ namespace AuraEditor
         {
             if (value == spaceGridStatus)
                 return;
-
-            if (spaceGridStatus == SpaceStatus.WatchingLayer)
-            {
-                OnLeavingWatchingLayerMode();
-            }
 
             spaceGridStatus = value;
 
@@ -65,8 +62,35 @@ namespace AuraEditor
                 m_SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
                 m_SpaceCanvas.RightTapped += SpaceGrid_RightTapped;
                 m_SetLayerButton.IsEnabled = true;
+                OnNormalState();
             }
-            else if (value == SpaceStatus.WatchingLayer || value == SpaceStatus.DragingEffectBlock)
+            else if (value == SpaceStatus.ReEditing)
+            {
+                DisableAllDevicesOperation();
+                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                m_SpaceCanvas.RightTapped -= SpaceGrid_RightTapped;
+
+                m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
+                m_SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
+                m_SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
+                m_SpaceCanvas.RightTapped += SpaceGrid_RightTapped;
+                m_SetLayerButton.IsEnabled = true;
+            }
+            else if (value == SpaceStatus.WatchingLayer)
+            {
+                DisableAllDevicesOperation();
+                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+                m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
+
+                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                m_SpaceCanvas.RightTapped -= SpaceGrid_RightTapped;
+                m_SetLayerButton.IsEnabled = false;
+                WatchCurrentLayer();
+            }
+            else if (value == SpaceStatus.DragingEffectBlock)
             {
                 DisableAllDevicesOperation();
                 m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
@@ -130,7 +154,6 @@ namespace AuraEditor
 
             GlobalDevices = new List<Device>();
             TempDevices = new List<Device>();
-            FillWithIngroupDevices();
             SetSpaceStatus(SpaceStatus.Normal);
         }
         private MouseEventCtrl IntializeMouseEventCtrl()
@@ -139,7 +162,8 @@ namespace AuraEditor
 
             MouseEventCtrl mec = new MouseEventCtrl
             {
-                MonitorMaxRect = new Rect(new Point(0, 0), new Point(2700, 1500)),//new Point(m_SpaceCanvas.ActualWidth, m_SpaceCanvas.ActualHeight)),
+                MonitorMaxRect = new Rect(new Point(0, 0), new Point(2700, 1500)),
+                //new Point(m_SpaceCanvas.ActualWidth, m_SpaceCanvas.ActualHeight)),
                 DetectionRegions = regions.ToArray()
             };
 
@@ -184,7 +208,7 @@ namespace AuraEditor
                     m_SpaceScrollViewer.VerticalOffset,
                     SpaceZoomFactor, true);
             }
-            else if (_mouseDirection == 5) {}
+            else if (_mouseDirection == 5) { }
             else if (_mouseDirection == 6)
             {
                 m_SpaceScrollViewer.ChangeView(
@@ -233,12 +257,10 @@ namespace AuraEditor
                     {
                         RegionIndex = -1,
                         DetectionRect = zone.AbsoluteZoneRect,
-                        Hover = false,
-                        Selected = zone.Selected,
                         GroupIndex = d.Type
                     };
 
-                    r.Callback = zone.Frame_StatusChanged;
+                    r.Callback = zone.OnReceiveMouseEvent;
 
                     regions.Add(r);
                 }
@@ -282,17 +304,15 @@ namespace AuraEditor
             {
                 foreach (var zone in d.LightZones)
                 {
-                    zone.Frame_StatusChanged(RegionStatus.Normal);
+                    zone.ChangeStatus(RegionStatus.Normal);
                 }
             }
-
-            m_MouseEventCtrl.SetAllRegionsStatus(RegionStatus.Normal);
         }
-        public void WatchZonesOfLayer(DeviceLayer layer)
+        public void WatchCurrentLayer()
         {
             SetSpaceStatus(SpaceStatus.WatchingLayer);
             UnselectAllZones();
-
+            DeviceLayer layer = AuraLayerManager.Self.GetSelectedLayer();
             Dictionary<int, int[]> dictionary = layer.GetZoneDictionary();
 
             // According to the layer, assign selection status for every zone
@@ -308,15 +328,18 @@ namespace AuraEditor
                 {
                     if (Array.Find(indexes, x => x == zone.Index) > 0)
                     {
-                        zone.Frame_StatusChanged(RegionStatus.Watching);
+                        zone.ChangeStatus(RegionStatus.Watching);
                     }
                 }
             }
         }
-        private void OnLeavingWatchingLayerMode()
+        private void OnNormalState()
         {
-            AuraLayerManager.Self.UnselectAllLayers();
-            UnselectAllZones();
+            if (AuraLayerManager.Self != null)
+            {
+                AuraLayerManager.Self.UnselectAllLayers();
+                UnselectAllZones();
+            }
         }
         public void DeleteOverlappingTempDevice(Device testDev)
         {
@@ -334,6 +357,33 @@ namespace AuraEditor
                 }
             }
         }
+
+        public void ReEdit(DeviceLayer layer)
+        {
+            SetSpaceStatus(SpaceStatus.ReEditing);
+            UnselectAllZones();
+
+            Dictionary<int, int[]> dictionary = layer.GetZoneDictionary();
+
+            // According to the layer, assign selection status for every zone
+            foreach (KeyValuePair<int, int[]> pair in dictionary)
+            {
+                Device d = GetGlobalDeviceByType(pair.Key);
+                int[] indexes = pair.Value;
+
+                if (d == null)
+                    continue;
+
+                foreach (var zone in d.LightZones)
+                {
+                    if (Array.Find(indexes, x => x == zone.Index) > 0)
+                    {
+                        zone.ChangeStatus(RegionStatus.Selected);
+                    }
+                }
+            }
+        }
+
         public void ClearTempDeviceData()
         {
             List<Device> _tempDevices = new List<Device>(TempDevices);
@@ -390,17 +440,16 @@ namespace AuraEditor
             return GlobalDevices.Find(x => x.Type == type);
         }
 
-        #region Ingroup devices
-        public async void FillWithIngroupDevices()
+        #region About ingroup devices
+        public async void FillStageWithDevices()
         {
-            List<XmlNode> namesOfIngroupDevices = await GetIngroupDevices();
-
+            List<SyncDevice> deviceNodes = ConnectedDevicesDialog.Self.GetIngroupDevices();
             DeviceContent deviceContent;
             Device device;
 
-            foreach (var node in namesOfIngroupDevices)
+            foreach (var d in deviceNodes)
             {
-                deviceContent = await DeviceContent.GetDeviceContent(node);
+                deviceContent = await DeviceContent.GetDeviceContent(d);
 
                 if (deviceContent == null)
                     continue;
@@ -414,146 +463,8 @@ namespace AuraEditor
 
             RefreshSpaceGrid();
         }
-        private async Task<List<XmlNode>> GetIngroupDevices()
+        public async void RefreshIngroupDevices(List<SyncDevice> ingroupDevices)
         {
-            XmlDocument xmlDoc = await GetIngroupDevicesXmlDoc();
-
-            List<XmlNode> results = new List<XmlNode>();
-            XmlNode localDevice = GetLocalDevice(xmlDoc);
-            List<XmlNode> otherDevices = GetOtherDevice(xmlDoc);
-
-            // Put local at first
-            results.Add(localDevice);
-            results.AddRange(otherDevices);
-
-            return results;
-        }
-        private async Task<XmlDocument> GetIngroupDevicesXmlDoc()
-        {
-            StorageFile sf;
-            XmlDocument devicesXml = new XmlDocument(); ;
-
-            try
-            {
-                sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\ingroupdevice.xml");
-                devicesXml.Load(await sf.OpenStreamForReadAsync());
-                return devicesXml;
-            }
-            catch
-            {
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-                folder = await EnterOrCreateFolder(folder, "AURA Creator");
-                folder = await EnterOrCreateFolder(folder, "Devices");
-                sf = await folder.GetFileAsync("ingroupdevice.xml");
-
-                devicesXml.Load(await sf.OpenStreamForReadAsync());
-                return devicesXml;
-            }
-        }
-        private XmlNode GetLocalDevice(XmlDocument devicesXml)
-        {
-            XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
-            XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
-
-            foreach (XmlNode node in deviceNodes)
-            {
-                XmlElement element = (XmlElement)node;
-
-                if (element.GetAttribute("type") == "Aac_NBDT")
-                {
-                    return node;
-                }
-            }
-
-            return null;
-        }
-        private List<XmlNode> GetOtherDevice(XmlDocument devicesXml)
-        {
-            XmlNode ingroupdevice = devicesXml.SelectSingleNode("ingroupdevice");
-            XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
-            List<XmlNode> others = new List<XmlNode>();
-
-            foreach (XmlNode node in deviceNodes)
-            {
-                XmlElement element = (XmlElement)node;
-
-                if (element.GetAttribute("type") != "Aac_NBDT")
-                {
-                    others.Add(node);
-                }
-            }
-
-            return FilterOtherDeviceNodes(others);
-        }
-
-        private List<XmlNode> FilterOtherDeviceNodes(List<XmlNode> others)
-        {
-            List<XmlNode> results = new List<XmlNode>();
-
-            // 1. Determine temp data keep or not
-            List<Device> _tempDevices = new List<Device>(TempDevices);
-            foreach (Device temp_d in _tempDevices)
-            {
-                XmlNode node = others.Find(x => (x as XmlElement).GetAttribute("name") == temp_d.Name);
-
-                // temp in ingroups?
-                if (node != null)
-                {
-                    // kick others
-                    results.Add(node);
-                    others.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type));
-                    TempDevices.Remove(temp_d);
-                    GlobalDevices.Add(temp_d);
-                }
-                else
-                {
-                    if (others.Find(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type)) != null)
-                    {
-                        // Because new device will replace temp device
-                        TempDevices.Remove(temp_d);
-                        AuraLayerManager.Self.ClearDeviceData(temp_d.Type);
-                        // delete temp data
-                    }
-                }
-            }
-
-            // 2. Keep device nodes which are plugging, and kick others
-            foreach (Device global_d in GlobalDevices)
-            {
-                XmlNode node = others.Find(x => (x as XmlElement).GetAttribute("name") == global_d.Name);
-
-                if (node != null)
-                {
-                    // kick others
-                    results.Add(node);
-                    others.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(global_d.Type));
-                }
-            }
-
-            // 3. Only retain one node for every type
-            for (int i = 0; i < others.Count; i++)
-            {
-                XmlElement elem = (XmlElement)others[i];
-                bool CanAddThisNode = true;
-
-                for (int j = 0; j < i; j++)
-                {
-                    XmlElement elem2 = (XmlElement)others[j];
-
-                    if (elem.GetAttribute("type") == elem2.GetAttribute("type"))
-                        CanAddThisNode = false;
-                }
-
-                if (CanAddThisNode)
-                    results.Add(others[i]);
-            }
-
-            return results;
-        }
-
-        public async void RescanIngroupDevices()
-        {
-            List<XmlNode> ingroupDeviceNodes = await GetIngroupDevices();
             List<string> namesOfGlobalDevices = new List<string>();
 
             foreach (var d in GlobalDevices)
@@ -561,21 +472,21 @@ namespace AuraEditor
                 namesOfGlobalDevices.Add(d.Name);
             }
 
-            List<XmlNode> needToAdd = new List<XmlNode>(ingroupDeviceNodes);
-            foreach(var name in namesOfGlobalDevices)
+            List<SyncDevice> needToAddToStage = new List<SyncDevice>(ingroupDevices);
+            foreach (var name in namesOfGlobalDevices)
             {
-                needToAdd.RemoveAll(x => (x as XmlElement).GetAttribute("name") == name);
+                needToAddToStage.RemoveAll(x => x.Name == name);
             }
 
-            List<string> needToRemove = new List<string>(namesOfGlobalDevices);
-            foreach (var node in ingroupDeviceNodes)
+            List<string> needToRemoveFromStage = new List<string>(namesOfGlobalDevices);
+            foreach (var d in ingroupDevices)
             {
-                needToRemove.RemoveAll(x => x == (node as XmlElement).GetAttribute("name"));
+                needToRemoveFromStage.RemoveAll(x => x == d.Name);
             }
 
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                foreach (var name in needToRemove)
+                foreach (var name in needToRemoveFromStage)
                 {
                     Device device = GlobalDevices.Find(x => x.Name == name);
 
@@ -586,7 +497,7 @@ namespace AuraEditor
                     }
                 }
 
-                foreach (var node in needToAdd)
+                foreach (var node in needToAddToStage)
                 {
                     DeviceContent deviceContent = await DeviceContent.GetDeviceContent(node);
 
@@ -618,7 +529,7 @@ namespace AuraEditor
         {
             switch (value)
             {
-                case "0 %":
+                case "33 %":
                     m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
                         m_SpaceScrollViewer.VerticalOffset, 0.5f, true);
                     SpaceZoomFactor = 0.5f;
@@ -640,7 +551,7 @@ namespace AuraEditor
         #region Mouse Operations
         private void SpaceGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (GetSpaceGridCurrentStatus() == SpaceStatus.WatchingLayer)
+            if (GetSpaceStatus() == SpaceStatus.WatchingLayer)
             {
                 SetSpaceStatus(SpaceStatus.Normal);
             }
@@ -652,7 +563,7 @@ namespace AuraEditor
         }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (GetSpaceGridCurrentStatus() != SpaceStatus.Normal)
+            if (GetSpaceStatus() != SpaceStatus.Normal && GetSpaceStatus() != SpaceStatus.ReEditing)
                 return;
 
             var fe = sender as FrameworkElement;
@@ -730,7 +641,7 @@ namespace AuraEditor
         }
         private void SpaceGrid_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            m_MouseEventCtrl.OnRightTapped();
+            UnselectAllZones();
         }
         #endregion
 

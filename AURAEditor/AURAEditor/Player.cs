@@ -138,7 +138,7 @@ namespace AuraEditor
         {
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintScriptXml());
+            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintScriptXml(false));
 
             await (new ServiceViewModel()).AuraEditorTrigger();
 

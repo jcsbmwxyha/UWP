@@ -60,7 +60,8 @@
                                 <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource LPart_n}" Stretch="Fill"/>
                                 <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource MPart_n}" Stretch="Fill"/>
                                 <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RPart_n}" Stretch="Fill"/>
-                                <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center" FontSize="24" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
+                                <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center"
+                                           FontSize="20" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

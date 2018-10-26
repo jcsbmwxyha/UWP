@@ -119,22 +119,12 @@
             <TextBlock Name="TitleTextBlock" Text="" Foreground="White" FontSize="18"/>
             <TextBlock Name="ContentTextBlock" Text="" Foreground="White" Margin="0,26,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="30,30,10,15">
-                <Button x:Name="OKButton"
-                        Content="Yes"
-                        Foreground="White"
-                        Click="YesButton_Click"
-                        RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignTopWithPanel="True"
-                        Width="130" 
-                        Height="30" Style="{StaticResource RogButtonStyle2}"/>
-                <Button x:Name="CancelButton"
-                        Content="No"
-                        Foreground="White"
-                        Click="NoButton_Click"
-                        RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignTopWithPanel="True"
-                        Width="130" Height="30" Margin="20,0,0,0"
-                        Style="{StaticResource RogButtonStyle2}"/>
+                <Button x:Name="OKButton" Content="Yes" Click="YesButton_Click"
+                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
+                        Width="130" Style="{StaticResource RogButtonStyle2}"/>
+                <Button x:Name="CancelButton" Content="No" Click="NoButton_Click"
+                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
+                        Width="130" Margin="20,0,0,0" Style="{StaticResource RogButtonStyle2}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

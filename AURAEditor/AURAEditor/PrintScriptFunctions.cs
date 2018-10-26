@@ -10,7 +10,7 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public string PrintScriptXml()
+        public string PrintScriptXml(bool repeat)
         {
             XmlNode root = CreateXmlNodeOfFile("root");
 
@@ -22,18 +22,25 @@ namespace AuraEditor
             versionNode.InnerText = "1.0";
             root.AppendChild(versionNode);
 
-            root.AppendChild(GetEffecttProviderXmlNode());
+            root.AppendChild(GetEffecttProviderXmlNode(repeat));
             root.AppendChild(GetViewportXmlNode());
             root.AppendChild(GetEffectListXmlNode());
 
             return root.OuterXml;
         }
-        private XmlNode GetEffecttProviderXmlNode()
+        private XmlNode GetEffecttProviderXmlNode(bool repeat)
         {
             XmlNode effectProviderNode = CreateXmlNodeOfFile("effectProvider");
 
             XmlNode periodNode = CreateXmlNodeOfFile("period");
             periodNode.InnerText = LayerManager.PlayTime.ToString();
+            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+            if(repeat)
+                attribute.Value = "true";
+            else
+                attribute.Value = "false";
+            periodNode.Attributes.Append(attribute);
+            
             effectProviderNode.AppendChild(periodNode);
             effectProviderNode.AppendChild(GetQueueXmlNode());
 
@@ -43,6 +50,7 @@ namespace AuraEditor
         {
             XmlNode queueNode = CreateXmlNodeOfFile("queue");
             int effectCount = 0;
+            int layerCount = 0;
 
             foreach (DeviceLayer layer in LayerManager.DeviceLayers)
             {
@@ -90,8 +98,14 @@ namespace AuraEditor
                     durationNode.InnerText = eff.DurationTime.ToString();
                     effectNode.AppendChild(durationNode);
 
+                    XmlNode layerNode = CreateXmlNodeOfFile("layer");
+                    layerNode.InnerText = layerCount.ToString();
+                    effectNode.AppendChild(layerNode);
+
                     queueNode.AppendChild(effectNode);
                 }
+
+                layerCount++;
             }
 
             return queueNode;

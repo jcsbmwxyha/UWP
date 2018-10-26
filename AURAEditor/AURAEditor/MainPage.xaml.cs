@@ -16,6 +16,7 @@ using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.AuraSpaceManager;
 using Windows.UI.Core.Preview;
+using AuraEditor.Dialogs;
 
 namespace AuraEditor
 {
@@ -50,6 +51,8 @@ namespace AuraEditor
         public double _preAngle;
         Point AngleImgCenter;
 
+        public ConnectedDevicesDialog connectedDevicesDialog;
+
         public MainPage()
         {
             _instance = this;
@@ -68,18 +71,22 @@ namespace AuraEditor
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await IntializeFileOperations();
+            connectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceManager = new AuraSpaceManager();
             LayerManager = new AuraLayerManager();
             InitializeDragEffectIcon();
             InitializePlayerStructure();
             SetDefaultPattern();
 
+            await connectedDevicesDialog.Rescan();
+
             AngleImgCenter = new Point(40, 40);
             _preAngle = 0;
             AngleTextBox.Text = "0";
-            
+
             Bindings.Update();
         }
+
         private async void InitializeDragEffectIcon()
         {
             DragEffectIcon = new BitmapImage();
@@ -123,14 +130,12 @@ namespace AuraEditor
             SpaceManager.UnselectAllZones();
             NeedSave = true;
         }
-        private void DragDevImgToggleButton_Checked(object sender, RoutedEventArgs e)
+        private void SortDeviceButton_Checked(object sender, RoutedEventArgs e)
         {
+            ShowMask("Device Sorting", "Save", "Cancel");
             SpaceManager.SetSpaceStatus(SpaceStatus.DragingDevice);
         }
-        private void DragDevImgToggleButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-        }
+
         private void AdjustEffectBlockGrid_Click(object sender, RoutedEventArgs e)
         {
             int columnSpans = Grid.GetColumnSpan(SpaceGrid);
@@ -138,6 +143,7 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectBlockScrollViewer))
             {
                 MainGrid.Children.Remove(EffectBlockScrollViewer);
+                MainGrid.Children.Remove(MaskGrid1);
 
                 Grid.SetColumn(SpaceGrid, 0);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
@@ -146,6 +152,8 @@ namespace AuraEditor
             {
                 Grid.SetColumn(EffectBlockScrollViewer, 0);
                 MainGrid.Children.Add(EffectBlockScrollViewer);
+                Grid.SetColumn(MaskGrid1, 0);
+                MainGrid.Children.Add(MaskGrid1);
 
                 Grid.SetColumn(SpaceGrid, 1);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
@@ -158,6 +166,7 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectInfoScrollViewer))
             {
                 MainGrid.Children.Remove(EffectInfoScrollViewer);
+                MainGrid.Children.Remove(MaskGrid2);
 
                 Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
             }
@@ -165,6 +174,8 @@ namespace AuraEditor
             {
                 Grid.SetColumn(EffectInfoScrollViewer, 2);
                 MainGrid.Children.Add(EffectInfoScrollViewer);
+                Grid.SetColumn(MaskGrid2, 2);
+                MainGrid.Children.Add(MaskGrid2);
 
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
             }
@@ -223,7 +234,7 @@ namespace AuraEditor
                 try
                 {
                     socket = new Windows.Networking.Sockets.DatagramSocket();
-                    socket.MessageReceived += Socket_MessageReceived;
+                    //socket.MessageReceived += Socket_MessageReceived;
 
                     //You can use any port that is not currently in use already on the machine. We will be using two separate and random 
                     //ports for the client and server because both the will be running on the same machine.
@@ -265,7 +276,7 @@ namespace AuraEditor
                     StatusTextBlock.Text = "Service : " + message;
                 });
 
-                SpaceManager.RescanIngroupDevices();
+                await connectedDevicesDialog.Rescan();
             }
             catch (Exception e)
             {
@@ -285,7 +296,7 @@ namespace AuraEditor
             switch (itemName)
             {
                 case "Zoom_0":
-                    SpaceManager.SpaceZoomChanged("0 %"); SpaceZoomButton.Content = "0 %"; break;
+                    SpaceManager.SpaceZoomChanged("33 %"); SpaceZoomButton.Content = "33 %"; break;
                 case "Zoom_50":
                     SpaceManager.SpaceZoomChanged("50 %"); SpaceZoomButton.Content = "50 %"; break;
                 case "Zoom_100":
@@ -295,7 +306,70 @@ namespace AuraEditor
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            SpaceManager.RescanIngroupDevices();
+            connectedDevicesDialog.Rescan();
+        }
+
+        public void ReEdit(DeviceLayer layer)
+        {
+            ShowMask("Edit layer: " + layer.Name, "Save", "Cancel");
+        }
+        private void EditOKButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SpaceManager.GetSpaceStatus() == SpaceStatus.ReEditing)
+            {
+                DeviceLayer layer = LayerManager.GetSelectedLayer();
+                List<int> selectedIndex;
+
+                foreach (Device d in SpaceManager.GlobalDevices)
+                {
+                    selectedIndex = new List<int>();
+
+                    foreach (var zone in d.LightZones)
+                    {
+                        if (zone.Selected == true)
+                        {
+                            selectedIndex.Add(zone.Index);
+                        }
+                    }
+
+                    if (selectedIndex.Count != 0)
+                        layer.SetDeviceZones(d.Type, selectedIndex.ToArray());
+                }
+
+                NeedSave = true;
+                SpaceManager.SetSpaceStatus(SpaceStatus.WatchingLayer);
+            }
+            else
+                SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+            HideMask();
+        }
+        private void EditCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+            HideMask();
+        }
+        private void ShowMask(string descriptionText, string okText, string cancelText)
+        {
+            EditBarTextBlock.Text = descriptionText;
+            EditOKButton.Content = okText;
+            EditCancelButton.Content = cancelText;
+
+            EditBar.Visibility = Visibility.Visible;
+            MaskGrid1.Visibility = Visibility.Visible;
+            MaskGrid2.Visibility = Visibility.Visible;
+            MaskGrid3.Visibility = Visibility.Visible;
+        }
+        private void HideMask()
+        {
+            EditBar.Visibility = Visibility.Collapsed;
+            MaskGrid1.Visibility = Visibility.Collapsed;
+            MaskGrid2.Visibility = Visibility.Collapsed;
+            MaskGrid3.Visibility = Visibility.Collapsed;
+        }
+
+        private async void ConnectedDevicesButton_Click(object sender, RoutedEventArgs e)
+        {
+            await connectedDevicesDialog.ShowAsync();
         }
     }
 }
