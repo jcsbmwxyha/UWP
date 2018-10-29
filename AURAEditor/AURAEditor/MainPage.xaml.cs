@@ -234,7 +234,7 @@ namespace AuraEditor
                 try
                 {
                     socket = new Windows.Networking.Sockets.DatagramSocket();
-                    //socket.MessageReceived += Socket_MessageReceived;
+                    socket.MessageReceived += Socket_MessageReceived;
 
                     //You can use any port that is not currently in use already on the machine. We will be using two separate and random 
                     //ports for the client and server because both the will be running on the same machine.
@@ -274,9 +274,9 @@ namespace AuraEditor
                 {
                     //from Service message
                     StatusTextBlock.Text = "Service : " + message;
+                    connectedDevicesDialog.Rescan();
                 });
 
-                await connectedDevicesDialog.Rescan();
             }
             catch (Exception e)
             {
@@ -352,7 +352,7 @@ namespace AuraEditor
         {
             EditBarTextBlock.Text = descriptionText;
             EditOKButton.Content = okText;
-            EditCancelButton.Content = cancelText;
+            //EditCancelButton.Content = cancelText;
 
             EditBar.Visibility = Visibility.Visible;
             MaskGrid1.Visibility = Visibility.Visible;

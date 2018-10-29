@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" IgnorableNamespaces="uap4 uap mp rescap">
-  <Identity Name="AuraEditor" Publisher="CN=38BC0208-0916-4E44-909B-E6832F47CDE7" Version="0.0.11.0" />
+  <Identity Name="AuraEditor" Publisher="CN=38BC0208-0916-4E44-909B-E6832F47CDE7" Version="0.0.12.0" />
   <mp:PhoneIdentity PhoneProductId="311f7396-a0a8-414b-ab75-26998dd8e23a" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>AuraEditor</DisplayName>
@@ -15,10 +15,15 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="AuraEditor.App">
-      <uap:VisualElements DisplayName="AURA Creator" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="AuraEditor" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
+      <uap:VisualElements DisplayName="AURA Creator" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="AuraEditor" BackgroundColor="#141214">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png" ShortName="ARMOURY CREATOR">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#141214" />
       </uap:VisualElements>
     </Application>
   </Applications>

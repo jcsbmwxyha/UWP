@@ -1,5 +1,9 @@
 --  Aura Global Variables and Functions
 
+getTime = function()
+	return (Provider:clock():getClock()) * 1000
+end
+
 global = {
 
 	keystrokeStrength = 0,
@@ -17,7 +21,6 @@ global = {
 	Random = function()
 		return math.random()
 	end,
-
 	
 	MataData = {
 		ViewportTransform = {

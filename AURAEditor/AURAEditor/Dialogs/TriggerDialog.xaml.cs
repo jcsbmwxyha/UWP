@@ -80,6 +80,7 @@ namespace AuraEditor.Dialogs
             {
                 MenuFlyoutItem mfi = new MenuFlyoutItem();
                 mfi.Text = effectName;
+                mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                 mfi.Click += EffectSelected;
                 EffectSelectionMenuFlyout.Items.Add(mfi);
             }

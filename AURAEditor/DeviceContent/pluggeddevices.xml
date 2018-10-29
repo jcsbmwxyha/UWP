@@ -1,0 +1,4 @@
+<devices>
+  <device name="G703GI" type="Aac_NBDT" sync="true"/>
+  <device name="GLADIUS II" type="Mouse" sync="true"/>
+</devices>

@@ -203,82 +203,6 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="MenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
-                <Setter Property="RequestedTheme" Value="Default"/>
-                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeHighBrush}" />
-                <Setter Property="BorderThickness" Value="{ThemeResource FlyoutBorderThemeThickness}" />
-                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutPresenterThemePadding}" />
-                <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-                <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-                <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
-                <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
-                <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                <Setter Property="MinWidth" Value="{ThemeResource FlyoutThemeMinWidth}" />
-                <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
-                <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="MenuFlyoutPresenter">
-                            <Grid Background="{TemplateBinding Background}">
-                                <ScrollViewer x:Name="MenuFlyoutPresenterScrollViewer"
-                                              Padding="{TemplateBinding Padding}"
-                                              Margin="{TemplateBinding BorderThickness}"
-                                              HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                              VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                              IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                                              IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                                              ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-                                              AutomationProperties.AccessibilityView="Raw">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
-                                <Border x:Name="MenuFlyoutPresenterBorder"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="MenuFlyoutItem" x:Key="MenuFlyoutItemStyle">
-                <Setter Property="Background" Value="Black" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="MenuFlyoutItem">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal"/>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
-                                                <Setter Target="ColorRectangle.Stroke" Value="Blue"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
-                                                <Setter Target="ColorRectangle.Stroke" Value="DimGray"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Rectangle x:Name="ColorRectangle" StrokeThickness="1" Stroke="White"  Width="200" Height="16" Fill="{TemplateBinding Foreground}"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style TargetType="Button" x:Key="PatternButtonStyle">
                 <Setter Property="Background" Value="Black" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -400,12 +324,12 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Action : " VerticalAlignment="Center" Foreground="White"/>
                 <Button x:Name="TriggerActionButton" Content="One Click" Foreground="White"
-                    Width="150" Canvas.ZIndex="6" VerticalAlignment="Bottom"
+                    Width="196" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
-                        <MenuFlyout x:Name="TriggerActionMenuFlyout" Placement="Bottom">
-                            <MenuFlyoutItem x:Name="One_Click" Text="One Click" Click="ActionButton_Click"/>
-                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click" Click="ActionButton_Click"/>
+                        <MenuFlyout x:Name="TriggerActionMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                            <MenuFlyoutItem x:Name="One_Click" Text="One Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
@@ -439,10 +363,10 @@
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock Text="Effect :" VerticalAlignment="Center"
                            Foreground="White"/>
-                    <Button x:Name="EffectSelectionButton" Foreground="White" Width="190"
+                    <Button x:Name="EffectSelectionButton" Foreground="White" Width="196"
                             Style="{StaticResource RogComboBoxButtonStyle}">
                         <Button.Flyout>
-                            <MenuFlyout x:Name="EffectSelectionMenuFlyout" Placement="Bottom"/>
+                            <MenuFlyout x:Name="EffectSelectionMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}"/>
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
@@ -457,31 +381,31 @@
                                 </CheckBox>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="PatternGroup" Orientation="Horizontal" Visibility="Collapsed">
-                            <RadioButton x:Name="PatternRadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped" Visibility="Collapsed"/>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
-                                <Button x:Name="PatternButton" Height="16" Margin="20,20,0,0" Style="{StaticResource PatternButtonStyle}">
+                        <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="Collapsed">
+                            <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+                            <Grid Margin="20,20,0,16">
+                                <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
+                                <Button x:Name="PatternButton" Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
                                     <Button.Flyout>
-                                        <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource MenuFlyoutPresenterStyle}" Placement="Bottom">
-                                            <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutSeparator Margin="0,5,0,5" Background="Black"/>
-                                            <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource MenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                        <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                            <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                            <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
+                                            <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
                                         </MenuFlyout>
                                     </Button.Flyout>
                                 </Button>
-                                <StackPanel Orientation="Vertical">
-                                    <Canvas x:Name="TriggerPatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left" Margin="20,0,0,0"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
-                                        <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16"/>
-                                        <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}"/>
-                                    </StackPanel>
+                            </Grid>
+                            <StackPanel Orientation="Vertical">
+                                <Canvas x:Name="TriggerPatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                                    <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16"/>
+                                    <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}"/>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

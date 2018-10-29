@@ -378,6 +378,12 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dl.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dmid.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dr.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_ul.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_umid.png" />
+    <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_ur.png" />
     <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_d.png" />
     <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_n.png" />
     <Content Include="Assets\scale-100\ToggleButton\asus_ac_reset_select_p.png" />
@@ -471,6 +477,12 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dl.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dmid.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dr.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_ul.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_umid.png" />
+    <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_ur.png" />
     <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_d.png" />
     <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_n.png" />
     <Content Include="Assets\scale-200\ToggleButton\asus_ac_reset_select_p.png" />

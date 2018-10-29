@@ -60,6 +60,7 @@ namespace AuraEditor
 
                     MenuFlyoutItem new_mfi = new MenuFlyoutItem();
                     new_mfi.Text = value;
+                    new_mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                     new_mfi.Click += FileItem_Click;
                     FileListMenuFlyout.Items.Add(new_mfi);
                     UpdateListXml();
@@ -124,6 +125,7 @@ namespace AuraEditor
                 {
                     MenuFlyoutItem mfi = new MenuFlyoutItem();
                     mfi.Text = filename;
+                    mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                     mfi.Click += FileItem_Click;
                     FileListMenuFlyout.Items.Add(mfi);
                 }

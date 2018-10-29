@@ -527,7 +527,7 @@ namespace AuraEditor
                 item.UI.OnRedraw -= ReDrawMultiPointRectangle;
             }
             ColorPoints.Clear();
-            if(ui.ColorPointList != null)
+            if (ui.ColorPointList != null)
                 ui.ColorPointList.Clear();
 
             foreach (var item in cp)
@@ -536,7 +536,7 @@ namespace AuraEditor
                 ui.ColorPointList.Add(new ColorPoint(item));
             }
             ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternButton.Background = mf.Foreground;
+            MultiPointRectangle.Fill = PatternPolygon.Fill = mf.Foreground;
         }
 
         public void ShowColorPointUI(List<ColorPoint> cl)

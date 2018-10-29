@@ -18,7 +18,6 @@ namespace AuraEditor.Dialogs
     {
         static public ConnectedDevicesDialog Self;
         private ObservableCollection<SyncDevice> m_SyncDeviceList;
-        private List<XmlNode> m_IngroupDeviceXmlNode;
 
         public ConnectedDevicesDialog()
         {
@@ -57,28 +56,33 @@ namespace AuraEditor.Dialogs
 
         public async Task Rescan()
         {
-            List<XmlNode> deviceNodes = await GetSortedAndFilteredDeviceList();
-
-            m_SyncDeviceList.Clear();
-            foreach (var node in deviceNodes)
+            try
             {
-                SyncDevice sd = new SyncDevice
-                {
-                    Name = (node as XmlElement).GetAttribute("name"),
-                    Type = (node as XmlElement).GetAttribute("type"),
-                    Sync = Boolean.Parse((node as XmlElement).GetAttribute("sync"))
-                };
-                m_SyncDeviceList.Add(sd);
-            }
-            ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
+                List<XmlNode> deviceNodes = await GetSortedAndFilteredDeviceList();
 
-            m_IngroupDeviceXmlNode = new List<XmlNode>(deviceNodes);
-            m_IngroupDeviceXmlNode.RemoveAll(x => (x as XmlElement).GetAttribute("sync") == "false");
-            NotifySpaceManager();
+                m_SyncDeviceList.Clear();
+                foreach (var node in deviceNodes)
+                {
+                    SyncDevice sd = new SyncDevice
+                    {
+                        Name = (node as XmlElement).GetAttribute("name"),
+                        Type = (node as XmlElement).GetAttribute("type"),
+                        Sync = Boolean.Parse((node as XmlElement).GetAttribute("sync"))
+                    };
+                    m_SyncDeviceList.Add(sd);
+                }
+                ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
+
+                NotifySpaceManager();
+            }
+            catch
+            {
+                MainPage.Self.StatusTextBlock.Text = "Rescan failed !";
+            }
         }
         private void NotifySpaceManager()
         {
-            AuraSpaceManager.Self.RefreshIngroupDevices(GetIngroupDevices());
+            AuraSpaceManager.Self.RefreshStageDevices(GetIngroupDevices());
         }
         public List<SyncDevice> GetIngroupDevices()
         {
@@ -111,8 +115,11 @@ namespace AuraEditor.Dialogs
         static private async Task<XmlNodeList> GetPluggedDevices()
         {
             XmlDocument xmlDoc = await GetPluggedDevicesXmlDoc();
-            XmlNode ingroupdevice = xmlDoc.SelectSingleNode("ingroupdevice");
-            XmlNodeList deviceNodes = ingroupdevice.SelectNodes("device");
+            if (xmlDoc == null)
+                return null;
+
+            XmlNode devicesNode = xmlDoc.SelectSingleNode("devices");
+            XmlNodeList deviceNodes = devicesNode.SelectNodes("device");
 
             return deviceNodes;
         }
@@ -123,19 +130,14 @@ namespace AuraEditor.Dialogs
 
             try
             {
-                sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\ingroupdevice.xml");
+                sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\pluggeddevices.xml");
                 devicesXml.Load(await sf.OpenStreamForReadAsync());
                 return devicesXml;
             }
             catch
             {
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-                folder = await EnterOrCreateFolder(folder, "AURA Creator");
-                folder = await EnterOrCreateFolder(folder, "Devices");
-                sf = await folder.GetFileAsync("ingroupdevice.xml");
-
-                devicesXml.Load(await sf.OpenStreamForReadAsync());
-                return devicesXml;
+                MainPage.Self.StatusTextBlock.Text = "pluggeddevices.xml doesn't exist!";
+                return null;
             }
         }
         static private List<XmlNode> FilterDeviceListWeNeed(List<XmlNode> deviceList)

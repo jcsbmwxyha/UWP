@@ -73,7 +73,6 @@
             <Style TargetType="Canvas">
                 <Setter Property="VerticalAlignment" Value="Stretch" />
                 <Setter Property="Width" Value="2500" />
-                <Setter Property="Height" Value="50" />
                 <Setter Property="AllowDrop" Value="True" />
             </Style>
             <Style x:Key="BasicButton" TargetType="Button">
@@ -1249,128 +1248,22 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="MenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
-                <Setter Property="RequestedTheme" Value="Default"/>
-                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeHighBrush}" />
-                <Setter Property="BorderThickness" Value="{ThemeResource FlyoutBorderThemeThickness}" />
-                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutPresenterThemePadding}" />
-                <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-                <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-                <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
-                <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
-                <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                <Setter Property="MinWidth" Value="{ThemeResource FlyoutThemeMinWidth}" />
-                <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
-                <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="MenuFlyoutPresenter">
-                            <Grid Background="{TemplateBinding Background}">
-                                <ScrollViewer x:Name="MenuFlyoutPresenterScrollViewer"
-                                              Padding="{TemplateBinding Padding}"
-                                              Margin="{TemplateBinding BorderThickness}"
-                                              HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                              VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                              IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                                              IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                                              ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-                                              AutomationProperties.AccessibilityView="Raw">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
-                                <Border x:Name="MenuFlyoutPresenterBorder"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style TargetType="MenuFlyoutItem" x:Key="MenuFlyoutItemStyle">
-                <Setter Property="Background" Value="Black" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="MenuFlyoutItem">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal"/>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
-                                                <Setter Target="ColorRectangle.Stroke" Value="Blue"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorRectangle.StrokeThickness" Value="3"/>
-                                                <Setter Target="ColorRectangle.Stroke" Value="DimGray"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Rectangle x:Name="ColorRectangle" StrokeThickness="1" Stroke="White"  Width="200" Height="16" Fill="{TemplateBinding Foreground}"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
 
-            <Style TargetType="Button" x:Key="PatternButtonStyle">
-                <Setter Property="Background" Value="Black" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-                <Setter Property="Padding" Value="{ThemeResource MenuFlyoutItemThemePadding}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal"/>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="PatternBtnImg.Source" Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_h.png"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="PatternBtnImg.Source"  Value="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_s.png"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <RelativePanel>
-                                    <Rectangle Name="R" Width="200" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{TemplateBinding Background}"/>
-                                    <Image Name="PatternBtnImg" Source="Assets/EffectInfoGroup/asus_ac_drawerdown_ic_n.png" RelativePanel.RightOf="R"/>
-                                </RelativePanel>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
     <Grid Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="12*"/>
-            <RowDefinition Height="0.9*"/>
-            <RowDefinition Height="4.5*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="4.3*"/>
+            <RowDefinition Height="36"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="290"/>
+            <ColumnDefinition Width="280"/>
         </Grid.ColumnDefinitions>
 
         <!--Backgroud image-->
@@ -1399,7 +1292,7 @@
                 <Button x:Name="FileListButton" Content="" Foreground="White"
                     Width="200" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
-                        <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom">
+                        <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
@@ -1516,20 +1409,23 @@
 
                     <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
-                        <Button x:Name="PatternButton" Height="16" Margin="20,20,0,0" Style="{StaticResource PatternButtonStyle}">
-                            <Button.Flyout>
-                                <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource MenuFlyoutPresenterStyle}" Placement="Bottom">
-                                    <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource MenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutSeparator Margin="0,5,0,5" Background="Black"/>
-                                    <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource MenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
-                        </Button>
+                        <Grid Margin="20,20,0,16">
+                            <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
+                            <Button x:Name="PatternButton" Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
+                                <Button.Flyout>
+                                    <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                        <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                        <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
+                                        <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                            </Button>
+                        </Grid>
                         <StackPanel Orientation="Vertical">
                             <Canvas x:Name="PatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left" Margin="20,0,0,0"/>
                             <StackPanel Orientation="Horizontal">
@@ -1652,7 +1548,7 @@
                        Text="00:00.00"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
-                       FontSize="20"
+                       FontSize="16"
                        Margin="0,0,10,0"
                        RelativePanel.AlignRightWithPanel="True"
                        Foreground="White"/>
@@ -1702,9 +1598,7 @@
                       Grid.Column="1"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Hidden"
-                      VerticalScrollBarVisibility="Disabled"
-                      BorderBrush="Black"
-                      BorderThickness="1">
+                      VerticalScrollBarVisibility="Disabled">
             <Canvas Name="ScaleCanvas" x:FieldModifier="public"
                     Width="5000"/>
         </ScrollViewer>
@@ -1738,11 +1632,12 @@
                     Click="PlusButton_Click" Margin="0,0,5,0"/>
         </RelativePanel>
 
-        <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"/>
+        <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"
+                   x:FieldModifier="public"/>
         <!--<Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
-        
+        <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
         <Grid Name="EditBar" Background="DarkCyan" Visibility="Collapsed" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260"/>
@@ -1751,8 +1646,8 @@
             </Grid.ColumnDefinitions>
             <RelativePanel Grid.Column="1" VerticalAlignment="Center">
                 <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20"/>
-                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.LeftOf="EditCancelButton" Width="180" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
-                <Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>
+                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
+                <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
             </RelativePanel>
         </Grid>
         <Grid Name="MaskGrid1" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="1"/>

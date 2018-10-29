@@ -68,7 +68,7 @@
         <BitmapImage x:Key="RogStyleButton2_p_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_p_r.png"/>
         <BitmapImage x:Key="RogStyleButton2_d_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn2_d_r.png"/>
         <Style x:Key="RogButtonStyle2"  TargetType="Button">
-            <Setter Property="Height" Value="36"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -356,6 +356,57 @@
                                 <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_r}" Height="{TemplateBinding Height}" Stretch="Fill"/>
                                 <Image x:Name="PPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_i}" Height="{TemplateBinding Height}"/>
                                 <ContentPresenter x:Name="CBBcontent" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RogComboBoxButtonStyle1" TargetType="Button">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_h_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_h_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_h_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_h_i}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_p_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_p_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_p_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_p_i}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="LPart.Source" Value="{ThemeResource RogComboBoxButton_p_l}"/>
+                                            <Setter Target="MPart.Source" Value="{ThemeResource RogComboBoxButton_p_m}"/>
+                                            <Setter Target="RPart.Source" Value="{ThemeResource RogComboBoxButton_p_r}"/>
+                                            <Setter Target="PPart.Source" Value="{ThemeResource RogComboBoxButton_p_i}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource RogComboBoxButton_n_l}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource RogComboBoxButton_n_m}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_r}" Height="{TemplateBinding Height}" Stretch="Fill"/>
+                                <Image x:Name="PPart" Grid.Column="2" Source="{ThemeResource RogComboBoxButton_n_i}"  Height="{TemplateBinding Height}"/>
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -665,6 +716,137 @@
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
                         </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <BitmapImage x:Key="MenuFlyoutPresenter_ul" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_ul.png"/>
+        <BitmapImage x:Key="MenuFlyoutPresenter_um" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_umid.png"/>
+        <BitmapImage x:Key="MenuFlyoutPresenter_ur" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_ur.png"/>
+        <BitmapImage x:Key="MenuFlyoutPresenter_dl" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_dl.png"/>
+        <BitmapImage x:Key="MenuFlyoutPresenter_dm" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_dmid.png"/>
+        <BitmapImage x:Key="MenuFlyoutPresenter_dr" UriSource="ms-appx:///Assets/MenuFlyoutPresenter/asus_gc_header bg_dr.png"/>
+        <SolidColorBrush x:Key="TopBG">#FF4B0511</SolidColorBrush>
+        <SolidColorBrush x:Key="BodyBG">#FE3C030D</SolidColorBrush>
+        <Style TargetType="MenuFlyoutPresenter" x:Key="RogMenuFlyoutPresenterStyle">
+            <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeHighBrush}" />
+            <Setter Property="BorderThickness" Value="{ThemeResource FlyoutBorderThemeThickness}" />
+            <Setter Property="Padding" Value="{ThemeResource MenuFlyoutPresenterThemePadding}" />
+            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+            <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
+            <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
+            <Setter Property="MaxWidth" Value="{ThemeResource FlyoutThemeMaxWidth}" />
+            <Setter Property="MinHeight" Value="{ThemeResource MenuFlyoutThemeMinHeight}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuFlyoutPresenter">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="12"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="12"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid x:Name="TopPart" Background="{ThemeResource TopBG}" Width="195" Grid.Row="0" Grid.ColumnSpan="2"/>
+                            <Grid Background="{ThemeResource BodyBG}"
+                                          Width="195"
+                                          Grid.Row="1"
+                                          Grid.Column="0"
+                                          Grid.ColumnSpan="2"/>
+                            <ItemsPresenter Margin="0" Grid.Row="1" Grid.ColumnSpan="2"/>
+                            <Image x:Name="BottomLeftPart" Source="{ThemeResource MenuFlyoutPresenter_dl}" Stretch="Fill" Width="12" Grid.Row="2" Grid.Column="0"/>
+                            <Image x:Name="BottomRightPart" Source="{ThemeResource MenuFlyoutPresenter_dr}" Stretch="Fill" Width="183" Grid.Row="2" Grid.Column="1"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <SolidColorBrush x:Key="BodyBG_n">#FF450015</SolidColorBrush>
+        <SolidColorBrush x:Key="BodyBG_h">#FF109DFF</SolidColorBrush>
+        <SolidColorBrush x:Key="BodyBG_p">#FF2C000F</SolidColorBrush>
+        <Style TargetType="MenuFlyoutItem" x:Key="RogMenuFlyoutItemStyle">
+            <Setter Property="MaxWidth" Value="500"/>
+            <Setter Property="Width" Value="195"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuFlyoutItem">
+                        <Grid x:Name="BodyPart" Background="{ThemeResource BodyBG_n}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_p}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10" Width="158" Height="32" Fill="{TemplateBinding Foreground}"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="MenuFlyoutItem" x:Key="RogMenuFlyoutItemStyle1">
+            <Setter Property="MaxWidth" Value="500"/>
+            <Setter Property="Width" Value="195"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuFlyoutItem">
+                        <Grid x:Name="BodyPart" Background="{ThemeResource BodyBG_n}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_n}"/>
+                                            <Setter Target="ItemTextBlock.Foreground" Value="White"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_h}"/>
+                                            <Setter Target="ItemTextBlock.Foreground" Value="Red"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_p}"/>
+                                            <Setter Target="ItemTextBlock.Foreground" Value="White"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <TextBlock x:Name="ItemTextBlock"
+                                               Text="{TemplateBinding Text}"
+                                               TextTrimming="Clip"
+                                               Foreground="White"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                               Margin="20,0,0,0"/>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

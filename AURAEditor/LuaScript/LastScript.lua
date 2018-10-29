@@ -8,7 +8,7 @@ EventProvider = {
 
 		--["12"] = { Effect = "MusicStandard" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
 		
-		--["13"] = { Effect = "MusicParty" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
+		["13"] = { Effect = "MusicParty" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
 		--["14"] = { Effect = "MusicFunk" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
 
 		--["15"] = { Effect = "MusicRomance" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
@@ -23,8 +23,8 @@ EventProvider = {
 		--["21"] = { Effect = "MusicRock" , Viewport = "All" , Trigger = "OneTime" , Delay = 0 , Duration = -1 },
 		--["22"] = { Effect = "MusicRock2" , Viewport = "All" , Trigger = "AudioPeakInput" , Delay = 0 , Duration = 10000 },
 
-		["1"] = { Effect = "Laser" , Viewport = "All" , Trigger = "DoubleClick" , Delay = 0 , Duration = 5000 },
-		["2"] = { Effect = "Reactive" , Viewport = "All" , Trigger = "OneClick" , Delay = 0 , Duration = 2000 },
+		--["1"] = { Effect = "Laser" , Viewport = "All" , Trigger = "DoubleClick" , Delay = 0 , Duration = 5000 },
+		--["2"] = { Effect = "Reactive" , Viewport = "All" , Trigger = "OneClick" , Delay = 0 , Duration = 2000 },
 
 		--["3"] = { Effect = "Comet" , Viewport = "All" , Trigger = "Period" , Delay = 0 , Duration = 5000 },
 
@@ -120,8 +120,8 @@ Event = {
 				func = function(viewport)
 					return AURA.ViewPortTransform.point(viewport)
 				end
-		},		
-
+		},
+		
 		wave =	{
 					["1"] = 
 					{
@@ -451,7 +451,7 @@ Event = {
 					["1"] = 
 					{
 						waveType = "SineWave" , min = 0.00 , max = 0.5 , 
-						waveLength = 2, freq = global.RandomHue , phase = math.pi/2, start = 0 , velocity = 0, 
+						waveLength = 2, freq = global.Random , phase = math.pi/2, start = 0 , velocity = 0, 
 						bindToSlot = { ["1"] = "LIGHTNESS" },
 					},
 		},
@@ -529,7 +529,7 @@ Event = {
 		wave =	{
 					["Rainbow"] = 
 					{
-						waveType = "SawToothleWave" , min = 0.0 , max = 1 , 
+						waveType = "SawToothWave" , min = 0.0 , max = 1 , 
 						waveLength = 11, freq = 0.1 , phase = math.pi/2, start = 0 , velocity = 0, 
 						bindToSlot = { ["1"] = "HUE" },
 					},
@@ -827,7 +827,7 @@ Event = {
 		wave =	{
 					["Rainbow"] = 
 					{
-						waveType = "SawToothleWave" , min = 0.0 , max = 1 , 
+						waveType = "SawToothWave" , min = 0.0 , max = 1 , 
 						waveLength = 11, freq = 0.1 , phase = math.pi/2, start = 0 , velocity = 0, 
 						bindToSlot = { ["1"] = "HUE" },
 					},
@@ -878,7 +878,7 @@ Event = {
 		wave =	{
 					["Rainbow"] = 
 					{
-						waveType = "SawToothleWave" , min = 0.0 , max = 1 , 
+						waveType = "SawToothWave" , min = 0.0 , max = 1 , 
 						waveLength = 22, freq = 0.1 , phase = math.pi/2, start = 0 , velocity = 0, 
 						bindToSlot = { ["1"] = "HUE" },
 					},

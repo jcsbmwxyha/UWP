@@ -170,7 +170,7 @@ namespace AuraEditor
             }
 
             // Use the brush to paint the rectangle.
-            PatternButton.Background = MultiPointRectangle.Fill = DefaultRainbow1.Foreground = Pattern1;
+            PatternPolygon.Fill = MultiPointRectangle.Fill = DefaultRainbow1.Foreground = Pattern1;
             foreach (var item in DefaultColorList[0])
             {
                 ColorPoints.Add(new ColorPoint(item));
@@ -251,7 +251,7 @@ namespace AuraEditor
                 Pattern.GradientStops.Add(new GradientStop { Color = ColorPoints[i].Color, Offset = ColorPoints[i].Offset });
             }
 
-            PatternButton.Background = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
+            PatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
             CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
             ui.ColorPointList = new List<ColorPoint>(ColorPoints);
             SetListBorder(ColorPoints);

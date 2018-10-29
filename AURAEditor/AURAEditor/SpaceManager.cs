@@ -463,7 +463,7 @@ namespace AuraEditor
 
             RefreshSpaceGrid();
         }
-        public async void RefreshIngroupDevices(List<SyncDevice> ingroupDevices)
+        public async void RefreshStageDevices(List<SyncDevice> ingroupDevices)
         {
             List<string> namesOfGlobalDevices = new List<string>();
 
@@ -509,6 +509,9 @@ namespace AuraEditor
                     Device device = await deviceContent.ToDevice(p);
 
                     GlobalDevices.Add(device);
+
+                    // Delete same type temp data
+                    TempDevices.RemoveAll(x => x.Type == device.Type);
                 }
 
                 RefreshSpaceGrid();
