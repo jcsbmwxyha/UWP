@@ -8,30 +8,28 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="600"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5,0,0">
-            <Button Content="Load" Click="LoadButton_Click" Margin="5,0,0,0"/>
-            <Button Content="Start" Click="StartButton_Click" Margin="5,0,0,0"/>
-            <Button Content="Save" Click="SaveButton_Click" Margin="5,0,0,0"/>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
+            <Button Content="Load" Click="LoadButton_Click"/>
+            <TextBlock Text="Load Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
+            <TextBlock Name="LoadPathTextBlock" VerticalAlignment="Center"/>
         </StackPanel>
-        <TextBlock Name="PathTextBlock"
-                   Margin="5,10,0,0"
-                   Grid.Row="1"
-                   Text="Save Path: "/>
-        <ScrollViewer Grid.Row="2"
+        <Button Content="Start" Click="StartButton_Click" Margin="10,20,0,0"/>
+        <ScrollViewer Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="600"
                       Margin="5,10,0,0"
                       VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Visible"
-                      MinZoomFactor="1"
-                      MaxZoomFactor="100"
+                      MinZoomFactor="0.1"
+                      MaxZoomFactor="50"
                       ZoomMode="Enabled">
-            <Grid Name="MainGrid"/>
+            <Grid Name="ImageGrid"/>
         </ScrollViewer>
-    </Grid>
+        <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
+            <Button Content="Save" Click="SaveButton_Click"/>
+            <TextBlock Text="Save Path:  " Margin="20,0,10,0" VerticalAlignment="Center"/>
+            <TextBlock Name="SavePathTextBlock" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBox Name="TargetWidthTextBox" Header="Target Width Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
+        <TextBox Name="TargetHeightTextBox" Header="Target Height Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
+    </StackPanel>
 </Page>
