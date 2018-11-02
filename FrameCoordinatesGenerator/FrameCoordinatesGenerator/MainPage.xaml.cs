@@ -461,42 +461,51 @@ namespace FrameCoordinatesGenerator
             // For overwrite file
             await FileIO.WriteBytesAsync(csvFile, new byte[0]);
 
-            double rateW = 1;
-            double rateH = 1;
+            double rateW = 1 / 6f;
+            double rateH = 1 / 6f;
             int sourceW = g_ImagePixelStructure.m_PixelBoolArray.GetLength(1);
             int sourceH = g_ImagePixelStructure.m_PixelBoolArray.GetLength(0);
 
-            if(int.TryParse(TargetWidthTextBox.Text, out int targetW))
-            {
-                rateW = (double)targetW / (double)sourceW;
-            }
-            if (int.TryParse(TargetHeightTextBox.Text, out int targetH))
-            {
-                rateH = (double)targetH / (double)sourceH;
-            }
+            //if(int.TryParse(TargetWidthTextBox.Text, out int targetW))
+            //{
+            //    rateW = (double)targetW / (double)sourceW;
+            //}
+            //if (int.TryParse(TargetHeightTextBox.Text, out int targetH))
+            //{
+            //    rateH = (double)targetH / (double)sourceH;
+            //}
 
             using (CsvFileWriter csvWriter = new CsvFileWriter(await csvFile.OpenStreamForWriteAsync()))
             {
                 CsvRow firstRow = new CsvRow
                     {
+                        "Model",
+                        csvFile.DisplayName
+                    };
+                csvWriter.WriteRow(firstRow);
+
+                CsvRow secondRow = new CsvRow
+                    {
                         "Parameters",
+                        "exist",
                         "LeftTop_x",
                         "LeftTop_y",
                         "RightBottom_x",
                         "RightBottom_y",
                         "Z_index"
                     };
-                csvWriter.WriteRow(firstRow);
+                csvWriter.WriteRow(secondRow);
 
                 for (int i = 0; i < result.Count; i++)
                 {
                     CsvRow row = new CsvRow
                     {
-                        "LED " + (i + 1).ToString(),
-                        Math.Round(result[i].X * rateW).ToString(),
-                        Math.Round(result[i].Y * rateH).ToString(),
-                        Math.Round((result[i].Right + 1) * rateW).ToString(),
-                        Math.Round((result[i].Bottom + 1) * rateH).ToString(),
+                        "LED " + i.ToString(),
+                        1.ToString(), // exist
+                        Math.Floor(result[i].X * rateW).ToString(),
+                        Math.Floor(result[i].Y * rateH).ToString(),
+                        Math.Ceiling((result[i].Right + 1) * rateW).ToString(),
+                        Math.Ceiling((result[i].Bottom + 1) * rateH).ToString(),
                         1.ToString(), // Z index
                     };
 

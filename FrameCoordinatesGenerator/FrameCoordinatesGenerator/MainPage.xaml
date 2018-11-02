@@ -29,7 +29,7 @@
             <TextBlock Text="Save Path:  " Margin="20,0,10,0" VerticalAlignment="Center"/>
             <TextBlock Name="SavePathTextBlock" VerticalAlignment="Center"/>
         </StackPanel>
-        <TextBox Name="TargetWidthTextBox" Header="Target Width Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
-        <TextBox Name="TargetHeightTextBox" Header="Target Height Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
+        <!--<TextBox Name="TargetWidthTextBox" Header="Target Width Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
+        <TextBox Name="TargetHeightTextBox" Header="Target Height Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>-->
     </StackPanel>
 </Page>
