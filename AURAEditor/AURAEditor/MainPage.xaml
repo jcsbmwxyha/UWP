@@ -1366,7 +1366,7 @@
                         HorizontalAlignment="Left">
                     <Rectangle Name="MouseRectangle" Width="0" Height="0"
                                Fill="Transparent"
-                               Stroke="Red" StrokeThickness="1"
+                               Stroke="Red" StrokeThickness="2" StrokeDashArray="5,2"
                                HorizontalAlignment="Left" VerticalAlignment="Top"
                                x:FieldModifier="Public"
                                Canvas.ZIndex="8">

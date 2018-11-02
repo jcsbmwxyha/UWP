@@ -68,6 +68,7 @@ namespace AuraEditor
         public Border Border { get; set; }
         public LightZone[] LightZones { get; set; }
         public DeviceStatus Status { get; set; }
+        private Rectangle dotRect;
 
         public Device(Image img, LightZone[] zones)
         {
@@ -76,6 +77,14 @@ namespace AuraEditor
             Canvas childCanvas = new Canvas();
             childCanvas.VerticalAlignment = 0;
             childCanvas.Children.Add(img);
+
+            dotRect = new Rectangle();
+            dotRect.Style = (Style)Application.Current.Resources["DeviceDotRectangle"];
+            // StrokeDashArray declare in style is useless ... I don't know why
+            dotRect.StrokeDashArray = new DoubleCollection() { 3, 3 };
+            dotRect.Width = img.Width;
+            dotRect.Height = img.Height;
+            childCanvas.Children.Add(dotRect);
 
             foreach (var zone in zones)
             {
@@ -86,8 +95,6 @@ namespace AuraEditor
             {
                 RenderTransform = new CompositeTransform(),
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-                BorderBrush = new SolidColorBrush(Windows.UI.Colors.Orange),
-                BorderThickness = new Thickness(0),
                 Child = childCanvas
             };
         }
@@ -104,8 +111,7 @@ namespace AuraEditor
             Border.ManipulationCompleted += ImageManipulationCompleted;
             Border.PointerEntered += ImagePointerEntered;
             Border.PointerExited += ImagePointerExited;
-
-            Border.BorderThickness = new Thickness(0.8);
+            dotRect.Opacity = 1;
         }
         public void DisableManipulation()
         {
@@ -114,8 +120,7 @@ namespace AuraEditor
             Border.ManipulationCompleted -= ImageManipulationCompleted;
             Border.PointerEntered -= ImagePointerEntered;
             Border.PointerExited -= ImagePointerExited;
-
-            Border.BorderThickness = new Thickness(0);
+            dotRect.Opacity = 0;
         }
 
         #region Mouse event
