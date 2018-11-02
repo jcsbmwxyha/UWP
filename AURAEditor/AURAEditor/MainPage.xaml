@@ -11,14 +11,13 @@
 
     <Page.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="VerticalScrollBarImgContent" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_system_scrollbar_Vertical.png"/>
+            <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/Background/grid.png"/>
             <BitmapImage x:Key="Vertical_portrait_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_t_btn_n.png"/>
             <BitmapImage x:Key="Vertical_portrait_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_n.png"/>
             <BitmapImage x:Key="Vertical_portrait_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_b_btn_n.png"/>
             <BitmapImage x:Key="Vertical_portrait_p_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_t_btn_p.png"/>
             <BitmapImage x:Key="Vertical_portrait_p_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_p.png"/>
             <BitmapImage x:Key="Vertical_portrait_p_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_b_btn_p.png"/>
-            <BitmapImage x:Key="HorizontalScrollBarImgContent" UriSource="ms-appx:///Assets/Scrollbar/asus_gc_system_scrollbar_Horizontal.png"/>
             <BitmapImage x:Key="Horizontal_Landscape_n_l" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_l_btn_n.png"/>
             <BitmapImage x:Key="Horizontal_Landscape_n_mid" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_m_btn_n.png"/>
             <BitmapImage x:Key="Horizontal_Landscape_n_r" UriSource="ms-appx:///Assets/Scrollbar/asus_ac_scrll_r_btn_n.png"/>
@@ -1248,7 +1247,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
         </ResourceDictionary>
     </Page.Resources>
 
@@ -1267,17 +1265,17 @@
         </Grid.ColumnDefinitions>
 
         <!--Backgroud image-->
-        <Image Source="Assets/asus_ac_bg.png"
+        <Image Source="Assets/Background/asus_ac_bg.png"
                Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
         <Image Grid.Row="2"
                Grid.Column="0"
                Grid.ColumnSpan="3"
-               Source="Assets/asus_auraeditor_time_bg.png"
+               Source="Assets/Layer/asus_auraeditor_time_bg.png"
                Stretch="Fill"/>
 
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
-                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}"
+                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click"/>
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
                         Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
@@ -1351,8 +1349,9 @@
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
-                        <MenuFlyoutItem x:Name="Zoom_0" Text="33 %" Click="SpaceZoom_Click"/>
+                        <MenuFlyoutItem x:Name="Zoom_0" Text="25 %" Click="SpaceZoom_Click"/>
                         <MenuFlyoutItem x:Name="Zoom_50" Text="50 %" Click="SpaceZoom_Click"/>
+                        <MenuFlyoutItem x:Name="Zoom_75" Text="75 %" Click="SpaceZoom_Click"/>
                         <MenuFlyoutItem x:Name="Zoom_100" Text="100 %" Click="SpaceZoom_Click"/>
                     </MenuFlyout>
                 </Button.Flyout>
@@ -1364,8 +1363,6 @@
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Canvas Name="SpaceAreaCanvas"  VerticalAlignment="Top"
                         x:FieldModifier="public"
-                        Width="2400"
-                        Height="824"
                         HorizontalAlignment="Left">
                     <Rectangle Name="MouseRectangle" Width="0" Height="0"
                                Fill="Transparent"
@@ -1377,12 +1374,12 @@
                             <CompositeTransform/>
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <Image Name="GridImage" Source="Assets/Grid.png" Stretch="None" Canvas.ZIndex="-2"
+                    <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
                            x:FieldModifier="Public"/>
                 </Canvas>
             </ScrollViewer>
             <Image Grid.Row="1" Grid.Column="1" Canvas.ZIndex="-3"
-                   Source="Assets/asus_ac_stage_bg.png" Stretch="Fill"/>
+                   Source="Assets/Background/asus_ac_stage_bg.png" Stretch="Fill"/>
         </Grid>
         <ScrollViewer Name="EffectInfoScrollViewer"
                       Grid.Row="1" Grid.Column="2"
@@ -1561,12 +1558,12 @@
                       HorizontalAlignment="Left">
             <ListView x:Name="LayerListView"
                       x:FieldModifier="Public"
-                      ItemsSource="{x:Bind LayerManager.DeviceLayers}"
+                      ItemsSource="{x:Bind LayerManager.Layers}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
                       HorizontalAlignment="Left">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:DeviceLayer">
+                    <DataTemplate x:DataType="local:Layer">
                         <usercontrol:DeviceLayerItem HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -1584,7 +1581,7 @@
                       Visibility="Collapsed">
             <Canvas Name="IconCanvas"
                     VerticalAlignment="Top">
-                <Image Source="Assets/asus_auraeditor_timeline_ic.png"
+                <Image Source="Assets/Layer/asus_auraeditor_timeline_ic.png"
                        HorizontalAlignment="Left"
                        Margin="-7,0,0,0">
                     <Image.RenderTransform>

@@ -48,106 +48,29 @@ namespace AuraEditor
 
         static public async Task<DeviceContent> GetDeviceContent(SyncDevice syncDevice)
         {
-            try
-            {
-                DeviceContent deviceContent = new DeviceContent();
-                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
-
-                string modelName = syncDevice.Name;
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
-                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
-                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
-
-                deviceContent.DeviceName = modelName;
-                deviceContent.DeviceType = GetTypeByTypeName(syncDevice.Type);
-
-                int exist_Column = -1;
-                int leftTopX_Column = -1;
-                int leftTopY_Column = -1;
-                int rightBottomX_Column = -1;
-                int rightBottomY_Column = -1;
-                int z_Column = -1;
-                int png_Column = -1;
-
-                if (csvFile != null)
-                {
-                    using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
-                    {
-                        CsvRow row = new CsvRow();
-                        while (csvReader.ReadRow(row))
-                        {
-                            if (row[0].ToLower() == "parameters")
-                            {
-                                for (int i = 0; i < row.Count; i++)
-                                {
-                                    if (row[i].ToLower() == "exist") { exist_Column = i; }
-                                    else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
-                                    else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
-                                    else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
-                                    else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
-                                    else if (row[i].ToLower() == "z_index") { z_Column = i; }
-                                    else if (row[i].ToLower() == "png") { png_Column = i; }
-                                }
-                            }
-                            else if (row[0].ToLower().Contains("led "))
-                            {
-                                if (row[exist_Column] != "1")
-                                    continue;
-
-                                LedUI ledui = new LedUI()
-                                {
-                                    Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
-                                    Left = Int32.Parse(row[leftTopX_Column]),
-                                    Top = Int32.Parse(row[leftTopY_Column]),
-                                    Right = Int32.Parse(row[rightBottomX_Column]),
-                                    Bottom = Int32.Parse(row[rightBottomY_Column]),
-                                    ZIndex = Int32.Parse(row[z_Column]),
-                                };
-
-                                if (png_Column != -1 && row[png_Column] != "")
-                                    ledui.PNG_Path = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
-
-                                deviceContent.Leds.Add(ledui);
-                            }
-                        }
-                    }
-                }
-
-                if (pngFile != null)
-                {
-                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        BitmapImage bitmapImage = new BitmapImage();
-
-                        bitmapImage.SetSource(fileStream);
-                        deviceContent.Image = bitmapImage;
-                        deviceContent.GridWidth = bitmapImage.PixelWidth / GridPixels;
-                        deviceContent.GridHeight = bitmapImage.PixelHeight / GridPixels;
-                    }
-                }
-
-                return deviceContent;
-            }
-            catch
-            {
-                return null;
-            }
+            string modelName = syncDevice.Name;
+            string type = syncDevice.Type;
+            return await CreateDeviceContent(modelName, type);
         }
         static public async Task<DeviceContent> GetDeviceContent(XmlNode node)
+        {
+            XmlElement elem = (XmlElement)node;
+            string modelName = elem.GetAttribute("name");
+            string type = elem.GetAttribute("type");
+            return await CreateDeviceContent(modelName, type);
+        }
+        static private async Task<DeviceContent> CreateDeviceContent(string modelName, string type)
         {
             try
             {
                 DeviceContent deviceContent = new DeviceContent();
                 string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
 
-                XmlElement elem = (XmlElement)node;
-                string modelName = elem.GetAttribute("name");
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
 
                 deviceContent.DeviceName = modelName;
-                deviceContent.DeviceType = GetTypeByTypeName(elem.GetAttribute("type"));
 
                 int exist_Column = -1;
                 int leftTopX_Column = -1;
@@ -201,6 +124,16 @@ namespace AuraEditor
                     }
                 }
 
+                int gridW, gridH;
+                switch (type)
+                {
+                    case "Aac_NBDT": gridW = 27; gridH = 27; break;
+                    case "Mouse": gridW = 8; gridH = 10; break;
+                    case "Keyboard": gridW = 25; gridH = 14; break;
+                    default: gridW = 27; gridH = 27; break;
+                }
+                deviceContent.DeviceType = GetTypeByTypeName(type);
+
                 if (pngFile != null)
                 {
                     using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
@@ -209,8 +142,8 @@ namespace AuraEditor
 
                         bitmapImage.SetSource(fileStream);
                         deviceContent.Image = bitmapImage;
-                        deviceContent.GridWidth = bitmapImage.PixelWidth / GridPixels;
-                        deviceContent.GridHeight = bitmapImage.PixelHeight / GridPixels;
+                        deviceContent.GridWidth = gridW;
+                        deviceContent.GridHeight = gridH;
                     }
                 }
 
@@ -221,6 +154,7 @@ namespace AuraEditor
                 return null;
             }
         }
+
         public async Task<Device> ToDevice()
         {
             return await ToDevice(new Point(0, 0));
@@ -234,8 +168,8 @@ namespace AuraEditor
             img = new Image
             {
                 RenderTransform = new CompositeTransform(),
-                Width = Image.PixelWidth,
-                Height = Image.PixelHeight,
+                Width = GridWidth * GridPixels,
+                Height = GridHeight * GridPixels,
                 Source = this.Image,
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Stretch = Stretch.Fill,

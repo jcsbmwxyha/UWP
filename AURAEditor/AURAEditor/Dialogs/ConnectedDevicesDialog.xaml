@@ -103,13 +103,15 @@
             </Grid.RowDefinitions>
             <StackPanel>
                 <TextBlock Text="Select connected device to sync AURA lighting" FontSize="14" Margin="0,21,0,0"/>
-                <TextBlock Text="() Selected devices" FontSize="11" Foreground="Gray" Margin="0,8,0,0"/>
+                <TextBlock x:Name="SelectedNumberText" Text="() Selected devices" FontSize="11" Foreground="Gray" Margin="0,8,0,0"/>
             </StackPanel>
             
             <Image Grid.Row="1" Source="../Assets/ConnectedDevices/asus_ac_deviceslist_bg.png" Stretch="Fill"/>
             <StackPanel Grid.Row="1" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Height="36">
-                    <ToggleButton Margin="12,0,14,0" Style="{StaticResource RogToggleButtonStyle1}" Width="20" Height="20"/>
+                    <ToggleButton x:Name="SelectAllButton" Margin="12,0,14,0" Width="20" Height="20"
+                                  Click="SelectAllButton_Click"
+                                  Style="{StaticResource RogToggleButtonStyle1}"/>
                     <TextBlock Text="Devices" VerticalAlignment="Center"/>
                 </StackPanel>
                 <ListView Name="ConnectedDevicesListView" VerticalAlignment="Top"

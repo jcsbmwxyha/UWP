@@ -20,7 +20,7 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class TriggerDialog : ContentDialog
     {
-        private DeviceLayer m_DeviceLayer;
+        private Layer m_DeviceLayer;
         private ObservableCollection<TriggerEffect> m_EffectList;
         private string defaultEffect;
 
@@ -55,7 +55,7 @@ namespace AuraEditor.Dialogs
             }
         }
 
-        public TriggerDialog(DeviceLayer layer)
+        public TriggerDialog(Layer layer)
         {
             this.InitializeComponent();
             SetDefaultPattern();

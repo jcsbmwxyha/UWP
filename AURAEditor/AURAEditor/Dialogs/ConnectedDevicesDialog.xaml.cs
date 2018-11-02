@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuraEditor.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,7 +8,8 @@ using System.Xml;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using static AuraEditor.Common.StorageHelper;
+using Windows.UI.Xaml.Controls.Primitives;
+using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
@@ -29,20 +31,11 @@ namespace AuraEditor.Dialogs
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
-            List<Device> tempDevices = AuraSpaceManager.Self.TempDevices;
-            List<Device> _tempDevices = new List<Device>(tempDevices);
-
-            foreach (Device temp_d in _tempDevices)
+            foreach (SyncDevice sd in m_SyncDeviceList)
             {
-                foreach (SyncDevice sd in m_SyncDeviceList)
-                {
-                    if (sd.Name == temp_d.Name && sd.Sync == true)
-                    {
-                        tempDevices.Remove(temp_d);
-                        globalDevices.Add(temp_d);
-                        break;
-                    }
-                }
+                Device find = globalDevices.Find(d => d.Name == sd.Name);
+                if (find != null)
+                    find.Status = DeviceStatus.OnStage;
             }
 
             NotifySpaceManager();
@@ -61,6 +54,7 @@ namespace AuraEditor.Dialogs
                 List<XmlNode> deviceNodes = await GetSortedAndFilteredDeviceList();
 
                 m_SyncDeviceList.Clear();
+                ConnectedDevicesListView.ItemsSource = null;
                 foreach (var node in deviceNodes)
                 {
                     SyncDevice sd = new SyncDevice
@@ -74,6 +68,7 @@ namespace AuraEditor.Dialogs
                 ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
 
                 NotifySpaceManager();
+                UpdateSelectedText();
             }
             catch
             {
@@ -98,19 +93,21 @@ namespace AuraEditor.Dialogs
         static private async Task<List<XmlNode>> GetSortedAndFilteredDeviceList()
         {
             XmlNodeList deviceNodes = await GetPluggedDevices();
-            List<XmlNode> resultList = new List<XmlNode>();
+            List<XmlNode> result = new List<XmlNode>();
 
-            foreach (XmlNode node in deviceNodes)
+            foreach (XmlNode n in deviceNodes)
             {
-                XmlElement element = (XmlElement)node;
-
-                if (element.GetAttribute("type") == "Aac_NBDT") // Put local at first
-                    resultList.Insert(0, node);
-                else
-                    resultList.Add(node);
+                XmlElement element = (XmlElement)n;
+                result.Add(n);
             }
 
-            return FilterDeviceListWeNeed(resultList);
+            result = FilterNodes(result);
+
+            XmlNode node = result.Find(x => (x as XmlElement).GetAttribute("type") == "Aac_NBDT");
+            result.Remove(node);
+            result.Insert(0, node);
+
+            return result;
         }
         static private async Task<XmlNodeList> GetPluggedDevices()
         {
@@ -140,69 +137,86 @@ namespace AuraEditor.Dialogs
                 return null;
             }
         }
-        static private List<XmlNode> FilterDeviceListWeNeed(List<XmlNode> deviceList)
+        static private List<XmlNode> FilterNodes(List<XmlNode> deviceNodes)
         {
-            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
-            List<Device> tempDevices = AuraSpaceManager.Self.TempDevices;
-            List<Device> _tempDevices = new List<Device>(tempDevices);
             List<XmlNode> results = new List<XmlNode>();
+            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
+            List<Device> existedDevices = globalDevices.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
 
-            // 1. Keep temp device or not
-            foreach (Device temp_d in _tempDevices)
+            while (deviceNodes.Count != 0)
             {
-                XmlNode node = deviceList.Find(x => (x as XmlElement).GetAttribute("name") == temp_d.Name);
+                XmlNode firstNode = deviceNodes[0];
+                string firstNodeType = (firstNode as XmlElement).GetAttribute("type");
+                List<XmlNode> sameTypeList = deviceNodes.FindAll(n => (n as XmlElement).GetAttribute("type") == firstNodeType);
 
-                if (node != null)
-                {
-                    // The temp device is plugged back, so kick other same type device
-                    results.Add(node);
-                    deviceList.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type));
-                    tempDevices.Remove(temp_d);
-                    globalDevices.Add(temp_d);
-                }
+                XmlNode findTheExistedNode = sameTypeList.Find(
+                    n => existedDevices.Find(
+                        d => d.Name == (n as XmlElement).GetAttribute("name")
+                    ) != null
+                );
+
+                if (findTheExistedNode != null)
+                    results.Add(findTheExistedNode);
                 else
-                {
-                    if (deviceList.Find(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(temp_d.Type)) != null)
-                    {
-                        // Detect another same type device, so we delete temp device data
-                        tempDevices.Remove(temp_d);
-                        AuraLayerManager.Self.ClearDeviceData(temp_d.Type);
-                    }
-                }
-            }
+                    results.Add(firstNode);
 
-            // 2. Keep devices which are in the stage, and kick other same type device
-            foreach (Device global_d in globalDevices)
-            {
-                XmlNode node = deviceList.Find(x => (x as XmlElement).GetAttribute("name") == global_d.Name);
-
-                if (node != null)
-                {
-                    // kick other same type
-                    results.Add(node);
-                    deviceList.RemoveAll(x => (x as XmlElement).GetAttribute("type") == GetTypeNameByType(global_d.Type));
-                }
-            }
-
-            // 3. Only retain one node for every type
-            for (int i = 0; i < deviceList.Count; i++)
-            {
-                XmlElement elem = (XmlElement)deviceList[i];
-                bool CanAddThisNode = true;
-
-                for (int j = 0; j < i; j++)
-                {
-                    XmlElement elem2 = (XmlElement)deviceList[j];
-
-                    if (elem.GetAttribute("type") == elem2.GetAttribute("type"))
-                        CanAddThisNode = false;
-                }
-
-                if (CanAddThisNode)
-                    results.Add(deviceList[i]);
+                deviceNodes.RemoveAll(n => (n as XmlElement).GetAttribute("type") == firstNodeType);
             }
 
             return results;
+        }
+
+        private void SelectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<ConnectedDeviceBlock> cdbList = FindAllControl<ConnectedDeviceBlock>(ConnectedDevicesListView, typeof(ConnectedDeviceBlock));
+            if (cdbList == null)
+            {
+                return;
+            }
+            if (SelectAllButton.IsChecked == true)
+            {
+                foreach (var cdb in cdbList)
+                {
+                    cdb.Update();
+                    if(cdb != null)
+                    {
+                        List<ToggleButton> toggleButtons = FindAllControl<ToggleButton>(cdb, typeof(ToggleButton));
+                        toggleButtons[0].IsChecked = true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var cdb in cdbList)
+                {
+                    if (cdb != null)
+                    {
+                        List<ToggleButton> toggleButtons = FindAllControl<ToggleButton>(cdb, typeof(ToggleButton));
+                        toggleButtons[0].IsChecked = false;
+                    }
+                }
+            }
+        }
+
+        public void UpdateSelectedText()
+        {
+            int selectedcount = 0;
+            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+            {
+                if (sd.Sync == true)
+                {
+                    selectedcount += 1;
+                }
+            }
+            if (selectedcount == 0)
+            {
+                SelectAllButton.IsChecked = false;
+            }
+            if (selectedcount == ConnectedDevicesListView.Items.Count)
+            {
+                SelectAllButton.IsChecked = true;
+            }
+            SelectedNumberText.Text = "(" + selectedcount.ToString() + ")  Selected devices";
         }
     }
 }

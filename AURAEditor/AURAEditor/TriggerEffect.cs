@@ -22,11 +22,11 @@ namespace AuraEditor
             }
         }
 
-        public TriggerEffect(DeviceLayer layer, int effectType) : base(layer, effectType)
+        public TriggerEffect(Layer layer, int effectType) : base(layer, effectType)
         {
             DurationTime = 1000; // 1s
         }
-        public TriggerEffect(DeviceLayer layer, string effectName) : base(layer, effectName)
+        public TriggerEffect(Layer layer, string effectName) : base(layer, effectName)
         {
             DurationTime = 1000; // 1s
         }

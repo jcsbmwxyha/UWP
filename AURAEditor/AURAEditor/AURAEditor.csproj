@@ -11,7 +11,7 @@
     <AssemblyName>AuraEditor</AssemblyName>
     <DefaultLanguage>zh-TW</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -118,7 +118,6 @@
       <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileOperations.cs" />
-    <Compile Include="Common\ObservableRecentList.cs" />
     <Compile Include="Dialogs\ColorPickerDialog.xaml.cs">
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
     </Compile>
@@ -133,7 +132,7 @@
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceContent.cs" />
-    <Compile Include="DeviceLayer.cs" />
+    <Compile Include="Layer.cs" />
     <Compile Include="Dialogs\TriggerDialog.xaml.cs">
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
@@ -154,8 +153,8 @@
     <Compile Include="UserControls\ConnectedDeviceBlock.xaml.cs">
       <DependentUpon>ConnectedDeviceBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\DeviceLayerItem.xaml.cs">
-      <DependentUpon>DeviceLayerItem.xaml</DependentUpon>
+    <Compile Include="UserControls\LayerTitle.xaml.cs">
+      <DependentUpon>LayerTitle.xaml</DependentUpon>
     </Compile>
     <Compile Include="EffectInfoGrid.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -181,16 +180,14 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Assets\asus_ac_bg.png" />
-    <Content Include="Assets\asus_ac_effectblock_btn_f.png" />
-    <Content Include="Assets\asus_ac_effectblock_btn_n.png" />
-    <Content Include="Assets\asus_ac_effectblock_btn_s.png" />
-    <Content Include="Assets\asus_ac_layer_n.png" />
-    <Content Include="Assets\asus_ac_layer_s.png" />
-    <Content Include="Assets\asus_ac_stage_bg.png" />
-    <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
-    <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
-    <Content Include="Assets\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
+    <Content Include="Assets\Background\asus_ac_bg.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_f.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_s.png" />
+    <Content Include="Assets\Background\asus_ac_stage_bg.png" />
+    <Content Include="Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
+    <Content Include="Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_colorring_mask.png" />
+    <Content Include="Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" />
     <Content Include="Assets\Button\asus_ac_btn2_d_l.png" />
     <Content Include="Assets\Button\asus_ac_btn2_d_m.png" />
     <Content Include="Assets\Button\asus_ac_btn2_d_r.png" />
@@ -271,8 +268,8 @@
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_n.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_nh.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
-    <Content Include="Assets\effectUI.png" />
-    <Content Include="Assets\Grid.png" />
+    <Content Include="Assets\EffectBlock\drag_effect_ic.png" />
+    <Content Include="Assets\Background\grid.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
@@ -501,14 +498,6 @@
     <Content Include="Assets\Scrollbar\asus_ac_scrll_r_btn_p.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_n.png" />
     <Content Include="Assets\Scrollbar\asus_ac_scrll_t_btn_p.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_l.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_mid.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_n_r.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_l.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_mid.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_scrollbar_hint_landscape_p_r.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Horizontal.png" />
-    <Content Include="Assets\Scrollbar\asus_gc_system_scrollbar_Vertical.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-125.png" />
     <Content Include="Assets\SmallTile.scale-150.png" />
@@ -570,27 +559,10 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\asus_auraeditor_bg.png" />
-    <Content Include="Assets\asus_auraeditor_btn.png" />
-    <Content Include="Assets\asus_auraeditor_delet_ic.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_n.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_1_s.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_n.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_2_s.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_n.png" />
-    <Content Include="Assets\asus_auraeditor_effectblock_btn_3_s.png" />
     <Content Include="Assets\Button\asus_ac_eye_off_n_ic.png" />
     <Content Include="Assets\Button\asus_ac_eye_on_n_ic.png" />
-    <Content Include="Assets\asus_auraeditor_layer_bg.png" />
-    <Content Include="Assets\asus_auraeditor_layer_n_btn.png" />
-    <Content Include="Assets\asus_auraeditor_layer_s_btn.png" />
-    <Content Include="Assets\asus_auraeditor_redo_ic.png" />
-    <Content Include="Assets\asus_auraeditor_save_ic.png" />
-    <Content Include="Assets\asus_auraeditor_settings_ic.png" />
-    <Content Include="Assets\asus_auraeditor_timeline_bg.png" />
-    <Content Include="Assets\asus_auraeditor_timeline_ic.png" />
-    <Content Include="Assets\asus_auraeditor_time_bg.png" />
-    <Content Include="Assets\asus_auraeditor_undo_ic.png" />
+    <Content Include="Assets\Layer\asus_auraeditor_timeline_ic.png" />
+    <Content Include="Assets\Layer\asus_auraeditor_time_bg.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -633,7 +605,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\DeviceLayerItem.xaml">
+    <Page Include="UserControls\LayerTitle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -660,7 +632,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.6</Version>
+      <Version>6.1.9</Version>
     </PackageReference>
     <PackageReference Include="MoonSharp">
       <Version>2.0.0</Version>

@@ -89,14 +89,14 @@ namespace AuraEditor
             Rectangle rectangle = new Rectangle
             {
                 Fill = new SolidColorBrush(Colors.Transparent),
-                StrokeThickness = 2,
+                StrokeThickness = 1,
                 RenderTransform = ct,
                 Width = Rect.Width,
                 Height = Rect.Height,
                 HorizontalAlignment = 0,
                 VerticalAlignment = 0,
-                RadiusX = 3,
-                RadiusY = 4
+                RadiusX = 2,
+                RadiusY = 3
             };
 
             rectangle.Stroke = new SolidColorBrush(Colors.Black);

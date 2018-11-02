@@ -91,7 +91,7 @@ namespace AuraEditor
         {
             DragEffectIcon = new BitmapImage();
 
-            string CountriesFile = @"Assets\effectUI.png";
+            string CountriesFile = @"Assets\EffectBlock\drag_effect_ic.png";
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
             StorageFile file = await InstallationFolder.GetFileAsync(CountriesFile);
 
@@ -105,7 +105,7 @@ namespace AuraEditor
         #region Framework Element
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
-            DeviceLayer layer = new DeviceLayer();
+            Layer layer = new Layer();
             List<int> selectedIndex;
 
             layer.Name = "Layer " + (LayerManager.GetLayerCount());
@@ -204,7 +204,7 @@ namespace AuraEditor
             {
                 if (item.IsChecked == true)
                 {
-                    DeviceLayer layer = item.DataContext as DeviceLayer;
+                    Layer layer = item.DataContext as Layer;
 
                     if (layer.TimelineEffects.Contains(_selectedEffectLine))
                         SelectedEffectLine = null;
@@ -296,9 +296,11 @@ namespace AuraEditor
             switch (itemName)
             {
                 case "Zoom_0":
-                    SpaceManager.SpaceZoomChanged("33 %"); SpaceZoomButton.Content = "33 %"; break;
+                    SpaceManager.SpaceZoomChanged("25 %"); SpaceZoomButton.Content = "25 %"; break;
                 case "Zoom_50":
                     SpaceManager.SpaceZoomChanged("50 %"); SpaceZoomButton.Content = "50 %"; break;
+                case "Zoom_75":
+                    SpaceManager.SpaceZoomChanged("75 %"); SpaceZoomButton.Content = "75 %"; break;
                 case "Zoom_100":
                     SpaceManager.SpaceZoomChanged("100 %"); SpaceZoomButton.Content = "100 %"; break;
             }
@@ -309,7 +311,7 @@ namespace AuraEditor
             connectedDevicesDialog.Rescan();
         }
 
-        public void ReEdit(DeviceLayer layer)
+        public void ReEdit(Layer layer)
         {
             ShowMask("Edit layer: " + layer.Name, "Save", "Cancel");
         }
@@ -317,7 +319,7 @@ namespace AuraEditor
         {
             if (SpaceManager.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                DeviceLayer layer = LayerManager.GetSelectedLayer();
+                Layer layer = LayerManager.GetSelectedLayer();
                 List<int> selectedIndex;
 
                 foreach (Device d in SpaceManager.GlobalDevices)

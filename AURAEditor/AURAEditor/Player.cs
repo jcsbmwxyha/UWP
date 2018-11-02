@@ -77,7 +77,8 @@ namespace AuraEditor
             private void IconStoryboard_Completed(object sender, object e)
             {
                 TimerClock.Stop();
-                clockText.Text = TimeSpan.FromMilliseconds((int)AuraLayerManager.Self.PlayTime).ToString("mm\\:ss\\.ff");
+                //clockText.Text = TimeSpan.FromMilliseconds((int)AuraLayerManager.Self.PlayTime).ToString("mm\\:ss\\.ff");
+                clockText.Text = "00:00:00";
                 iconScrollViewer.Visibility = Visibility.Collapsed;
             }
             private void Timer_Tick(object sender, object e)

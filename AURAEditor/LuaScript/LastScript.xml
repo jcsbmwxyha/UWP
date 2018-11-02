@@ -5,18 +5,18 @@
     <effectProvider>
         <period key="true">500000</period>
         <queue>
-            <effect key="Static">
+            <!--effect key="Static">
                 <viewport>All</viewport>
                 <trigger>Period</trigger>
                 <delay>0</delay>
                 <duration>500000</duration>
                 <layer>1</layer>
-            </effect>
-            <effect key="StarryNight">
+            </effect-->
+            <effect key="Star">
                 <viewport>All</viewport>
-                <trigger>Period</trigger>
+                <trigger>OneTime</trigger>
                 <delay>0</delay>
-                <duration>500000</duration>
+                <duration>-1</duration>
                 <layer>0</layer>
             </effect>
             <!--effect key="Laser">
@@ -226,7 +226,7 @@
             <waveList>
                 <wave key="0">
                     <type>SineWave</type>
-                    <max>0.5</max>
+                    <max>1.0</max>
                     <min>0</min>
                     <length>23</length>
                     <freq>0.1</freq>
@@ -234,7 +234,7 @@
                     <start>0</start>
                     <velocity>0</velocity>
                     <bindToSlot>
-                        <slot key="LIGHTNESS" />
+                        <slot key="ALPHA" />
                     </bindToSlot>
                 </wave>
             </waveList>
@@ -256,11 +256,11 @@
             </viewportTransform>
             <waveList>
                 <wave key="0">
-                    <type>QuarterSineWave</type>
+                    <type>SineWave</type>
                     <max>1</max>
                     <min>0</min>
                     <length>23</length>
-                    <freq>-0.04</freq>
+                    <freq>0.04</freq>
                     <phase>0</phase>
                     <start>0</start>
                     <velocity>0</velocity>
@@ -376,7 +376,7 @@
             <waveList>
                 <wave key="0">
                     <type>TriangleWave</type>
-                    <max>0.1</max>
+                    <max>1.0</max>
                     <min>0</min>
                     <length>3</length>
                     <freq>0.01</freq>
@@ -386,6 +386,20 @@
                     <isCycle>1</isCycle>
                     <bindToSlot>
                         <slot key="ALPHA" />
+                    </bindToSlot>
+                </wave>
+                <wave key="1">
+                    <type>TriangleWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>10</length>
+                    <freq>1</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>15</velocity>
+                    <isCycle>1</isCycle>
+                    <bindToSlot>
+                        <slot key="HUE" />
                     </bindToSlot>
                 </wave>
             </waveList>
@@ -518,7 +532,7 @@
                 <alpha>1.0</alpha>
             </initColor>
         </effect>
-        <effect key="StarryNight">
+        <effect key="Star">
             <viewportTransform>
                 <rotate>
                     <x>0</x>
@@ -530,7 +544,7 @@
             <waveList>
                 <wave key="0">
                     <type>SineWave</type>
-                    <max>1.0</max>
+                    <max>0.8</max>
                     <min>0.5</min>
                     <length>32</length>
                     <freq>Random</freq>
@@ -539,14 +553,28 @@
                     <velocity>4</velocity>
                     <isCycle>1</isCycle>
                     <bindToSlot>
-                        <slot key="ALPHA" />
+                        <slot key="LIGHTNESS" />
+                    </bindToSlot>
+                </wave>
+                <wave key="1">
+                    <type>SineWave</type>
+                    <max>1.0</max>
+                    <min>0</min>
+                    <length>32</length>
+                    <freq>Random</freq>
+                    <phase>Random</phase>
+                    <start>0</start>
+                    <velocity>4</velocity>
+                    <isCycle>1</isCycle>
+                    <bindToSlot>
+                        <slot key="HUE" />
                     </bindToSlot>
                 </wave>
             </waveList>
             <initColor>
                 <hue>0.3</hue>
                 <saturation>1.0</saturation>
-                <lightness>0.9</lightness>
+                <lightness>0.7</lightness>
                 <alpha>0.5</alpha>
             </initColor>
         </effect>

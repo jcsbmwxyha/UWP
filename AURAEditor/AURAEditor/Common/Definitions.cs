@@ -21,13 +21,9 @@ namespace AuraEditor.Common
 
             return seconds;
         }
-        public const int GridPixels = 32;
+        public const int GridPixels = 24;
         public const string UserFilesDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserFiles\\";
-        public const string UserFileListXmlPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Userfiles.xml";
         public const string DefaultScriptFolder = "C:\\ProgramData\\ASUS\\AURA Creator\\script";
-    }                                               
-}                                                   
-                                                    
-                                                    
-                                                    
+    }
+}                     
                                                     

@@ -15,6 +15,12 @@ using System.Xml;
 
 namespace AuraEditor
 {
+    public enum DeviceStatus
+    {
+        OnStage = 0,
+        Temp,
+    }
+
     public class Device
     {
         public string Name { get; set; }
@@ -61,6 +67,7 @@ namespace AuraEditor
         }
         public Border Border { get; set; }
         public LightZone[] LightZones { get; set; }
+        public DeviceStatus Status { get; set; }
 
         public Device(Image img, LightZone[] zones)
         {
@@ -191,9 +198,9 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForScript()
         {
-            XmlNode deviceNode = CreateXmlNodeOfFile("device");
+            XmlNode deviceNode = CreateXmlNode("device");
 
-            XmlNode modelNode = CreateXmlNodeOfFile("model");
+            XmlNode modelNode = CreateXmlNode("model");
             modelNode.InnerText = Name.ToString();
             deviceNode.AppendChild(modelNode);
 
@@ -205,7 +212,7 @@ namespace AuraEditor
                 case 2: type = "Keyboard"; break;
                 case 3: type = "Headset"; break;
             }
-            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            XmlNode typeNode = CreateXmlNode("type");
             typeNode.InnerText = type.ToString();
             deviceNode.AppendChild(typeNode);
 
@@ -216,13 +223,13 @@ namespace AuraEditor
         }
         private XmlNode GetLocationXmlNode()
         {
-            XmlNode locationNode = CreateXmlNodeOfFile("location");
+            XmlNode locationNode = CreateXmlNode("location");
 
-            XmlNode xNode = CreateXmlNodeOfFile("x");
+            XmlNode xNode = CreateXmlNode("x");
             xNode.InnerText = GridPosition.X.ToString();
             locationNode.AppendChild(xNode);
 
-            XmlNode yNode = CreateXmlNodeOfFile("y");
+            XmlNode yNode = CreateXmlNode("y");
             yNode.InnerText = GridPosition.Y.ToString();
             locationNode.AppendChild(yNode);
 
@@ -231,7 +238,7 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForUserData()
         {
-            XmlNode deviceNode = CreateXmlNodeOfFile("device");
+            XmlNode deviceNode = CreateXmlNode("device");
 
             XmlAttribute attributeName = CreateXmlAttributeOfFile("name");
             attributeName.Value = Name;
@@ -241,15 +248,11 @@ namespace AuraEditor
             attributeType.Value = GetTypeNameByType(Type);
             deviceNode.Attributes.Append(attributeType);
 
-            //XmlNode typeNode = CreateXmlNodeOfFile("type");
-            //typeNode.InnerText = Type.ToString();
-            //deviceNode.AppendChild(typeNode);
-
-            XmlNode xNode = CreateXmlNodeOfFile("x");
+            XmlNode xNode = CreateXmlNode("x");
             xNode.InnerText = GridPosition.X.ToString();
             deviceNode.AppendChild(xNode);
 
-            XmlNode yNode = CreateXmlNodeOfFile("y");
+            XmlNode yNode = CreateXmlNode("y");
             yNode.InnerText = GridPosition.Y.ToString();
             deviceNode.AppendChild(yNode);
 

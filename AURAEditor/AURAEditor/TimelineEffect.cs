@@ -21,38 +21,38 @@ namespace AuraEditor
         {
             get
             {
-                double timeUnits = UI.X / AuraLayerManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraLayerManager.secondsPerTimeUnit;
+                double timeUnits = UI.X / AuraLayerManager.PixelsPerTimeUnit;
+                double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
 
                 return seconds * 1000;
             }
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraLayerManager.secondsPerTimeUnit;
+                double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                UI.X = timeUnits * AuraLayerManager.pixelsPerTimeUnit;
+                UI.X = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
             }
         }
         public override double DurationTime
         {
             get
             {
-                double timeUnits = UI.Width / AuraLayerManager.pixelsPerTimeUnit;
-                double seconds = timeUnits * AuraLayerManager.secondsPerTimeUnit;
+                double timeUnits = UI.Width / AuraLayerManager.PixelsPerTimeUnit;
+                double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
 
                 return seconds * 1000;
             }
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraLayerManager.secondsPerTimeUnit;
+                double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                UI.Width = timeUnits * AuraLayerManager.pixelsPerTimeUnit;
+                UI.Width = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
             }
         }
 
-        public TimelineEffect(DeviceLayer layer, int effectType) : base(layer, effectType)
+        public TimelineEffect(Layer layer, int effectType) : base(layer, effectType)
         {
             UI = CreateEffectUI(effectType);
             UI.DataContext = this;

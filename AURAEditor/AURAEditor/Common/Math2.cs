@@ -177,5 +177,23 @@ namespace AuraEditor.Common
             double dy = pt0.Y - pt1.Y;
             return Math.Sqrt(dx * dx + dy * dy);
         }
+
+        static public double Angle_CreatorToLService(double angle)
+        {
+            double result = (((angle - 90) / 360) * -1);
+            return result;
+        }
+        static public int MaxOperatingLength(int w, int h, double angle)
+        {
+            angle = (angle * 360);
+            double radForW = DegreeToRadian(angle);
+            double radForH = DegreeToRadian(90 - angle);
+            double maxLength = Math.Ceiling(
+                Math.Min(
+                Math.Abs(w * (1 / Math.Cos(radForW))),
+                Math.Abs(h * (1 / Math.Cos(radForH)))
+                ));
+            return (int)maxLength;
+        }
     }
 }

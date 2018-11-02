@@ -6,6 +6,7 @@ using AuraEditor.UserControls;
 using Windows.UI.Xaml.Shapes;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.XmlHelper;
+using static AuraEditor.Common.EffectHelper;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
@@ -21,9 +22,9 @@ namespace AuraEditor
         private Canvas m_TimelineScaleCanvas;
         private ListView m_LayerListView;
 
-        public ObservableCollection<DeviceLayer> DeviceLayers { get; set; }
-        static public int secondsPerTimeUnit; // TimeUnit : the seconds between two long lines
-        static public double pixelsPerTimeUnit;
+        public ObservableCollection<Layer> Layers { get; set; }
+        static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
+        static public double PixelsPerTimeUnit;
         public double PlayTime
         {
             get
@@ -50,34 +51,34 @@ namespace AuraEditor
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
             m_LayerListView = MainPage.Self.LayerListView;
 
-            DeviceLayers = new ObservableCollection<DeviceLayer>();
-            pixelsPerTimeUnit = 200;
+            Layers = new ObservableCollection<Layer>();
+            PixelsPerTimeUnit = 200;
         }
 
         #region Layer
-        public void AddDeviceLayer(DeviceLayer layer)
+        public void AddDeviceLayer(Layer layer)
         {
-            DeviceLayers.Add(layer);
+            Layers.Add(layer);
             m_TimelineStackPanel.Children.Add(layer.UICanvas);
         }
-        public void RemoveDeviceLayer(DeviceLayer layer)
+        public void RemoveDeviceLayer(Layer layer)
         {
-            DeviceLayers.Remove(layer);
+            Layers.Remove(layer);
             m_TimelineStackPanel.Children.Remove(layer.UICanvas);
             ReIndexLayers();
         }
         private void ReIndexLayers()
         {
-            for(int i=0;i<DeviceLayers.Count;i++)
+            for (int i = 0; i < Layers.Count; i++)
             {
-                DeviceLayers[i].Name = "Layer " + i.ToString();
+                Layers[i].Name = "Layer " + i.ToString();
             }
         }
         public int GetLayerCount()
         {
-            return DeviceLayers.Count;
+            return Layers.Count;
         }
-        public DeviceLayer GetSelectedLayer()
+        public Layer GetSelectedLayer()
         {
             List<DeviceLayerItem> layers =
                 FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
@@ -85,7 +86,7 @@ namespace AuraEditor
             foreach (var layer in layers)
             {
                 if (layer.IsChecked == true)
-                    return layer.DataContext as DeviceLayer;
+                    return layer.DataContext as Layer;
             }
 
             return null;
@@ -102,20 +103,24 @@ namespace AuraEditor
 
             m_LayerListView.SelectedIndex = -1;
         }
-        public void Reset()
-        {
-            ClearAllLayer();
-        }
-        private void ClearAllLayer()
+        public void Clean()
         {
             m_TimelineStackPanel.Children.Clear();
-            DeviceLayers.Clear();
+            Layers.Clear();
         }
-        public void ClearDeviceData(int deviceType)
+        public void ClearTypeData(int deviceType)
         {
-            foreach(var layer in DeviceLayers)
+            foreach (var layer in Layers)
             {
                 layer.GetZoneDictionary().Remove(deviceType);
+            }
+        }
+        public void ClearTypeData(string deviceTypeName)
+        {
+            int type = GetTypeByTypeName(deviceTypeName);
+            foreach (var layer in Layers)
+            {
+                layer.GetZoneDictionary().Remove(type);
             }
         }
         #endregion
@@ -123,16 +128,16 @@ namespace AuraEditor
         #region Timeline scale
         static public double GetPixelsPerSecond()
         {
-            return (int)pixelsPerTimeUnit / secondsPerTimeUnit;
+            return (int)PixelsPerTimeUnit / SecondsPerTimeUnit;
         }
         public void SetTimeUnit(int newSecondsPerTimeUnit)
         {
-            double rate = (double)secondsPerTimeUnit / newSecondsPerTimeUnit;
+            double rate = (double)SecondsPerTimeUnit / newSecondsPerTimeUnit;
 
-            secondsPerTimeUnit = newSecondsPerTimeUnit;
+            SecondsPerTimeUnit = newSecondsPerTimeUnit;
             DrawTimelineScale();
 
-            foreach (var layer in DeviceLayers)
+            foreach (var layer in Layers)
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
@@ -147,7 +152,7 @@ namespace AuraEditor
             double rightmostPosition = 0;
             TimelineEffect rightmostEffect = null;
 
-            foreach (DeviceLayer layer in DeviceLayers)
+            foreach (Layer layer in Layers)
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
@@ -164,15 +169,15 @@ namespace AuraEditor
         }
         private void DrawTimelineScale()
         {
-            TimeSpan ts = new TimeSpan(0, 0, secondsPerTimeUnit);
-            TimeSpan interval = new TimeSpan(0, 0, secondsPerTimeUnit);
-            int minimumScaleUnitLength = (int)(pixelsPerTimeUnit / 2);
+            TimeSpan ts = new TimeSpan(0, 0, SecondsPerTimeUnit);
+            TimeSpan interval = new TimeSpan(0, 0, SecondsPerTimeUnit);
+            int minimumScaleUnitLength = (int)(PixelsPerTimeUnit / 2);
             int width = (int)m_TimelineScaleCanvas.ActualWidth;
             int height = (int)m_TimelineScaleCanvas.ActualHeight;
             int y1_short = (int)(height / 1.5);
             int y1_long = height / 2;
             double y2 = height;
-            int linePerTimeUnit = (int)(pixelsPerTimeUnit / minimumScaleUnitLength);
+            int linePerTimeUnit = (int)(PixelsPerTimeUnit / minimumScaleUnitLength);
             int totalLineCount = width / minimumScaleUnitLength;
 
             m_TimelineScaleCanvas.Children.Clear();
@@ -221,9 +226,9 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForUserData()
         {
-            XmlNode layersNode = CreateXmlNodeOfFile("layers");
+            XmlNode layersNode = CreateXmlNode("layers");
 
-            foreach (var layer in DeviceLayers)
+            foreach (var layer in Layers)
             {
                 layersNode.AppendChild(layer.ToXmlNodeForUserData());
             }

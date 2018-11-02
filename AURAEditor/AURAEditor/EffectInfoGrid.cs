@@ -119,7 +119,7 @@ namespace AuraEditor
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Visible;
+                    AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Comet":
@@ -129,7 +129,7 @@ namespace AuraEditor
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
                     DirectionGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
+                    AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
                 case "Star":
@@ -502,7 +502,7 @@ namespace AuraEditor
             ui.Random = false;
             ui.High = 60;
             ui.Low = 30;
-            ui.ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[0]);
+            ui.ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[5]);
             UpdateUIEffectContents(ui);
         }
 

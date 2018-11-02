@@ -170,13 +170,7 @@ namespace AuraEditor
             }
 
             // Use the brush to paint the rectangle.
-            PatternPolygon.Fill = MultiPointRectangle.Fill = DefaultRainbow1.Foreground = Pattern1;
-            foreach (var item in DefaultColorList[0])
-            {
-                ColorPoints.Add(new ColorPoint(item));
-            }
-
-            MainPage.Self.ShowColorPointUI(ColorPoints);
+            DefaultRainbow1.Foreground = Pattern1;
 
             // Button Color  
             LinearGradientBrush Pattern2 = new LinearGradientBrush();

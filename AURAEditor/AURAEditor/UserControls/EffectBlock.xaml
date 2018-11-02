@@ -22,19 +22,19 @@
                 <VisualState x:Name="Normal"/>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="../Assets/asus_ac_effectblock_btn_f.png"/>
+                        <Setter Target="FrameImage.Source" Value="../Assets/EffectBlock/asus_ac_effectblock_btn_f.png"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="../Assets/asus_ac_effectblock_btn_s.png"/>
+                        <Setter Target="FrameImage.Source" Value="../Assets/EffectBlock/asus_ac_effectblock_btn_s.png"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
         <Image Name="FrameImage"
-               Source="../Assets/asus_ac_effectblock_btn_n.png"
+               Source="../Assets/EffectBlock/asus_ac_effectblock_btn_n.png"
                Stretch="Fill"/>
         <TextBlock Margin="10,0,0,0"
                    Text="{Binding}"

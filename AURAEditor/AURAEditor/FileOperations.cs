@@ -1,27 +1,26 @@
-﻿using System;
+﻿using AuraEditor.Dialogs;
+using System;
 using System.Collections.Generic;
-using System.IO;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.Storage;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using AuraEditor.Dialogs;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.XmlHelper;
-using static AuraEditor.Common.StorageHelper;
-using static AuraEditor.Common.Definitions;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core.Preview;
-using Windows.ApplicationModel.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.StorageHelper;
+using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
         public bool NeedSave;
-        private StorageFile m_UserFileListXml;
         private StorageFolder m_UserFileFolder;
         private List<string> GetUserFilenames()
         {
@@ -63,63 +62,26 @@ namespace AuraEditor
                     new_mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                     new_mfi.Click += FileItem_Click;
                     FileListMenuFlyout.Items.Add(new_mfi);
-                    UpdateListXml();
                 }
             }
-        }
-        private async void UpdateListXml()
-        {
-            XmlDocument doc = new XmlDocument();
-            XmlElement userfilesElement = doc.CreateElement(string.Empty, "userfiles", string.Empty);
-            doc.AppendChild(userfilesElement);
-
-            foreach (var item in FileListMenuFlyout.Items)
-            {
-                MenuFlyoutItem mfi = item as MenuFlyoutItem;
-                string filename = mfi.Text;
-
-                XmlElement fileElement = doc.CreateElement(string.Empty, "file", string.Empty);
-                fileElement.SetAttribute("name", filename);
-                userfilesElement.AppendChild(fileElement);
-            }
-
-            await SaveFile(m_UserFileListXml, doc.OuterXml);
         }
 
         #region Intialize
         private async Task IntializeFileOperations()
         {
             NeedSave = false;
-            await GetOrCreateListXml();
-            await GetOrCreateFolderOfFiles();
+            await GetOrCreateUserFilesFolder();
             await TestOrCreateScriptFolder();
         }
-        private async Task GetOrCreateListXml()
-        {
-            try
-            {
-                m_UserFileListXml = await StorageFile.GetFileFromPathAsync(UserFileListXmlPath);
-            }
-            catch
-            {
-                // XML doesn't exist
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
-                folder = await EnterOrCreateFolder(folder, "AURA Creator");
-                m_UserFileListXml = await folder.CreateFileAsync("UserFiles.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-
-                XmlDocument doc = new XmlDocument();
-                XmlElement recentfilesElement = doc.CreateElement(string.Empty, "userfiles", string.Empty);
-                doc.AppendChild(recentfilesElement);
-
-                await Windows.Storage.FileIO.WriteTextAsync(m_UserFileListXml, doc.OuterXml);
-            }
-        }
-        private async Task GetOrCreateFolderOfFiles()
+        private async Task GetOrCreateUserFilesFolder()
         {
             try
             {
                 m_UserFileFolder = await StorageFolder.GetFolderFromPathAsync(UserFilesDefaultFolderPath);
-                List<string> filenameList = new List<string>(await GetAllFilenames(m_UserFileListXml));
+                var fileList = await m_UserFileFolder.GetFilesAsync();
+                var filenameList = from file in fileList
+                                   orderby file.DateCreated.ToFileTime()
+                                   select file.DisplayName;
 
                 foreach (var filename in filenameList)
                 {
@@ -152,22 +114,6 @@ namespace AuraEditor
                 folder = await EnterOrCreateFolder(folder, "AURA Creator");
                 folder = await EnterOrCreateFolder(folder, "script");
             }
-        }
-        private async Task<List<string>> GetAllFilenames(StorageFile userFileSF)
-        {
-            List<string> list = new List<string>();
-            XmlDocument xml = new XmlDocument();
-            xml.Load(await userFileSF.OpenStreamForReadAsync());
-            XmlNode userfilesNode = xml.SelectSingleNode("userfiles");
-            XmlNodeList fileNodes = userfilesNode.SelectNodes("file");
-
-            for (int i = 0; i < fileNodes.Count; i++)
-            {
-                XmlElement element = (XmlElement)fileNodes[i];
-                list.Add(element.GetAttribute("name"));
-            }
-
-            return list;
         }
         #endregion
 
@@ -209,10 +155,7 @@ namespace AuraEditor
                         return;
                 }
 
-                CurrentUserFilename = "";
                 Reset();
-                SpaceManager.FillStageWithDevices();
-                NeedSave = false;
             }
         }
         private async void RenameItem_Click(object sender, RoutedEventArgs e)
@@ -235,8 +178,6 @@ namespace AuraEditor
                     CurrentUserFilename = mfi.Text;
                 };
             }
-
-            UpdateListXml();
         }
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
@@ -268,10 +209,7 @@ namespace AuraEditor
                 };
             }
 
-            CurrentUserFilename = "";
             Reset();
-            SpaceManager.FillStageWithDevices();
-            UpdateListXml();
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
@@ -410,7 +348,7 @@ namespace AuraEditor
         }
         private string GetUserData()
         {
-            XmlNode root = CreateXmlNodeOfFile("root");
+            XmlNode root = CreateXmlNode("root");
 
             root.AppendChild(SpaceManager.ToXmlNodeForUserData());
             root.AppendChild(LayerManager.ToXmlNodeForUserData());
@@ -421,10 +359,9 @@ namespace AuraEditor
         private async Task LoadUserFile(string filename)
         {
             string filepath = UserFilesDefaultFolderPath + filename + ".xml";
-            Reset();
+            Clean();
             await LoadContent(await LoadFile(filepath));
             SpaceManager.RefreshSpaceGrid();
-            NeedSave = false;
         }
         private async Task LoadContent(string xmlContent)
         {
@@ -455,17 +392,28 @@ namespace AuraEditor
 
                 devices.Add(d);
             }
+
+            // Check device sync or not
+            var syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
+            foreach (var d in devices)
+            {
+                if (syncDevices.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
+                    d.Status = DeviceStatus.OnStage;
+                else
+                    d.Status = DeviceStatus.Temp;
+            }
+
             SpaceManager.GlobalDevices = devices;
         }
         private void ParsingLayers(XmlNodeList layerNodes)
         {
-            List<DeviceLayer> layers = new List<DeviceLayer>();
+            List<Layer> layers = new List<Layer>();
 
             foreach (XmlNode node in layerNodes)
             {
                 XmlElement element = (XmlElement)node;
                 string layerName = element.GetAttribute("name");
-                DeviceLayer layer = new DeviceLayer(layerName);
+                Layer layer = new Layer(layerName);
 
                 layer.TriggerAction = element.GetAttribute("trigger");
 
@@ -557,11 +505,18 @@ namespace AuraEditor
 
         private void Reset()
         {
-            SetLayerButton.IsEnabled = true;
+            Clean();
+            SpaceManager.FillStageWithDevices();
+        }
+        private void Clean()
+        {
             SelectedEffectLine = null;
-            LayerManager.Reset();
-            SpaceManager.Reset();
+            SetLayerButton.IsEnabled = true;
             TimelineZoomLevel = 2;
+            NeedSave = false;
+            CurrentUserFilename = "";
+            LayerManager.Clean();
+            SpaceManager.Clean();
         }
     }
 }

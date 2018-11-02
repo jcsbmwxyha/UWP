@@ -1,6 +1,7 @@
 ﻿using Windows.UI;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.Math2;
 using System.Xml;
 using AuraEditor.Common;
 using System.Collections.Generic;
@@ -20,6 +21,13 @@ namespace AuraEditor
         public int High;
         public int Low;
         public List<ColorPoint> ColorPointList;
+        public int ActualLedSpeed
+        {
+            get
+            {
+                return (int)GetVelocity(Type, Speed);
+            }
+        }
 
         public EffectInfo()
         {
@@ -37,15 +45,15 @@ namespace AuraEditor
             Random = false;
             High = 60;
             Low = 30;
-            ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[0]);
+            ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[5]);
         }
 
-        public XmlNode ToXmlNodeForScript()
+        public XmlNode ToXmlNodeForScript(int zoneCount)
         {
-            XmlNode effectNode = CreateXmlNodeOfFile("effect");
+            XmlNode effectNode = CreateXmlNode("effect");
 
             effectNode.AppendChild(GetViewportTransformXmlNode());
-            effectNode.AppendChild(GetWaveListXmlNode());
+            effectNode.AppendChild(GetWaveListXmlNode(zoneCount));
             effectNode.AppendChild(GetInitColorXmlNode(InitColor, Random));
 
             return effectNode;
@@ -53,23 +61,23 @@ namespace AuraEditor
         #region viewportTransform Node
         private XmlNode GetViewportTransformXmlNode()
         {
-            XmlNode viewportTransformNode = CreateXmlNodeOfFile("viewportTransform");
+            XmlNode viewportTransformNode = CreateXmlNode("viewportTransform");
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(InitColor);
 
-            XmlNode rotateNode = CreateXmlNodeOfFile("rotate");
+            XmlNode rotateNode = CreateXmlNode("rotate");
 
-            XmlNode xNode = CreateXmlNodeOfFile("x");
+            XmlNode xNode = CreateXmlNode("x");
             xNode.InnerText = "0";
             rotateNode.AppendChild(xNode);
 
-            XmlNode yNode = CreateXmlNodeOfFile("y");
+            XmlNode yNode = CreateXmlNode("y");
             yNode.InnerText = "0";
             rotateNode.AppendChild(yNode);
 
-            XmlNode angleNode = CreateXmlNodeOfFile("angle");
-            angleNode.InnerText = (((Angle - 90) / 360) * -1).ToString();
+            XmlNode angleNode = CreateXmlNode("angle");
+            angleNode.InnerText = Angle_CreatorToLService(Angle).ToString();
             rotateNode.AppendChild(angleNode);
-            
+
             XmlNode methodNode = GetMethodXmlNode(Type);
             viewportTransformNode.AppendChild(rotateNode);
             viewportTransformNode.AppendChild(methodNode);
@@ -79,7 +87,7 @@ namespace AuraEditor
         static private XmlNode GetMethodXmlNode(int effType)
         {
             string methodString = "point";
-            XmlNode methodNode = CreateXmlNodeOfFile("method");
+            XmlNode methodNode = CreateXmlNode("method");
 
 
             if (GetEffectName(effType) == "Static" ||
@@ -93,7 +101,7 @@ namespace AuraEditor
                      GetEffectName(effType) == "Comet" ||
                      GetEffectName(effType) == "Tide")
             {
-                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "0";
                 methodNode.AppendChild(inputNode);
 
@@ -101,15 +109,15 @@ namespace AuraEditor
             }
             else if (GetEffectName(effType) == "Reactive")
             {
-                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
                 methodNode.AppendChild(inputNode);
 
-                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                XmlNode inputNode2 = CreateXmlNode("input");
                 inputNode2.InnerText = "keyPressY";
                 methodNode.AppendChild(inputNode2);
 
-                XmlNode inputNode3 = CreateXmlNodeOfFile("input");
+                XmlNode inputNode3 = CreateXmlNode("input");
                 inputNode3.InnerText = "0.5";
                 methodNode.AppendChild(inputNode3);
 
@@ -117,11 +125,11 @@ namespace AuraEditor
             }
             else if (GetEffectName(effType) == "Laser")
             {
-                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
                 methodNode.AppendChild(inputNode);
 
-                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                XmlNode inputNode2 = CreateXmlNode("input");
                 inputNode2.InnerText = "keyPressY";
                 methodNode.AppendChild(inputNode2);
 
@@ -129,17 +137,17 @@ namespace AuraEditor
             }
             else if (GetEffectName(effType) == "Ripple")
             {
-                XmlNode inputNode = CreateXmlNodeOfFile("input");
+                XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
                 methodNode.AppendChild(inputNode);
 
-                XmlNode inputNode2 = CreateXmlNodeOfFile("input");
+                XmlNode inputNode2 = CreateXmlNode("input");
                 inputNode2.InnerText = "keyPressY";
                 methodNode.AppendChild(inputNode2);
 
                 methodString = "radius";
             }
-            else if(GetEffectName(effType) == "Star")
+            else if (GetEffectName(effType) == "Star")
             {
                 methodString = "shuffle";
             }
@@ -147,272 +155,347 @@ namespace AuraEditor
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
             attribute.Value = methodString;
             methodNode.Attributes.Append(attribute);
-            
+
             return methodNode;
         }
         #endregion
 
         #region waveList Node
-        private XmlNode GetWaveListXmlNode()
+        private XmlNode GetWaveListXmlNode(int zoneCount)
         {
-            XmlNode waveListNode = CreateXmlNodeOfFile("waveList");
-            XmlNode waveNode = CreateXmlNodeOfFile("wave");
+            XmlNode waveListNode = CreateXmlNode("waveList");
+            int maxOperatingGridWidth = AuraSpaceManager.Self.MaxOperatingGridWidth;
+            int maxOperatingGridHeight = AuraSpaceManager.Self.MaxOperatingGridHeight;
+            double temp = Angle_CreatorToLService(Angle);
+            int maxOperatingGridLength = MaxOperatingLength(maxOperatingGridWidth, maxOperatingGridHeight, Angle_CreatorToLService(Angle));
 
-            XmlNode typeNode = CreateXmlNodeOfFile("type");
-            typeNode.InnerText = GetWaveType(Type);
-            waveNode.AppendChild(typeNode);
-
-            XmlNode maxNode = CreateXmlNodeOfFile("max");
-            maxNode.InnerText = GetMax(Type).ToString();
-            waveNode.AppendChild(maxNode);
-
-            XmlNode minNode = CreateXmlNodeOfFile("min");
-            minNode.InnerText = GetMin(Type).ToString();
-            waveNode.AppendChild(minNode);
-
-            XmlNode lengthNode = CreateXmlNodeOfFile("length");
-            lengthNode.InnerText = GetLength(Type).ToString();
-            waveNode.AppendChild(lengthNode);
-
-            if (GetEffectName(Type) == "Tide")
+            if (GetEffectName(Type) == "Static")
             {
-                XmlNode freqNode = CreateXmlNodeOfFile("freq");
-                freqNode.InnerText = (0.25).ToString();
-                waveNode.AppendChild(freqNode);
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "10"));
+                waveNode.AppendChild(CreateXmlNodeByValue("freq", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                waveListNode.AppendChild(waveNode);
             }
-            else
+            else if (GetEffectName(Type) == "Breath")
             {
-                XmlNode freqNode = CreateXmlNodeOfFile("freq");
-                freqNode.InnerText = GetFreq(Type, Speed);
-                waveNode.AppendChild(freqNode);
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "23"));
+                if (Speed == 0)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                else if (Speed == 1)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                else // 2
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.4"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
             }
-
-            XmlNode phaseNode = CreateXmlNodeOfFile("phase");
-            phaseNode.InnerText = GetPhase(Type);
-            waveNode.AppendChild(phaseNode);
-
-            XmlNode startNode = CreateXmlNodeOfFile("start");
-            startNode.InnerText = GetStart(Type).ToString();
-            waveNode.AppendChild(startNode);
-
-            XmlNode velocityNode = CreateXmlNodeOfFile("velocity");
-            velocityNode.InnerText = GetVelocity(Type, Speed).ToString();
-            waveNode.AppendChild(velocityNode);
-
-            XmlNode isCycleNode = CreateXmlNodeOfFile("isCycle");
-            isCycleNode.InnerText = GetIsCycle(Type).ToString();
-            waveNode.AppendChild(isCycleNode);
-
-            if (GetEffectName(Type) == "Tide")
+            else if (GetEffectName(Type) == "ColorCycle")
             {
-                waveNode.AppendChild(GetBindToSignalXmlNode(Type, Speed));
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "QuarterSineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "23"));
+                if (Speed == 0)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "-0.02"));
+                else if (Speed == 1)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "-0.04"));
+                else // 2
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "-0.08"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                waveListNode.AppendChild(waveNode);
             }
-
-            if (GetEffectName(Type) == "Rainbow")
+            else if (GetEffectName(Type) == "Rainbow")
             {
-                waveNode.AppendChild(GetBindToSlotXmlNode(Type, "HUE"));
-                waveNode.AppendChild(GetCustomized(ColorPointList, 0));
-            }
-            else
-            {
-                waveNode.AppendChild(GetBindToSlotXmlNode(Type));
-            }
-            waveListNode.AppendChild(waveNode);
-
-            if (GetEffectName(Type) == "Rainbow")
-            {
-                XmlNode waveNode1 = CreateXmlNodeOfFile("wave");
-
-                XmlNode typeNode1 = CreateXmlNodeOfFile("type");
-                typeNode1.InnerText = GetWaveType(Type);
-                waveNode1.AppendChild(typeNode1);
-
-                XmlNode maxNode1 = CreateXmlNodeOfFile("max");
-                maxNode1.InnerText = GetMax(Type).ToString();
-                waveNode1.AppendChild(maxNode1);
-
-                XmlNode minNode1 = CreateXmlNodeOfFile("min");
-                minNode1.InnerText = GetMin(Type).ToString();
-                waveNode1.AppendChild(minNode1);
-
-                XmlNode lengthNode1 = CreateXmlNodeOfFile("length");
-                lengthNode1.InnerText = GetLength(Type).ToString();
-                waveNode1.AppendChild(lengthNode1);
-
-                XmlNode freqNode1 = CreateXmlNodeOfFile("freq");
-                freqNode1.InnerText = GetFreq(Type, Speed);
-                waveNode1.AppendChild(freqNode1);
-
-                XmlNode phaseNode1 = CreateXmlNodeOfFile("phase");
-                phaseNode1.InnerText = GetPhase(Type);
-                waveNode1.AppendChild(phaseNode1);
-
-                XmlNode startNode1 = CreateXmlNodeOfFile("start");
-                startNode1.InnerText = GetStart(Type).ToString();
-                waveNode1.AppendChild(startNode1);
-
-                XmlNode velocityNode1 = CreateXmlNodeOfFile("velocity");
-                velocityNode1.InnerText = GetVelocity(Type, Speed).ToString();
-                waveNode1.AppendChild(velocityNode1);
-
-                XmlNode isCycleNode1 = CreateXmlNodeOfFile("isCycle");
-                isCycleNode1.InnerText = GetIsCycle(Type).ToString();
-                waveNode1.AppendChild(isCycleNode1);
-
-                waveNode1.AppendChild(GetBindToSlotXmlNode(Type, "SATURATION"));
-                waveNode1.AppendChild(GetCustomized(ColorPointList, 1));
+                // wave 1 for HUE
+                XmlNode waveNode1 = CreateXmlNode("wave");
+                waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                if (Speed == 0)
+                    waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.04"));
+                else if (Speed == 1)
+                    waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.08"));
+                else // 2
+                    waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode1.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode1.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 0));
                 waveListNode.AppendChild(waveNode1);
 
-                XmlNode waveNode2 = CreateXmlNodeOfFile("wave");
-
-                XmlNode typeNode2 = CreateXmlNodeOfFile("type");
-                typeNode2.InnerText = GetWaveType(Type);
-                waveNode2.AppendChild(typeNode2);
-
-                XmlNode maxNode2 = CreateXmlNodeOfFile("max");
-                maxNode2.InnerText = GetMax(Type).ToString();
-                waveNode2.AppendChild(maxNode2);
-
-                XmlNode minNode2 = CreateXmlNodeOfFile("min");
-                minNode2.InnerText = GetMin(Type).ToString();
-                waveNode2.AppendChild(minNode2);
-
-                XmlNode lengthNode2 = CreateXmlNodeOfFile("length");
-                lengthNode2.InnerText = GetLength(Type).ToString();
-                waveNode2.AppendChild(lengthNode2);
-
-                XmlNode freqNode2 = CreateXmlNodeOfFile("freq");
-                freqNode2.InnerText = GetFreq(Type, Speed);
-                waveNode2.AppendChild(freqNode2);
-
-                XmlNode phaseNode2 = CreateXmlNodeOfFile("phase");
-                phaseNode2.InnerText = GetPhase(Type);
-                waveNode2.AppendChild(phaseNode2);
-
-                XmlNode startNode2 = CreateXmlNodeOfFile("start");
-                startNode2.InnerText = GetStart(Type).ToString();
-                waveNode2.AppendChild(startNode2);
-
-                XmlNode velocityNode2 = CreateXmlNodeOfFile("velocity");
-                velocityNode2.InnerText = GetVelocity(Type, Speed).ToString();
-                waveNode2.AppendChild(velocityNode2);
-
-                XmlNode isCycleNode2 = CreateXmlNodeOfFile("isCycle");
-                isCycleNode2.InnerText = GetIsCycle(Type).ToString();
-                waveNode2.AppendChild(isCycleNode2);
-
-                waveNode2.AppendChild(GetBindToSlotXmlNode(Type, "LIGHTNESS"));
-                waveNode2.AppendChild(GetCustomized(ColorPointList, 2));
+                // wave 2 for SATURATION
+                XmlNode waveNode2 = CreateXmlNode("wave");
+                waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                if (Speed == 0)
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.04"));
+                else if (Speed == 1)
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.08"));
+                else // 2
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
+                waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 1));
                 waveListNode.AppendChild(waveNode2);
+
+                // wave 3 for LIGHTNESS
+                XmlNode waveNode3 = CreateXmlNode("wave");
+                waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                if (Speed == 0)
+                    waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.04"));
+                else if (Speed == 1)
+                    waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.08"));
+                else // 2
+                    waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
+                waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 2));
+                waveListNode.AppendChild(waveNode3);
+            }
+            else if (GetEffectName(Type) == "Strobing")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SawtoothWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "0.5"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "23"));
+                if (Speed == 0)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.8"));
+                else if (Speed == 1)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "1.2"));
+                else // 2
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "1.6"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
+                waveListNode.AppendChild(waveNode);
+            }
+            else if (GetEffectName(Type) == "Comet")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "TriangleWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "0.1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "3"));
+                if (Speed == 0)
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.01"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "10"));
+                }
+                else if (Speed == 1)
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.02"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "15"));
+                }
+                else // 2
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.04"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "20"));
+                }
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "1"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
+
+                if (Random == true)
+                {
+                    // wave 2
+                    XmlNode waveNode2 = CreateXmlNode("wave");
+                    waveNode2.AppendChild(CreateXmlNodeByValue("type", "TriangleWave"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("length", "10"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "1"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "15"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "1"));
+                    waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                    waveListNode.AppendChild(waveNode2);
+                }
+            }
+            else if (GetEffectName(Type) == "Tide")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "0.4"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0.2"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "23"));
+                waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.25"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "-5"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+
+                // bindToSignalNode ++
+                XmlNode bindToSignalNode = CreateXmlNode("bindToSignal");
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("source", "Formula"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("target", "length"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("amplify", "1"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("offset", "0"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("max", maxOperatingGridLength.ToString()));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("length", "25"));
+                bindToSignalNode.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                if (Speed == 0)
+                {
+                    bindToSignalNode.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                }
+                else if (Speed == 1)
+                {
+                    bindToSignalNode.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                }
+                else // 2
+                {
+                    bindToSignalNode.AppendChild(CreateXmlNodeByValue("freq", "0.3"));
+                }
+                waveNode.AppendChild(bindToSignalNode);
+                // bindToSignalNode --
+
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
+            }
+            else if (GetEffectName(Type) == "Star")
+            {
+                // wave 1
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "0.8"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0.5"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", (zoneCount / 7 + 1).ToString()));
+                waveNode.AppendChild(CreateXmlNodeByValue("freq", "Random"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "Random"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "4"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "1"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
+                waveListNode.AppendChild(waveNode);
+
+                if (Random == true)
+                {
+                    // wave 2
+                    XmlNode waveNode2 = CreateXmlNode("wave");
+                    waveNode2.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("length", (zoneCount / 7 + 1).ToString()));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "Random"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("phase", "Random"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "4"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "1"));
+                    waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                    waveListNode.AppendChild(waveNode2);
+                }
+            }
+            else if (GetEffectName(Type) == "Reactive")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "1"));
+                if (Speed == 0)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "1"));
+                else if (Speed == 1)
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "2"));
+                else // 2
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "4"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
+            }
+            else if (GetEffectName(Type) == "Laser")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "10"));
+                waveNode.AppendChild(CreateXmlNodeByValue("freq", "Random"));
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                if (Speed == 0)
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "10"));
+                else if (Speed == 1)
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "15"));
+                else // 2
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "20"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
+            }
+            else if (GetEffectName(Type) == "Ripple")
+            {
+                XmlNode waveNode = CreateXmlNode("wave");
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "10"));
+                if (Speed == 0)
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "1"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "10"));
+                }
+                else if (Speed == 1)
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "2"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "15"));
+                }
+                else // 2
+                {
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "4"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("velocity", "20"));
+                }
+                waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode);
             }
 
             return waveListNode;
-        }
-        static private string GetWaveType(int effType)
-        {
-            if (GetEffectName(effType) == "Static") return "ConstantWave";
-            else if (GetEffectName(effType) == "Breath") return "SineWave";
-            else if (GetEffectName(effType) == "ColorCycle") return "QuarterSineWave";
-            else if (GetEffectName(effType) == "Rainbow") return "CustomStepWave";
-            else if (GetEffectName(effType) == "Strobing") return "SawtoothWave";
-            else if (GetEffectName(effType) == "Comet") return "TriangleWave";
-            else if (GetEffectName(effType) == "Reactive") return "SineWave";
-            else if (GetEffectName(effType) == "Laser") return "SineWave";
-            else if (GetEffectName(effType) == "Ripple") return "SineWave";
-            else if (GetEffectName(effType) == "Star") return "SineWave";
-            else if (GetEffectName(effType) == "Tide") return "SineWave";
-
-            return "SineWave";
-        }
-        static private double GetMax(int effType)
-        {
-            if (GetEffectName(effType) == "Breath") return 0.5;
-            else if (GetEffectName(effType) == "Strobing") return 0.5;
-            else if (GetEffectName(effType) == "Comet") return 0.1;
-            else if (GetEffectName(effType) == "Star") return 1;
-            else if (GetEffectName(effType) == "Tide") return 0.4;
-            return 1;
-        }
-        static private double GetMin(int effType)
-        {
-            if (GetEffectName(effType) == "Star") return 0.7;
-            else if (GetEffectName(effType) == "Tide") return 0.2;
-            return 0;
-        }
-        static private double GetLength(int effType)
-        {
-            if (GetEffectName(effType) == "Static") return 10;
-            else if (GetEffectName(effType) == "Breath") return 23;
-            else if (GetEffectName(effType) == "ColorCycle") return 23;
-            else if (GetEffectName(effType) == "Rainbow") return 64;
-            else if (GetEffectName(effType) == "Strobing") return 23;
-            else if (GetEffectName(effType) == "Comet") return 3;
-            else if (GetEffectName(effType) == "Reactive") return 1;
-            else if (GetEffectName(effType) == "Laser") return 10;
-            else if (GetEffectName(effType) == "Ripple") return 10;
-            else if (GetEffectName(effType) == "Star") return 32;
-            else if (GetEffectName(effType) == "Tide") return 22;
-
-            return 10;
-        }
-        static private string GetFreq(int effType, int speed)
-        {
-            double result = 0;
-
-            if (speed == 0)
-            {
-                if (GetEffectName(effType) == "Breath") result = 0.1;
-                else if (GetEffectName(effType) == "ColorCycle") result = -0.02;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.04;
-                else if (GetEffectName(effType) == "Strobing") result = 0.8;
-                else if (GetEffectName(effType) == "Comet") result = 0.01;
-                else if (GetEffectName(effType) == "Reactive") result = 1;
-                else if (GetEffectName(effType) == "Laser") return "Random";
-                else if (GetEffectName(effType) == "Ripple") result = 1;
-                else if (GetEffectName(effType) == "Star") return "Random";
-                else if (GetEffectName(effType) == "Tide") result = 0.05;
-            }
-            else if (speed == 1)
-            {
-                if (GetEffectName(effType) == "Breath") result = 0.2;
-                else if (GetEffectName(effType) == "ColorCycle") result = -0.04;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.08;
-                else if (GetEffectName(effType) == "Strobing") result = 1.2;
-                else if (GetEffectName(effType) == "Comet") result = 0.02;
-                else if (GetEffectName(effType) == "Reactive") result = 2;
-                else if (GetEffectName(effType) == "Laser") return "Random";
-                else if (GetEffectName(effType) == "Ripple") result = 2;
-                else if (GetEffectName(effType) == "Star") return "Random";
-                else if (GetEffectName(effType) == "Tide") result = 0.1;
-            }
-            else if (speed == 2)
-            {
-                if (GetEffectName(effType) == "Breath") result = 0.4;
-                else if (GetEffectName(effType) == "ColorCycle") result = -0.08;
-                else if (GetEffectName(effType) == "Rainbow") result = 0.1;
-                else if (GetEffectName(effType) == "Strobing") result = 1.6;
-                else if (GetEffectName(effType) == "Comet") result = 0.04;
-                else if (GetEffectName(effType) == "Reactive") result = 4;
-                else if (GetEffectName(effType) == "Laser") return "Random";
-                else if (GetEffectName(effType) == "Ripple") result = 4;
-                else if (GetEffectName(effType) == "Star") return "Random";
-                else if (GetEffectName(effType) == "Tide") result = 0.3;
-            }
-
-            return result.ToString();
-        }
-        static private string GetPhase(int effType)
-        {
-            if (GetEffectName(effType) == "Star")
-                return "Random";
-
-            return "0";
-        }
-        static private double GetStart(int effType)
-        {
-            if (GetEffectName(effType) == "Tide") return -5;
-
-            return 0;
         }
         static private double GetVelocity(int effType, int speed)
         {
@@ -421,170 +504,43 @@ namespace AuraEditor
                 if (GetEffectName(effType) == "Comet") return 10;
                 else if (GetEffectName(effType) == "Laser") return 10;
                 else if (GetEffectName(effType) == "Ripple") return 10;
-                else if (GetEffectName(effType) == "Star") return 2;
             }
             else if (speed == 1)
             {
                 if (GetEffectName(effType) == "Comet") return 15;
                 else if (GetEffectName(effType) == "Laser") return 15;
                 else if (GetEffectName(effType) == "Ripple") return 15;
-                else if (GetEffectName(effType) == "Star") return 4;
             }
             else if (speed == 2)
             {
                 if (GetEffectName(effType) == "Comet") return 20;
                 else if (GetEffectName(effType) == "Laser") return 20;
                 else if (GetEffectName(effType) == "Ripple") return 20;
-                else if (GetEffectName(effType) == "Star") return 6;
             }
 
             return 0;
         }
-        static private int GetIsCycle(int effType)
+        static private XmlNode GetBindToSlotXmlNode(List<string> slotkeys)
         {
-            if (GetEffectName(effType) == "Comet") return 1;
-            else if (GetEffectName(effType) == "Star") return 1;
+            XmlNode bindToSlotXmlNode = CreateXmlNode("bindToSlot");
 
-            return 0;
-        }
-        static private XmlNode GetBindToSignalXmlNode(int effType, int speed)
-        {
-            XmlNode bindToSignalXmlNode = CreateXmlNodeOfFile("bindToSignal");
-
-            XmlNode sourceNode = CreateXmlNodeOfFile("source");
-            sourceNode.InnerText = "Formula";
-            bindToSignalXmlNode.AppendChild(sourceNode);
-
-            XmlNode targetNode = CreateXmlNodeOfFile("target");
-            targetNode.InnerText = "length";
-            bindToSignalXmlNode.AppendChild(targetNode);
-
-            XmlNode amplifyNode = CreateXmlNodeOfFile("amplify");
-            amplifyNode.InnerText = "1";
-            bindToSignalXmlNode.AppendChild(amplifyNode);
-
-            XmlNode offsetNode = CreateXmlNodeOfFile("offset");
-            offsetNode.InnerText = "0";
-            bindToSignalXmlNode.AppendChild(offsetNode);
-
-            XmlNode typeNode = CreateXmlNodeOfFile("type");
-            typeNode.InnerText = GetWaveType(effType);
-            bindToSignalXmlNode.AppendChild(typeNode);
-
-            XmlNode maxNode = CreateXmlNodeOfFile("max");
-            maxNode.InnerText = "29";
-            bindToSignalXmlNode.AppendChild(maxNode);
-
-            XmlNode minNode = CreateXmlNodeOfFile("min");
-            minNode.InnerText = "0";
-            bindToSignalXmlNode.AppendChild(minNode);
-
-            XmlNode lengthNode = CreateXmlNodeOfFile("length");
-            lengthNode.InnerText = "25";
-            bindToSignalXmlNode.AppendChild(lengthNode);
-            
-            XmlNode freqNode = CreateXmlNodeOfFile("freq");
-            freqNode.InnerText = GetFreq(effType, speed);
-            bindToSignalXmlNode.AppendChild(freqNode);
-
-            return bindToSignalXmlNode;
-        }
-
-        static private XmlNode GetBindToSlotXmlNode(int effType)
-        {
-            XmlNode bindToSlotXmlNode = CreateXmlNodeOfFile("bindToSlot");
-            XmlNode slotNode = CreateXmlNodeOfFile("slot");
-
-            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-
-            if (GetEffectName(effType) == "Static")
+            foreach (var key in slotkeys)
             {
-                attribute.Value = "ALPHA";
+                XmlNode slotNode = CreateXmlNode("slot");
+                XmlAttribute attribute = CreateXmlAttributeOfFile("key");
+                attribute.Value = key;
                 slotNode.Attributes.Append(attribute);
+                bindToSlotXmlNode.AppendChild(slotNode);
             }
-            else if (GetEffectName(effType) == "Breath")
-            {
-                attribute.Value = "LIGHTNESS";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "ColorCycle")
-            {
-                attribute.Value = "HUE";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Rainbow")
-            {
-                attribute.Value = "HUE";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Strobing")
-            {
-                attribute.Value = "LIGHTNESS";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Comet")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Reactive")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Laser")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Ripple")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Star")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            else if (GetEffectName(effType) == "Tide")
-            {
-                attribute.Value = "ALPHA";
-                slotNode.Attributes.Append(attribute);
-            }
-            bindToSlotXmlNode.AppendChild(slotNode);
-
-            // second slot
-            //if (GetEffectName(effType) == "Ripple")
-            //{
-            //    XmlNode slotNode2 = CreateXmlNodeOfFile("slot");
-            //    XmlAttribute attribute2 = CreateXmlAttributeOfFile("key");
-            //    attribute2.Value = "HUE";
-            //    slotNode2.Attributes.Append(attribute2);
-            //    bindToSlotXmlNode.AppendChild(slotNode2);
-            //}
 
             return bindToSlotXmlNode;
         }
-        static private XmlNode GetBindToSlotXmlNode(int effType, string slotkey)
+        static private XmlNode GetCustomizedFromColorPointList(List<ColorPoint> ColorPointList, int hsv)
         {
-            XmlNode bindToSlotXmlNode = CreateXmlNodeOfFile("bindToSlot");
-            XmlNode slotNode = CreateXmlNodeOfFile("slot");
-            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-
-            attribute.Value = slotkey;
-            slotNode.Attributes.Append(attribute);
-            bindToSlotXmlNode.AppendChild(slotNode);
-
-            return bindToSlotXmlNode;
-        }
-
-        static private XmlNode GetCustomized(List<ColorPoint> ColorPointList, int hsv)
-        {
-            XmlNode customizedNode = CreateXmlNodeOfFile("customized");
+            XmlNode customizedNode = CreateXmlNode("customized");
             double Scaledown = (double)(ColorPointList.Count - 1) / (double)ColorPointList.Count;
 
-            for (int i = 0; i<ColorPointList.Count; i++)
+            for (int i = 0; i < ColorPointList.Count; i++)
             {
                 double ScaledownOffset = ColorPointList[i].Offset * Scaledown * ColorPointList[ColorPointList.Count - 1].Offset;
                 if (i == 0)
@@ -601,10 +557,10 @@ namespace AuraEditor
         }
         static private XmlNode SetNodeInfoXmlNode(int key, double offset, Color c, int hsv)
         {
-            XmlNode nodeXmlNode = CreateXmlNodeOfFile("node");
+            XmlNode nodeXmlNode = CreateXmlNode("node");
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            XmlNode phaseXmlNode = CreateXmlNodeOfFile("phase");
-            XmlNode fxXmlNode = CreateXmlNodeOfFile("fx");
+            XmlNode phaseXmlNode = CreateXmlNode("phase");
+            XmlNode fxXmlNode = CreateXmlNode("fx");
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
 
             attribute.Value = key.ToString();
@@ -616,17 +572,15 @@ namespace AuraEditor
 
             return nodeXmlNode;
         }
+        #endregion
 
-
-    #endregion
-
-    #region initColor
-    static private XmlNode GetInitColorXmlNode(Color c, bool random)
+        #region initColor
+        static private XmlNode GetInitColorXmlNode(Color c, bool random)
         {
-            XmlNode initColorNode = CreateXmlNodeOfFile("initColor");
+            XmlNode initColorNode = CreateXmlNode("initColor");
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
 
-            XmlNode hueNode = CreateXmlNodeOfFile("hue");
+            XmlNode hueNode = CreateXmlNode("hue");
             if (random == true)
             {
                 hueNode.InnerText = "Random";
@@ -637,15 +591,15 @@ namespace AuraEditor
             }
             initColorNode.AppendChild(hueNode);
 
-            XmlNode saturationNode = CreateXmlNodeOfFile("saturation");
+            XmlNode saturationNode = CreateXmlNode("saturation");
             saturationNode.InnerText = hsl[1].ToString();
             initColorNode.AppendChild(saturationNode);
 
-            XmlNode lightnessNode = CreateXmlNodeOfFile("lightness");
+            XmlNode lightnessNode = CreateXmlNode("lightness");
             lightnessNode.InnerText = hsl[2].ToString();
             initColorNode.AppendChild(lightnessNode);
 
-            XmlNode alphaNode = CreateXmlNodeOfFile("alpha");
+            XmlNode alphaNode = CreateXmlNode("alpha");
             alphaNode.InnerText = (c.A / 255).ToString();
             initColorNode.AppendChild(alphaNode);
 
@@ -655,78 +609,78 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForUserData()
         {
-            XmlNode effectNode = CreateXmlNodeOfFile("effect");
+            XmlNode effectNode = CreateXmlNode("effect");
 
-            XmlNode typeNode = CreateXmlNodeOfFile("type");
+            XmlNode typeNode = CreateXmlNode("type");
             typeNode.InnerText = Type.ToString();
             effectNode.AppendChild(typeNode);
 
-            XmlNode aNode = CreateXmlNodeOfFile("a");
+            XmlNode aNode = CreateXmlNode("a");
             aNode.InnerText = InitColor.A.ToString();
             effectNode.AppendChild(aNode);
 
-            XmlNode rNode = CreateXmlNodeOfFile("r");
+            XmlNode rNode = CreateXmlNode("r");
             rNode.InnerText = InitColor.R.ToString();
             effectNode.AppendChild(rNode);
 
-            XmlNode gNode = CreateXmlNodeOfFile("g");
+            XmlNode gNode = CreateXmlNode("g");
             gNode.InnerText = InitColor.G.ToString();
             effectNode.AppendChild(gNode);
 
-            XmlNode bNode = CreateXmlNodeOfFile("b");
+            XmlNode bNode = CreateXmlNode("b");
             bNode.InnerText = InitColor.B.ToString();
             effectNode.AppendChild(bNode);
 
-            XmlNode brightnessNode = CreateXmlNodeOfFile("brightness");
+            XmlNode brightnessNode = CreateXmlNode("brightness");
             brightnessNode.InnerText = Brightness.ToString();
             effectNode.AppendChild(brightnessNode);
 
-            XmlNode speedNode = CreateXmlNodeOfFile("speed");
+            XmlNode speedNode = CreateXmlNode("speed");
             speedNode.InnerText = Speed.ToString();
             effectNode.AppendChild(speedNode);
 
-            XmlNode angleNode = CreateXmlNodeOfFile("angle");
+            XmlNode angleNode = CreateXmlNode("angle");
             angleNode.InnerText = Angle.ToString();
             effectNode.AppendChild(angleNode);
 
-            XmlNode directionNode = CreateXmlNodeOfFile("direction");
+            XmlNode directionNode = CreateXmlNode("direction");
             directionNode.InnerText = Direction.ToString();
             effectNode.AppendChild(directionNode);
 
-            XmlNode randomNode = CreateXmlNodeOfFile("random");
+            XmlNode randomNode = CreateXmlNode("random");
             randomNode.InnerText = Random.ToString();
             effectNode.AppendChild(randomNode);
 
-            XmlNode highNode = CreateXmlNodeOfFile("high");
+            XmlNode highNode = CreateXmlNode("high");
             highNode.InnerText = High.ToString();
             effectNode.AppendChild(highNode);
 
-            XmlNode lowNode = CreateXmlNodeOfFile("low");
+            XmlNode lowNode = CreateXmlNode("low");
             lowNode.InnerText = Low.ToString();
             effectNode.AppendChild(lowNode);
 
-            XmlNode colorPointListNode = CreateXmlNodeOfFile("colorPointList");
+            XmlNode colorPointListNode = CreateXmlNode("colorPointList");
             foreach (var item in ColorPointList)
             {
-                XmlNode colorPointNode = CreateXmlNodeOfFile("colorPoint");
+                XmlNode colorPointNode = CreateXmlNode("colorPoint");
 
-                XmlNode colorANode = CreateXmlNodeOfFile("a");
+                XmlNode colorANode = CreateXmlNode("a");
                 colorANode.InnerText = item.Color.A.ToString();
                 colorPointNode.AppendChild(colorANode);
 
-                XmlNode colorRNode = CreateXmlNodeOfFile("r");
+                XmlNode colorRNode = CreateXmlNode("r");
                 colorRNode.InnerText = item.Color.R.ToString();
                 colorPointNode.AppendChild(colorRNode);
 
-                XmlNode colorGNode = CreateXmlNodeOfFile("g");
+                XmlNode colorGNode = CreateXmlNode("g");
                 colorGNode.InnerText = item.Color.G.ToString();
                 colorPointNode.AppendChild(colorGNode);
 
-                XmlNode colorBNode = CreateXmlNodeOfFile("b");
+                XmlNode colorBNode = CreateXmlNode("b");
                 colorBNode.InnerText = item.Color.B.ToString();
                 colorPointNode.AppendChild(colorBNode);
 
-                XmlNode offsetNode = CreateXmlNodeOfFile("offset");
+                XmlNode offsetNode = CreateXmlNode("offset");
                 offsetNode.InnerText = item.Offset.ToString();
                 colorPointNode.AppendChild(offsetNode);
 

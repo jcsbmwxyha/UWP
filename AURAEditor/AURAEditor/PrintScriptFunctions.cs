@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.Math2;
 using MoonSharp.Interpreter;
 using System.Collections.Generic;
 using System.Xml;
@@ -12,13 +13,13 @@ namespace AuraEditor
     {
         public string PrintScriptXml(bool repeat)
         {
-            XmlNode root = CreateXmlNodeOfFile("root");
+            XmlNode root = CreateXmlNode("root");
 
-            XmlNode headerNode = CreateXmlNodeOfFile("header");
+            XmlNode headerNode = CreateXmlNode("header");
             headerNode.InnerText = "AURA_Creator";
             root.AppendChild(headerNode);
 
-            XmlNode versionNode = CreateXmlNodeOfFile("version");
+            XmlNode versionNode = CreateXmlNode("version");
             versionNode.InnerText = "1.0";
             root.AppendChild(versionNode);
 
@@ -30,9 +31,9 @@ namespace AuraEditor
         }
         private XmlNode GetEffecttProviderXmlNode(bool repeat)
         {
-            XmlNode effectProviderNode = CreateXmlNodeOfFile("effectProvider");
+            XmlNode effectProviderNode = CreateXmlNode("effectProvider");
 
-            XmlNode periodNode = CreateXmlNodeOfFile("period");
+            XmlNode periodNode = CreateXmlNode("period");
             periodNode.InnerText = LayerManager.PlayTime.ToString();
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
             if(repeat)
@@ -48,12 +49,15 @@ namespace AuraEditor
         }
         private XmlNode GetQueueXmlNode()
         {
-            XmlNode queueNode = CreateXmlNodeOfFile("queue");
+            XmlNode queueNode = CreateXmlNode("queue");
+            double maxDistance = MaxOperatingLength(SpaceManager.MaxOperatingGridWidth, SpaceManager.MaxOperatingGridHeight, 0);
             int effectCount = 0;
             int layerCount = 0;
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
+            foreach (Layer layer in LayerManager.Layers)
             {
+                double delay_accu = 0;
+
                 if (layer.Eye == false)
                     continue;
 
@@ -63,7 +67,7 @@ namespace AuraEditor
 
                 foreach (Effect eff in effCollection)
                 {
-                    XmlNode effectNode = CreateXmlNodeOfFile("effect");
+                    XmlNode effectNode = CreateXmlNode("effect");
 
                     // Give uniqle index for all effects
                     eff.ScriptName = GetEffectName(eff.Type) + effectCount.ToString();
@@ -73,32 +77,48 @@ namespace AuraEditor
                     attribute.Value = eff.ScriptName;
                     effectNode.Attributes.Append(attribute);
 
-                    XmlNode viewportNode = CreateXmlNodeOfFile("viewport");
+                    XmlNode viewportNode = CreateXmlNode("viewport");
                     viewportNode.InnerText = layer.Name;
                     effectNode.AppendChild(viewportNode);
 
                     if (IsTriggerEffect(eff.Type))
                     {
-                        XmlNode triggerNode = CreateXmlNodeOfFile("trigger");
-                        triggerNode.InnerText = layer.TriggerAction.Replace(" ","");
+                        XmlNode triggerNode = CreateXmlNode("trigger");
+                        triggerNode.InnerText = layer.TriggerAction.Replace(" ", "");
                         effectNode.AppendChild(triggerNode);
+
+                        XmlNode delayNode = CreateXmlNode("delay");
+                        delayNode.InnerText = delay_accu.ToString();
+                        effectNode.AppendChild(delayNode);
+
+                        XmlNode durationNode = CreateXmlNode("duration");
+                        double ledspeed = eff.Info.ActualLedSpeed;
+                        double duration;
+                        if (ledspeed == 0) // Wouldn't have speed problem, give 1s
+                            duration = 1000;
+                        else
+                            duration = (maxDistance / ledspeed) * 1000 + 100; // buffer : 100ms
+                        durationNode.InnerText = duration.ToString();
+                        effectNode.AppendChild(durationNode);
+
+                        delay_accu += duration;
                     }
                     else
                     {
-                        XmlNode triggerNode = CreateXmlNodeOfFile("trigger");
+                        XmlNode triggerNode = CreateXmlNode("trigger");
                         triggerNode.InnerText = "Period";
                         effectNode.AppendChild(triggerNode);
+
+                        XmlNode delayNode = CreateXmlNode("delay");
+                        delayNode.InnerText = eff.StartTime.ToString();
+                        effectNode.AppendChild(delayNode);
+
+                        XmlNode durationNode = CreateXmlNode("duration");
+                        durationNode.InnerText = eff.DurationTime.ToString();
+                        effectNode.AppendChild(durationNode);
                     }
 
-                    XmlNode delayNode = CreateXmlNodeOfFile("delay");
-                    delayNode.InnerText = eff.StartTime.ToString();
-                    effectNode.AppendChild(delayNode);
-
-                    XmlNode durationNode = CreateXmlNodeOfFile("duration");
-                    durationNode.InnerText = eff.DurationTime.ToString();
-                    effectNode.AppendChild(durationNode);
-
-                    XmlNode layerNode = CreateXmlNodeOfFile("layer");
+                    XmlNode layerNode = CreateXmlNode("layer");
                     layerNode.InnerText = layerCount.ToString();
                     effectNode.AppendChild(layerNode);
 
@@ -112,9 +132,9 @@ namespace AuraEditor
         }
         private XmlNode GetViewportXmlNode()
         {
-            XmlNode viewportNode = CreateXmlNodeOfFile("viewport");
+            XmlNode viewportNode = CreateXmlNode("viewport");
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
+            foreach (Layer layer in LayerManager.Layers)
             {
                 viewportNode.AppendChild(layer.ToXmlNodeForScript());
             }
@@ -123,9 +143,9 @@ namespace AuraEditor
         }
         private XmlNode GetEffectListXmlNode()
         {
-            XmlNode effectListNode = CreateXmlNodeOfFile("effectList");
+            XmlNode effectListNode = CreateXmlNode("effectList");
 
-            foreach (DeviceLayer layer in LayerManager.DeviceLayers)
+            foreach (Layer layer in LayerManager.Layers)
             {
                 if (layer.Eye == false)
                     continue;
@@ -136,7 +156,7 @@ namespace AuraEditor
 
                 foreach (Effect eff in effCollection)
                 {
-                    effectListNode.AppendChild(eff.ToXmlNodeForScript());
+                    effectListNode.AppendChild(eff.ToXmlNodeForScript(layer.GetCountOfZones()));
                 }
             }
 

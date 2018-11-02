@@ -123,8 +123,8 @@ namespace AuraEditor.Dialogs
             curtask2.Wait();
         }
 
-        private DeviceLayer m_DeviceLayer;
-        public ColorPickerDialog(Color c, DeviceLayer DeviceLayer)
+        private Layer m_DeviceLayer;
+        public ColorPickerDialog(Color c, Layer DeviceLayer)
         {
             this.InitializeComponent();
             ComeFrom = 2;
@@ -296,7 +296,7 @@ namespace AuraEditor.Dialogs
 
         private async Task CreateColorRingImage()
         {
-            string colorRingImage = @"Assets\asus_gc_aura_customize_colorpick_selected_colorring_mask.png";
+            string colorRingImage = @"Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_colorring_mask.png";
 
             SoftwareBitmap softwareBitmap;
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
@@ -312,7 +312,7 @@ namespace AuraEditor.Dialogs
 
         private async Task SelectColorAreaImage()
         {
-            string selectColorAreaImage = @"Assets\asus_gc_aura_customize_colorpick_selected_colormask_btn.png";
+            string selectColorAreaImage = @"Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_colormask_btn.png";
 
             SoftwareBitmap softwareBitmap;
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
@@ -328,7 +328,7 @@ namespace AuraEditor.Dialogs
 
         private async Task CreateSquareImage()
         {
-            string aquareImage = @"Assets\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png";
+            string aquareImage = @"Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png";
 
             SoftwareBitmap softwareBitmap;
             StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
