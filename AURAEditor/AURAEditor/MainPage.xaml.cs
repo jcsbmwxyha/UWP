@@ -17,6 +17,7 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.AuraSpaceManager;
 using Windows.UI.Core.Preview;
 using AuraEditor.Dialogs;
+using System.Linq;
 
 namespace AuraEditor
 {
@@ -108,7 +109,7 @@ namespace AuraEditor
             Layer layer = new Layer();
             List<int> selectedIndex;
 
-            layer.Name = "Layer " + (LayerManager.GetLayerCount());
+            layer.Name = "Layer " + (LayerManager.GetLayerCount() + 1);
 
             foreach (Device d in SpaceManager.GlobalDevices)
             {
@@ -180,41 +181,57 @@ namespace AuraEditor
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
             }
         }
-        private void DeleteItem_DragEnter(object sender, DragEventArgs e)
+        //private void DeleteItem_DragEnter(object sender, DragEventArgs e)
+        //{
+        //    // Trash only accepts text
+        //    e.AcceptedOperation = DataPackageOperation.Move;
+        //    // We don't want to show the Move icon
+        //    e.DragUIOverride.IsGlyphVisible = false;
+        //    e.DragUIOverride.Caption = "Drop item here to remove it from selection";
+        //}
+        private void LayerListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
-            // Trash only accepts text
-            e.AcceptedOperation = DataPackageOperation.Move;
-            // We don't want to show the Move icon
-            e.DragUIOverride.IsGlyphVisible = false;
-            e.DragUIOverride.Caption = "Drop item here to remove it from selection";
-        }
-        private void DeleteItem_Drop(object sender, DragEventArgs e)
-        {
-            //if (e.DataView.Contains(StandardDataFormats.Text))
-            //{
-            //    canDelete = true;
-            //}
-        }
-        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<DeviceLayerItem> items =
-                FindAllControl<DeviceLayerItem>(LayerListView, typeof(DeviceLayerItem));
-
-            foreach (var item in items)
+            Layer layer = e.Items[0] as Layer;
+            e.Data.Properties.Add("layer", layer);
+            //e.Data.RequestedOperation = DataPackageOperation.Copy;
+            if (layer != null)
             {
-                if (item.IsChecked == true)
-                {
-                    Layer layer = item.DataContext as Layer;
 
-                    if (layer.TimelineEffects.Contains(_selectedEffectLine))
-                        SelectedEffectLine = null;
-
-                    LayerManager.RemoveDeviceLayer(layer);
-                    SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-                    NeedSave = true;
-                }
             }
         }
+        private void TrashCanButton_DragOver(object sender, DragEventArgs e)
+        {
+            var pair = e.Data.Properties.FirstOrDefault();
+            Layer layer = pair.Value as Layer;
+            if (layer != null)
+                e.AcceptedOperation = DataPackageOperation.Copy;
+        }
+        private void TrashCanButton_Drop(object sender, DragEventArgs e)
+        {
+            var pair = e.Data.Properties.FirstOrDefault();
+            Layer layer = pair.Value as Layer;
+            LayerManager.RemoveDeviceLayer(layer);
+            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+            SelectedEffectLine = null;
+            NeedSave = true;
+        }
+        //private void TrashCanButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    List<DeviceLayerItem> items =
+        //        FindAllControl<DeviceLayerItem>(LayerListView, typeof(DeviceLayerItem));
+
+        //    foreach (var item in items)
+        //    {
+        //        if (item.IsChecked == true)
+        //        {
+        //            Layer layer = item.DataContext as Layer;
+        //            LayerManager.RemoveDeviceLayer(layer);
+        //            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+        //            SelectedEffectLine = null;
+        //            NeedSave = true;
+        //        }
+        //    }
+        //}
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
             ZoomSlider.Value += 1;

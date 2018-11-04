@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
 using System.Xml;
+using System.Collections.Specialized;
 
 namespace AuraEditor
 {
@@ -52,9 +53,9 @@ namespace AuraEditor
             m_LayerListView = MainPage.Self.LayerListView;
 
             Layers = new ObservableCollection<Layer>();
+            Layers.CollectionChanged += LayersChanged;
             PixelsPerTimeUnit = 200;
         }
-
         #region Layer
         public void AddDeviceLayer(Layer layer)
         {
@@ -65,14 +66,20 @@ namespace AuraEditor
         {
             Layers.Remove(layer);
             m_TimelineStackPanel.Children.Remove(layer.UICanvas);
-            ReIndexLayers();
         }
-        private void ReIndexLayers()
+        private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             for (int i = 0; i < Layers.Count; i++)
             {
-                Layers[i].Name = "Layer " + i.ToString();
+                Layers[i].Name = "Layer " + (i + 1).ToString();
             }
+
+            List<DeviceLayerItem> items =
+                FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
+
+            // TODO : Use MVVM instead of Update()
+            foreach (var item in items)
+                item.Update();
         }
         public int GetLayerCount()
         {

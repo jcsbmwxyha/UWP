@@ -1558,6 +1558,7 @@
                       HorizontalAlignment="Left">
             <ListView x:Name="LayerListView"
                       x:FieldModifier="Public"
+                      CanReorderItems="True" CanDragItems="True" AllowDrop="True" DragItemsStarting="LayerListView_DragItemsStarting"
                       ItemsSource="{x:Bind LayerManager.Layers}"
                       SelectionMode="Extended"
                       BorderBrush="Azure"
@@ -1611,11 +1612,9 @@
         </ScrollViewer>
         <Grid Grid.Column="0"
               Grid.Row="4">
-            <Button x:Name="TrashCanButton" 
-                    Style="{StaticResource DeleteButtonStyle}"
-                    Click="TrashCanButton_Click"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"/>
+            <Button x:Name="TrashCanButton" Style="{StaticResource DeleteButtonStyle}"
+                    DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
             <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.LeftOf="ZoomSlider"

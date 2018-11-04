@@ -11,7 +11,6 @@
     
     <UserControl.Resources>
         <ResourceDictionary>
-
             <BitmapImage x:Key="EyeToggleButton_on_n" UriSource="ms-appx:///Assets/Button/asus_ac_eye_on_n_ic.png"/>
             <BitmapImage x:Key="EyeToggleButton_on_h" UriSource="ms-appx:///Assets/Button/asus_ac_eye_on_n_ic.png"/>
             <BitmapImage x:Key="EyeToggleButton_off_n" UriSource="ms-appx:///Assets/Button/asus_ac_eye_off_n_ic.png"/>
@@ -186,10 +185,126 @@
             <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
+    <Grid Width="250" Height="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_h}"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedPointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Checked">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="TriggerStates">
+                <VisualState x:Name="NoTrigger">
+                    <VisualState.Setters>
+                        <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
+                        <Setter Target="TriggerStatusOnButton.Visibility" Value="Collapsed"/>
+                        <Setter Target="TriggerStatusOffButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Trigger">
+                    <VisualState.Setters>
+                        <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
+                        <Setter Target="TriggerStatusOnButton.Visibility" Value="Visible"/>
+                        <Setter Target="TriggerStatusOffButton.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <RadioButton Name="DeviceLayerRadioButton"/>
+        <Image Name="LayerBg_Head" Grid.Column="0" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Mid" Grid.Column="1" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="Triggerline_head" Grid.Column="1" Width="10" Height="10"
+                   VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Visible"
+                   Source="ms-appx:///Assets/Layer/asus_ac_triggerline_head.png"/>
+        <RelativePanel Grid.Column="1" VerticalAlignment="Center">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_h}"/>
+                            <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="CheckedPointerOver">
+                        <VisualState.Setters>
+                            <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                            <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Checked">
+                        <VisualState.Setters>
+                            <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
+                            <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+                <VisualStateGroup x:Name="TriggerStates">
+                    <VisualState x:Name="NoTrigger">
+                        <VisualState.Setters>
+                            <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
+                            <Setter Target="TriggerStatusOnButton.Visibility" Value="Collapsed"/>
+                            <Setter Target="TriggerStatusOffButton.Visibility" Value="Visible"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Trigger">
+                        <VisualState.Setters>
+                            <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
+                            <Setter Target="TriggerStatusOnButton.Visibility" Value="Visible"/>
+                            <Setter Target="TriggerStatusOffButton.Visibility" Value="Collapsed"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
+                          Click="EyeToggleButton_Click" IsChecked="True" Style="{StaticResource EyeToggleButtonStyle}"/>
+            <TextBlock Name="LayerNameTextBlock" Text="{x:Bind m_DeviceLayer.Name}" RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>
+            <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
+                    Width="25" Height="25" Margin="0,0,45,0" Click="EditButton_Click"/>
+            <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}" RelativePanel.AlignRightWithPanel="True"
+                    Width="25" Height="25" Margin="0,0,15,0" Click="TriggerDialogButton_Click" Visibility="Collapsed" >
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Trigger Event"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" RelativePanel.AlignRightWithPanel="True"
+                    Width="25" Height="25" Margin="0,0,15,0" Click="TriggerDialogButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Trigger Event"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+        </RelativePanel>
+    </Grid>
+    <!--<RadioButton Name="DeviceLayerRadioButton" GroupName="GroupLayer"
                  Content="{Binding Name}"
                  FontSize="30"
                  Foreground="White"
+                 CanDrag="True"
                  Height="50"
                  VerticalAlignment="Center"
                  Checked="DeviceLayerRadioButton_Checked"
@@ -251,6 +366,7 @@
                            Grid.Column="1"
                            Grid.ColumnSpan="2"
                            Stretch="Fill"
+                           Canvas.ZIndex="-2"
                            VerticalAlignment="Center"/>
                     <Image Name="Triggerline_head" Grid.Column="1" Width="10" Height="10"
                            VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed"
@@ -291,5 +407,5 @@
                 </Grid>
             </ControlTemplate>
         </RadioButton.Template>
-    </RadioButton>
+    </RadioButton>-->
 </UserControl>

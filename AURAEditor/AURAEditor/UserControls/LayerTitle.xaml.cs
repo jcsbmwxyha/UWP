@@ -31,7 +31,11 @@ namespace AuraEditor.UserControls
         public DeviceLayerItem()
         {
             this.InitializeComponent();
-            //this.DataContextChanged += (s, e) => Bindings.Update();
+            this.DataContextChanged += (s, e) => Bindings.Update();
+        }
+        public void Update()
+        {
+            Bindings.Update();
         }
 
         private void EyeToggleButton_Click(object sender, RoutedEventArgs e)
@@ -69,6 +73,7 @@ namespace AuraEditor.UserControls
         }
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+            LayerNameTextBlock.Text =  m_DeviceLayer.Name;
             SelectMe();
             AuraSpaceManager.Self.ReEdit(m_DeviceLayer);
             MainPage.Self.ReEdit(m_DeviceLayer);
