@@ -379,31 +379,42 @@ namespace AuraEditor
         }
         private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
         {
-            List<Device> devices = new List<Device>();
+            List<Device> globalDevices = SpaceManager.GlobalDevices;
+            globalDevices.Clear();
 
+            List<SyncDevice> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
+                DeviceContent dc = await DeviceContent.GetDeviceContent(node);
+                Device d = await dc.ToDevice(new Point(x, y));
 
-                DeviceContent deviceContent = await DeviceContent.GetDeviceContent(node);
-                Device d = await deviceContent.ToDevice(new Point(x, y));
-
-                devices.Add(d);
-            }
-
-            // Check device sync or not
-            var syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
-            foreach (var d in devices)
-            {
-                if (syncDevices.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
+                if (new_SD.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
+                {
                     d.Status = DeviceStatus.OnStage;
+                    new_SD.RemoveAll(sd => sd.Name == d.Name && sd.Sync == true);
+                }
                 else
                     d.Status = DeviceStatus.Temp;
+
+                globalDevices.Add(d);
             }
 
-            SpaceManager.GlobalDevices = devices;
+            foreach (var sd in new_SD)
+            {
+                DeviceContent dc = await DeviceContent.GetDeviceContent(sd);
+
+                if (dc == null)
+                    continue;
+
+                Rect r = new Rect(0, 0, dc.GridWidth, dc.GridHeight);
+                Point p = SpaceManager.GetFreeRoomPositionForRect(r);
+                Device d = await dc.ToDevice(p);
+                d.Status = DeviceStatus.OnStage;
+                globalDevices.Add(d);
+            }
         }
         private void ParsingLayers(XmlNodeList layerNodes)
         {
@@ -499,7 +510,7 @@ namespace AuraEditor
                 }
 
                 layers.Add(layer);
-                LayerManager.AddDeviceLayer(layer);
+                LayerManager.AddLayer(layer);
             }
         }
 

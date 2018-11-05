@@ -1,17 +1,17 @@
-﻿using AuraEditor.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Controls;
-using AuraEditor.UserControls;
-using Windows.UI.Xaml.Shapes;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.XmlHelper;
-using static AuraEditor.Common.EffectHelper;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
 using System.Collections.ObjectModel;
-using System.Xml;
 using System.Collections.Specialized;
+using System.Xml;
+using Windows.UI;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using AuraEditor.UserControls;
+using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.XmlHelper;
+using static AuraEditor.AuraSpaceManager;
 
 namespace AuraEditor
 {
@@ -57,29 +57,35 @@ namespace AuraEditor
             PixelsPerTimeUnit = 200;
         }
         #region Layer
-        public void AddDeviceLayer(Layer layer)
+        public void AddLayer(Layer layer)
         {
             Layers.Add(layer);
-            m_TimelineStackPanel.Children.Add(layer.UICanvas);
+            //m_TimelineStackPanel.Children.Add(layer.UICanvas);
         }
-        public void RemoveDeviceLayer(Layer layer)
+        public void RemoveLayer(Layer layer)
         {
             Layers.Remove(layer);
-            m_TimelineStackPanel.Children.Remove(layer.UICanvas);
+            //m_TimelineStackPanel.Children.Remove(layer.UICanvas);
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            m_TimelineStackPanel.Children.Clear();
+
             for (int i = 0; i < Layers.Count; i++)
             {
                 Layers[i].Name = "Layer " + (i + 1).ToString();
+                m_TimelineStackPanel.Children.Add(Layers[i].UICanvas);
             }
 
-            List<DeviceLayerItem> items =
-                FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
-
             // TODO : Use MVVM instead of Update()
+            List<LayerTitle> items = FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
             foreach (var item in items)
+            {
+                item.IsChecked = false;
                 item.Update();
+            }
+
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
         }
         public int GetLayerCount()
         {
@@ -87,8 +93,8 @@ namespace AuraEditor
         }
         public Layer GetSelectedLayer()
         {
-            List<DeviceLayerItem> layers =
-                FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
+            List<LayerTitle> layers =
+                FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
 
             foreach (var layer in layers)
             {
@@ -100,8 +106,8 @@ namespace AuraEditor
         }
         public void UnselectAllLayers()
         {
-            List<DeviceLayerItem> layers =
-                FindAllControl<DeviceLayerItem>(m_LayerListView, typeof(DeviceLayerItem));
+            List<LayerTitle> layers =
+                FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
 
             foreach (var layer in layers)
             {

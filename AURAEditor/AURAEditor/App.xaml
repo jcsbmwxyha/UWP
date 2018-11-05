@@ -7,7 +7,7 @@
     <Application.Resources>
         <x:Double x:Key="ContentDialogMaxWidth">1500</x:Double>
         <x:Double x:Key="ContentDialogMaxHeight">900</x:Double>
-        
+        <SolidColorBrush x:Key="SystemControlPageBackgroundMediumAltMediumBrush" Color="#88000000" />
         <Style x:Key="RogButtonStyle"  TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>

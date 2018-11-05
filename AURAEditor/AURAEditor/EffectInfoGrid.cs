@@ -392,6 +392,13 @@ namespace AuraEditor
                     AngleChangeText.Text = "0";
                 }
             }
+            if (SelectedEffectLine != null)
+            {
+                if (AngleTextBox.Text != "")
+                {
+                    SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                }
+            }
         }
         private void AngleStoryboardStart(double AngleImgTargetAngle)
         {

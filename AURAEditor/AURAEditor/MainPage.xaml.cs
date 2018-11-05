@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Networking.Sockets;
+using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
-using System.Threading.Tasks;
-using Windows.Networking.Sockets;
-using Windows.UI.Core;
-using System.ComponentModel;
+using AuraEditor.Dialogs;
 using AuraEditor.UserControls;
+using static AuraEditor.AuraSpaceManager;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.AuraSpaceManager;
-using Windows.UI.Core.Preview;
-using AuraEditor.Dialogs;
-using System.Linq;
 
 namespace AuraEditor
 {
@@ -127,7 +127,7 @@ namespace AuraEditor
                     layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
             }
 
-            LayerManager.AddDeviceLayer(layer);
+            LayerManager.AddLayer(layer);
             SpaceManager.UnselectAllZones();
             NeedSave = true;
         }
@@ -181,14 +181,6 @@ namespace AuraEditor
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
             }
         }
-        //private void DeleteItem_DragEnter(object sender, DragEventArgs e)
-        //{
-        //    // Trash only accepts text
-        //    e.AcceptedOperation = DataPackageOperation.Move;
-        //    // We don't want to show the Move icon
-        //    e.DragUIOverride.IsGlyphVisible = false;
-        //    e.DragUIOverride.Caption = "Drop item here to remove it from selection";
-        //}
         private void LayerListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
             Layer layer = e.Items[0] as Layer;
@@ -201,6 +193,9 @@ namespace AuraEditor
         }
         private void TrashCanButton_DragOver(object sender, DragEventArgs e)
         {
+            if (e.Data == null)
+                return;
+
             var pair = e.Data.Properties.FirstOrDefault();
             Layer layer = pair.Value as Layer;
             if (layer != null)
@@ -210,28 +205,28 @@ namespace AuraEditor
         {
             var pair = e.Data.Properties.FirstOrDefault();
             Layer layer = pair.Value as Layer;
-            LayerManager.RemoveDeviceLayer(layer);
+            LayerManager.RemoveLayer(layer);
             SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
             SelectedEffectLine = null;
             NeedSave = true;
         }
-        //private void TrashCanButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    List<DeviceLayerItem> items =
-        //        FindAllControl<DeviceLayerItem>(LayerListView, typeof(DeviceLayerItem));
+        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<LayerTitle> items =
+                FindAllControl<LayerTitle>(LayerListView, typeof(LayerTitle));
 
-        //    foreach (var item in items)
-        //    {
-        //        if (item.IsChecked == true)
-        //        {
-        //            Layer layer = item.DataContext as Layer;
-        //            LayerManager.RemoveDeviceLayer(layer);
-        //            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-        //            SelectedEffectLine = null;
-        //            NeedSave = true;
-        //        }
-        //    }
-        //}
+            foreach (var item in items)
+            {
+                if (item.IsChecked == true)
+                {
+                    Layer layer = item.DataContext as Layer;
+                    LayerManager.RemoveLayer(layer);
+                    SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+                    SelectedEffectLine = null;
+                    NeedSave = true;
+                }
+            }
+        }
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
             ZoomSlider.Value += 1;

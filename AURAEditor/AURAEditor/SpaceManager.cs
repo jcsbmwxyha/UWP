@@ -170,8 +170,8 @@ namespace AuraEditor
             m_SpaceScrollViewer = MainPage.Self.SpaceAreaScrollViewer;
             m_GridImage = MainPage.Self.GridImage;
             m_SpaceCanvas = MainPage.Self.SpaceAreaCanvas;
-            m_SpaceCanvas.Width = m_GridImage.ActualWidth;
-            m_SpaceCanvas.Height = m_GridImage.ActualHeight;
+            //m_SpaceCanvas.Width = m_GridImage.ActualWidth;
+            //m_SpaceCanvas.Height = m_GridImage.ActualHeight;
             m_MouseRectangle = MainPage.Self.MouseRectangle;
             m_SetLayerButton = MainPage.Self.SetLayerButton;
             m_MouseEventCtrl = IntializeMouseEventCtrl();
@@ -274,7 +274,7 @@ namespace AuraEditor
             var onStageList = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
             foreach (Device d in onStageList)
             {
-                m_SpaceCanvas.Children.Add(d.Border);
+                m_SpaceCanvas.Children.Add(d.GetContainer());
                 SortByZIndex(d.LightZones);
 
                 foreach (var zone in d.LightZones)
@@ -432,7 +432,7 @@ namespace AuraEditor
             }
             return false;
         }
-        private Point GetFreeRoomPositionForRect(Rect rect)
+        public Point GetFreeRoomPositionForRect(Rect rect)
         {
             Device overlappingDevice = GetFirstOverlappingDevice(rect);
 
@@ -449,8 +449,7 @@ namespace AuraEditor
         }
         private Device GetFirstOverlappingDevice(Rect gridRect)
         {
-            List<Device> devices = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
-            foreach (var d in devices)
+            foreach (var d in GlobalDevices)
             {
                 if (ControlHelper.IsOverlapping(gridRect.X, gridRect.Width, d.GridPosition.X, d.Width) &&
                     ControlHelper.IsOverlapping(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.Height))

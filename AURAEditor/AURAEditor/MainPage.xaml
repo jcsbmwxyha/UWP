@@ -1362,10 +1362,10 @@
                           MinZoomFactor="0.5" MaxZoomFactor="100" ZoomMode="Enabled"
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Canvas Name="SpaceAreaCanvas"  VerticalAlignment="Top"
-                        x:FieldModifier="public"
+                        x:FieldModifier="public" Width="4800" Height="1920"
                         HorizontalAlignment="Left">
                     <Rectangle Name="MouseRectangle" Width="0" Height="0"
-                               Fill="Transparent"
+                               Fill="#66FF0029"
                                Stroke="Red" StrokeThickness="2" StrokeDashArray="5,2"
                                HorizontalAlignment="Left" VerticalAlignment="Top"
                                x:FieldModifier="Public"
@@ -1556,18 +1556,182 @@
                       VerticalScrollMode="Disabled"
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalAlignment="Left">
-            <ListView x:Name="LayerListView"
-                      x:FieldModifier="Public"
+            <ListView x:Name="LayerListView" x:FieldModifier="Public"
                       CanReorderItems="True" CanDragItems="True" AllowDrop="True" DragItemsStarting="LayerListView_DragItemsStarting"
                       ItemsSource="{x:Bind LayerManager.Layers}"
                       SelectionMode="Extended"
-                      BorderBrush="Azure"
                       HorizontalAlignment="Left">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:Layer">
-                        <usercontrol:DeviceLayerItem HorizontalAlignment="Center"/>
+                        <usercontrol:LayerTitle HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Grid x:Name="ContentBorder"
+                                          Control.IsTemplateFocusTarget="True"
+                                          FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"
+                                          RenderTransformOrigin="0.5,0.5">
+                                        <Grid.RenderTransform>
+                                            <ScaleTransform x:Name="ContentBorderScale" />
+                                        </Grid.RenderTransform>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="DragStates">
+                                                <VisualState x:Name="NotDragging" />
+
+                                                <VisualState x:Name="Dragging">
+
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
+                                                        <DragItemThemeAnimation TargetName="ContentBorder" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="DraggingTarget" />
+
+                                                <VisualState x:Name="MultipleDraggingPrimary">
+
+                                                    <Storyboard>
+                                                        <!-- These two Opacity animations are required - the FadeInThemeAnimations
+                                             on the same elements animate an internal Opacity. -->
+                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayText"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayTextBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectSquare"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="0" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectCheck"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="0" />
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
+                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
+                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
+                                                        <DragItemThemeAnimation TargetName="ContentBorder" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="MultipleDraggingSecondary" />
+
+                                                <VisualState x:Name="DraggedPlaceholder" />
+
+                                                <VisualState x:Name="Reordering">
+
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
+                                            To="{ThemeResource ListViewItemReorderThemeOpacity}" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="ReorderingTarget">
+
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
+                                            To="{ThemeResource ListViewItemReorderTargetThemeOpacity}" />
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            Duration="0:0:0.240"
+                                            To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            Duration="0:0:0.240"
+                                            To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="MultipleReorderingPrimary">
+
+                                                    <Storyboard>
+                                                        <!-- These two Opacity animations are required - the FadeInThemeAnimations
+                                             on the same elements animate an internal Opacity. -->
+                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayText"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayTextBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="1" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectSquare"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="0" />
+                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectCheck"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="0" />
+                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
+                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
+                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
+                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="ReorderedPlaceholder">
+
+                                                    <Storyboard>
+                                                        <FadeOutThemeAnimation TargetName="ContentBorder" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualState x:Name="DragOver">
+
+                                                    <Storyboard>
+                                                        <DropTargetItemThemeAnimation TargetName="ContentBorder" />
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <VisualStateGroup.Transitions>
+                                                    <VisualTransition To="NotDragging" GeneratedDuration="0:0:0.2" />
+                                                </VisualStateGroup.Transitions>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                        <Rectangle x:Name="BorderBackground"
+                                                   IsHitTestVisible="False"
+                                                   Fill="Transparent"
+                                                   Opacity="0"
+                                                   Control.IsTemplateFocusTarget="True" />
+                                        <Grid x:Name="ContentPresenterGrid" Background="Transparent" Margin="0,0,0,0">
+                                            <Grid.RenderTransform>
+                                                <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
+                                            </Grid.RenderTransform>
+                                            <ContentPresenter x:Name="ContentPresenter"
+                                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                              Content="{TemplateBinding Content}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                        </Grid>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
         </ScrollViewer>
         <ScrollViewer Name="IconScrollViewer"
@@ -1610,10 +1774,9 @@
                       ViewChanged="TrackScrollViewer_ViewChanged">
             <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
         </ScrollViewer>
-        <Grid Grid.Column="0"
-              Grid.Row="4">
+        <Grid Grid.Column="0" Grid.Row="4">
             <Button x:Name="TrashCanButton" Style="{StaticResource DeleteButtonStyle}"
-                    DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
+                    Click="TrashCanButton_Click" DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
                     HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
@@ -1634,7 +1797,7 @@
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
-        <Grid Name="EditBar" Background="DarkCyan" Visibility="Collapsed" Grid.ColumnSpan="3">
+        <Grid Name="EditBar" Background="Black" Visibility="Collapsed" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="260"/>
                 <ColumnDefinition Width="*"/>
@@ -1646,8 +1809,8 @@
                 <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
             </RelativePanel>
         </Grid>
-        <Grid Name="MaskGrid1" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="1"/>
-        <Grid Name="MaskGrid2" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="1" Grid.Column="2"/>
-        <Grid Name="MaskGrid3" Background="#33FFFFFF" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
+        <Grid Name="MaskGrid1" Background="#88000000" Visibility="Collapsed" Grid.Row="1"/>
+        <Grid Name="MaskGrid2" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2"/>
+        <Grid Name="MaskGrid3" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
     </Grid>
 </Page>

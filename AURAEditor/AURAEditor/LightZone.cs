@@ -89,7 +89,7 @@ namespace AuraEditor
             Rectangle rectangle = new Rectangle
             {
                 Fill = new SolidColorBrush(Colors.Transparent),
-                StrokeThickness = 1,
+                StrokeThickness = 1.5,
                 RenderTransform = ct,
                 Width = Rect.Width,
                 Height = Rect.Height,
@@ -151,35 +151,35 @@ namespace AuraEditor
 
             if (status == RegionStatus.Normal)
             {
-                shape.Stroke = new SolidColorBrush(Colors.Black);
+                shape.Stroke = new SolidColorBrush(Colors.White);
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = false;
                 Hover = false;
             }
             else if (status == RegionStatus.NormalHover)
             {
-                shape.Stroke = new SolidColorBrush(Colors.Black);
-                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
+                shape.Stroke = new SolidColorBrush(Colors.White);
+                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                 Selected = false;
                 Hover = true;
             }
             else if (status == RegionStatus.Selected)
             {
-                shape.Stroke = new SolidColorBrush(Colors.Red);
+                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
                 Hover = false;
             }
             else if (status == RegionStatus.SelectedHover)
             {
-                shape.Stroke = new SolidColorBrush(Colors.Red);
-                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 0, G = 0, B = 123 });
+                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
+                shape.Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                 Selected = true;
                 Hover = true;
             }
             else if (status == RegionStatus.Watching)
             {
-                shape.Stroke = new SolidColorBrush(Colors.Yellow);
+                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 4, G = 61, B = 246 });
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
                 Hover = false;

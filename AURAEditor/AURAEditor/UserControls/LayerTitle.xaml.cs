@@ -10,25 +10,25 @@ using static AuraEditor.AuraSpaceManager;
 
 namespace AuraEditor.UserControls
 {
-    public sealed partial class DeviceLayerItem : UserControl
+    public sealed partial class LayerTitle : UserControl
     {
-        private Layer m_DeviceLayer { get { return this.DataContext as Layer; } }
+        private Layer m_Layer { get { return this.DataContext as Layer; } }
         public bool IsChecked
         {
             get
             {
-                if (DeviceLayerRadioButton.IsChecked == true)
+                if (LayerRadioButton.IsChecked == true)
                     return true;
                 else
                     return false;
             }
             set
             {
-                DeviceLayerRadioButton.IsChecked = value;
+                LayerRadioButton.IsChecked = value;
             }
         }
 
-        public DeviceLayerItem()
+        public LayerTitle()
         {
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
@@ -38,6 +38,7 @@ namespace AuraEditor.UserControls
             Bindings.Update();
         }
 
+        #region Framework element
         private void EyeToggleButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleButton tb = FindControl<ToggleButton>(this, typeof(ToggleButton), "EyeToggleButton");
@@ -45,82 +46,91 @@ namespace AuraEditor.UserControls
             if (tb != null)
             {
                 if (tb.IsChecked == false)
-                    m_DeviceLayer.Eye = false;
+                    m_Layer.Eye = false;
                 else
-                    m_DeviceLayer.Eye = true;
+                    m_Layer.Eye = true;
             }
 
-            SelectMe();
+            LayerRadioButton.IsChecked = true;
+        }
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            LayerRadioButton.IsChecked = true;
+            AuraSpaceManager.Self.ReEdit(m_Layer);
+            MainPage.Self.ReEdit(m_Layer);
         }
         private async void TriggerDialogButton_Click(object sender, RoutedEventArgs e)
         {
-            SelectMe();
-            ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
+            LayerRadioButton.IsChecked = true;
+
+            ContentDialog triggerDialog = new TriggerDialog(m_Layer);
             await triggerDialog.ShowAsync();
 
-            if (m_DeviceLayer.TriggerEffects.Count != 0)
+            if (m_Layer.TriggerEffects.Count != 0)
             {
-                m_DeviceLayer.UICanvas.GoToState("Trigger");
-                VisualStateManager.GoToState(DeviceLayerRadioButton, "Trigger", false);
+                m_Layer.UICanvas.GoToState("Trigger");
+                VisualStateManager.GoToState(this, "Trigger", false);
             }
             else
             {
-                m_DeviceLayer.UICanvas.GoToState("NoTrigger");
-                VisualStateManager.GoToState(DeviceLayerRadioButton, "NoTrigger", false);
+                m_Layer.UICanvas.GoToState("NoTrigger");
+                VisualStateManager.GoToState(this, "NoTrigger", false);
             }
 
             MainPage.Self.NeedSave = true;
         }
-        private void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            LayerNameTextBlock.Text =  m_DeviceLayer.Name;
-            SelectMe();
-            AuraSpaceManager.Self.ReEdit(m_DeviceLayer);
-            MainPage.Self.ReEdit(m_DeviceLayer);
-        }
+        #endregion
 
         #region State change
-        private void DeviceLayerRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void LayerRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (DeviceLayerRadioButton.IsChecked == true)
+            if (LayerRadioButton.IsChecked == true)
             {
-                m_DeviceLayer.UICanvas.GoToState("Checked");
+                VisualStateManager.GoToState(this, "Checked", false);
+                m_Layer.UICanvas.GoToState("Checked");
             }
             else
             {
-                m_DeviceLayer.UICanvas.GoToState("Normal");
+                VisualStateManager.GoToState(this, "Normal", false);
+                m_Layer.UICanvas.GoToState("Normal");
             }
             AuraSpaceManager.Self.WatchCurrentLayer();
         }
-        private void DeviceLayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
+        private void LayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
-            m_DeviceLayer.UICanvas.GoToState("Normal");
+            VisualStateManager.GoToState(this, "Normal", false);
+            m_Layer.UICanvas.GoToState("Normal");
         }
-        private void DeviceLayerRadioButton_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+
+        private void MyGrid_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (DeviceLayerRadioButton.IsChecked == true)
+            LayerRadioButton.IsChecked = true;
+        }
+        private void MyGrid_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (LayerRadioButton.IsChecked == true)
             {
-                m_DeviceLayer.UICanvas.GoToState("CheckedPointerOver");
+                VisualStateManager.GoToState(this, "CheckedPointerOver", false);
+                m_Layer.UICanvas.GoToState("CheckedPointerOver");
             }
             else
             {
-                m_DeviceLayer.UICanvas.GoToState("PointerOver");
+                VisualStateManager.GoToState(this, "PointerOver", false);
+                m_Layer.UICanvas.GoToState("PointerOver");
             }
         }
-        private void DeviceLayerRadioButton_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void MyGrid_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (DeviceLayerRadioButton.IsChecked == true)
+            if (LayerRadioButton.IsChecked == true)
             {
-                m_DeviceLayer.UICanvas.GoToState("Checked");
+                VisualStateManager.GoToState(this, "Checked", false);
+                m_Layer.UICanvas.GoToState("Checked");
             }
             else
             {
-                m_DeviceLayer.UICanvas.GoToState("Normal");
+                VisualStateManager.GoToState(this, "Normal", false);
+                m_Layer.UICanvas.GoToState("Normal");
             }
-        }
-        private void SelectMe()
-        {
-            DeviceLayerRadioButton.IsChecked = true;
         }
         #endregion
     }

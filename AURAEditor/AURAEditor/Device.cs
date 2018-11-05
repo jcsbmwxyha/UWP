@@ -12,6 +12,7 @@ using static AuraEditor.AuraSpaceManager;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI;
 using System.Xml;
+using System;
 
 namespace AuraEditor
 {
@@ -29,7 +30,7 @@ namespace AuraEditor
         {
             get
             {
-                CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+                CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
 
                 return new Point(
                     ct.TranslateX / GridPixels,
@@ -47,97 +48,93 @@ namespace AuraEditor
         {
             get
             {
-                return Border.Width / GridPixels;
+                return m_Border.Width / GridPixels;
             }
             set
             {
-                Border.Width = value * GridPixels;
+                m_Border.Width = value * GridPixels;
             }
         }
         public double Height
         {
             get
             {
-                return Border.Height / GridPixels;
+                return m_Border.Height / GridPixels;
             }
             set
             {
-                Border.Height = value * GridPixels;
+                m_Border.Height = value * GridPixels;
             }
         }
-        public Border Border { get; set; }
         public LightZone[] LightZones { get; set; }
         public DeviceStatus Status { get; set; }
-        private Rectangle dotRect;
+        private Border m_Border { get; set; }
+        public Border GetContainer() { return m_Border; }
+        private Image m_Image;
+        private Rectangle m_DotRect;
 
         public Device(Image img, LightZone[] zones)
         {
+            m_Image = img;
             LightZones = zones;
 
             Canvas childCanvas = new Canvas();
             childCanvas.VerticalAlignment = 0;
             childCanvas.Children.Add(img);
 
-            dotRect = new Rectangle();
-            dotRect.Style = (Style)Application.Current.Resources["DeviceDotRectangle"];
+            m_DotRect = new Rectangle();
+            m_DotRect.Style = (Style)Application.Current.Resources["DeviceDotRectangle"];
             // StrokeDashArray declare in style is useless ... I don't know why
-            dotRect.StrokeDashArray = new DoubleCollection() { 3, 3 };
-            dotRect.Width = img.Width;
-            dotRect.Height = img.Height;
-            childCanvas.Children.Add(dotRect);
+            m_DotRect.StrokeDashArray = new DoubleCollection() { 3, 3 };
+            m_DotRect.Width = img.Width;
+            m_DotRect.Height = img.Height;
+            m_DotRect.Opacity = 0;
+            childCanvas.Children.Add(m_DotRect);
 
             foreach (var zone in zones)
             {
                 childCanvas.Children.Add(zone.MyFrameworkElement);
             }
 
-            Border = new Border
+            m_Border = new Border
             {
                 RenderTransform = new CompositeTransform(),
                 ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
                 Child = childCanvas
             };
         }
+
+        #region Mouse event
         public void EnableManipulation()
         {
-            Border.ManipulationStarted -= ImageManipulationStarted;
-            Border.ManipulationDelta -= ImageManipulationDelta;
-            Border.ManipulationCompleted -= ImageManipulationCompleted;
-            Border.PointerEntered -= ImagePointerEntered;
-            Border.PointerExited -= ImagePointerExited;
-
-            Border.ManipulationStarted += ImageManipulationStarted;
-            Border.ManipulationDelta += ImageManipulationDelta;
-            Border.ManipulationCompleted += ImageManipulationCompleted;
-            Border.PointerEntered += ImagePointerEntered;
-            Border.PointerExited += ImagePointerExited;
-            dotRect.Opacity = 1;
+            m_Border.ManipulationDelta -= ImageManipulationDelta;
+            m_Border.ManipulationCompleted -= ImageManipulationCompleted;
+            m_Border.PointerPressed -= ImagePointerPressed;
+            m_Border.PointerReleased -= ImagePointerReleased;
+            m_Border.PointerEntered -= ImagePointerEntered;
+            m_Border.PointerExited -= ImagePointerExited;
+            
+            m_Border.ManipulationDelta += ImageManipulationDelta;
+            m_Border.ManipulationCompleted += ImageManipulationCompleted;
+            m_Border.PointerPressed += ImagePointerPressed;
+            m_Border.PointerReleased += ImagePointerReleased;
+            m_Border.PointerEntered += ImagePointerEntered;
+            m_Border.PointerExited += ImagePointerExited;
         }
         public void DisableManipulation()
         {
-            Border.ManipulationStarted -= ImageManipulationStarted;
-            Border.ManipulationDelta -= ImageManipulationDelta;
-            Border.ManipulationCompleted -= ImageManipulationCompleted;
-            Border.PointerEntered -= ImagePointerEntered;
-            Border.PointerExited -= ImagePointerExited;
-            dotRect.Opacity = 0;
-        }
-
-        #region Mouse event
-        private void DeviceImg_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
-        }
-        private void ImageManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
-        {
-            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
-
-            _oldPixelPosition = new Point(ct.TranslateX, ct.TranslateY);
-            Border.Opacity = 0.5;
+            m_Border.ManipulationDelta -= ImageManipulationDelta;
+            m_Border.ManipulationCompleted -= ImageManipulationCompleted;
+            m_Border.PointerPressed -= ImagePointerPressed;
+            m_Border.PointerReleased -= ImagePointerReleased;
+            m_Border.PointerEntered -= ImagePointerEntered;
+            m_Border.PointerExited -= ImagePointerExited;
+            m_DotRect.Opacity = 0;
+            m_Image.Opacity = 1;
         }
         private void ImageManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+            CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
 
             SetPosition(
                 ct.TranslateX + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
@@ -145,12 +142,11 @@ namespace AuraEditor
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+            CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
 
             SetPosition(
                 RoundToGrid(ct.TranslateX),
                 RoundToGrid(ct.TranslateY));
-            Border.Opacity = 1;
 
             if (!AuraSpaceManager.Self.IsOverlapping(this))
             {
@@ -163,30 +159,51 @@ namespace AuraEditor
             {
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
-
+            
+            m_DotRect.Opacity = 0.6;
+            m_Image.Opacity = 1;
             MainPage.Self.NeedSave = true;
+        }
+        private void ImagePointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
+
+            _oldPixelPosition = new Point(ct.TranslateX, ct.TranslateY);
+            m_DotRect.Opacity = 1;
+            m_Image.Opacity = 0.6;
+        }
+        private void ImagePointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            m_DotRect.Opacity = 0.6;
+            m_Image.Opacity = 1;
         }
         private void ImagePointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
+
+            m_DotRect.Opacity = 0.6;
+            m_Image.Opacity = 1;
         }
         private void ImagePointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+
+            m_DotRect.Opacity = 0;
+            m_Image.Opacity = 1;
         }
         #endregion
 
         private void SetPosition(double x, double y)
         {
-            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+            CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
             ct.TranslateX = x;
             ct.TranslateY = y;
         }
         private void SetPositionByAnimation(double x, double y)
         {
-            CompositeTransform ct = Border.RenderTransform as CompositeTransform;
+            CompositeTransform ct = m_Border.RenderTransform as CompositeTransform;
             double runTime = 300;
             double source;
             double targetX;
@@ -194,11 +211,11 @@ namespace AuraEditor
 
             source = ct.TranslateX;
             targetX = x;
-            AnimationStart(Border.RenderTransform, "TranslateX", runTime, source, targetX);
+            AnimationStart(m_Border.RenderTransform, "TranslateX", runTime, source, targetX);
 
             source = ct.TranslateY;
             targetY = y;
-            AnimationStart(Border.RenderTransform, "TranslateY", runTime, source, targetY);
+            AnimationStart(m_Border.RenderTransform, "TranslateY", runTime, source, targetY);
         }
 
         public XmlNode ToXmlNodeForScript()

@@ -76,22 +76,22 @@ namespace AuraEditor
             Color color;
             if (status == RegionStatus.Normal)
             {
-                color = Colors.Black;
+                color = Colors.White;
                 Selected = false;
             }
             else if (status == RegionStatus.NormalHover)
             {
-                color = Colors.Green;
+                color = new Color { A = 100, R = 255, G = 0, B = 41 };
                 Selected = false;
             }
             else if (status == RegionStatus.Selected)
             {
-                color = Colors.Red;
+                color = new Color { A = 100, R = 255, G = 0, B = 41 };
                 Selected = true;
             }
             else if (status == RegionStatus.Watching)
             {
-                color = Colors.Yellow;
+                color = new Color { A = 100, R = 4, G = 61, B = 246 };
                 Selected = true;
             }
             else
