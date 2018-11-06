@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,6 +31,36 @@ namespace AuraEditor.UserControls
         public void GoToState(string State)
         {
             VisualStateManager.GoToState(this, State, false);
+        }
+
+        bool _pressCtrl = false;
+        bool _pressV = false;
+        private void MyCanvas_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.V)
+            {
+                _pressCtrl = true;
+            }
+            if (e.Key == VirtualKey.Control)
+            {
+                _pressV = true;
+            }
+            if (_pressCtrl & _pressV == true)
+            {
+                EffectLine el = AuraLayerManager.Self.GetCopiedEffectLine();
+                MyCanvas.Children.Add(el);
+            }
+        }
+        private void MyCanvas_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.V)
+            {
+                _pressCtrl = false;
+            }
+            if (e.Key == VirtualKey.Control)
+            {
+                _pressV = false;
+            }
         }
     }
 }

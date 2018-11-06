@@ -16,7 +16,8 @@
             <BitmapImage x:Key="LayerBg_r_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_s.png"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid KeyDown="MyCanvas_KeyDown"
+          KeyUp="MyCanvas_KeyUp">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal"/>
@@ -58,14 +59,8 @@
             <ColumnDefinition Width="1"/>
         </Grid.ColumnDefinitions>
 
-        <Image Name="LayerBg_Mid"
-               Grid.Column="0"
-               Stretch="Fill"
-               VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Tail"
-               Grid.Column="1"
-               Stretch="Fill"
-               VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Mid" Grid.Column="0" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Tail" Grid.Column="1" Stretch="Fill" VerticalAlignment="Center"/>
         <Image Name="Triggerline_body" Grid.ColumnSpan="2" Height="10" Stretch="Fill" Visibility="Collapsed"
                VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_body.png"/>
         <Canvas Name="MyCanvas" Grid.ColumnSpan="2" HorizontalAlignment="Left" AllowDrop="True" Background="Transparent"
