@@ -147,6 +147,11 @@ namespace AuraEditor
                 }
             }
         }
+        public void DeleteEffectLine(EffectLine el)
+        {
+            UICanvas.MyCanvas.Children.Remove(el);
+            TimelineEffects.Remove(el.DataContext as TimelineEffect);
+        }
         public void PushAllEffectsWhichOnTheRight(TimelineEffect effect, double move)
         {
             foreach (TimelineEffect e in TimelineEffects)

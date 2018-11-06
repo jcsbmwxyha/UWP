@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using System;
 using CoreCursor = Windows.UI.Core.CoreCursor;
 using static AuraEditor.Common.ControlHelper;
+using Windows.System;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -275,6 +276,13 @@ namespace AuraEditor.UserControls
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
             MainPage.Self.SelectedEffectLine = MyEffect;
+        }
+
+        private void StatusToggleButton_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key== VirtualKey.Delete) {
+                MyEffect.Layer.DeleteEffectLine(this);
+            }
         }
     }
 }

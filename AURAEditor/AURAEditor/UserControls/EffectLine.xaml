@@ -84,6 +84,7 @@
                   ManipulationCompleted="EffectLine_ManipulationCompleted"
                   PointerMoved="EffectLine_PointerMoved"
                   PointerExited="EffectLine_PointerExited"
+                  KeyDown="StatusToggleButton_KeyDown"
                   Style="{StaticResource EffectLineStyle}"
                   Content="{x:Bind MyEffect.Name}">
         <ToggleButton.RenderTransform>
