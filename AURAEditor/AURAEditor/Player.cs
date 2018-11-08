@@ -162,14 +162,17 @@ namespace AuraEditor
         private void TrackScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-
             LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
+        }
+        private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            TrackScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
         }
         private void IconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-
             LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             TrackScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
             ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);

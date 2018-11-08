@@ -1084,9 +1084,10 @@
         <ScrollViewer Name="LayerScrollViewer"
                       Grid.Column="0"
                       Grid.Row="3"
-                      VerticalScrollMode="Disabled"
+                      VerticalScrollMode="Enabled"
                       VerticalScrollBarVisibility="Hidden"
-                      HorizontalAlignment="Left">
+                      HorizontalAlignment="Left"
+                      ViewChanged="TitleScrollViewer_ViewChanged">
             <ListView x:Name="LayerListView" x:FieldModifier="Public"
                       CanReorderItems="True" CanDragItems="True" AllowDrop="True" DragItemsStarting="LayerListView_DragItemsStarting"
                       ItemsSource="{x:Bind LayerManager.Layers}"
