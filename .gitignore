@@ -2,4 +2,6 @@ bin/
 .vs/
 obj/
 Backup/
+BundleArtifacts/
+AppPackages/
 *csproj.user

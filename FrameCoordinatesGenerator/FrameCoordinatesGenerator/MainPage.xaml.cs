@@ -1,27 +1,21 @@
-﻿using System;
+﻿using CsvParse;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 using Colors = Windows.UI.Colors;
-using CsvParse;
 
 namespace FrameCoordinatesGenerator
 {
@@ -304,6 +298,7 @@ namespace FrameCoordinatesGenerator
     public sealed partial class MainPage : Page
     {
         ImagePixelStructure g_ImagePixelStructure;
+        Image currentImage;
         List<Rect> result;
 
         public MainPage()
@@ -358,6 +353,8 @@ namespace FrameCoordinatesGenerator
 
             ImageGrid.Children.Clear();
             ImageGrid.Children.Add(image);
+
+            currentImage = image;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -366,14 +363,85 @@ namespace FrameCoordinatesGenerator
                 return;
 
             result = g_ImagePixelStructure.GetRects(ParsingMode.Frame);
+            result = SortingByGroup(result);
             ShowResult(result);
+        }
+        private List<Rect> SortingByGroup(List<Rect> rects)
+        {
+            List<Rect> result = new List<Rect>();
+            bool tryParse = int.TryParse(DifferenceTextBox.Text, out int offset);
+            if (tryParse == false) offset = 5;
+
+            rects = SortByY(rects);
+
+            List<Rect> group = new List<Rect>();
+            for (int i = 0; i < rects.Count; i++)
+            {
+                if (i == 0)
+                {
+                    group.Add(rects[i]);
+                    continue;
+                }
+                else if (rects[i].Top - rects[i - 1].Top > offset)
+                {
+                    result.AddRange(SortByX(group));
+                    group.Clear();
+                    group.Add(rects[i]);
+                }
+                else if (i == rects.Count - 1)
+                {
+                    group.Add(rects[i]);
+                    result.AddRange(SortByX(group));
+                }
+                else
+                {
+                    group.Add(rects[i]);
+                }
+            }
+
+            return result;
+        }
+        private List<Rect> SortByX(List<Rect> rects)
+        {
+            for (int i = 0; i < rects.Count - 1; i++)
+            {
+                for (int j = 0; j < rects.Count - 1 - i; j++)
+                {
+                    if (rects[j].Left > rects[j + 1].Left)
+                    {
+                        Rect temp = rects[j];
+                        rects[j] = rects[j + 1];
+                        rects[j + 1] = temp;
+                    }
+                }
+            }
+            return rects;
+        }
+        private List<Rect> SortByY(List<Rect> rects)
+        {
+            for (int i = 0; i < rects.Count - 1; i++)
+            {
+                for (int j = 0; j < rects.Count - 1 - i; j++)
+                {
+                    if (rects[j].Top > rects[j + 1].Top)
+                    {
+                        Rect temp = rects[j];
+                        rects[j] = rects[j + 1];
+                        rects[j + 1] = temp;
+                    }
+                }
+            }
+            return rects;
         }
         private void ShowResult(List<Rect> frameRects)
         {
+            ImageGrid.Children.Clear();
+            ImageGrid.Children.Add(currentImage);
+
             for (int i = 0; i < frameRects.Count; i++)
             {
                 Rectangle rectangle = CreateRectangle(frameRects[i]);
-                TextBlock textBlock = CreateTextBlock(frameRects[i], (i + 1).ToString());
+                TextBlock textBlock = CreateTextBlock(frameRects[i], i.ToString());
 
                 ImageGrid.Children.Add(rectangle);
                 ImageGrid.Children.Add(textBlock);
@@ -419,7 +487,7 @@ namespace FrameCoordinatesGenerator
                 HorizontalAlignment = 0,
                 VerticalAlignment = 0,
                 Text = index,
-                FontSize = 10,
+                FontSize = 24,
             };
 
             return textBlock;
@@ -427,11 +495,15 @@ namespace FrameCoordinatesGenerator
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if(result==null)
-                result = g_ImagePixelStructure.GetRects(ParsingMode.Frame);
-
-            if (g_ImagePixelStructure == null || result.Count == 0)
+            if (g_ImagePixelStructure == null || result.Count == 0 || result == null)
+            {
+                StatusTextBlock.Text = "No frame to save !";
                 return;
+            }
+            else
+            {
+                StatusTextBlock.Text = "";
+            }
 
             var savePicker = new FileSavePicker();
 
@@ -479,8 +551,7 @@ namespace FrameCoordinatesGenerator
             {
                 CsvRow firstRow = new CsvRow
                     {
-                        "Model",
-                        csvFile.DisplayName
+                        "Model"
                     };
                 csvWriter.WriteRow(firstRow);
 
@@ -492,6 +563,7 @@ namespace FrameCoordinatesGenerator
                         "LeftTop_y",
                         "RightBottom_x",
                         "RightBottom_y",
+                        "PNG",
                         "Z_index"
                     };
                 csvWriter.WriteRow(secondRow);
@@ -506,6 +578,7 @@ namespace FrameCoordinatesGenerator
                         Math.Floor(result[i].Y * rateH).ToString(),
                         Math.Ceiling((result[i].Right + 1) * rateW).ToString(),
                         Math.Ceiling((result[i].Bottom + 1) * rateH).ToString(),
+                        "", // PNG
                         1.ToString(), // Z index
                     };
 
