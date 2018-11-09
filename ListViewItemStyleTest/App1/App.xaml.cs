@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace ListViewItemStyle
+namespace App1
 {
     /// <summary>
     /// 提供應用程式專屬行為以補充預設的應用程式類別。

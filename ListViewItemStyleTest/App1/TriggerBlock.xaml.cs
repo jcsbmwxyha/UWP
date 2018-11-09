@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -16,15 +15,22 @@ using Windows.UI.Xaml.Navigation;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace ListViewItemStyle
+namespace App1
 {
-    public sealed partial class Item : UserControl
+    public sealed partial class TriggerBlock : UserControl
     {
-        public Item()
+        public string MyString { get { return this.DataContext as string; } }
+
+        public TriggerBlock()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
         }
-        
+        public void Update()
+        {
+            Bindings.Update();
+        }
+
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "PointerOver", false);
@@ -38,6 +44,11 @@ namespace ListViewItemStyle
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "Normal", false);
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

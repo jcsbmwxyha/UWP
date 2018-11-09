@@ -1,0 +1,93 @@
+﻿<UserControl
+    x:Class="App1.TriggerBlock"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="BG_n" UriSource="ms-appx:///Assets/asus_ac_effectorder_n.png"/>
+            <BitmapImage x:Key="BG_h" UriSource="ms-appx:///Assets/asus_ac_effectorder_s.png"/>
+            <BitmapImage x:Key="BG_s" UriSource="ms-appx:///Assets/asus_ac_effectorder_f.png"/>
+            <Style x:Key="RogDialogCloseButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Name="MyBorder">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="MyText.Foreground" Value="White"/>
+                                                <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="MyText.Foreground" Value="Gray"/>
+                                                <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="MyText.Foreground" Value="Red"/>
+                                                <Setter Target="MyBorder.Background" Value="Transparent"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <TextBlock Name="MyText"
+                                       FontWeight="Bold"
+                                       Text="&#xE10A;"
+                                       HorizontalAlignment="Center"
+                                       FontFamily="Segoe MDL2 Assets"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid PointerEntered="Grid_PointerEntered"
+          PointerPressed="Grid_PointerPressed"
+          PointerExited="Grid_PointerExited" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="390"/>
+            <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="BG.Source" Value="{ThemeResource BG_n}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Target="BG.Source" Value="{ThemeResource BG_h}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="BG.Source" Value="{ThemeResource BG_s}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Image Name="BG" Grid.ColumnSpan="3" Stretch="Fill"/>
+        <Image Name="ReorderIcon"
+               Stretch="Fill" Margin="10,0,0,0"
+               Source="ms-appx:///Assets/asus_ac_rearrange_ic_n.png"/>
+        <TextBlock Text="{x:Bind MyString}" Grid.Column="1"
+                   Margin="20,3,0,0" FontSize="20" Foreground="White"/>
+        <Button Name="DeleteButton" Grid.Column="2" Style="{StaticResource RogDialogCloseButton}"
+                Click="DeleteButton_Click" Margin="0,0,0,0"/>
+    </Grid>
+</UserControl>
