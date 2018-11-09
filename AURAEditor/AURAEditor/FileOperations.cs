@@ -469,6 +469,7 @@ namespace AuraEditor
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
                         ColorPointList = new List<ColorPoint>(colorPoints),
+                        ColorSegmentation = bool.Parse(element2.SelectSingleNode("colorSegmentation").InnerText),
                     };
 
                     if (!IsTriggerEffect(type))

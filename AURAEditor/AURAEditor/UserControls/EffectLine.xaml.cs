@@ -278,35 +278,10 @@ namespace AuraEditor.UserControls
             MainPage.Self.SelectedEffectLine = MyEffect;
         }
 
-        bool _pressCtrl = false;
-        bool _pressC = false;
         private void StatusToggleButton_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key== VirtualKey.Delete) {
                 MyEffect.Layer.DeleteEffectLine(this);
-            }
-            if (e.Key == VirtualKey.C)
-            {
-                _pressCtrl = true;
-            }
-            if (e.Key == VirtualKey.Control)
-            {
-                _pressC = true;
-            }
-            if (_pressCtrl & _pressC == true)
-            {
-                AuraLayerManager.Self.SetCopiedEffectLine(this.MemberwiseClone() as EffectLine);
-            }
-        }
-        private void StatusToggleButton_KeyUp(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == VirtualKey.C)
-            {
-                _pressCtrl = false;
-            }
-            if (e.Key == VirtualKey.Control)
-            {
-                _pressC = false;
             }
         }
     }

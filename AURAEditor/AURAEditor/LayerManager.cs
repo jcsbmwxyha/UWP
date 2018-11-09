@@ -19,9 +19,6 @@ namespace AuraEditor
     {
         static public AuraLayerManager Self;
 
-        private EffectLine m_CopiedEffectLine;
-        public void SetCopiedEffectLine(EffectLine el) { m_CopiedEffectLine = el; }
-        public EffectLine GetCopiedEffectLine() { return m_CopiedEffectLine; }
         private StackPanel m_TimelineStackPanel;
         private Canvas m_TimelineScaleCanvas;
         private ListView m_LayerListView;

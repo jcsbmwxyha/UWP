@@ -1,16 +1,16 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using Windows.Foundation;
 using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Input;
 using Windows.Storage.Streams;
-using AuraEditor.Common;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 
@@ -199,8 +199,6 @@ namespace AuraEditor
                 Type = this.DeviceType,
                 LightZones = zones.ToArray(),
                 GridPosition = new Point(gridPosition.X, gridPosition.Y),
-                Width = GridWidth,
-                Height = GridHeight,
             };
 
             return device;

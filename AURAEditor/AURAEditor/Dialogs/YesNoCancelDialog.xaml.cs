@@ -21,8 +21,7 @@ namespace AuraEditor.Dialogs
     {
         public ContentDialogResult Result;
 
-        public string DialogTitle
-        {
+        public string DialogTitle {
             set
             {
                 TitleTextBlock.Text = value;

@@ -103,23 +103,45 @@ namespace AuraEditor
 
             return rectangle;
         }
-        virtual public void OnReceiveMouseEvent(MouseEvent mouseEvent)
+        public void OnReceiveMouseEvent(MouseEvent mouseEvent)
         {
+            bool shift = AuraSpaceManager.Self.PressShift;
+            bool ctrl = AuraSpaceManager.Self.PressCtrl;
+
             if (mouseEvent == MouseEvent.Click)
             {
-                if (Selected == true)
+                if (ctrl)
                 {
-                    if (Hover == true)
-                        ChangeStatus(RegionStatus.NormalHover);
-                    else
-                        ChangeStatus(RegionStatus.Normal);
+                    if (Selected == true) ChangeStatus(RegionStatus.NormalHover);
+                    else ChangeStatus(RegionStatus.SelectedHover);
                 }
                 else
                 {
-                    if (Hover == true)
-                        ChangeStatus(RegionStatus.SelectedHover);
-                    else
-                        ChangeStatus(RegionStatus.Selected);
+                    ChangeStatus(RegionStatus.SelectedHover);
+                }
+            }
+            else if (mouseEvent == MouseEvent.InRegion)
+            {
+                if (ctrl)
+                {
+                    if (Selected == true) ChangeStatus(RegionStatus.Normal);
+                    else ChangeStatus(RegionStatus.Selected);
+                }
+                else
+                {
+                    ChangeStatus(RegionStatus.Selected);
+                }
+            }
+            else if (mouseEvent == MouseEvent.OutRegion)
+            {
+                if (ctrl)
+                {
+                    if (Selected == true) ChangeStatus(RegionStatus.Normal);
+                    else ChangeStatus(RegionStatus.Selected);
+                }
+                else
+                {
+                    ChangeStatus(RegionStatus.Normal);
                 }
             }
             else if (mouseEvent == MouseEvent.Hover)
@@ -165,21 +187,21 @@ namespace AuraEditor
             }
             else if (status == RegionStatus.Selected)
             {
-                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
+                shape.Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
                 Hover = false;
             }
             else if (status == RegionStatus.SelectedHover)
             {
-                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
+                shape.Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
                 shape.Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                 Selected = true;
                 Hover = true;
             }
             else if (status == RegionStatus.Watching)
             {
-                shape.Stroke = new SolidColorBrush(new Color { A = 100, R = 4, G = 61, B = 246 });
+                shape.Stroke = new SolidColorBrush(new Color { A = 255, R = 4, G = 61, B = 246 });
                 shape.Fill = new SolidColorBrush(Colors.Transparent);
                 Selected = true;
                 Hover = false;

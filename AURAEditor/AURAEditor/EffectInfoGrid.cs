@@ -36,10 +36,6 @@ namespace AuraEditor
                 {
                     ClearEffectInfoGrid();
                 }
-                else if (_selectedEffectLine == value)
-                {
-                    _selectedEffectLine.UI.IsSelected = true;
-                }
                 else
                 {
                     NeedSave = true;
@@ -47,6 +43,7 @@ namespace AuraEditor
                         _selectedEffectLine.UI.IsSelected = false;
 
                     _selectedEffectLine = value;
+                    _selectedEffectLine.UI.IsSelected = true;
                     UpdateEffectInfoGrid(value);
                 }
             }
@@ -258,6 +255,7 @@ namespace AuraEditor
             }
             ShowColorPointUI(ColorPoints);
             ReDrawMultiPointRectangle();
+            SegmentationSwitch.IsOn = info.ColorSegmentation;
         }
 
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
@@ -346,6 +344,19 @@ namespace AuraEditor
         {
             _angleImgPressing = false;
         }
+        private void AngleBgImg_PointerMoved(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            Point currentLocation = e.GetCurrentPoint(AngleGrid).Position;
+            if (_angleImgPressing)
+            {
+                double dx = currentLocation.X - AngleImgCenter.X;
+                double dy = currentLocation.Y - AngleImgCenter.Y;
+                double hue = Math2.ComputeH(dx, dy);
+                AngleTextBox.Text = hue.ToString("F0");
+                SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                AngleStoryboardStart(hue);
+            }
+        }
         private void AngleTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             TextBox textBoxContent = sender as TextBox;
@@ -402,38 +413,33 @@ namespace AuraEditor
         }
         private void AngleStoryboardStart(double AngleImgTargetAngle)
         {
-            _angleImgPressing = true;
+            int runTime = 300;
+            var storyboard = new Storyboard();
+            var angleIcAnimation = new DoubleAnimation();
 
-            if (_angleImgPressing)
+            if (_preAngle != AngleImgTargetAngle)
             {
-                int runTime = 300;
-                var storyboard = new Storyboard();
-                var angleIcAnimation = new DoubleAnimation();
-
-                if (_preAngle != AngleImgTargetAngle)
+                AngleImgTargetAngle = AngleImgTargetAngle % 360;
+                if (_preAngle - AngleImgTargetAngle > 180)
                 {
-                    AngleImgTargetAngle = AngleImgTargetAngle % 360;
-                    if (_preAngle - AngleImgTargetAngle > 180)
-                    {
-                        _preAngle -= 360;
-                    }
-                    else if (_preAngle - AngleImgTargetAngle < -180)
-                    {
-                        _preAngle += 360;
-                    }
-
-                    // triangle
-                    angleIcAnimation.Duration = TimeSpan.FromMilliseconds(runTime);
-                    angleIcAnimation.EnableDependentAnimation = true;
-                    angleIcAnimation.From = _preAngle;
-                    angleIcAnimation.To = AngleImgTargetAngle;
-                    Storyboard.SetTargetProperty(angleIcAnimation, "Angle");
-                    Storyboard.SetTarget(angleIcAnimation, AngleIcImgRotation);
-                    storyboard.Children.Add(angleIcAnimation);
-                    storyboard.Begin();
-
-                    _preAngle = AngleImgTargetAngle;
+                    _preAngle -= 360;
                 }
+                else if (_preAngle - AngleImgTargetAngle < -180)
+                {
+                    _preAngle += 360;
+                }
+
+                // triangle
+                angleIcAnimation.Duration = TimeSpan.FromMilliseconds(runTime);
+                angleIcAnimation.EnableDependentAnimation = true;
+                angleIcAnimation.From = _preAngle;
+                angleIcAnimation.To = AngleImgTargetAngle;
+                Storyboard.SetTargetProperty(angleIcAnimation, "Angle");
+                Storyboard.SetTarget(angleIcAnimation, AngleIcImgRotation);
+                storyboard.Children.Add(angleIcAnimation);
+                storyboard.Begin();
+
+                _preAngle = AngleImgTargetAngle;
             }
         }
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
@@ -510,6 +516,7 @@ namespace AuraEditor
             ui.High = 60;
             ui.Low = 30;
             ui.ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[5]);
+            ui.ColorSegmentation = false;
             UpdateUIEffectContents(ui);
         }
 
@@ -550,6 +557,11 @@ namespace AuraEditor
         {
             for (int i = 0; i < cl.Count; i++)
             {
+                if(i == 0)
+                {
+                    List<RadioButton> items = FindAllControl<RadioButton>(cl[i].UI, typeof(RadioButton));
+                    items[0].IsChecked = true;
+                }
                 cl[i].UI.OnRedraw += ReDrawMultiPointRectangle; ;
                 PatternCanvas.Children.Add(cl[i].UI);
             }
@@ -627,11 +639,44 @@ namespace AuraEditor
 
                     if (items[0].IsChecked == true)
                     {
+                        for (int i = 0; i < ColorPoints.Count; i++)
+                        {
+                            if (item == ColorPoints[i])
+                            {
+                                if (i != ColorPoints.Count - 1)
+                                {
+                                    List<RadioButton> items1 = FindAllControl<RadioButton>(ColorPoints[i + 1].UI, typeof(RadioButton));
+                                    items1[0].IsChecked = true;
+                                }
+                                else
+                                {
+                                    List<RadioButton> items1 = FindAllControl<RadioButton>(ColorPoints[i - 1].UI, typeof(RadioButton));
+                                    items1[0].IsChecked = true;
+                                }
+                            }
+                        }
                         item.UI.OnRedraw -= ReDrawMultiPointRectangle;
                         ColorPoints.Remove(item);
                         PatternCanvas.Children.Remove(item.UI);
                         break;
                     }
+                }
+            }
+        }
+
+        private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            EffectInfo ui = SelectedEffectLine.Info;
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch != null)
+            {
+                if (toggleSwitch.IsOn == true)
+                {
+                    ui.ColorSegmentation = true;
+                }
+                else
+                {
+                    ui.ColorSegmentation = false;
                 }
             }
         }

@@ -10,25 +10,7 @@ namespace AuraEditor
 {
     public class TriggerEffect : Effect
     {
-        public override double StartTime { get; set; }
-        public override double DurationTime
-        {
-            get
-            {
-                return 1000; // 1s
-            }
-            set
-            {
-            }
-        }
-
-        public TriggerEffect(Layer layer, int effectType) : base(layer, effectType)
-        {
-            DurationTime = 1000; // 1s
-        }
-        public TriggerEffect(Layer layer, string effectName) : base(layer, effectName)
-        {
-            DurationTime = 1000; // 1s
-        }
+        public TriggerEffect(Layer layer, int effectType) : base(layer, effectType) {}
+        public TriggerEffect(Layer layer, string effectName) : base(layer, effectName) {}
     }
 }

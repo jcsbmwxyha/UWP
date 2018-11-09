@@ -237,6 +237,19 @@
                         <slot key="ALPHA" />
                     </bindToSlot>
                 </wave>
+				<wave key="1">
+                    <type>SineWave</type>
+                    <max>0.5</max>
+                    <min>0</min>
+                    <length>23</length>
+                    <freq>0.1</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>0</velocity>
+                    <bindToSlot>
+                        <slot key="LIGHTNESS" />
+                    </bindToSlot>
+                </wave>
             </waveList>
             <initColor>
                 <hue>0.3</hue>
@@ -331,6 +344,40 @@
                 <alpha>1.0</alpha>
             </initColor>
         </effect>
+        <effect key="Rainbow_Spiral">
+            <viewportTransform>
+                <rotate>
+                    <x>0</x>
+                    <y>0</y>
+                    <angle>0</angle>
+                </rotate>
+                <method key="radian">
+                    <input key="0">11</input>
+                    <input key="1">1</input>
+                </method>
+            </viewportTransform>
+            <waveList>
+                <wave key="0">
+                    <type>SawToothWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>22</length>
+                    <freq>-0.3</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>0</velocity>
+                    <bindToSlot>
+                        <slot key="HUE" />
+                    </bindToSlot>
+                </wave>
+            </waveList>
+            <initColor>
+                <hue>0.3</hue>
+                <saturation>1.0</saturation>
+                <lightness>0.5</lightness>
+                <alpha>1.0</alpha>
+            </initColor>
+        </effect>
         <effect key="Strobing">
             <viewportTransform>
                 <rotate>
@@ -352,6 +399,19 @@
                     <velocity>0</velocity>
                     <bindToSlot>
                         <slot key="LIGHTNESS" />
+                    </bindToSlot>
+                </wave>
+				<wave key="1">
+                    <type>SawtoothWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>23</length>
+                    <freq>0.8</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>0</velocity>
+                    <bindToSlot>
+                        <slot key="ALPHA" />
                     </bindToSlot>
                 </wave>
             </waveList>
@@ -1133,6 +1193,57 @@
                 <hue>Random</hue>
                 <saturation>0.8</saturation>
                 <lightness>0.65</lightness>
+                <alpha>1.0</alpha>
+            </initColor>
+        </effect>
+        <effect key="Temperature">
+            <viewportTransform>
+                <rotate>
+                    <x>0</x>
+                    <y>0</y>
+                    <angle>0</angle>
+                </rotate>
+                <method key="point" />
+            </viewportTransform>
+            <waveList>
+                <wave key="Thermal">
+                    <type>CustomStepWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>13</length>
+                    <freq>0.0</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>0</velocity>
+                    <bindToSlot>
+                        <slot key="HUE" />
+                    </bindToSlot>
+                    <customized>
+                        <node key="0">
+                            <phase>0</phase>
+                            <fx>0.33</fx>
+                        </node>
+                        <node key="1">
+                            <phase>0.40</phase>
+                            <fx>0.16</fx>
+                        </node>
+                        <node key="2">
+                            <phase>0.60</phase>
+                            <fx>0.0</fx>
+                        </node>
+                    </customized>
+                    <bindToSignal>
+                        <source>Thermal</source>
+                        <target>phase</target>
+                        <amplify>0.00314</amplify>
+                        <offset>0</offset>
+                    </bindToSignal>
+                </wave>
+            </waveList>
+            <initColor>
+                <hue>0.5</hue>
+                <saturation>1.0</saturation>
+                <lightness>0.5</lightness>
                 <alpha>1.0</alpha>
             </initColor>
         </effect>

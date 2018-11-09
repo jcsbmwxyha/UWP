@@ -1,6 +1,6 @@
 Model,GLADIUS II,,,,,,,,
 ,,,,,,,,,
 Parameters,grid_x,grid_y,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,PNG,Z_index
+LED 0,0,5,1,78,179,114,199,,2
 LED 1,0,5,1,87,46,105,82,,1
 LED 2,0,0,1,41,120,153,232,2.png,1
-LED 3,0,5,1,78,179,114,199,,2

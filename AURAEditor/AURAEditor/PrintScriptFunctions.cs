@@ -56,13 +56,12 @@ namespace AuraEditor
 
             foreach (Layer layer in LayerManager.Layers)
             {
-                double delay_accu = 0;
-
                 if (layer.Eye == false)
                     continue;
 
                 List<Effect> effCollection = new List<Effect>();
                 effCollection.AddRange(layer.TimelineEffects);
+                layer.ComputeTriggerEffStartAndDuration();
                 effCollection.AddRange(layer.TriggerEffects);
 
                 foreach (Effect eff in effCollection)
@@ -86,37 +85,21 @@ namespace AuraEditor
                         XmlNode triggerNode = CreateXmlNode("trigger");
                         triggerNode.InnerText = layer.TriggerAction.Replace(" ", "");
                         effectNode.AppendChild(triggerNode);
-
-                        XmlNode delayNode = CreateXmlNode("delay");
-                        delayNode.InnerText = delay_accu.ToString();
-                        effectNode.AppendChild(delayNode);
-
-                        XmlNode durationNode = CreateXmlNode("duration");
-                        double ledspeed = eff.Info.ActualLedSpeed;
-                        double duration;
-                        if (ledspeed == 0) // Wouldn't have speed problem, give 1s
-                            duration = 1000;
-                        else
-                            duration = (maxDistance / ledspeed) * 1000 + 100; // buffer : 100ms
-                        durationNode.InnerText = duration.ToString();
-                        effectNode.AppendChild(durationNode);
-
-                        delay_accu += duration;
                     }
                     else
                     {
                         XmlNode triggerNode = CreateXmlNode("trigger");
                         triggerNode.InnerText = "Period";
                         effectNode.AppendChild(triggerNode);
-
-                        XmlNode delayNode = CreateXmlNode("delay");
-                        delayNode.InnerText = eff.StartTime.ToString();
-                        effectNode.AppendChild(delayNode);
-
-                        XmlNode durationNode = CreateXmlNode("duration");
-                        durationNode.InnerText = eff.DurationTime.ToString();
-                        effectNode.AppendChild(durationNode);
                     }
+
+                    XmlNode delayNode = CreateXmlNode("delay");
+                    delayNode.InnerText = eff.StartTime.ToString();
+                    effectNode.AppendChild(delayNode);
+
+                    XmlNode durationNode = CreateXmlNode("duration");
+                    durationNode.InnerText = eff.DurationTime.ToString();
+                    effectNode.AppendChild(durationNode);
 
                     XmlNode layerNode = CreateXmlNode("layer");
                     layerNode.InnerText = layerCount.ToString();

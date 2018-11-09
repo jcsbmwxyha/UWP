@@ -12,6 +12,8 @@ namespace AuraEditor.Common
         Hover = 0,
         Unhover,
         Click,
+        InRegion,
+        OutRegion,
     }
     public enum RegionStatus
     {
@@ -87,7 +89,7 @@ namespace AuraEditor.Common
 
         public MouseEventCtrl()
         {
-            _pressPoint = new Point(0, 0);
+            _pressPoint = new Point(-1, -1);
             _monitorMaxRect = new Rect(new Point(0, 0), new Point(0, 0));
             beforeIndexesInMouseRegion = new List<int>();
             currentIndexesInMouseRegion = new List<int>();
@@ -162,6 +164,7 @@ namespace AuraEditor.Common
             mouseRect.Height = Math.Max(current_y, _pressPoint.Y) - Math.Min(current_y, _pressPoint.Y);
             mouseRect.X = x;
             mouseRect.Y = y;
+            MouseRect = mouseRect;
 
             // Detect intersection
             currentIndexesInMouseRegion.Clear();
@@ -176,15 +179,15 @@ namespace AuraEditor.Common
                 }
             }
 
-            // Set theory (A-B) U (B-A) : need to click 
-            List<int> needToClick = new List<int>(beforeIndexesInMouseRegion.Except(currentIndexesInMouseRegion));
-            needToClick.AddRange(currentIndexesInMouseRegion.Except(beforeIndexesInMouseRegion));
+            var leavingRegion = beforeIndexesInMouseRegion.Except(currentIndexesInMouseRegion);
+            foreach (var index in leavingRegion)
+                DetectionRegions[index].SendMouseEvent(MouseEvent.OutRegion);
 
-            foreach (var index in needToClick)
-                DetectionRegions[index].SendMouseEvent(MouseEvent.Click);
+            var newRegion = currentIndexesInMouseRegion.Except(beforeIndexesInMouseRegion);
+            foreach (var index in newRegion)
+                DetectionRegions[index].SendMouseEvent(MouseEvent.InRegion);
 
             beforeIndexesInMouseRegion = new List<int>(currentIndexesInMouseRegion);
-            MouseRect = mouseRect;
         }
         public void OnMouseReleased()
         {
@@ -202,6 +205,7 @@ namespace AuraEditor.Common
         public void OnRightTapped()
         {
         }
+
         public void MoveGroupRects(int groupIndex, double moveXOffset, double moveYOffset)
         {
             foreach (var reg in DetectionRegions)

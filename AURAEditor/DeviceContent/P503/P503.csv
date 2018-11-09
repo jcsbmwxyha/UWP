@@ -1,8 +1,6 @@
 Model,P503,,,,,,,,,
-UI_width,3,,,,,,,,,
-UI_height,5,,,,,,,,,
 ,,,,,,,,,,
 Parameters,grid_x,grid_y,exist,leftTop_x,leftTop_y,rightBottom_x,rightBottom_y,PNG,Z_index,Note
-LED 1,0,5,1,88,45,105,83,,1,Logo
-LED 2,0,0,1,41,127,153,219,2.png,1,Scroll Wheel
-LED 3,0,5,1,79,178,121,200,,1,Buttom Ring
+LED 0,0,5,1,79,178,121,200,,2,Logo
+LED 1,0,5,1,88,45,105,83,,1,Scroll Wheel
+LED 2,0,0,1,41,127,153,219,2.png,1,Buttom Ring

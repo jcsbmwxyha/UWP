@@ -132,10 +132,27 @@ namespace AuraEditor
         private Rectangle m_MouseRectangle;
         private Image m_GridImage;
         private Button m_SetLayerButton;
+        private Button m_ZoomButton;
         private MouseEventCtrl m_MouseEventCtrl;
         private DispatcherTimer m_ScrollTimerClock;
-        private int _mouseDirection;
+
         public float SpaceZoomFactor { get; private set; }
+        public void SetSpaceZoomFactor(float value)
+        {
+            float rate = value / SpaceZoomFactor;
+            SpaceZoomFactor = value;
+            m_SpaceScrollViewer.ChangeView(
+                m_SpaceScrollViewer.HorizontalOffset * rate,
+                m_SpaceScrollViewer.VerticalOffset * rate, value, true);
+        }
+        private void ZoomFactorChangedCallback(DependencyObject s, DependencyProperty e)
+        {
+            var zoomObject = m_SpaceScrollViewer.GetValue(e);
+            double zoomValue = Convert.ToDouble(zoomObject);
+            int zoomPercent = (int)(Math.Round(zoomValue, 1) * 50);
+            m_ZoomButton.Content = zoomPercent.ToString() + " %";
+            SpaceZoomFactor = (float)zoomValue;
+        }
         public List<Device> GlobalDevices;
         public int MaxOperatingGridWidth
         {
@@ -145,7 +162,7 @@ namespace AuraEditor
                 double rightmost = 0;
 
                 GlobalDevices.ForEach(d => { if (d.GridPosition.X < leftmost) { leftmost = d.GridPosition.X; } });
-                GlobalDevices.ForEach(d => { if (d.GridPosition.X + d.Width > rightmost) { rightmost = d.GridPosition.X + d.Width; } });
+                GlobalDevices.ForEach(d => { if (d.GridPosition.X + d.GridWidth > rightmost) { rightmost = d.GridPosition.X + d.GridWidth; } });
 
                 return (int)(rightmost - leftmost);
             }
@@ -158,7 +175,7 @@ namespace AuraEditor
                 double bottom = 0;
 
                 GlobalDevices.ForEach(d => { if (d.GridPosition.Y < top) { top = d.GridPosition.Y; } });
-                GlobalDevices.ForEach(d => { if (d.GridPosition.Y + d.Height > bottom) { bottom = d.GridPosition.Y + d.Height; } });
+                GlobalDevices.ForEach(d => { if (d.GridPosition.Y + d.GridHeight > bottom) { bottom = d.GridPosition.Y + d.GridHeight; } });
 
                 return (int)(bottom - top);
             }
@@ -168,12 +185,14 @@ namespace AuraEditor
         {
             Self = this;
             m_SpaceScrollViewer = MainPage.Self.SpaceAreaScrollViewer;
+            m_SpaceScrollViewer.RegisterPropertyChangedCallback(ScrollViewer.ZoomFactorProperty, (s, e) => ZoomFactorChangedCallback(s, e));
             m_GridImage = MainPage.Self.GridImage;
             m_SpaceCanvas = MainPage.Self.SpaceAreaCanvas;
             //m_SpaceCanvas.Width = m_GridImage.ActualWidth;
             //m_SpaceCanvas.Height = m_GridImage.ActualHeight;
             m_MouseRectangle = MainPage.Self.MouseRectangle;
             m_SetLayerButton = MainPage.Self.SetLayerButton;
+            m_ZoomButton = MainPage.Self.SpaceZoomButton;
             m_MouseEventCtrl = IntializeMouseEventCtrl();
             m_ScrollTimerClock = InitializeScrollTimer();
             _mouseDirection = 0;
@@ -181,6 +200,7 @@ namespace AuraEditor
 
             GlobalDevices = new List<Device>();
             SetSpaceStatus(SpaceStatus.Normal);
+
         }
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
@@ -202,67 +222,7 @@ namespace AuraEditor
 
             return timerClock;
         }
-        private void Timer_Tick(object sender, object e)
-        {
-            int offset = 10;
-            if (_mouseDirection == 1)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset - offset,
-                    m_SpaceScrollViewer.VerticalOffset - offset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 2)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset,
-                    m_SpaceScrollViewer.VerticalOffset - offset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 3)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset + offset,
-                    m_SpaceScrollViewer.VerticalOffset - offset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 4)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset - offset,
-                    m_SpaceScrollViewer.VerticalOffset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 5) { }
-            else if (_mouseDirection == 6)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset + offset,
-                    m_SpaceScrollViewer.VerticalOffset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 7)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset - offset,
-                    m_SpaceScrollViewer.VerticalOffset + offset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 8)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset,
-                    m_SpaceScrollViewer.VerticalOffset + offset,
-                    SpaceZoomFactor, true);
-            }
-            else if (_mouseDirection == 9)
-            {
-                m_SpaceScrollViewer.ChangeView(
-                    m_SpaceScrollViewer.HorizontalOffset + offset,
-                    m_SpaceScrollViewer.VerticalOffset + offset,
-                    SpaceZoomFactor, true);
-            }
-        }
+
         public void RefreshSpaceGrid()
         {
             List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
@@ -295,12 +255,6 @@ namespace AuraEditor
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
             UnselectAllZones();
         }
-        public void Clean()
-        {
-            IntializeMouseEventCtrl();
-            GlobalDevices.Clear();
-            SetSpaceStatus(SpaceStatus.Normal);
-        }
         private void SortByZIndex(LightZone[] zones)
         {
             int count = zones.Length;
@@ -318,6 +272,12 @@ namespace AuraEditor
                     }
                 }
             }
+        }
+        public void Clean()
+        {
+            IntializeMouseEventCtrl();
+            GlobalDevices.Clear();
+            SetSpaceStatus(SpaceStatus.Normal);
         }
         public void MoveDeviceMousePosition(Device device, double offsetX, double offsetY)
         {
@@ -374,8 +334,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.Width, d.GridPosition.X, d.Width) &&
-                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.Height, d.GridPosition.Y, d.Height))
+                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     GlobalDevices.Remove(d);
                     AuraLayerManager.Self.ClearTypeData(d.Type);
@@ -424,8 +384,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.Width, d.GridPosition.X, d.Width) &&
-                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.Height, d.GridPosition.Y, d.Height))
+                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     return true;
                 }
@@ -441,18 +401,18 @@ namespace AuraEditor
             else
             {
                 return GetFreeRoomPositionForRect(new Rect(
-                    overlappingDevice.GridPosition.X + overlappingDevice.Width,
+                    overlappingDevice.GridPosition.X + overlappingDevice.GridWidth,
                     overlappingDevice.GridPosition.Y,
-                    overlappingDevice.Width,
-                    overlappingDevice.Height));
+                    overlappingDevice.GridWidth,
+                    overlappingDevice.GridHeight));
             }
         }
         private Device GetFirstOverlappingDevice(Rect gridRect)
         {
             foreach (var d in GlobalDevices)
             {
-                if (ControlHelper.IsOverlapping(gridRect.X, gridRect.Width, d.GridPosition.X, d.Width) &&
-                    ControlHelper.IsOverlapping(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.Height))
+                if (ControlHelper.IsOverlapping(gridRect.X, gridRect.Width, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsOverlapping(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.GridHeight))
                 {
                     return d;
                 }
@@ -547,37 +507,81 @@ namespace AuraEditor
         {
             SetSpaceStatus(SpaceStatus.Normal);
         }
-        public void SpaceZoomChanged(string value)
-        {
-            switch (value)
-            {
-                case "25 %":
-                    m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 0.5f, true);
-                    SpaceZoomFactor = 0.5f;
-                    break;
-                case "50 %":
-                    m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 1f, true);
-                    SpaceZoomFactor = 1f;
-                    break;
-                case "75 %":
-                    m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 1.5f, true);
-                    SpaceZoomFactor = 1.5f;
-                    break;
-                case "100 %":
-                    m_SpaceScrollViewer.ChangeView(m_SpaceScrollViewer.HorizontalOffset,
-                        m_SpaceScrollViewer.VerticalOffset, 2, true);
-                    SpaceZoomFactor = 2;
-                    break;
-            }
-        }
         #endregion
 
         #region Mouse Operations
+        public bool PressShift;
+        public bool PressCtrl;
+        private int _mouseDirection;
+
+        private void Timer_Tick(object sender, object e)
+        {
+            int offset = 10;
+            if (_mouseDirection == 1)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 2)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 3)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset - offset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 4)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 5) { }
+            else if (_mouseDirection == 6)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 7)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - offset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 8)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    SpaceZoomFactor, true);
+            }
+            else if (_mouseDirection == 9)
+            {
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset + offset,
+                    m_SpaceScrollViewer.VerticalOffset + offset,
+                    SpaceZoomFactor, true);
+            }
+        }
         private void SpaceGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            PressShift = MainPage.Self.g_PressShift;
+            PressCtrl = MainPage.Self.g_PressCtrl;
+            if (!PressShift && !PressCtrl)
+                UnselectAllZones();
+
             if (GetSpaceStatus() == SpaceStatus.WatchingLayer)
             {
                 SetSpaceStatus(SpaceStatus.Normal);

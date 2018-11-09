@@ -547,9 +547,9 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Source="Assets/EffectInfoGroup/asus_gc_list_divider_l.png" Stretch="Fill"/>
-                    <Image Grid.Column="1" Source="Assets/EffectInfoGroup/asus_gc_list_divider_mid.png" Stretch="Fill"/>
-                    <Image Grid.Column="2" Source="Assets/EffectInfoGroup/asus_gc_list_divider_r.png" Stretch="Fill"/>
+                    <Image Grid.Column="0" Source="../Assets/EffectInfoGroup/asus_gc_list_divider_l.png" Stretch="Fill"/>
+                    <Image Grid.Column="1" Source="../Assets/EffectInfoGroup/asus_gc_list_divider_mid.png" Stretch="Fill"/>
+                    <Image Grid.Column="2" Source="../Assets/EffectInfoGroup/asus_gc_list_divider_r.png" Stretch="Fill"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="1">

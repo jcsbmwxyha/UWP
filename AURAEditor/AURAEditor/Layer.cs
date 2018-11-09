@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Math2;
 using AuraEditor.UserControls;
 using System.ComponentModel;
 using System.Xml;
@@ -151,6 +152,7 @@ namespace AuraEditor
         {
             UICanvas.MyCanvas.Children.Remove(el);
             TimelineEffects.Remove(el.DataContext as TimelineEffect);
+            MainPage.Self.SelectedEffectLine = null;
         }
         public void PushAllEffectsWhichOnTheRight(TimelineEffect effect, double move)
         {
@@ -253,12 +255,16 @@ namespace AuraEditor
         {
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
+                e.DragUIOverride.IsCaptionVisible = false;
+                e.DragUIOverride.IsGlyphVisible = false;
                 var effectname = await e.DataView.GetTextAsync();
 
                 if (!IsCommonEffect(effectname))
                     e.AcceptedOperation = DataPackageOperation.None;
                 else
+                {
                     e.AcceptedOperation = DataPackageOperation.Copy;
+                }
             }
         }
         private async void Canvas_Drop(object sender, DragEventArgs e)
@@ -270,10 +276,36 @@ namespace AuraEditor
 
                 TimelineEffect effect = new TimelineEffect(this, type);
                 AddTimelineEffect(effect);
+                MainPage.Self.SelectedEffectLine = effect;
                 MainPage.Self.NeedSave = true;
             }
         }
 
+        public void ComputeTriggerEffStartAndDuration()
+        {
+            double delay_accu = 0;
+            double duration = 0;
+            int width = AuraSpaceManager.Self.MaxOperatingGridWidth;
+            int height = AuraSpaceManager.Self.MaxOperatingGridHeight;
+            double angle = 0;
+            double length = MaxOperatingLength(width, height, angle);
+            double ledSpeed = 0;
+
+            foreach (var eff in TriggerEffects)
+            {
+                if (GetEffectName(eff.Type) == "Reactive") // No speed problem, give 1 second
+                    duration = 1000;
+                else
+                {
+                    ledSpeed = EffectInfo.GetLedSpeed(eff.Type, eff.Info.Speed);
+                    duration = (length / ledSpeed) * 1000 + 100; // buffer : 100ms
+                }
+
+                eff.StartTime = delay_accu;
+                eff.DurationTime = duration;
+                delay_accu += duration;
+            }
+        }
         public XmlNode ToXmlNodeForScript()
         {
             List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;

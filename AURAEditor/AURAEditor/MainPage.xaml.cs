@@ -52,12 +52,42 @@ namespace AuraEditor
         public double _preAngle;
         Point AngleImgCenter;
 
+        #region Key Up & Down
+        public bool g_PressShift;
+        public bool g_PressCtrl;
+        private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+        {
+            if (args.VirtualKey == Windows.System.VirtualKey.Shift)
+            {
+                g_PressShift = true;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.Control)
+            {
+                g_PressCtrl = true;
+            }
+        }
+        private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
+        {
+            if (args.VirtualKey == Windows.System.VirtualKey.Shift)
+            {
+                g_PressShift = false;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.Control)
+            {
+                g_PressCtrl = false;
+            }
+        }
+        #endregion
         public ConnectedDevicesDialog connectedDevicesDialog;
 
         public MainPage()
         {
             _instance = this;
             this.InitializeComponent();
+            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+            Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+            g_PressShift = false;
+            g_PressCtrl = false;
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
 
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
@@ -185,7 +215,7 @@ namespace AuraEditor
         {
             Layer layer = e.Items[0] as Layer;
             e.Data.Properties.Add("layer", layer);
-            //e.Data.RequestedOperation = DataPackageOperation.Copy;
+
             if (layer != null)
             {
 
@@ -195,6 +225,9 @@ namespace AuraEditor
         {
             if (e.Data == null)
                 return;
+
+            e.DragUIOverride.IsCaptionVisible = false;
+            e.DragUIOverride.IsGlyphVisible = false;
 
             var pair = e.Data.Properties.FirstOrDefault();
             Layer layer = pair.Value as Layer;
@@ -303,19 +336,11 @@ namespace AuraEditor
         private void SpaceZoom_Click(object sender, RoutedEventArgs e)
         {
             var item = sender as MenuFlyoutItem;
-            string itemName = item.Name;
+            string itemText = item.Text;
+            SpaceZoomButton.Content = itemText;
 
-            switch (itemName)
-            {
-                case "Zoom_0":
-                    SpaceManager.SpaceZoomChanged("25 %"); SpaceZoomButton.Content = "25 %"; break;
-                case "Zoom_50":
-                    SpaceManager.SpaceZoomChanged("50 %"); SpaceZoomButton.Content = "50 %"; break;
-                case "Zoom_75":
-                    SpaceManager.SpaceZoomChanged("75 %"); SpaceZoomButton.Content = "75 %"; break;
-                case "Zoom_100":
-                    SpaceManager.SpaceZoomChanged("100 %"); SpaceZoomButton.Content = "100 %"; break;
-            }
+            float itemValue = float.Parse(itemText.Replace(" %", ""));
+            SpaceManager.SetSpaceZoomFactor(itemValue / 50);
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)

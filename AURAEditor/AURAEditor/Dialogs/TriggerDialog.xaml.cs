@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Math2;
 using System.Threading.Tasks;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
@@ -164,11 +165,6 @@ namespace AuraEditor.Dialogs
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < m_EffectList.Count; i++)
-            {
-                m_EffectList[i].StartTime = i * 1000;
-            }
-
             m_DeviceLayer.TriggerEffects = m_EffectList.ToList();
             this.Hide();
         }
