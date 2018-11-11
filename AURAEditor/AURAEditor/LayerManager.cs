@@ -19,9 +19,10 @@ namespace AuraEditor
     {
         static public AuraLayerManager Self;
 
-        private StackPanel m_TimelineStackPanel;
-        private Canvas m_TimelineScaleCanvas;
         private ListView m_LayerListView;
+        private StackPanel m_TrackStackPanel;
+        private StackPanel m_BackgroundStackPanel;
+        private Canvas m_TimelineScaleCanvas;
 
         public ObservableCollection<Layer> Layers { get; set; }
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
@@ -48,7 +49,8 @@ namespace AuraEditor
         public AuraLayerManager()
         {
             Self = this;
-            m_TimelineStackPanel = MainPage.Self.TrackStackPanel;
+            m_TrackStackPanel = MainPage.Self.TrackStackPanel;
+            m_BackgroundStackPanel = MainPage.Self.BackgroundStackPanel;
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
             m_LayerListView = MainPage.Self.LayerListView;
 
@@ -60,21 +62,22 @@ namespace AuraEditor
         public void AddLayer(Layer layer)
         {
             Layers.Add(layer);
-            //m_TimelineStackPanel.Children.Add(layer.UICanvas);
         }
         public void RemoveLayer(Layer layer)
         {
             Layers.Remove(layer);
-            //m_TimelineStackPanel.Children.Remove(layer.UICanvas);
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            m_TimelineStackPanel.Children.Clear();
+            m_LayerListView.ItemsSource = Layers;
+            m_TrackStackPanel.Children.Clear();
+            m_BackgroundStackPanel.Children.Clear();
 
             for (int i = 0; i < Layers.Count; i++)
             {
                 Layers[i].Name = "Layer " + (i + 1).ToString();
-                m_TimelineStackPanel.Children.Add(Layers[i].UICanvas);
+                m_TrackStackPanel.Children.Add(Layers[i].UI_Track);
+                m_BackgroundStackPanel.Children.Add(Layers[i].UI_Background);
             }
 
             // TODO : Use MVVM instead of Update()
@@ -118,7 +121,7 @@ namespace AuraEditor
         }
         public void Clean()
         {
-            m_TimelineStackPanel.Children.Clear();
+            m_TrackStackPanel.Children.Clear();
             Layers.Clear();
         }
         public void ClearTypeData(int deviceType)

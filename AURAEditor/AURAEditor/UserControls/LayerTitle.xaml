@@ -178,56 +178,23 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
-            <BitmapImage x:Key="LayerBg_l_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_h.png"/>
-            <BitmapImage x:Key="LayerBg_m_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_h.png"/>
-            <BitmapImage x:Key="LayerBg_l_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_s.png"/>
-            <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <!--Background is used to drag easily--> 
+    <!--Background is used to drag easily-->
     <Grid Name="MyGrid" Width="250" Height="50" Background="#01000000"
           PointerEntered="MyGrid_PointerEntered"
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal">
-                </VisualState>
-                <VisualState x:Name="PointerOver">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_h}"/>
-                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="CheckedPointerOver">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
-                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Checked">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Head.Source" Value="{ThemeResource LayerBg_l_s}"/>
-                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
             <VisualStateGroup x:Name="TriggerStates">
                 <VisualState x:Name="NoTrigger">
                     <VisualState.Setters>
-                        <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
                         <Setter Target="TriggerStatusOnButton.Visibility" Value="Collapsed"/>
                         <Setter Target="TriggerStatusOffButton.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Trigger">
                     <VisualState.Setters>
-                        <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
                         <Setter Target="TriggerStatusOnButton.Visibility" Value="Visible"/>
                         <Setter Target="TriggerStatusOffButton.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
@@ -235,15 +202,11 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <!-- Use it to uncheck other layers-->
-        <RadioButton Name="LayerRadioButton" GroupName="GroupLayer"
-                     Checked="LayerRadioButton_Checked"
-                     Unchecked="LayerRadioButton_Unchecked"/>
-        <Image Name="LayerBg_Head" Grid.Column="0" Height="50" Stretch="Fill" VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Mid" Grid.Column="1" Stretch="Fill" VerticalAlignment="Center"/>
-        <Image Name="Triggerline_head" Grid.Column="1" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed"
-               Source="ms-appx:///Assets/Layer/asus_ac_triggerline_head.png"/>
+        
         <RelativePanel Grid.Column="1" VerticalAlignment="Center">
+            <!-- Use it to uncheck other layers-->
+            <RadioButton Name="LayerRadioButton" GroupName="GroupLayer" Visibility="Collapsed"
+                     Checked="LayerRadioButton_Checked" Unchecked="LayerRadioButton_Unchecked"/>
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
                           Click="EyeToggleButton_Click" IsChecked="True" Style="{StaticResource EyeToggleButtonStyle}"/>
             <TextBlock Name="LayerNameTextBlock" Text="{x:Bind m_Layer.Name}" RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>

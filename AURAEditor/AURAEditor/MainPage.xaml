@@ -1636,20 +1636,36 @@
                        RelativePanel.AlignRightWithPanel="True"
                        Foreground="White"/>
         </RelativePanel>
-        <ScrollViewer Name="LayerScrollViewer"
+        
+        <!-- Layer Structure-->
+        <ScrollViewer Name="IconScrollViewer" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Canvas.ZIndex="6"
+                      HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
+                      ViewChanged="IconScrollViewer_ViewChanged" Visibility="Collapsed">
+            <Canvas Name="IconCanvas" Width="5000"
+                    VerticalAlignment="Top">
+                <Image Source="Assets/Layer/asus_auraeditor_timeline_ic.png" HorizontalAlignment="Left" Margin="-7,0,0,0">
+                    <Image.RenderTransform>
+                        <TranslateTransform x:Name="IconTranslateTransform"/>
+                    </Image.RenderTransform>
+                </Image>
+            </Canvas>
+        </ScrollViewer>
+        <ScrollViewer Name="ScaleScrollViewer" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+            <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000"/>
+        </ScrollViewer>
+        <ScrollViewer Name="TitleScrollViewer"
                       Grid.Column="0"
                       Grid.Row="3"
                       VerticalScrollMode="Enabled"
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalAlignment="Left"
                       ViewChanged="TitleScrollViewer_ViewChanged">
-            <ListView x:Name="LayerListView" x:FieldModifier="Public"
-                      CanReorderItems="True" CanDragItems="True" AllowDrop="True" DragItemsStarting="LayerListView_DragItemsStarting"
-                      ItemsSource="{x:Bind LayerManager.Layers}"
-                      SelectionMode="Extended"
-                      HorizontalAlignment="Left">
+            <ListView x:Name="LayerListView" x:FieldModifier="Public" HorizontalAlignment="Left"
+                      CanReorderItems="True" CanDragItems="True" AllowDrop="True" SelectionMode="Extended"
+                      DragItemsStarting="LayerListView_DragItemsStarting">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:Layer">
+                    <DataTemplate>
                         <usercontrol:LayerTitle HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -1821,28 +1837,16 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </ScrollViewer>
-        <ScrollViewer Name="IconScrollViewer" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Canvas.ZIndex="6"
-                      HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
-                      ViewChanged="IconScrollViewer_ViewChanged" Visibility="Collapsed">
-            <Canvas Name="IconCanvas" Width="5000"
-                    VerticalAlignment="Top">
-                <Image Source="Assets/Layer/asus_auraeditor_timeline_ic.png" HorizontalAlignment="Left" Margin="-7,0,0,0">
-                    <Image.RenderTransform>
-                        <TranslateTransform x:Name="IconTranslateTransform"/>
-                    </Image.RenderTransform>
-                </Image>
-            </Canvas>
-        </ScrollViewer>
-        <ScrollViewer Name="ScaleScrollViewer" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-            <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000"/>
-        </ScrollViewer>
-        <ScrollViewer Name="TrackScrollViewer"
-                      Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Canvas.ZIndex="2"
+        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged">
             <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
         </ScrollViewer>
+        <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="-1" HorizontalAlignment="Left"
+                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Name="BackgroundStackPanel" x:FieldModifier="public"/>
+        </ScrollViewer>
+        
         <Grid Grid.Column="0" Grid.Row="4">
             <Button x:Name="TrashCanButton" Style="{StaticResource DeleteButtonStyle}"
                     Click="TrashCanButton_Click" DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"

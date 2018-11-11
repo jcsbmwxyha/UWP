@@ -11,6 +11,9 @@ using static AuraEditor.Common.Math2;
 using AuraEditor.UserControls;
 using System.ComponentModel;
 using System.Xml;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
+using Windows.UI.Xaml.Input;
 
 namespace AuraEditor
 {
@@ -44,8 +47,11 @@ namespace AuraEditor
 
         public List<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
-        public LayerCanvas UICanvas;
+
+        public LayerTitle UI_Title;
         public bool Eye { get; set; }
+        public Canvas UI_Track;
+        public LayerBackground UI_Background;
 
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()
@@ -63,32 +69,34 @@ namespace AuraEditor
 
         public Layer(string name = "")
         {
-            Name = name;
             TimelineEffects = new List<TimelineEffect>();
             TriggerEffects = new List<TriggerEffect>();
-            UICanvas = new LayerCanvas();
-            UICanvas.Width = 5000;
-            UICanvas.Height = 50;
-            UICanvas.MyCanvas.DragOver += Canvas_DragOver;
-            UICanvas.MyCanvas.Drop += Canvas_Drop;
-            m_ZoneDictionary = new Dictionary<int, int[]>();
+
+            Name = name;
             Eye = true;
-            TriggerAction = "One Click";
-        }
-        private Canvas CreateUICanvas()
-        {
-            Thickness margin = new Thickness(0, 3, 0, 3);
-            Canvas canvas = new Canvas
+            UI_Title = new LayerTitle
+            {
+                DataContext = this
+            };
+            UI_Track = new Canvas
             {
                 Width = 5000,
-                Height = 44,
-                Margin = margin
+                Height = 50,
+                Background = new SolidColorBrush(Colors.Transparent),
+                VerticalAlignment = VerticalAlignment.Center,
+                AllowDrop = true,
+            };
+            UI_Track.PointerEntered += Track_PointerEntered;
+            UI_Track.DragOver += Track_DragOver;
+            UI_Track.Drop += Track_Drop;
+            UI_Background = new LayerBackground
+            {
+                Width = 2000,
+                Height = 50
             };
 
-            canvas.DragOver += Canvas_DragOver;
-            canvas.Drop += Canvas_Drop;
-
-            return canvas;
+            m_ZoneDictionary = new Dictionary<int, int[]>();
+            TriggerAction = "One Click";
         }
 
         public void AddDeviceZones(Dictionary<int, int[]> dictionary)
@@ -120,7 +128,7 @@ namespace AuraEditor
         public void AddTimelineEffect(TimelineEffect effect)
         {
             TimelineEffects.Add(effect);
-            UICanvas.AddElement(effect.UI);
+            UI_Track.Children.Add(effect.UI);
             AnimationStart(effect.UI, "Opacity", 300, 0, 1);
         }
 
@@ -150,7 +158,7 @@ namespace AuraEditor
         }
         public void DeleteEffectLine(EffectLine el)
         {
-            UICanvas.MyCanvas.Children.Remove(el);
+            UI_Track.Children.Remove(el);
             TimelineEffects.Remove(el.DataContext as TimelineEffect);
             MainPage.Self.SelectedEffectLine = null;
         }
@@ -251,7 +259,10 @@ namespace AuraEditor
                 UI_2.X, UI_2.Width);
         }
 
-        private async void Canvas_DragOver(object sender, DragEventArgs e)
+        private void Track_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+        }
+        private async void Track_DragOver(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
@@ -267,7 +278,7 @@ namespace AuraEditor
                 }
             }
         }
-        private async void Canvas_Drop(object sender, DragEventArgs e)
+        private async void Track_Drop(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.Text))
             {

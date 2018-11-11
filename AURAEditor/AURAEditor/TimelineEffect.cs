@@ -70,7 +70,7 @@ namespace AuraEditor
             };
 
             CompositeTransform ct = el.RenderTransform as CompositeTransform;
-            ct.TranslateY = 5;
+            ct.TranslateY = 8;
 
             return el;
         }

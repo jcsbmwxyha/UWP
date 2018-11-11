@@ -169,8 +169,8 @@
     <Compile Include="UserControls\EffectBlock.xaml.cs">
       <DependentUpon>EffectBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\LayerCanvas.xaml.cs">
-      <DependentUpon>LayerCanvas.xaml</DependentUpon>
+    <Compile Include="UserControls\LayerBackground.xaml.cs">
+      <DependentUpon>LayerBackground.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
@@ -621,7 +621,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\LayerCanvas.xaml">
+    <Page Include="UserControls\LayerBackground.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

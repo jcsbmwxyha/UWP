@@ -159,21 +159,23 @@ namespace AuraEditor
             AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
         }
 
-        private void TrackScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            ScrollViewer sv = sender as ScrollViewer;
-            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
-        }
         private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
             TrackScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            BackgroundScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+        }
+        private void TrackScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            TitleScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            BackgroundScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
         private void IconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
-            LayerScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
+            TitleScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             TrackScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
             ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
@@ -186,7 +188,7 @@ namespace AuraEditor
         {
             TrackScrollViewer.ChangeView(0, 0, null, true);
             ScaleScrollViewer.ChangeView(0, null, null, true);
-            LayerScrollViewer.ChangeView(null, 0, null, true);
+            TitleScrollViewer.ChangeView(null, 0, null, true);
             IconScrollViewer.ChangeView(0, 0, null, true);
         }
     }

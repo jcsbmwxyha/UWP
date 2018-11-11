@@ -158,6 +158,8 @@ namespace AuraEditor.UserControls
             _isPressed = true;
             if (mouseState == CursorState.SizeAll)
                 _allPosition = e.Position.X;
+            this.Opacity = 0.5;
+            this.SetValue(Canvas.ZIndexProperty, 3);
         }
         private void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -219,6 +221,8 @@ namespace AuraEditor.UserControls
             MyEffect.Layer.InsertEffectLine(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
+            this.Opacity = 1;
+            this.SetValue(Canvas.ZIndexProperty, 0);
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
@@ -230,8 +234,8 @@ namespace AuraEditor.UserControls
             if (_isPressed)
             {
                 // Getting ScrollViewer is speculative, but it do the trick.
-                m_ScrollViewer = FindParentControl<ScrollViewer>(MyEffect.Layer.UICanvas, typeof(ScrollViewer));
-                Point position2 = e.GetCurrentPoint(MyEffect.Layer.UICanvas).Position;
+                m_ScrollViewer = FindParentControl<ScrollViewer>(MyEffect.Layer.UI_Track, typeof(ScrollViewer));
+                Point position2 = e.GetCurrentPoint(MyEffect.Layer.UI_Track).Position;
 
                 Rect screenRect = new Rect(
                     m_ScrollViewer.HorizontalOffset,

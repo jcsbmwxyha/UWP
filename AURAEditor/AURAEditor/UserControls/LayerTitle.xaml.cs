@@ -68,12 +68,12 @@ namespace AuraEditor.UserControls
 
             if (m_Layer.TriggerEffects.Count != 0)
             {
-                m_Layer.UICanvas.GoToState("Trigger");
+                m_Layer.UI_Background.GoToState("Trigger");
                 VisualStateManager.GoToState(this, "Trigger", false);
             }
             else
             {
-                m_Layer.UICanvas.GoToState("NoTrigger");
+                m_Layer.UI_Background.GoToState("NoTrigger");
                 VisualStateManager.GoToState(this, "NoTrigger", false);
             }
 
@@ -87,19 +87,19 @@ namespace AuraEditor.UserControls
             if (LayerRadioButton.IsChecked == true)
             {
                 VisualStateManager.GoToState(this, "Checked", false);
-                m_Layer.UICanvas.GoToState("Checked");
+                m_Layer.UI_Background.GoToState("Checked");
             }
             else
             {
                 VisualStateManager.GoToState(this, "Normal", false);
-                m_Layer.UICanvas.GoToState("Normal");
+                m_Layer.UI_Background.GoToState("Normal");
             }
             AuraSpaceManager.Self.WatchCurrentLayer();
         }
         private void LayerRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "Normal", false);
-            m_Layer.UICanvas.GoToState("Normal");
+            m_Layer.UI_Background.GoToState("Normal");
         }
 
         private void MyGrid_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -111,12 +111,12 @@ namespace AuraEditor.UserControls
             if (LayerRadioButton.IsChecked == true)
             {
                 VisualStateManager.GoToState(this, "CheckedPointerOver", false);
-                m_Layer.UICanvas.GoToState("CheckedPointerOver");
+                m_Layer.UI_Background.GoToState("CheckedPointerOver");
             }
             else
             {
                 VisualStateManager.GoToState(this, "PointerOver", false);
-                m_Layer.UICanvas.GoToState("PointerOver");
+                m_Layer.UI_Background.GoToState("PointerOver");
             }
         }
         private void MyGrid_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -124,12 +124,12 @@ namespace AuraEditor.UserControls
             if (LayerRadioButton.IsChecked == true)
             {
                 VisualStateManager.GoToState(this, "Checked", false);
-                m_Layer.UICanvas.GoToState("Checked");
+                m_Layer.UI_Background.GoToState("Checked");
             }
             else
             {
                 VisualStateManager.GoToState(this, "Normal", false);
-                m_Layer.UICanvas.GoToState("Normal");
+                m_Layer.UI_Background.GoToState("Normal");
             }
         }
         #endregion

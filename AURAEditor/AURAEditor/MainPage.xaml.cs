@@ -114,8 +114,6 @@ namespace AuraEditor
             AngleImgCenter = new Point(40, 40);
             _preAngle = 0;
             AngleTextBox.Text = "0";
-
-            Bindings.Update();
         }
 
         private async void InitializeDragEffectIcon()

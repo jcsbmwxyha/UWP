@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="AuraEditor.UserControls.LayerCanvas"
+    x:Class="AuraEditor.UserControls.LayerBackground"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor.UserControls"
@@ -8,10 +8,13 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    
     <UserControl.Resources>
         <ResourceDictionary>
+            <BitmapImage x:Key="LayerBg_l_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_h.png"/>
             <BitmapImage x:Key="LayerBg_m_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_h.png"/>
             <BitmapImage x:Key="LayerBg_r_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_h.png"/>
+            <BitmapImage x:Key="LayerBg_l_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_s.png"/>
             <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
             <BitmapImage x:Key="LayerBg_r_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_s.png"/>
         </ResourceDictionary>
@@ -22,53 +25,64 @@
                 <VisualState x:Name="Normal"/>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
+                        <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_h}"/>
                         <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_h}"/>
+                        <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_r_h}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                     <VisualState.Setters>
+                        <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_s}"/>
                         <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_s}"/>
+                        <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_r_s}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Checked">
                     <VisualState.Setters>
+                        <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_s}"/>
                         <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
-                        <Setter Target="LayerBg_Tail.Source" Value="{ThemeResource LayerBg_r_s}"/>
+                        <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_r_s}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
             <VisualStateGroup x:Name="TriggerStates">
                 <VisualState x:Name="NoTrigger">
                     <VisualState.Setters>
+                        <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
                         <Setter Target="Triggerline_body.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Trigger">
                     <VisualState.Setters>
+                        <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
                         <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
+
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="249"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="1"/>
         </Grid.ColumnDefinitions>
 
-        <Image Name="LayerBg_Mid"
+        <Image Name="LayerBg_Left"
                Grid.Column="0"
                Stretch="Fill"
                VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Tail"
-               Grid.Column="1"
+        <Image Name="LayerBg_Mid"
+               Grid.Column="1" Grid.ColumnSpan="2"
                Stretch="Fill"
                VerticalAlignment="Center"/>
-        <Image Name="Triggerline_body" Grid.ColumnSpan="2" Height="10" Stretch="Fill" Visibility="Collapsed"
+        <Image Name="LayerBg_Right"
+               Grid.Column="3"
+               Stretch="Fill"
+               VerticalAlignment="Center"/>
+        <Image Name="Triggerline_head" Grid.Column="1" Height="10" Visibility="Collapsed"
+               HorizontalAlignment="Right" VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_head.png"/>
+        <Image Name="Triggerline_body" Grid.Column="2" Height="10" Stretch="Fill" Visibility="Collapsed"
                VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_body.png"/>
-        <Canvas Name="MyCanvas" Grid.ColumnSpan="2" HorizontalAlignment="Left" AllowDrop="True" Background="Transparent"
-                Width="5000" Height="44" x:FieldModifier="public"/>
     </Grid>
 </UserControl>
