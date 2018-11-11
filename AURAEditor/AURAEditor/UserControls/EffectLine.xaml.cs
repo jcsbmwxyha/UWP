@@ -196,7 +196,7 @@ namespace AuraEditor.UserControls
                 Width -= move;
             }
         }
-        private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private async void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             double keepWidth;
             _isPressed = false;
@@ -218,7 +218,7 @@ namespace AuraEditor.UserControls
                 X = RoundToTens(X);
             }
 
-            MyEffect.Layer.InsertEffectLine(MyEffect);
+            await MyEffect.Layer.InsertEffectLine(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;

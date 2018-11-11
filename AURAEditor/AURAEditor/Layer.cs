@@ -14,9 +14,16 @@ using System.Xml;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using Windows.UI.Xaml.Input;
+using System.Threading.Tasks;
 
 namespace AuraEditor
 {
+    public enum LayerVisualStatus
+    {
+        Normal = 0,
+        Hover,
+        Selected,
+    }
     public class Layer : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -53,6 +60,9 @@ namespace AuraEditor
         public Canvas UI_Track;
         public LayerBackground UI_Background;
 
+        public LayerVisualStatus Status;
+        public bool IsTrigger;
+
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()
         {
@@ -83,8 +93,8 @@ namespace AuraEditor
                 Width = 5000,
                 Height = 50,
                 Background = new SolidColorBrush(Colors.Transparent),
-                VerticalAlignment = VerticalAlignment.Center,
                 AllowDrop = true,
+                DataContext = this,
             };
             UI_Track.PointerEntered += Track_PointerEntered;
             UI_Track.DragOver += Track_DragOver;
@@ -92,7 +102,8 @@ namespace AuraEditor
             UI_Background = new LayerBackground
             {
                 Width = 2000,
-                Height = 50
+                Height = 50,
+                DataContext = this,
             };
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
@@ -132,7 +143,7 @@ namespace AuraEditor
             AnimationStart(effect.UI, "Opacity", 300, 0, 1);
         }
 
-        public async void InsertEffectLine(TimelineEffect insertedEL)
+        public async Task InsertEffectLine(TimelineEffect insertedEL)
         {
             TimelineEffect overlappedEL = TestAndGetFirstOverlappingEffect(insertedEL);
 
@@ -152,7 +163,7 @@ namespace AuraEditor
                     double target = source + overUI.Right - inUI.X;
 
                     await AnimationStartAsync(inUI.RenderTransform, "TranslateX", 200, source, target);
-                    InsertEffectLine(insertedEL);
+                    await InsertEffectLine(insertedEL);
                 }
             }
         }

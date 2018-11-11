@@ -9,7 +9,11 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
-
-    </Grid>
+    <Canvas Name="Track" Width="5000" Height="50" Background="Transparent" AllowDrop="True"
+            DragOver="Track_DragOver"
+            Drop="Track_Drop"
+            PointerPressed="Track_PointerPressed"
+            PointerEntered="Track_PointerEntered"
+            PointerExited="Track_PointerExited">
+    </Canvas>
 </UserControl>

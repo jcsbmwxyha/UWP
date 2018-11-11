@@ -17,9 +17,6 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
-        private void Track_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-        }
         private async void Track_DragOver(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.Text))
@@ -43,12 +40,22 @@ namespace AuraEditor.UserControls
                 var effectname = await e.DataView.GetTextAsync();
                 int type = GetEffectIndex(effectname);
 
-                TimelineEffect effect = new TimelineEffect(this, type);
+                TimelineEffect effect = new TimelineEffect(m_Layer, type);
                 m_Layer.AddTimelineEffect(effect);
                 MainPage.Self.SelectedEffectLine = effect;
                 MainPage.Self.NeedSave = true;
             }
         }
+        private void Track_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
 
+        }
+        private void Track_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+        }
+        private void Track_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
     }
 }

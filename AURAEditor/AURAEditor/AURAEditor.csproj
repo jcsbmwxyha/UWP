@@ -172,6 +172,9 @@
     <Compile Include="UserControls\LayerBackground.xaml.cs">
       <DependentUpon>LayerBackground.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\LayerTrack.xaml.cs">
+      <DependentUpon>LayerTrack.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
     </Compile>
@@ -624,6 +627,10 @@
     <Page Include="UserControls\LayerBackground.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\LayerTrack.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\TriggerBlock.xaml">
       <SubType>Designer</SubType>
