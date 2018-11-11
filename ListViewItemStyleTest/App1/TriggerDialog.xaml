@@ -50,6 +50,11 @@
                                                 <Setter Target="BorderBackground.Fill" Value="Gray"/>
                                             </VisualState.Setters>
                                         </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="BorderBackground.Fill" Value="White"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
                                                 <Setter Target="BorderBackground.Fill" Value="Red"/>
