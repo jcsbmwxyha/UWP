@@ -20,18 +20,17 @@ namespace AuraEditor
         public int Type { get; private set; }
         public virtual double StartTime { get; set; }
         public virtual double DurationTime { get; set; }
+        public virtual double EndTime { get { return StartTime + DurationTime; } }
         public EffectInfo Info { get; set; }
 
-        public Effect(Layer layer, int effectType)
+        public Effect(int effectType)
         {
-            Layer = layer;
             Type = effectType;
             Name = GetEffectName(effectType);
             Info = new EffectInfo(effectType);
         }
-        public Effect(Layer layer, string effectName)
+        public Effect(string effectName)
         {
-            Layer = layer;
             Type = GetEffectIndex(effectName);
             Name = effectName;
             Info = new EffectInfo(Type);

@@ -170,38 +170,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style TargetType="RadioButton" x:Key="ColorBtn">
-                <Setter Property="Margin" Value="0,0,12,0"/>
-                <Setter Property="Height" Value="49"/>
-                <Setter Property="MinWidth" Value="48"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="RadioButton">
-                            <Grid>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CheckStates">
-                                        <VisualState x:Name="Checked">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorBtnBg.Visibility" Value="Collapsed"/>
-                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Visible"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Unchecked">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorBtnBg.Visibility" Value="Visible"/>
-                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Collapsed"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Polygon x:Name="PolygonColor" Points="8,8,8,36,13,41,41,41,41,8" Fill="{TemplateBinding Background}"/>
-                                <Image x:Name="ColorBtnBg" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_n_btn.png"/>
-                                <Image x:Name="ColorBtnSelectBg" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_s_btn.png"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
 
             <Style TargetType="Button" x:Key="PatternButtonStyle">
                 <Setter Property="Background" Value="Black" />
@@ -343,17 +311,18 @@
             <Grid>
                 <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
                 <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True" VerticalAlignment="Top"
-                          Height="170" Margin="0,10,0,0" SelectedIndex="{Binding SelectedIndex}" 
+                          Width="500" Height="170" SelectedIndex="{Binding SelectedIndex}"
                           SelectionChanged="TriggerEffectListView_SelectionChanged">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Padding" Value="0,0,0,0"/>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
                         </Style>
                     </ListView.ItemContainerStyle>
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:TriggerBlock Width="480" HorizontalAlignment="Left"/>
+                            <local:TriggerBlock/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -370,12 +339,12 @@
                         </Button.Flyout>
                     </Button>
                 </StackPanel>
-                <ScrollViewer Height="420">
-                    <StackPanel Name="EffectInfoPanel" Margin="0,10,0,0" Height="600">
+                <ScrollViewer Height="240">
+                    <StackPanel Name="EffectInfoPanel" Margin="0,10,0,0" Height="400">
                         <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
                             <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                             <StackPanel Orientation="Horizontal">
-                                <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
+                                <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
                                 <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click">
                                     <TextBlock Text="Random" Foreground="White"/>
                                 </CheckBox>
@@ -415,11 +384,18 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged" 
-										Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
-                                    <TextBlock Text="Slow" Margin="0,0,55,0" FontSize="12"/>
+                                <StackPanel Orientation="Horizontal" Margin="20,20,0,0" VerticalAlignment="Top">
+                                    <Image x:Name="SlowPoint" Width="20" Height="20" Margin="0,0,65,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                                    <Image x:Name="MediumPoint" Width="20" Height="20" Margin="0,0,70,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                                    <Image x:Name="FastPoint" Width="20" Height="20" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                                </StackPanel>
+                                <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
+                                    Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"
+                                    IsThumbToolTipEnabled="False"/>
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
+                                    <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
                                     <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
                                     <TextBlock Text="Fast" FontSize="12"/>
                                 </StackPanel>

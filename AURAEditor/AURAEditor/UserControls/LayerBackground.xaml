@@ -7,7 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    Width="2000"
+    Height="50">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -28,13 +30,6 @@
                         <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_h}"/>
                         <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_h}"/>
                         <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_r_h}"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="CheckedPointerOver">
-                    <VisualState.Setters>
-                        <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_s}"/>
-                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_m_s}"/>
-                        <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_r_s}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Checked">

@@ -18,12 +18,18 @@ using AuraEditor.UserControls;
 using static AuraEditor.AuraSpaceManager;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
+using Windows.Networking;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        BackgroundWorker bgwSocketServer;
+        // for Socket TCP use
+        private string cm;
+        private string port;
+        private string ip;
+        BackgroundWorker bgwSocketServerRecv;
+        StreamSocket socket = new StreamSocket();
 
         static MainPage _instance;
         static public MainPage Self
@@ -32,21 +38,10 @@ namespace AuraEditor
         }
         public AuraSpaceManager SpaceManager;
         public AuraLayerManager LayerManager;
+        public ConnectedDevicesDialog ConnectedDevicesDialog;
         public BitmapImage DragEffectIcon;
 
-        public double TimelineScrollHorOffset
-        {
-            get { return (double)GetValue(ScrollHorOffseProperty); }
-            set { SetValue(ScrollHorOffseProperty, (double)value); }
-        }
-        public static readonly DependencyProperty ScrollHorOffseProperty =
-            DependencyProperty.Register("TimelineScrollHorOffset", typeof(double), typeof(MainPage),
-                new PropertyMetadata(0, ScrollTimeLinePropertyChangedCallback));
-        static private void ScrollTimeLinePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as MainPage).TrackScrollViewer.ChangeView((double)e.NewValue, null, null, true);
-            (d as MainPage).ScaleScrollViewer.ChangeView((double)e.NewValue, null, null, true);
-        }
+        ApplicationDataContainer g_LocalSettings;
 
         bool _angleImgPressing;
         public double _preAngle;
@@ -55,6 +50,9 @@ namespace AuraEditor
         #region Key Up & Down
         public bool g_PressShift;
         public bool g_PressCtrl;
+        public bool g_PressX;
+        public bool g_PressC;
+        public bool g_PressV;
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Shift)
@@ -64,6 +62,26 @@ namespace AuraEditor
             else if (args.VirtualKey == Windows.System.VirtualKey.Control)
             {
                 g_PressCtrl = true;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.X)
+            {
+                g_PressX = true;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.C)
+            {
+                g_PressC = true;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.V)
+            {
+                g_PressV = true;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.Delete)
+            {
+                if (SelectedEffectLine == null)
+                    return;
+
+                Layer layer = SelectedEffectLine.Layer;
+                layer.DeleteEffectLine(SelectedEffectLine.UI);
             }
         }
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
@@ -76,9 +94,20 @@ namespace AuraEditor
             {
                 g_PressCtrl = false;
             }
+            else if (args.VirtualKey == Windows.System.VirtualKey.X)
+            {
+                g_PressX = false;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.C)
+            {
+                g_PressC = false;
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.V)
+            {
+                g_PressV = false;
+            }
         }
         #endregion
-        public ConnectedDevicesDialog connectedDevicesDialog;
 
         public MainPage()
         {
@@ -89,33 +118,30 @@ namespace AuraEditor
             g_PressShift = false;
             g_PressCtrl = false;
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
+            g_LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
-
-            //BackgroundWorker for Socket Server
-            bgwSocketServer = new BackgroundWorker();
-            bgwSocketServer.DoWork += SocketServer_DoWork;
-            bgwSocketServer.RunWorkerAsync();
-
             SetDefaultPatternList();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await IntializeFileOperations();
-            connectedDevicesDialog = new ConnectedDevicesDialog();
+            ConnectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceManager = new AuraSpaceManager();
             LayerManager = new AuraLayerManager();
             InitializeDragEffectIcon();
             InitializePlayerStructure();
             SetDefaultPattern();
-
-            await connectedDevicesDialog.Rescan();
+            await ConnectedDevicesDialog.Rescan();
+            //Start SocketClient
+            startclient();
 
             AngleImgCenter = new Point(40, 40);
             _preAngle = 0;
             AngleTextBox.Text = "0";
-        }
 
+            LoadSettings();
+        }
         private async void InitializeDragEffectIcon()
         {
             DragEffectIcon = new BitmapImage();
@@ -130,8 +156,31 @@ namespace AuraEditor
                 DragEffectIcon.SetSource(fileStream);
             }
         }
+        private void LoadSettings()
+        {
+            bool successful = float.TryParse(g_LocalSettings.Values["SpaceZooming"] as string, out float percent);
+            if (successful)
+                SpaceManager.SetSpaceZoomPercent(percent);
+            else
+            {
+                SpaceManager.SetSpaceZoomPercent(50);
+                SpaceZoomButton.Content = "50 %";
+            }
+
+            successful = int.TryParse(g_LocalSettings.Values["LayerLevel"] as string, out int level);
+            if (successful)
+                LayerZoomSlider.Value = level;
+            else
+            {
+                LayerZoomSlider.Value = 2;
+            }
+        }
 
         #region Framework Element
+        private async void ConnectedDevicesButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ConnectedDevicesDialog.ShowAsync();
+        }
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             Layer layer = new Layer();
@@ -157,15 +206,17 @@ namespace AuraEditor
 
             LayerManager.AddLayer(layer);
             SpaceManager.UnselectAllZones();
+            SetLayerButton.IsEnabled = false;
             NeedSave = true;
         }
         private void SortDeviceButton_Checked(object sender, RoutedEventArgs e)
         {
+            EditOKButton.IsEnabled = true;
             ShowMask("Device Sorting", "Save", "Cancel");
             SpaceManager.SetSpaceStatus(SpaceStatus.DragingDevice);
         }
 
-        private void AdjustEffectBlockGrid_Click(object sender, RoutedEventArgs e)
+        private void LeftSidePanelButton_Click(object sender, RoutedEventArgs e)
         {
             int columnSpans = Grid.GetColumnSpan(SpaceGrid);
 
@@ -173,9 +224,11 @@ namespace AuraEditor
             {
                 MainGrid.Children.Remove(EffectBlockScrollViewer);
                 MainGrid.Children.Remove(MaskGrid1);
-
                 Grid.SetColumn(SpaceGrid, 0);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
+
+                LeftSideOpenedButton.Visibility = Visibility.Collapsed;
+                LeftSideClosedButton.Visibility = Visibility.Visible;
             }
             else
             {
@@ -183,12 +236,14 @@ namespace AuraEditor
                 MainGrid.Children.Add(EffectBlockScrollViewer);
                 Grid.SetColumn(MaskGrid1, 0);
                 MainGrid.Children.Add(MaskGrid1);
-
                 Grid.SetColumn(SpaceGrid, 1);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
+
+                LeftSideOpenedButton.Visibility = Visibility.Visible;
+                LeftSideClosedButton.Visibility = Visibility.Collapsed;
             }
         }
-        private void AdjustEffectInfoGrid_Click(object sender, RoutedEventArgs e)
+        private void RightSidePanelButton_Click(object sender, RoutedEventArgs e)
         {
             int columnSpans = Grid.GetColumnSpan(SpaceGrid);
 
@@ -196,8 +251,10 @@ namespace AuraEditor
             {
                 MainGrid.Children.Remove(EffectInfoScrollViewer);
                 MainGrid.Children.Remove(MaskGrid2);
-
                 Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
+
+                RightSideOpenedButton.Visibility = Visibility.Collapsed;
+                RightSideClosedButton.Visibility = Visibility.Visible;
             }
             else
             {
@@ -205,10 +262,24 @@ namespace AuraEditor
                 MainGrid.Children.Add(EffectInfoScrollViewer);
                 Grid.SetColumn(MaskGrid2, 2);
                 MainGrid.Children.Add(MaskGrid2);
-
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
+
+                RightSideOpenedButton.Visibility = Visibility.Visible;
+                RightSideClosedButton.Visibility = Visibility.Collapsed;
             }
         }
+        private void SpaceZoom_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as MenuFlyoutItem;
+            string itemText = item.Text;
+
+            if (itemText == SpaceZoomButton.Content as string)
+                return;
+
+            float percent = float.Parse(itemText.Replace(" %", ""));
+            SpaceManager.SetSpaceZoomPercent(percent);
+        }
+
         private void LayerListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
             Layer layer = e.Items[0] as Layer;
@@ -243,110 +314,19 @@ namespace AuraEditor
         }
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            List<LayerTitle> items =
-                FindAllControl<LayerTitle>(LayerListView, typeof(LayerTitle));
-
-            foreach (var item in items)
+            Layer layer = LayerManager.GetCheckedLayer();
+            if (layer != null)
             {
-                if (item.IsChecked == true)
-                {
-                    Layer layer = item.DataContext as Layer;
-                    LayerManager.RemoveLayer(layer);
-                    SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-                    SelectedEffectLine = null;
-                    NeedSave = true;
-                }
+                LayerManager.RemoveLayer(layer);
+                SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+                SelectedEffectLine = null;
+                NeedSave = true;
             }
-        }
-        private void PlusButton_Click(object sender, RoutedEventArgs e)
-        {
-            ZoomSlider.Value += 1;
-        }
-        private void MinusButton_Click(object sender, RoutedEventArgs e)
-        {
-            ZoomSlider.Value -= 1;
         }
         #endregion
 
-        async void socketstart()
-        {
-            Windows.Networking.Sockets.DatagramSocket socket = new Windows.Networking.Sockets.DatagramSocket();
-            while (true)
-            {
-                socket.Dispose();
-                try
-                {
-                    socket = new Windows.Networking.Sockets.DatagramSocket();
-                    socket.MessageReceived += Socket_MessageReceived;
-
-                    //You can use any port that is not currently in use already on the machine. We will be using two separate and random 
-                    //ports for the client and server because both the will be running on the same machine.
-                    string serverPort = "6667";
-                    string clientPort = "8002";
-
-                    //Because we will be running the client and server on the same machine, we will use localhost as the hostname.
-                    Windows.Networking.HostName serverHost = new Windows.Networking.HostName("127.0.0.1");
-
-                    //Bind the socket to the clientPort so that we can start listening for UDP messages from the UDP echo server.
-                    await socket.BindServiceNameAsync(clientPort);
-                    await socket.ConnectAsync(serverHost, serverPort);
-                    //Write a message to the UDP echo server.
-                    Stream streamOut = (await socket.GetOutputStreamAsync(serverHost, serverPort)).AsStreamForWrite();
-                    StreamWriter writer = new StreamWriter(streamOut);
-                    string message = "I'm the message from client!";
-                    await writer.WriteLineAsync(message);
-                    await writer.FlushAsync();
-                }
-                catch (Exception ex)
-                {
-                    Windows.Networking.Sockets.SocketErrorStatus webErrorStatus = Windows.Networking.Sockets.SocketError.GetStatus(ex.GetBaseException().HResult);
-                }
-
-                await Task.Delay(10000);
-            }
-        }
-        private async void Socket_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
-        {
-            try
-            {
-                Stream streamIn = args.GetDataStream().AsStreamForRead();
-                StreamReader reader = new StreamReader(streamIn);
-                string message = await reader.ReadLineAsync();
-
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    //from Service message
-                    StatusTextBlock.Text = "Service : " + message;
-                    connectedDevicesDialog.Rescan();
-                });
-
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.ToString());
-            }
-        }
-        private void SocketServer_DoWork(object sender, DoWorkEventArgs e)
-        {
-            socketstart();
-        }
-
-        private void SpaceZoom_Click(object sender, RoutedEventArgs e)
-        {
-            var item = sender as MenuFlyoutItem;
-            string itemText = item.Text;
-            SpaceZoomButton.Content = itemText;
-
-            float itemValue = float.Parse(itemText.Replace(" %", ""));
-            SpaceManager.SetSpaceZoomFactor(itemValue / 50);
-        }
-
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
-        {
-            connectedDevicesDialog.Rescan();
-        }
-
-        public void ReEdit(Layer layer)
+        #region Mask
+        public void ShowReEditMask(Layer layer)
         {
             ShowMask("Edit layer: " + layer.Name, "Save", "Cancel");
         }
@@ -354,7 +334,7 @@ namespace AuraEditor
         {
             if (SpaceManager.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                Layer layer = LayerManager.GetSelectedLayer();
+                Layer layer = LayerManager.GetCheckedLayer();
                 List<int> selectedIndex;
 
                 foreach (Device d in SpaceManager.GlobalDevices)
@@ -369,8 +349,7 @@ namespace AuraEditor
                         }
                     }
 
-                    if (selectedIndex.Count != 0)
-                        layer.SetDeviceZones(d.Type, selectedIndex.ToArray());
+                    layer.SetDeviceZones(d.Type, selectedIndex.ToArray());
                 }
 
                 NeedSave = true;
@@ -403,10 +382,88 @@ namespace AuraEditor
             MaskGrid2.Visibility = Visibility.Collapsed;
             MaskGrid3.Visibility = Visibility.Collapsed;
         }
+        #endregion
 
-        private async void ConnectedDevicesButton_Click(object sender, RoutedEventArgs e)
+        private void SocketServerRecv_DoWork(object sender, DoWorkEventArgs e)
         {
-            await connectedDevicesDialog.ShowAsync();
+            receivedata();
+        }
+
+        //Use senddata(string) can send string to server
+        async void senddata(string request)
+        {
+            Stream streamOut = socket.OutputStream.AsStreamForWrite();
+            StreamWriter writer = new StreamWriter(streamOut);
+            await writer.WriteLineAsync(request + "\n");
+            await writer.FlushAsync();
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                StatusTextBlock.Text = "Send successful";
+            });
+        }
+
+        async void receivedata()
+        {
+            bool IsConnection = false;
+            do
+            {
+                try
+                {
+                    port = "6667";
+                    ip = "127.0.0.1";
+                    cm = "I'm the message from client";
+                    HostName serverHost = new HostName("localhost");
+                    string serverPort = port;
+                    await socket.ConnectAsync(serverHost, serverPort);
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        StatusTextBlock.Text = "Connect...\n";
+                    });
+                    IsConnection = true;
+                }
+                catch (Exception ex)
+                {
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        StatusTextBlock.Text = "Server not start!!";
+                    });
+                    await Task.Delay(2000);
+                }
+            } while (!IsConnection);
+
+            while (true)
+            {
+                try
+                {
+                    string response;
+                    Stream inputStream = socket.InputStream.AsStreamForRead();
+                    StreamReader streamReader = new StreamReader(inputStream);
+                    response = await streamReader.ReadLineAsync();
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        //from Service message
+                        StatusTextBlock.Text = "Service : " + response;
+                        ConnectedDevicesDialog.Rescan();
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
+        void startclient()
+        {
+            //BackgroundWorker for Socket Server
+            bgwSocketServerRecv = new BackgroundWorker();
+            bgwSocketServerRecv.DoWork += SocketServerRecv_DoWork;
+            bgwSocketServerRecv.RunWorkerAsync();
+        }
+
+        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectedDevicesDialog.Rescan();
         }
     }
 }

@@ -22,7 +22,7 @@
           PointerExited="Grid_PointerExited">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40"/>
-            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="370"/>
             <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
@@ -50,8 +50,8 @@
         <Image Name="ReorderIcon"
                Stretch="Fill" Margin="10,0,0,0"
                Source="ms-appx:///Assets/TriggerDialog/asus_ac_rearrange_ic_n.png"/>
-        <TextBlock Text="{x:Bind MyEffect.Name}" Grid.Column="1"
-                   Margin="20,3,0,0" FontSize="20" Foreground="White"/>
+        <TextBlock Text="{x:Bind MyEffect.Name}" Grid.Column="1" VerticalAlignment="Center"
+                   Margin="20,0,0,3" FontSize="20" Foreground="White"/>
         <Button Name="DeleteButton" Grid.Column="2" Style="{StaticResource RogDialogCloseButton}"
                 Click="DeleteButton_Click" Margin="0,0,0,0"/>
     </Grid>

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor"
+    xmlns:common="using:AuraEditor.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -178,6 +179,9 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <common:ReverseBooleanToVisibilityConverter x:Key="reverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <!--Background is used to drag easily-->
@@ -185,35 +189,17 @@
           PointerEntered="MyGrid_PointerEntered"
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="TriggerStates">
-                <VisualState x:Name="NoTrigger">
-                    <VisualState.Setters>
-                        <Setter Target="TriggerStatusOnButton.Visibility" Value="Collapsed"/>
-                        <Setter Target="TriggerStatusOffButton.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Trigger">
-                    <VisualState.Setters>
-                        <Setter Target="TriggerStatusOnButton.Visibility" Value="Visible"/>
-                        <Setter Target="TriggerStatusOffButton.Visibility" Value="Collapsed"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
         
         <RelativePanel Grid.Column="1" VerticalAlignment="Center">
-            <!-- Use it to uncheck other layers-->
-            <RadioButton Name="LayerRadioButton" GroupName="GroupLayer" Visibility="Collapsed"
-                     Checked="LayerRadioButton_Checked" Unchecked="LayerRadioButton_Unchecked"/>
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
-                          Click="EyeToggleButton_Click" IsChecked="True" Style="{StaticResource EyeToggleButtonStyle}"/>
+                          Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye}" Style="{StaticResource EyeToggleButtonStyle}"/>
             <TextBlock Name="LayerNameTextBlock" Text="{x:Bind m_Layer.Name}" RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click"/>
-            <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click" Visibility="Collapsed" >
+            <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}"
+                    RelativePanel.AlignRightWithPanel="True"
+                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click"
+                    Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter}}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
                         <TextBlock Foreground="White" Text="Trigger Event"/>
@@ -221,7 +207,8 @@
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click">
+                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click"
+                    Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter}}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
                         <TextBlock Foreground="White" Text="Trigger Event"/>

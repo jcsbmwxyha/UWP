@@ -105,36 +105,80 @@ namespace AuraEditor
                 IconStoryboard.Begin();
             }
         }
-
         static TimelinePlayer _timelinePlayer;
-        private int timelineZoomLevel;
-        public int TimelineZoomLevel
+
+        #region Layer Zoom level
+        private int _oldLayerZoomLevel;
+        private void LayerZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            set
+            if (LayerManager == null)
+                return;
+
+            int newLevel = (int)LayerZoomSlider.Value;
+
+            if (_oldLayerZoomLevel != newLevel)
             {
-                if (timelineZoomLevel != value)
+                int newSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(newLevel);
+                int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
+                double rate = (double)oldSecondsPerTimeUnit / newSecondsPerTimeUnit;
+
+                LayerManager.SetTimeUnit(newSecondsPerTimeUnit);
+
+                if (_timelinePlayer != null)
                 {
-                    int newSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(value);
-                    int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(timelineZoomLevel);
-                    double rate = (double)oldSecondsPerTimeUnit / newSecondsPerTimeUnit;
-
-                    LayerManager.SetTimeUnit(newSecondsPerTimeUnit);
-
-                    if (_timelinePlayer != null)
-                    {
-                        _timelinePlayer.OnZoomChange(rate);
-                    }
-
-                    timelineZoomLevel = value;
+                    _timelinePlayer.OnZoomChange(rate);
                 }
+
+                _oldLayerZoomLevel = newLevel;
             }
         }
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            LayerZoomSlider.Value += 1;
+        }
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            LayerZoomSlider.Value -= 1;
+        }
+        #endregion
 
         private void InitializePlayerStructure()
         {
-            TimelineZoomLevel = 2;
             _timelinePlayer = new TimelinePlayer();
+            LayerZoomSlider.Value = 5;
         }
+
+        #region Jump to beginning or end
+        public double TimelineScrollHorOffset
+        {
+            get { return (double)GetValue(ScrollHorOffseProperty); }
+            set { SetValue(ScrollHorOffseProperty, (double)value); }
+        }
+
+        public static readonly DependencyProperty ScrollHorOffseProperty =
+            DependencyProperty.Register("TimelineScrollHorOffset", typeof(double), typeof(MainPage),
+                new PropertyMetadata(0, ScrollTimeLinePropertyChangedCallback));
+
+        static private void ScrollTimeLinePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as MainPage).TrackScrollViewer.ChangeView((double)e.NewValue, null, null, true);
+            (d as MainPage).ScaleScrollViewer.ChangeView((double)e.NewValue, null, null, true);
+        }
+
+        private void JumpToBeginningButton_Click(object sender, RoutedEventArgs e)
+        {
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = 0;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+        }
+        private void JumpToEndButton_Click(object sender, RoutedEventArgs e)
+        {
+            double source = ScaleScrollViewer.HorizontalOffset;
+            double target = LayerManager.RightmostPosition;
+            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+        }
+        #endregion
+
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
@@ -146,19 +190,6 @@ namespace AuraEditor
             ScrollWindowToLeftTop();
             _timelinePlayer.Play();
         }
-        private void GoLeftButton_Click(object sender, RoutedEventArgs e)
-        {
-            double source = ScaleScrollViewer.HorizontalOffset;
-            double target = 0;
-            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
-        }
-        private void GoRightButton_Click(object sender, RoutedEventArgs e)
-        {
-            double source = ScaleScrollViewer.HorizontalOffset;
-            double target = LayerManager.RightmostPosition;
-            AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
-        }
-
         private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer sv = sender as ScrollViewer;
@@ -178,11 +209,6 @@ namespace AuraEditor
             TitleScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             TrackScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
             ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
-        }
-        private void ZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (LayerManager != null)
-                TimelineZoomLevel = (int)ZoomSlider.Value;
         }
         private void ScrollWindowToLeftTop()
         {

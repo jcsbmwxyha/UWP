@@ -1478,5 +1478,21 @@
             <Setter Property="Opacity" Value="0"/>
             <Setter Property="StrokeThickness" Value="2"/>
         </Style>
+
+        <Style TargetType="RadioButton" x:Key="RogRadioColorBtn">
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="Height" Value="49"/>
+            <Setter Property="MinWidth" Value="48"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+                            <Polygon x:Name="PolygonColor" Points="8,8,8,36,13,41,41,41,41,8" Fill="{TemplateBinding Background}"/>
+                            <Image x:Name="ColorBtnSelectBg" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_s_btn.png"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

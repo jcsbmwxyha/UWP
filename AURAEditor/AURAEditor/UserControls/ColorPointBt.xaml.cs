@@ -67,7 +67,14 @@ namespace AuraEditor.UserControls
             ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
             await colorPickerDialog.ShowAsync();
 
-            return colorPickerDialog.CurrentColor;
+            if (colorPickerDialog.ColorPickerResult)
+            {
+                return colorPickerDialog.CurrentColor;
+            }
+            else
+            {
+                return colorPickerDialog.PreColor;
+            }
         }
     }
 }

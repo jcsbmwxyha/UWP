@@ -16,6 +16,7 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace AuraEditor
 {
@@ -35,15 +36,17 @@ namespace AuraEditor
                 if (value == null)
                 {
                     ClearEffectInfoGrid();
+
+                    if (_selectedEffectLine != null)
+                    {
+                        _selectedEffectLine.UI.IsChecked = false;
+                        _selectedEffectLine = null;
+                    }
                 }
                 else
                 {
                     NeedSave = true;
-                    if (_selectedEffectLine != null)
-                        _selectedEffectLine.UI.IsSelected = false;
-
                     _selectedEffectLine = value;
-                    _selectedEffectLine.UI.IsSelected = true;
                     UpdateEffectInfoGrid(value);
                 }
             }
@@ -227,13 +230,13 @@ namespace AuraEditor
             if (info.Random)
             {
                 RandomCheckBox.IsChecked = true;
-                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
                 RandomCheckBox.IsChecked = false;
-                RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
+                RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
             BrightnessSlider.Value = info.Brightness;
@@ -269,20 +272,27 @@ namespace AuraEditor
             ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
             await colorPickerDialog.ShowAsync();
 
-            return colorPickerDialog.CurrentColor;
+            if (colorPickerDialog.ColorPickerResult)
+            {
+                return colorPickerDialog.CurrentColor;
+            }
+            else
+            {
+                return colorPickerDialog.PreColor;
+            }
         }
         private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
         {
             if (RandomCheckBox.IsChecked == true)
             {
                 SelectedEffectLine.Info.Random = true;
-                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
                 SelectedEffectLine.Info.Random = false;
-                RadioButtonBg.Background = new SolidColorBrush(SelectedEffectLine.Info.InitColor);
+                RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
         }
@@ -325,6 +335,24 @@ namespace AuraEditor
             Slider slider = sender as Slider;
             if (slider != null)
             {
+                if (slider.Value == 1)
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                }
+                else if (slider.Value == 2)
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                }
+                else
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                }
                 ui.Speed = (int)slider.Value;
             }
         }

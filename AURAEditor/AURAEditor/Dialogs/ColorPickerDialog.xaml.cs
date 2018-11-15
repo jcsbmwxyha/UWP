@@ -84,6 +84,7 @@ namespace AuraEditor.Dialogs
             }
         }
         public Color PreColor { get; set; }
+        public Boolean ColorPickerResult;
 
         public class RecentColor
         {
@@ -184,12 +185,35 @@ namespace AuraEditor.Dialogs
         private async void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.SizeChanged -= CurrentWindow_SizeChanged;
+            ColorPickerResult = false;
             if (ComeFrom == 1)
             {
                 //From Main Page
                 this.Hide();
             }
-            else if(ComeFrom == 2)
+            else if (ComeFrom == 2)
+            {
+                //From Trigger Dialog
+                this.Hide();
+                ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
+                await triggerDialog.ShowAsync();
+            }
+            else
+            {
+                this.Hide();
+            }
+        }
+        
+        private async void OKBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Window.Current.CoreWindow.SizeChanged -= CurrentWindow_SizeChanged;
+            ColorPickerResult = true;
+            if (ComeFrom == 1)
+            {
+                //From Main Page
+                this.Hide();
+            }
+            else if (ComeFrom == 2)
             {
                 //From Trigger Dialog
                 this.Hide();

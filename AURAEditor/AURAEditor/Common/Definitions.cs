@@ -24,6 +24,7 @@ namespace AuraEditor.Common
         public const int GridPixels = 24;
         public const string UserFilesDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserFiles\\";
         public const string DefaultScriptFolder = "C:\\ProgramData\\ASUS\\AURA Creator\\script";
+        public const float SpaceZoomPercentFactorRate = 50;
     }
 }                     
                                                     

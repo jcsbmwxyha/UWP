@@ -127,7 +127,7 @@ namespace AuraEditor
                 int gridW, gridH;
                 switch (type)
                 {
-                    case "Aac_NBDT": gridW = 27; gridH = 27; break;
+                    case "Laptop": gridW = 27; gridH = 27; break;
                     case "Mouse": gridW = 8; gridH = 10; break;
                     case "Keyboard": gridW = 25; gridH = 14; break;
                     default: gridW = 27; gridH = 27; break;

@@ -52,7 +52,7 @@
         {
             if (ImgType != null)
             {
-                if (ImgType == "Aac_NBDT")
+                if (ImgType == "Laptop")
                 {
                     if (Sync)
                     {

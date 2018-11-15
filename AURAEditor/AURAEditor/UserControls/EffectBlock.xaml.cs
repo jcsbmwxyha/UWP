@@ -29,7 +29,7 @@ namespace AuraEditor.UserControls
         }
         private void Grid_DropCompleted(UIElement sender, DropCompletedEventArgs args)
         {
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
         }
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {

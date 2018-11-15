@@ -385,38 +385,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style TargetType="RadioButton" x:Key="ColorBtn">
-                <Setter Property="Margin" Value="0,0,12,0"/>
-                <Setter Property="Height" Value="49"/>
-                <Setter Property="MinWidth" Value="48"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="RadioButton">
-                            <Grid>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CheckStates">
-                                        <VisualState x:Name="Checked">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorBtnBg.Visibility" Value="Collapsed"/>
-                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Visible"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Unchecked">
-                                            <VisualState.Setters>
-                                                <Setter Target="ColorBtnBg.Visibility" Value="Visible"/>
-                                                <Setter Target="ColorBtnSelectBg.Visibility" Value="Collapsed"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Polygon x:Name="PolygonColor" Points="8,8,8,36,13,41,41,41,41,8" Fill="{TemplateBinding Background}"/>
-                                <Image x:Name="ColorBtnBg" Source="Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_n_btn.png"/>
-                                <Image x:Name="ColorBtnSelectBg" Source="Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_s_btn.png"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+            
             <Style x:Key="SliderStyle" TargetType="Slider">
                 <Setter Property="Background" Value="Gray" />
                 <Setter Property="BorderThickness" Value="1" />
@@ -1343,7 +1312,7 @@
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
                 <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
-                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click"/>
+                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False"/>
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
                         Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
             </StackPanel>
@@ -1406,17 +1375,21 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
-            <Button Width="10" Height="50" Style="{StaticResource LeftSidePanelButtonStyle}"
-                VerticalAlignment="Top"
-                Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5"
-                Click="AdjustEffectBlockGrid_Click"/>
-            <Image Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png" Width="1" Stretch="Fill" HorizontalAlignment="Right"/>
-            <Button Width="10" Height="50" Style="{StaticResource RightSidePanelButtonStyle}"
-                VerticalAlignment="Top" HorizontalAlignment="Right"
-                Grid.Row="1" Grid.Column="2"  Canvas.ZIndex="5"
-                Click="AdjustEffectInfoGrid_Click"/>
-            <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png" Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
-            <Button x:Name="SpaceZoomButton" Content="50 %" Foreground="White" Grid.Row="1" Grid.Column="1"
+            <Button Name="LeftSideOpenedButton" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Top"
+                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="LeftSidePanelButton_Click"/>
+            <Button Name="LeftSideClosedButton" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Top"
+                    Style="{StaticResource RightSidePanelButtonStyle}" Click="LeftSidePanelButton_Click" Visibility="Collapsed"/>
+            <Image Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png"
+                   Width="1" Stretch="Fill" HorizontalAlignment="Right"/>
+            <Button Name="RightSideOpenedButton" Grid.Row="1" Grid.Column="2" Width="10" Height="50" Canvas.ZIndex="5"
+                    VerticalAlignment="Top" HorizontalAlignment="Right"
+                    Style="{StaticResource RightSidePanelButtonStyle}" Click="RightSidePanelButton_Click"/>
+            <Button Name="RightSideClosedButton" Grid.Row="1" Grid.Column="2" Width="10" Height="50" Canvas.ZIndex="5"
+                    VerticalAlignment="Top" HorizontalAlignment="Right"
+                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="RightSidePanelButton_Click" Visibility="Collapsed"/>
+            <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png"
+                   Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
+            <Button x:Name="SpaceZoomButton" Foreground="White" Grid.Row="1" Grid.Column="1"
                     Width="110" Canvas.ZIndex="6" VerticalAlignment="Bottom" x:FieldModifier="public"
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
                 <Button.Flyout>
@@ -1476,7 +1449,7 @@
                     <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                         <StackPanel Orientation="Horizontal">
-                            <RadioButton x:Name="RadioButtonBg" Style="{StaticResource ColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
+                            <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
                             <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click" Visibility="Collapsed">
                                 <TextBlock Text="Random" Foreground="White"/>
                             </CheckBox>
@@ -1531,12 +1504,18 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Slider x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
-                                    Margin="20,20,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"
+                            <StackPanel Orientation="Horizontal" Margin="20,20,0,0" VerticalAlignment="Top">
+                                <Image x:Name="SlowPoint" Width="20" Height="20" Margin="0,0,65,0" Source="Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                                <Image x:Name="MediumPoint" Width="20" Height="20" Margin="0,0,70,0" Source="Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                                <Image x:Name="FastPoint" Width="20" Height="20" Source="Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                            </StackPanel>
+                            <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
+                                    Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"
                                     IsThumbToolTipEnabled="False"/>
-                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
-                                <TextBlock Text="Slow" Margin="0,0,55,0" FontSize="12"/>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
+                                <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
                                 <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
                                 <TextBlock Text="Fast" FontSize="12"/>
                             </StackPanel>
@@ -1614,7 +1593,7 @@
         <RelativePanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
             <Button Name="GoLeftButton"
                     Style="{StaticResource GoLeftButtonStyle}"
-                    Click="GoLeftButton_Click"
+                    Click="JumpToBeginningButton_Click"
                     Margin="10,0,0,0"
                     RelativePanel.AlignLeftWithPanel="True"/>
             <Button Name="PlayButton"
@@ -1624,7 +1603,7 @@
                     RelativePanel.RightOf="GoLeftButton"/>
             <Button Name="GoRightButton"
                     Style="{StaticResource GoRightButtonStyle}"
-                    Click="GoRightButton_Click"
+                    Click="JumpToEndButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="PlayButton"/>
             <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
@@ -1853,13 +1832,12 @@
                     HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
-            <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.LeftOf="ZoomSlider"
+            <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.LeftOf="LayerZoomSlider"
                     Click="MinusButton_Click"/>
-            <Slider Name="ZoomSlider" Style="{StaticResource ZoomSliderStyle}"
+            <Slider Name="LayerZoomSlider" Style="{StaticResource ZoomSliderStyle}"
                     HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.LeftOf="PlusButton"
-                    Maximum="6" Minimum="1" Value="2"
-                    Width="200" Margin="5,-4,5,0"
-                    ValueChanged="ZoomSlider_ValueChanged"/>
+                    Maximum="6" Minimum="1" Width="200" Margin="5,-4,5,0"
+                    ValueChanged="LayerZoomSlider_ValueChanged"/>
             <Button Name="PlusButton" Style="{StaticResource PlusButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Click="PlusButton_Click" Margin="0,0,5,0"/>
         </RelativePanel>
@@ -1878,7 +1856,8 @@
             </Grid.ColumnDefinitions>
             <RelativePanel Grid.Column="1" VerticalAlignment="Center">
                 <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20"/>
-                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
+                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180"
+                        x:FieldModifier="Public" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
                 <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
             </RelativePanel>
         </Grid>

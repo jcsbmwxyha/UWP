@@ -319,8 +319,14 @@ namespace AuraEditor
                         return;
                 }
 
+                SaveSettings();
                 CoreApplication.Exit();
             }
+        }
+        private void SaveSettings()
+        {
+            g_LocalSettings.Values["SpaceZooming"] = SpaceManager.GetSpaceZoomPercent().ToString();
+            g_LocalSettings.Values["LayerLevel"] = LayerZoomSlider.Value.ToString();
         }
         #endregion
 
@@ -424,7 +430,9 @@ namespace AuraEditor
             {
                 XmlElement element = (XmlElement)node;
                 string layerName = element.GetAttribute("name");
+                string eye = element.GetAttribute("Eye");
                 Layer layer = new Layer(layerName);
+                layer.Eye = bool.Parse(eye);
 
                 layer.TriggerAction = element.GetAttribute("trigger");
 
@@ -474,7 +482,7 @@ namespace AuraEditor
 
                     if (!IsTriggerEffect(type))
                     {
-                        TimelineEffect eff = new TimelineEffect(layer, type);
+                        TimelineEffect eff = new TimelineEffect(type);
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
                         eff.Info = info;
@@ -482,11 +490,12 @@ namespace AuraEditor
                     }
                     else
                     {
-                        TriggerEffect eff = new TriggerEffect(layer, type);
+                        TriggerEffect eff = new TriggerEffect(type);
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
                         eff.Info = info;
                         layer.AddTriggerEffect(eff);
+                        layer.IsTriggering = true;
                     }
                 }
 
@@ -524,7 +533,6 @@ namespace AuraEditor
         {
             SelectedEffectLine = null;
             SetLayerButton.IsEnabled = true;
-            TimelineZoomLevel = 2;
             NeedSave = false;
             CurrentUserFilename = "";
             LayerManager.Clean();

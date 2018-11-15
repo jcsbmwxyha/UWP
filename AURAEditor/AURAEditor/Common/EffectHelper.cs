@@ -141,21 +141,23 @@ namespace AuraEditor.Common
 
         static public int GetTypeByTypeName(string typeName)
         {
-            if (typeName == "Aac_NBDT") return 0;
-            if (typeName == "Mouse") return 1;
-            if (typeName == "Keyboard") return 2;
-            if (typeName == "ASUS HeadSet") return 3;
-            if (typeName == "Display") return 4;
+            if (typeName == "Laptop") return 0;
+            else if (typeName == "Mouse") return 1;
+            else if (typeName == "Keyboard") return 2;
+            else if (typeName == "ASUS HeadSet") return 3;
+            else if (typeName == "Display") return 4;
+            else if (typeName == "Desktop") return 5;
             return 0;
         }
         static public string GetTypeNameByType(int type)
         {
-            if (type == 0) return "Aac_NBDT";
-            if (type == 1) return "Mouse";
-            if (type == 2) return "Keyboard";
-            if (type == 3) return "ASUS HeadSet";
-            if (type == 4) return "Display";
-            return "Aac_NBDT";
+            if (type == 0) return "Laptop";
+            else if (type == 1) return "Mouse";
+            else if (type == 2) return "Keyboard";
+            else if (type == 3) return "ASUS HeadSet";
+            else if (type == 4) return "Display";
+            else if (type == 5) return "Desktop";
+            return "Laptop";
         }
     }
 }

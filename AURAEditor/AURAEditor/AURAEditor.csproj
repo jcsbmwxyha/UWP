@@ -36,6 +36,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -60,6 +61,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -107,6 +109,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorPoint.cs" />
+    <Compile Include="Common\Converter.cs" />
     <Compile Include="Common\StorageHelper.cs" />
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
       <DependentUpon>ConnectedDevicesDialog.xaml</DependentUpon>
@@ -357,7 +360,6 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_n.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_s.png" />
-    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_n_btn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_btn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" />
@@ -378,6 +380,8 @@
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_slider2 control_d.png" />
+    <Content Include="Assets\scale-100\EffectInfoGroup\asus_gc_slider2 control_n.png" />
     <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dl.png" />
     <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dmid.png" />
     <Content Include="Assets\scale-100\MenuFlyoutPresenter\asus_gc_header bg_dr.png" />
@@ -456,7 +460,6 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_n.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_s.png" />
-    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_n_btn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_btn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colormask_btn.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" />
@@ -477,6 +480,8 @@
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_l.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_slider2 control_d.png" />
+    <Content Include="Assets\scale-200\EffectInfoGroup\asus_gc_slider2 control_n.png" />
     <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dl.png" />
     <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dmid.png" />
     <Content Include="Assets\scale-200\MenuFlyoutPresenter\asus_gc_header bg_dr.png" />

@@ -1,14 +1,14 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Core;
-using System;
-using CoreCursor = Windows.UI.Core.CoreCursor;
 using static AuraEditor.Common.ControlHelper;
-using Windows.System;
+using CoreCursor = Windows.UI.Core.CoreCursor;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -20,7 +20,6 @@ namespace AuraEditor.UserControls
 
         private ScrollViewer m_ScrollViewer;
         private DispatcherTimer m_ScrollTimerClock;
-        private int _mouseDirection;
         private double _allPosition;
         private bool _isPressed;
 
@@ -38,17 +37,26 @@ namespace AuraEditor.UserControls
             }
         }
         public double Right { get { return X + Width; } }
-        public bool IsSelected
+        public bool IsChecked
         {
+            get
+            {
+                if (EffectlineRadioButton.IsChecked != true)
+                    return false;
+                else
+                    return true;
+            }
             set
             {
-                if (StatusToggleButton.IsChecked != value)
+                if (EffectlineRadioButton.IsChecked != value)
                 {
-                    StatusToggleButton.IsChecked = value;
+                    EffectlineRadioButton.IsChecked = value;
                 }
             }
         }
 
+        #region Intelligent auto scroll
+        private int _mouseDirection;
         public enum CursorState
         {
             None = 0,
@@ -77,17 +85,6 @@ namespace AuraEditor.UserControls
                     _mouseState = value;
                 }
             }
-        }
-
-        public EffectLine()
-        {
-            this.InitializeComponent();
-
-            m_ScrollTimerClock = new DispatcherTimer();
-            m_ScrollTimerClock.Tick += Timer_Tick;
-            m_ScrollTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
-            _mouseDirection = 0;
-            _isPressed = false;
         }
         private void Timer_Tick(object sender, object e)
         {
@@ -151,7 +148,73 @@ namespace AuraEditor.UserControls
                 }
             }
         }
+        private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            FrameworkElement fe = sender as FrameworkElement;
+            EffectLine el = fe.Parent as EffectLine;
+            PointerPoint ptrPt = e.GetCurrentPoint(el);
+            Point position = e.GetCurrentPoint(el).Position;
 
+            if (_isPressed)
+            {
+                // Getting ScrollViewer is speculative, but it do the trick.
+                m_ScrollViewer = FindParentControl<ScrollViewer>(MyEffect.Layer.UI_Track, typeof(ScrollViewer));
+                Point position2 = e.GetCurrentPoint(MyEffect.Layer.UI_Track).Position;
+
+                Rect screenRect = new Rect(
+                    m_ScrollViewer.HorizontalOffset,
+                    m_ScrollViewer.VerticalOffset,
+                    m_ScrollViewer.ActualWidth,
+                    m_ScrollViewer.ActualHeight);
+
+                if (position2.X > screenRect.Right - 100)
+                    _mouseDirection = 3;
+                else if (position2.X < screenRect.Left)
+                    _mouseDirection = 1;
+                else
+                    _mouseDirection = 2;
+            }
+
+            if (ptrPt.Properties.IsLeftButtonPressed)
+                return;
+
+            if (position.X > el.Width - 5)
+            {
+                mouseState = CursorState.SizeRight;
+            }
+            else if (position.X < 5)
+            {
+                mouseState = CursorState.SizeLeft;
+            }
+            else
+            {
+                mouseState = CursorState.SizeAll;
+            }
+        }
+        private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            FrameworkElement fe = sender as FrameworkElement;
+            EffectLine el = fe.Parent as EffectLine;
+            PointerPoint ptrPt = e.GetCurrentPoint(el);
+
+            // ManipulationCompleted will handle it if the mouse is pressed
+            if (!ptrPt.Properties.IsLeftButtonPressed)
+                mouseState = CursorState.None;
+        }
+        #endregion
+
+        public EffectLine()
+        {
+            this.InitializeComponent();
+
+            m_ScrollTimerClock = new DispatcherTimer();
+            m_ScrollTimerClock.Tick += Timer_Tick;
+            m_ScrollTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
+            _mouseDirection = 0;
+            _isPressed = false;
+        }
+
+        #region event
         private void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             m_ScrollTimerClock.Start();
@@ -218,75 +281,48 @@ namespace AuraEditor.UserControls
                 X = RoundToTens(X);
             }
 
-            await MyEffect.Layer.InsertEffectLine(MyEffect);
+            await MyEffect.Layer.InsertTimelineEffect(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;
             this.SetValue(Canvas.ZIndexProperty, 0);
         }
-        private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            FrameworkElement fe = sender as FrameworkElement;
-            EffectLine el = fe.Parent as EffectLine;
-            PointerPoint ptrPt = e.GetCurrentPoint(el);
-            Point position = e.GetCurrentPoint(el).Position;
-
-            if (_isPressed)
-            {
-                // Getting ScrollViewer is speculative, but it do the trick.
-                m_ScrollViewer = FindParentControl<ScrollViewer>(MyEffect.Layer.UI_Track, typeof(ScrollViewer));
-                Point position2 = e.GetCurrentPoint(MyEffect.Layer.UI_Track).Position;
-
-                Rect screenRect = new Rect(
-                    m_ScrollViewer.HorizontalOffset,
-                    m_ScrollViewer.VerticalOffset,
-                    m_ScrollViewer.ActualWidth,
-                    m_ScrollViewer.ActualHeight);
-
-                if (position2.X > screenRect.Right - 100)
-                    _mouseDirection = 3;
-                else if (position2.X < screenRect.Left)
-                    _mouseDirection = 1;
-                else
-                    _mouseDirection = 2;
-            }
-
-            if (ptrPt.Properties.IsLeftButtonPressed)
-                return;
-
-            if (position.X > el.Width - 5)
-            {
-                mouseState = CursorState.SizeRight;
-            }
-            else if (position.X < 5)
-            {
-                mouseState = CursorState.SizeLeft;
-            }
-            else
-            {
-                mouseState = CursorState.SizeAll;
-            }
-        }
-        private void EffectLine_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            FrameworkElement fe = sender as FrameworkElement;
-            EffectLine el = fe.Parent as EffectLine;
-            PointerPoint ptrPt = e.GetCurrentPoint(el);
-
-            // ManipulationCompleted will handle it if the mouse is pressed
-            if (!ptrPt.Properties.IsLeftButtonPressed)
-                mouseState = CursorState.None;
+            MyEffect.Layer.IsChecked = true;
+            MainPage.Self.SelectedEffectLine = MyEffect;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            MainPage.Self.SelectedEffectLine = MyEffect;
+            IsChecked = true;
+        }
+        private void EffectlineRadioButton_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            IsChecked = true;
         }
 
-        private void StatusToggleButton_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void CopyItem_Click(object sender, RoutedEventArgs e)
         {
-            if(e.Key== VirtualKey.Delete) {
-                MyEffect.Layer.DeleteEffectLine(this);
-            }
+            AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
         }
+        private void PasteItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (AuraLayerManager.Self.CopiedEffect == null)
+                return;
+
+            var copy = TimelineEffect.CloneEffect(AuraLayerManager.Self.CopiedEffect);
+            copy.UI.X = this.Right;
+            MyEffect.Layer.AddAndInsertTimelineEffect(copy);
+        }
+        private void CutItem_Click(object sender, RoutedEventArgs e)
+        {
+            AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
+            MyEffect.Layer.DeleteEffectLine(this);
+        }
+        private void DeleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            MyEffect.Layer.DeleteEffectLine(this);
+        }
+        #endregion
     }
 }

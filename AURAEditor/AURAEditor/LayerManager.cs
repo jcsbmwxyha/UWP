@@ -25,6 +25,7 @@ namespace AuraEditor
         private Canvas m_TimelineScaleCanvas;
 
         public ObservableCollection<Layer> Layers { get; set; }
+        public TimelineEffect CopiedEffect;
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
         static public double PixelsPerTimeUnit;
         public double PlayTime
@@ -58,6 +59,7 @@ namespace AuraEditor
             Layers.CollectionChanged += LayersChanged;
             PixelsPerTimeUnit = 200;
         }
+
         #region Layer
         public void AddLayer(Layer layer)
         {
@@ -76,6 +78,7 @@ namespace AuraEditor
             for (int i = 0; i < Layers.Count; i++)
             {
                 Layers[i].Name = "Layer " + (i + 1).ToString();
+                Layers[i].IsChecked = false;
                 m_TrackStackPanel.Children.Add(Layers[i].UI_Track);
                 m_BackgroundStackPanel.Children.Add(Layers[i].UI_Background);
             }
@@ -84,7 +87,6 @@ namespace AuraEditor
             List<LayerTitle> items = FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
             foreach (var item in items)
             {
-                item.IsChecked = false;
                 item.Update();
             }
 
@@ -94,29 +96,32 @@ namespace AuraEditor
         {
             return Layers.Count;
         }
-        public Layer GetSelectedLayer()
+        public Layer GetCheckedLayer()
         {
-            List<LayerTitle> layers =
-                FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
-
-            foreach (var layer in layers)
+            foreach (var layer in Layers)
             {
                 if (layer.IsChecked == true)
-                    return layer.DataContext as Layer;
+                    return layer;
             }
 
             return null;
         }
-        public void UnselectAllLayers()
+        public void UncheckOthers(Layer layer)
         {
-            List<LayerTitle> layers =
-                FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
+            foreach (var l in Layers)
+            {
+                if (l.Equals(layer))
+                    continue;
 
-            foreach (var layer in layers)
+                l.IsChecked = false;
+            }
+        }
+        public void UncheckAllLayers()
+        {
+            foreach (var layer in Layers)
             {
                 layer.IsChecked = false;
             }
-
             m_LayerListView.SelectedIndex = -1;
         }
         public void Clean()

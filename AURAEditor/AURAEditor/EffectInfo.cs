@@ -1,14 +1,15 @@
-﻿using Windows.UI;
-using static AuraEditor.Common.XmlHelper;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml;
+using Windows.UI;
+using AuraEditor.Common;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
-using System.Xml;
-using AuraEditor.Common;
-using System.Collections.Generic;
+using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor
 {
-    public class EffectInfo
+    public class EffectInfo : ICloneable
     {
         public string Name;
         public int Type;
@@ -722,6 +723,11 @@ namespace AuraEditor
             effectNode.AppendChild(colorSegmentationNode);
 
             return effectNode;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

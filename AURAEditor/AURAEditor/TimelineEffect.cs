@@ -52,11 +52,10 @@ namespace AuraEditor
             }
         }
 
-        public TimelineEffect(Layer layer, int effectType) : base(layer, effectType)
+        public TimelineEffect(int effectType) : base(effectType)
         {
             UI = CreateEffectUI(effectType);
             UI.DataContext = this;
-            UI.X = (int)Layer.GetFirstFreeRoomPosition();
             DurationTime = 1000; // 1s
         }
         private EffectLine CreateEffectUI(int effectType)
@@ -65,7 +64,6 @@ namespace AuraEditor
             {
                 Height = 34,
                 Width = AuraLayerManager.GetPixelsPerSecond(),
-                HorizontalAlignment = HorizontalAlignment.Center,
                 ManipulationMode = ManipulationModes.TranslateX
             };
 
@@ -73,6 +71,16 @@ namespace AuraEditor
             ct.TranslateY = 8;
 
             return el;
+        }
+
+        static public TimelineEffect CloneEffect(TimelineEffect copy)
+        {
+            TimelineEffect target = new TimelineEffect(copy.Type);
+
+            target.Info = copy.Info.Clone() as EffectInfo;
+            target.DurationTime = copy.DurationTime;
+
+            return target;
         }
     }
 }

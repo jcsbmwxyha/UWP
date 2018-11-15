@@ -15,5 +15,13 @@
             PointerPressed="Track_PointerPressed"
             PointerEntered="Track_PointerEntered"
             PointerExited="Track_PointerExited">
+        <Canvas.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="Copy" IsEnabled="False"/>
+                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True"/>
+                <MenuFlyoutItem Text="Cut" IsEnabled="False"/>
+                <MenuFlyoutItem Text="Delete" IsEnabled="False"/>
+            </MenuFlyout>
+        </Canvas.ContextFlyout>
     </Canvas>
 </UserControl>

@@ -21,10 +21,11 @@
             <BitmapImage x:Key="MPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
             <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
 
-            <Style x:Key="EffectLineStyle"  TargetType="ToggleButton">
+            <Style x:Key="EffectLineStyle"  TargetType="RadioButton">
+                <Setter Property="MinWidth" Value="36" />
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
+                        <ControlTemplate TargetType="RadioButton">
                             <Grid>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup>
@@ -74,21 +75,30 @@
         <CompositeTransform/>
     </UserControl.RenderTransform>
 
-    <ToggleButton Name="StatusToggleButton"
-                  HorizontalAlignment="Left"
-                  Background="DarkBlue"
-                  Click="EffectLine_Click"
-                  ManipulationMode="TranslateX"
-                  ManipulationStarted="EffectLine_ManipulationStarted"
-                  ManipulationDelta="EffectLine_ManipulationDelta"
-                  ManipulationCompleted="EffectLine_ManipulationCompleted"
-                  PointerMoved="EffectLine_PointerMoved"
-                  PointerExited="EffectLine_PointerExited"
-                  KeyDown="StatusToggleButton_KeyDown"
-                  Style="{StaticResource EffectLineStyle}"
-                  Content="{x:Bind MyEffect.Name}">
-        <ToggleButton.RenderTransform>
+    <RadioButton Name="EffectlineRadioButton"
+                 HorizontalAlignment="Left"
+                 ManipulationMode="TranslateX"
+                 ManipulationStarted="EffectLine_ManipulationStarted"
+                 ManipulationDelta="EffectLine_ManipulationDelta"
+                 ManipulationCompleted="EffectLine_ManipulationCompleted"
+                 Click="EffectLine_Click"
+                 RightTapped="EffectlineRadioButton_RightTapped"
+                 PointerMoved="EffectLine_PointerMoved"
+                 PointerExited="EffectLine_PointerExited"
+                 Checked="EffectlineRadioButton_Checked"
+                 GroupName="Effectline"
+                 Style="{StaticResource EffectLineStyle}"
+                 Content="{x:Bind MyEffect.Name}">
+        <RadioButton.RenderTransform>
             <CompositeTransform/>
-        </ToggleButton.RenderTransform>
-    </ToggleButton>
+        </RadioButton.RenderTransform>
+        <RadioButton.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="Copy" Click="CopyItem_Click" IsEnabled="True"/>
+                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True"/>
+                <MenuFlyoutItem Text="Cut" Click="CutItem_Click" IsEnabled="True"/>
+                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click" IsEnabled="True"/>
+            </MenuFlyout>
+        </RadioButton.ContextFlyout>
+    </RadioButton>
 </UserControl>

@@ -10,7 +10,7 @@ namespace AuraEditor
 {
     public class TriggerEffect : Effect
     {
-        public TriggerEffect(Layer layer, int effectType) : base(layer, effectType) {}
-        public TriggerEffect(Layer layer, string effectName) : base(layer, effectName) {}
+        public TriggerEffect(int effectType) : base(effectType) {}
+        public TriggerEffect(string effectName) : base(effectName) {}
     }
 }

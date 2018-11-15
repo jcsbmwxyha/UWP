@@ -14,6 +14,7 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Math2;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Imaging;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -21,7 +22,7 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class TriggerDialog : ContentDialog
     {
-        private Layer m_DeviceLayer;
+        private Layer m_Layer;
         private ObservableCollection<TriggerEffect> m_EffectList;
         private string defaultEffect;
 
@@ -61,14 +62,14 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
             SetDefaultPattern();
 
-            m_DeviceLayer = layer;
-            TriggerActionButton.Content = m_DeviceLayer.TriggerAction;
+            m_Layer = layer;
+            TriggerActionButton.Content = m_Layer.TriggerAction;
 
             m_EffectList = new ObservableCollection<TriggerEffect>();
 
-            if (m_DeviceLayer.TriggerEffects != null)
+            if (m_Layer.TriggerEffects != null)
             {
-                foreach (var e in m_DeviceLayer.TriggerEffects)
+                foreach (var e in m_Layer.TriggerEffects)
                 {
                     m_EffectList.Add(e);
                 }
@@ -107,7 +108,8 @@ namespace AuraEditor.Dialogs
 
         private void AddEffectButton_Click(object sender, RoutedEventArgs e)
         {
-            TriggerEffect effect = new TriggerEffect(m_DeviceLayer, defaultEffect);
+            TriggerEffect effect = new TriggerEffect(defaultEffect);
+            effect.Layer = m_Layer;
             m_EffectList.Add(effect);
         }
         private void FillOutParameterByIndex(int index)
@@ -122,6 +124,16 @@ namespace AuraEditor.Dialogs
             
             RadioButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
             RandomCheckBox.IsChecked = effectInfo.Random;
+            if (RandomCheckBox.IsChecked == true)
+            {
+                RadioButtonBg.Opacity = 0.5;
+                RadioButtonBg.IsEnabled = false;
+            }
+            else
+            {
+                RadioButtonBg.Opacity = 1;
+                RadioButtonBg.IsEnabled = true;
+            }
             SpeedSlider.Value = effectInfo.Speed;
         }
 
@@ -165,7 +177,7 @@ namespace AuraEditor.Dialogs
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            m_DeviceLayer.TriggerEffects = m_EffectList.ToList();
+            m_Layer.TriggerEffects = m_EffectList.ToList();
             this.Hide();
         }
 
@@ -179,11 +191,18 @@ namespace AuraEditor.Dialogs
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
         {
-            m_DeviceLayer.TriggerEffects = m_EffectList.ToList();
-            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c, m_DeviceLayer);
+            m_Layer.TriggerEffects = m_EffectList.ToList();
+            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c, m_Layer);
             await colorPickerDialog.ShowAsync();
 
-            return colorPickerDialog.CurrentColor;
+            if (colorPickerDialog.ColorPickerResult)
+            {
+                return colorPickerDialog.CurrentColor;
+            }
+            else
+            {
+                return colorPickerDialog.PreColor;
+            }
         }
         private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
         {
@@ -191,13 +210,13 @@ namespace AuraEditor.Dialogs
             if (RandomCheckBox.IsChecked == true)
             {
                 info.Random = true;
-                RadioButtonBg.Background = new SolidColorBrush(Colors.Gray);
+                RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
                 info.Random = false;
-                RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
+                RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
         }
@@ -208,6 +227,24 @@ namespace AuraEditor.Dialogs
             Slider slider = sender as Slider;
             if (slider != null)
             {
+                if (slider.Value == 1)
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                }
+                else if (slider.Value == 2)
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                }
+                else
+                {
+                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+                }
                 info.Speed = (int)slider.Value;
             }
         }
@@ -442,7 +479,7 @@ namespace AuraEditor.Dialogs
             var item = sender as MenuFlyoutItem;
             string selectedAction = item.Text;
             TriggerActionButton.Content = selectedAction;
-            m_DeviceLayer.TriggerAction = selectedAction;
+            m_Layer.TriggerAction = selectedAction;
         }
     }
 }
