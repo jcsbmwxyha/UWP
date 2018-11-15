@@ -380,25 +380,20 @@ namespace FrameCoordinatesGenerator
                 if (i == 0)
                 {
                     group.Add(rects[i]);
-                    continue;
                 }
-                else if (rects[i].Top - rects[i - 1].Top > offset)
+                else if (rects[i].Top - rects[i - 1].Top <= offset)
+                {
+                    group.Add(rects[i]);
+                }
+                else
                 {
                     result.AddRange(SortByX(group));
                     group.Clear();
                     group.Add(rects[i]);
                 }
-                else if (i == rects.Count - 1)
-                {
-                    group.Add(rects[i]);
-                    result.AddRange(SortByX(group));
-                }
-                else
-                {
-                    group.Add(rects[i]);
-                }
             }
 
+            result.AddRange(SortByX(group));
             return result;
         }
         private List<Rect> SortByX(List<Rect> rects)
