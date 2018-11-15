@@ -289,7 +289,7 @@ namespace AuraEditor.UserControls
         }
         private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            MyEffect.Layer.IsChecked = true;
+            AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
             MainPage.Self.SelectedEffectLine = MyEffect;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)

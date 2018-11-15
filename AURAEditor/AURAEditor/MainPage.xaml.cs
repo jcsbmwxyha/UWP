@@ -65,11 +65,16 @@ namespace AuraEditor
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.X)
             {
-                g_PressX = true;
+                if (g_PressCtrl == true)
+                    LayerManager.CopiedEffect = SelectedEffectLine;
+
+                Layer layer = SelectedEffectLine.Layer;
+                    layer.DeleteEffectLine(SelectedEffectLine.UI);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.C)
             {
-                g_PressC = true;
+                if (g_PressCtrl == true)
+                    LayerManager.CopiedEffect = SelectedEffectLine;
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
@@ -93,18 +98,6 @@ namespace AuraEditor
             else if (args.VirtualKey == Windows.System.VirtualKey.Control)
             {
                 g_PressCtrl = false;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.X)
-            {
-                g_PressX = false;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.C)
-            {
-                g_PressC = false;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.V)
-            {
-                g_PressV = false;
             }
         }
         #endregion
@@ -314,7 +307,7 @@ namespace AuraEditor
         }
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            Layer layer = LayerManager.GetCheckedLayer();
+            Layer layer = LayerManager.CheckedLayer;
             if (layer != null)
             {
                 LayerManager.RemoveLayer(layer);
@@ -334,7 +327,7 @@ namespace AuraEditor
         {
             if (SpaceManager.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                Layer layer = LayerManager.GetCheckedLayer();
+                Layer layer = LayerManager.CheckedLayer;
                 List<int> selectedIndex;
 
                 foreach (Device d in SpaceManager.GlobalDevices)

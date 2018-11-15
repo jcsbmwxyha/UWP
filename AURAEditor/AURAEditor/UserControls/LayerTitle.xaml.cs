@@ -35,17 +35,17 @@ namespace AuraEditor.UserControls
                     m_Layer.Eye = true;
             }
 
-            m_Layer.IsChecked = true;
+            AuraLayerManager.Self.CheckedLayer = m_Layer;
         }
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            m_Layer.IsChecked = true;
+            AuraLayerManager.Self.CheckedLayer = m_Layer;
             AuraSpaceManager.Self.ReEditZones_Start(m_Layer);
             MainPage.Self.ShowReEditMask(m_Layer);
         }
         private async void TriggerDialogButton_Click(object sender, RoutedEventArgs e)
         {
-            m_Layer.IsChecked = true;
+            AuraLayerManager.Self.CheckedLayer = m_Layer;
 
             ContentDialog triggerDialog = new TriggerDialog(m_Layer);
             await triggerDialog.ShowAsync();
@@ -67,18 +67,18 @@ namespace AuraEditor.UserControls
 
         private void MyGrid_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            m_Layer.IsChecked = true;
+            AuraLayerManager.Self.CheckedLayer = m_Layer;
         }
         private void MyGrid_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (m_Layer.IsChecked == true)
+            if (AuraLayerManager.Self.CheckedLayer == m_Layer)
                 m_Layer.UI_Background.GoToState("CheckedPointerOver");
             else
                 m_Layer.UI_Background.GoToState("PointerOver");
         }
         private void MyGrid_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (m_Layer.IsChecked == true)
+            if (AuraLayerManager.Self.CheckedLayer == m_Layer)
                 m_Layer.UI_Background.GoToState("Checked");
             else
                 m_Layer.UI_Background.GoToState("Normal");

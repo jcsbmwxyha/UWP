@@ -25,6 +25,43 @@ namespace AuraEditor
         private Canvas m_TimelineScaleCanvas;
 
         public ObservableCollection<Layer> Layers { get; set; }
+        private Layer _checkedLayer;
+        public Layer CheckedLayer
+        {
+            get
+            {
+                return _checkedLayer;
+            }
+            set
+            {
+                if (_checkedLayer != value)
+                {
+                    if (value != null)
+                    {
+                        value.UI_Background.GoToState("Checked");
+                        AuraSpaceManager.Self.WatchLayer(value);
+
+                        var effect = value.TimelineEffects.Find(eff => eff.UI.IsChecked == true);
+
+                        if (effect == null)
+                            effect = value.FindFirstEffectOnTheRight(0);
+
+                        if (effect != null)
+                            effect.UI.IsChecked = true;
+                        else
+                            MainPage.Self.SelectedEffectLine = null;
+                    }
+
+                    if (_checkedLayer != null)
+                    {
+                        _checkedLayer.UI_Background.GoToState("Normal");
+                    }
+
+                    _checkedLayer = value;
+                }
+            }
+        }
+
         public TimelineEffect CopiedEffect;
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
         static public double PixelsPerTimeUnit;
@@ -74,11 +111,11 @@ namespace AuraEditor
             m_LayerListView.ItemsSource = Layers;
             m_TrackStackPanel.Children.Clear();
             m_BackgroundStackPanel.Children.Clear();
+            CheckedLayer = null;
 
             for (int i = 0; i < Layers.Count; i++)
             {
                 Layers[i].Name = "Layer " + (i + 1).ToString();
-                Layers[i].IsChecked = false;
                 m_TrackStackPanel.Children.Add(Layers[i].UI_Track);
                 m_BackgroundStackPanel.Children.Add(Layers[i].UI_Background);
             }
@@ -95,34 +132,6 @@ namespace AuraEditor
         public int GetLayerCount()
         {
             return Layers.Count;
-        }
-        public Layer GetCheckedLayer()
-        {
-            foreach (var layer in Layers)
-            {
-                if (layer.IsChecked == true)
-                    return layer;
-            }
-
-            return null;
-        }
-        public void UncheckOthers(Layer layer)
-        {
-            foreach (var l in Layers)
-            {
-                if (l.Equals(layer))
-                    continue;
-
-                l.IsChecked = false;
-            }
-        }
-        public void UncheckAllLayers()
-        {
-            foreach (var layer in Layers)
-            {
-                layer.IsChecked = false;
-            }
-            m_LayerListView.SelectedIndex = -1;
         }
         public void Clean()
         {

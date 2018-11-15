@@ -116,7 +116,7 @@ namespace AuraEditor
         {
             if (AuraLayerManager.Self != null)
             {
-                AuraLayerManager.Self.UncheckAllLayers();
+                AuraLayerManager.Self.CheckedLayer = null;
                 UnselectAllZones();
                 MainPage.Self.SelectedEffectLine = null;
             }
@@ -377,7 +377,7 @@ namespace AuraEditor
             UnselectAllZones();
 
             if (layer == null)
-                layer = AuraLayerManager.Self.GetCheckedLayer();
+                layer = AuraLayerManager.Self.CheckedLayer;
             if (layer == null)
                 return;
 

@@ -28,41 +28,6 @@ namespace AuraEditor
             }
         }
 
-        private bool isChecked;
-        public bool IsChecked
-        {
-            get { return isChecked; }
-            set
-            {
-                if (isChecked != value)
-                {
-
-                    if (value == true)
-                    {
-                        AuraLayerManager.Self.UncheckOthers(this);
-                        UI_Background.GoToState("Checked");
-                        AuraSpaceManager.Self.WatchLayer(this);
-
-                        var effect = TimelineEffects.Find(eff => eff.UI.IsChecked == true);
-
-                        if (effect == null)
-                            effect = FindFirstEffectOnTheRight(0);
-
-                        if (effect != null)
-                            effect.UI.IsChecked = true;
-                        else
-                            MainPage.Self.SelectedEffectLine = null;
-                    }
-                    else
-                    {
-                        UI_Background.GoToState("Normal");
-                    }
-
-                    isChecked = value;
-                }
-            }
-        }
-
         public List<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
 
