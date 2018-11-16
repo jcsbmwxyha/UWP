@@ -1,27 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 using System.Runtime.InteropServices;
 using Windows.UI;
 using AuraEditor.Common;
 using Windows.UI.Xaml.Media.Animation;
+using static AuraEditor.Common.AuraEditorColorHelper;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -86,35 +78,18 @@ namespace AuraEditor.Dialogs
         public Color PreColor { get; set; }
         public Boolean ColorPickerResult;
 
-        public class RecentColor
-        {
-            public int ColorA { get; set; }
-            public int ColorR { get; set; }
-            public int ColorG { get; set; }
-            public int ColorB { get; set; }
-            public RecentColor()
-            {
-                ColorA = 0;
-                ColorR = -1;
-                ColorG = -1;
-                ColorB = -1;
-            }
-        }
-
-        public static RecentColor[] g_RecentColor = new RecentColor[8];
         public int ComeFrom = 1;
 
         public ColorPickerDialog(Color c)
         {
             this.InitializeComponent();
+            InitRecentColor();
             ComeFrom = 1;
             RecentCount = 0;
             _preAngle = 0;
             _preCirclePoint = new Point(0, 0);
             PreColor = c;
             _currentColor = PreColor;
-            for (int i = 0; i < 8; i++)
-                g_RecentColor[i] = new RecentColor();
             Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
             Task curtask = Task.Run(async () => await CreateColorRingImage());
             curtask.Wait();
@@ -124,19 +99,18 @@ namespace AuraEditor.Dialogs
             curtask2.Wait();
         }
 
-        private Layer m_DeviceLayer;
-        public ColorPickerDialog(Color c, Layer DeviceLayer)
+        private TriggerDialog g_TD;
+        public ColorPickerDialog(Color c, TriggerDialog TD)
         {
             this.InitializeComponent();
+            InitRecentColor();
             ComeFrom = 2;
-            m_DeviceLayer = DeviceLayer;
             RecentCount = 0;
             _preAngle = 0;
             _preCirclePoint = new Point(0, 0);
             PreColor = c;
             _currentColor = PreColor;
-            for (int i = 0; i < 8; i++)
-                g_RecentColor[i] = new RecentColor();
+            g_TD = TD;
             Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
             Task curtask = Task.Run(async () => await CreateColorRingImage());
             curtask.Wait();
@@ -195,8 +169,7 @@ namespace AuraEditor.Dialogs
             {
                 //From Trigger Dialog
                 this.Hide();
-                ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
-                await triggerDialog.ShowAsync();
+                await g_TD.ShowAsync();
             }
             else
             {
@@ -217,8 +190,7 @@ namespace AuraEditor.Dialogs
             {
                 //From Trigger Dialog
                 this.Hide();
-                ContentDialog triggerDialog = new TriggerDialog(m_DeviceLayer);
-                await triggerDialog.ShowAsync();
+                await g_TD.ShowAsync();
             }
             else
             {
@@ -365,20 +337,6 @@ namespace AuraEditor.Dialogs
             }
             squareSoftwareBitmap = softwareBitmap;
         }
-
-        //public async Task<SoftwareBitmap> CreateImage(string imagepath)
-        //{
-        //    SoftwareBitmap softwareBitmap;
-        //    StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-        //    StorageFile ImgFile = await InstallationFolder.GetFileAsync(imagepath);
-
-        //    using (IRandomAccessStream printingFileStream = await ImgFile.OpenAsync(FileAccessMode.Read))
-        //    {
-        //        BitmapDecoder printingDecoder = await BitmapDecoder.CreateAsync(printingFileStream);
-        //        softwareBitmap = await printingDecoder.GetSoftwareBitmapAsync();
-        //    }
-        //    return softwareBitmap;
-        //}
 
         private async void ChangeColorRingColor()
         {
@@ -658,15 +616,29 @@ namespace AuraEditor.Dialogs
             _squarePressing = false;
         }
 
-        private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private async void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             TextBox textBoxContent = sender as TextBox;
             //Press ESC to exit window
-            //if (e.Key == Windows.System.VirtualKey.Escape)
-            //{
-            //    ColorPickerResult = false;
-            //    this.Hide();
-            //}
+            if (e.Key == Windows.System.VirtualKey.Escape)
+            {
+                ColorPickerResult = false;
+                if (ComeFrom == 1)
+                {
+                    //From Main Page
+                    this.Hide();
+                }
+                else if (ComeFrom == 2)
+                {
+                    //From Trigger Dialog
+                    this.Hide();
+                    await g_TD.ShowAsync();
+                }
+                else
+                {
+                    this.Hide();
+                }
+            }
 
             if (!e.Key.ToString().Contains("Number"))
             {
@@ -758,14 +730,12 @@ namespace AuraEditor.Dialogs
         {
             for (int i = 0; i < 8; i++)
             {
-                if (g_RecentColor[i].ColorR == -1)
+                if (MainPage.Self.g_RecentColor[i].HexColor == "#00000000")
                 {
                     RecentCount = i;
                     break;
                 }
-                else if (g_RecentColor[i].ColorR == Math2.HSVToRGB(Hue, Saturation, Value).R
-                    && g_RecentColor[i].ColorG == Math2.HSVToRGB(Hue, Saturation, Value).G
-                    && g_RecentColor[i].ColorB == Math2.HSVToRGB(Hue, Saturation, Value).B)
+                else if (HexToColor(MainPage.Self.g_RecentColor[i].HexColor) == Math2.HSVToRGB(Hue, Saturation, Value))
                 {
                     RecentCount = i;
                     break;
@@ -780,17 +750,14 @@ namespace AuraEditor.Dialogs
             {
                 if (i == 0)
                 {
-                    g_RecentColor[i].ColorA = 255;
-                    g_RecentColor[i].ColorR = Math2.HSVToRGB(Hue, Saturation, Value).R;
-                    g_RecentColor[i].ColorG = Math2.HSVToRGB(Hue, Saturation, Value).G;
-                    g_RecentColor[i].ColorB = Math2.HSVToRGB(Hue, Saturation, Value).B;
+                    MainPage.Self.g_RecentColor[i].HexColor = ColorToHex(Math2.HSVToRGB(Hue, Saturation, Value).A,
+                                                                        Math2.HSVToRGB(Hue, Saturation, Value).R,
+                                                                        Math2.HSVToRGB(Hue, Saturation, Value).G,
+                                                                        Math2.HSVToRGB(Hue, Saturation, Value).B);
                 }
                 else
                 {
-                    g_RecentColor[i].ColorA = g_RecentColor[i - 1].ColorA;
-                    g_RecentColor[i].ColorR = g_RecentColor[i - 1].ColorR;
-                    g_RecentColor[i].ColorG = g_RecentColor[i - 1].ColorG;
-                    g_RecentColor[i].ColorB = g_RecentColor[i - 1].ColorB;
+                    MainPage.Self.g_RecentColor[i].HexColor = MainPage.Self.g_RecentColor[i - 1].HexColor;
                 }
             }
 
@@ -835,38 +802,74 @@ namespace AuraEditor.Dialogs
 
                 }
             }
-            RBtnRecent_1.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[0].ColorA,
-                                                                         (byte)g_RecentColor[0].ColorR,
-                                                                         (byte)g_RecentColor[0].ColorG,
-                                                                         (byte)g_RecentColor[0].ColorB));
-            RBtnRecent_2.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[1].ColorA,
-                                                                         (byte)g_RecentColor[1].ColorR,
-                                                                         (byte)g_RecentColor[1].ColorG,
-                                                                         (byte)g_RecentColor[1].ColorB));
-            RBtnRecent_3.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[2].ColorA,
-                                                                         (byte)g_RecentColor[2].ColorR,
-                                                                         (byte)g_RecentColor[2].ColorG,
-                                                                         (byte)g_RecentColor[2].ColorB));
-            RBtnRecent_4.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[3].ColorA,
-                                                                         (byte)g_RecentColor[3].ColorR,
-                                                                         (byte)g_RecentColor[3].ColorG,
-                                                                         (byte)g_RecentColor[3].ColorB));
-            RBtnRecent_5.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[4].ColorA,
-                                                                         (byte)g_RecentColor[4].ColorR,
-                                                                         (byte)g_RecentColor[4].ColorG,
-                                                                         (byte)g_RecentColor[4].ColorB));
-            RBtnRecent_6.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[5].ColorA,
-                                                                         (byte)g_RecentColor[5].ColorR,
-                                                                         (byte)g_RecentColor[5].ColorG,
-                                                                         (byte)g_RecentColor[5].ColorB));
-            RBtnRecent_7.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[6].ColorA,
-                                                                         (byte)g_RecentColor[6].ColorR,
-                                                                         (byte)g_RecentColor[6].ColorG,
-                                                                         (byte)g_RecentColor[6].ColorB));
-            RBtnRecent_8.Background = new SolidColorBrush(Color.FromArgb((byte)g_RecentColor[7].ColorA,
-                                                                         (byte)g_RecentColor[7].ColorR,
-                                                                         (byte)g_RecentColor[7].ColorG,
-                                                                         (byte)g_RecentColor[7].ColorB));
+            RBtnRecent_1.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[0].HexColor));
+            RBtnRecent_2.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[1].HexColor));
+            RBtnRecent_3.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[2].HexColor));
+            RBtnRecent_4.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[3].HexColor));
+            RBtnRecent_5.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[4].HexColor));
+            RBtnRecent_6.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[5].HexColor));
+            RBtnRecent_7.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[6].HexColor));
+            RBtnRecent_8.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[7].HexColor));
+        }
+
+        private void InitRecentColor()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (MainPage.Self.g_RecentColor[i].HexColor != "#00000000")
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            RBtnRecent_1.Visibility = Visibility.Visible;
+                            RBtnRecent_1.IsEnabled = true;
+                            break;
+                        case 1:
+                            RBtnRecent_2.Visibility = Visibility.Visible;
+                            RBtnRecent_2.IsEnabled = true;
+                            break;
+                        case 2:
+                            RBtnRecent_3.Visibility = Visibility.Visible;
+                            RBtnRecent_3.IsEnabled = true;
+                            break;
+                        case 3:
+                            RBtnRecent_4.Visibility = Visibility.Visible;
+                            RBtnRecent_4.IsEnabled = true;
+                            break;
+                        case 4:
+                            RBtnRecent_5.Visibility = Visibility.Visible;
+                            RBtnRecent_5.IsEnabled = true;
+                            break;
+                        case 5:
+                            RBtnRecent_6.Visibility = Visibility.Visible;
+                            RBtnRecent_6.IsEnabled = true;
+                            break;
+                        case 6:
+                            RBtnRecent_7.Visibility = Visibility.Visible;
+                            RBtnRecent_7.IsEnabled = true;
+                            break;
+                        case 7:
+                            RBtnRecent_8.Visibility = Visibility.Visible;
+                            RBtnRecent_8.IsEnabled = true;
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+                else
+                {
+                    break;
+                }
+                RBtnRecent_1.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[0].HexColor));
+                RBtnRecent_2.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[1].HexColor));
+                RBtnRecent_3.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[2].HexColor));
+                RBtnRecent_4.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[3].HexColor));
+                RBtnRecent_5.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[4].HexColor));
+                RBtnRecent_6.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[5].HexColor));
+                RBtnRecent_7.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[6].HexColor));
+                RBtnRecent_8.Background = new SolidColorBrush(HexToColor(MainPage.Self.g_RecentColor[7].HexColor));
+            }
         }
     }
 }

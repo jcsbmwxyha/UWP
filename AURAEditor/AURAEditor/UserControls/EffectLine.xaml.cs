@@ -249,7 +249,7 @@ namespace AuraEditor.UserControls
                     if (X <= 0)
                         return;
                     // We should check if it will overlap another
-                    if (MyEffect.Layer.FindEffectByPosition(X + move) != null)
+                    if (MyEffect.Layer.WhichIsOn(X + move) != null)
                         return;
                 }
                 if (Width - move <= 50)
@@ -281,7 +281,7 @@ namespace AuraEditor.UserControls
                 X = RoundToTens(X);
             }
 
-            await MyEffect.Layer.InsertTimelineEffect(MyEffect);
+            await MyEffect.Layer.TryPlaceEffect(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;
@@ -290,15 +290,14 @@ namespace AuraEditor.UserControls
         private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
-            MainPage.Self.SelectedEffectLine = MyEffect;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            IsChecked = true;
+            AuraLayerManager.Self.CheckedEffect = MyEffect;
         }
         private void EffectlineRadioButton_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            IsChecked = true;
+            AuraLayerManager.Self.CheckedEffect = MyEffect;
         }
 
         private void CopyItem_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.EffectHelper;
@@ -11,6 +12,7 @@ namespace AuraEditor.UserControls
     public sealed partial class LayerTrack : UserControl
     {
         private Layer m_Layer { get { return this.DataContext as Layer; } }
+        private Point insertPosition;
 
         public LayerTrack()
         {
@@ -51,14 +53,18 @@ namespace AuraEditor.UserControls
 
                 TimelineEffect effect = new TimelineEffect(type);
                 m_Layer.AddTimelineEffect(effect);
-                effect.UI.IsChecked = true;
+                AuraLayerManager.Self.CheckedEffect = effect;
                 MainPage.Self.NeedSave = true;
+                var p = e.GetPosition(this);
             }
         }
 
         private void Track_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             AuraLayerManager.Self.CheckedLayer = m_Layer;
+
+            var fe = sender as FrameworkElement;
+            insertPosition = e.GetCurrentPoint(fe).Position;
         }
         private void Track_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {

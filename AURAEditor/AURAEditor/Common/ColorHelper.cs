@@ -171,5 +171,11 @@ namespace AuraEditor.Common
             }
             return Color.FromArgb(alpha, red, green, blue);
         }
+
+        public static string ColorToHex(byte a, byte r, byte g, byte b)
+        {
+            string hex = "#" + a.ToString("X2") + r.ToString("X2") + g.ToString("X2") + b.ToString("X2");
+            return hex;
+        }
     }
 }

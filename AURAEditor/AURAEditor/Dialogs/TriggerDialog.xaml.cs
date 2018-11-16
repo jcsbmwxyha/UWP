@@ -121,18 +121,18 @@ namespace AuraEditor.Dialogs
         {
             string effName = GetEffectName(effectInfo.Type);
             EffectSelectionButton.Content = effName;
-            
-            RadioButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
+
+            TriggerColorPickerButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
             RandomCheckBox.IsChecked = effectInfo.Random;
             if (RandomCheckBox.IsChecked == true)
             {
-                RadioButtonBg.Opacity = 0.5;
-                RadioButtonBg.IsEnabled = false;
+                TriggerColorPickerButtonBg.Opacity = 0.5;
+                TriggerColorPickerButtonBg.IsEnabled = false;
             }
             else
             {
-                RadioButtonBg.Opacity = 1;
-                RadioButtonBg.IsEnabled = true;
+                TriggerColorPickerButtonBg.Opacity = 1;
+                TriggerColorPickerButtonBg.IsEnabled = true;
             }
             SpeedSlider.Value = effectInfo.Speed;
         }
@@ -185,14 +185,15 @@ namespace AuraEditor.Dialogs
         {
             EffectInfo Info = m_EffectList[SelectedIndex].Info;
             this.Hide();
-            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
+            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)TriggerColorPickerButtonBg.Background).Color);
             Info.InitColor = newColor;
-            RadioButtonBg.Background = new SolidColorBrush(newColor);
+            TriggerColorPickerButtonBg.Background = new SolidColorBrush(Info.InitColor);
+
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
         {
             m_Layer.TriggerEffects = m_EffectList.ToList();
-            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c, m_Layer);
+            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c, this);
             await colorPickerDialog.ShowAsync();
 
             if (colorPickerDialog.ColorPickerResult)
@@ -210,14 +211,14 @@ namespace AuraEditor.Dialogs
             if (RandomCheckBox.IsChecked == true)
             {
                 info.Random = true;
-                RadioButtonBg.Opacity = 0.5;
-                RadioButtonBg.IsEnabled = false;
+                TriggerColorPickerButtonBg.Opacity = 0.5;
+                TriggerColorPickerButtonBg.IsEnabled = false;
             }
             else
             {
                 info.Random = false;
-                RadioButtonBg.Opacity = 1;
-                RadioButtonBg.IsEnabled = true;
+                TriggerColorPickerButtonBg.Opacity = 1;
+                TriggerColorPickerButtonBg.IsEnabled = true;
             }
         }
 

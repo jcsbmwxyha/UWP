@@ -34,35 +34,70 @@ namespace AuraEditor
             }
             set
             {
-                if (_checkedLayer != value)
+                if (_checkedLayer == value)
+                    return;
+                
+                if (_checkedLayer != null)
                 {
-                    if (value != null)
+                    _checkedLayer.UI_Background.GoToState("Normal");
+                }
+
+                if (value != null)
+                {
+                    value.UI_Background.GoToState("Checked");
+                    AuraSpaceManager.Self.WatchLayer(value);
+                    
+                    if (CheckedEffect == null || CheckedEffect.Layer != value)
                     {
-                        value.UI_Background.GoToState("Checked");
-                        AuraSpaceManager.Self.WatchLayer(value);
+                        var find = value.GetFirstOnRight(0);
 
-                        var effect = value.TimelineEffects.Find(eff => eff.UI.IsChecked == true);
-
-                        if (effect == null)
-                            effect = value.FindFirstEffectOnTheRight(0);
-
-                        if (effect != null)
-                            effect.UI.IsChecked = true;
+                        if (find != null)
+                            CheckedEffect = find;
                         else
-                            MainPage.Self.SelectedEffectLine = null;
+                            CheckedEffect = null;
                     }
+                }
+                else
+                {
+                    CheckedEffect = null;
+                }
 
-                    if (_checkedLayer != null)
+                _checkedLayer = value;
+            }
+        }
+        private TimelineEffect _checkedEffect;
+        public TimelineEffect CheckedEffect
+        {
+            get
+            {
+                return _checkedEffect;
+            }
+            set
+            {
+                if (_checkedEffect == value)
+                    return;
+
+                if (value == null)
+                {
+                    MainPage.Self.ClearEffectInfoGrid();
+
+                    if (_checkedEffect != null)
                     {
-                        _checkedLayer.UI_Background.GoToState("Normal");
+                        _checkedEffect.UI.IsChecked = false;
+                        _checkedEffect = null;
                     }
-
-                    _checkedLayer = value;
+                }
+                else
+                {
+                    _checkedEffect = value;
+                    value.UI.IsChecked = true;
+                    MainPage.Self.UpdateEffectInfoGrid(value);
+                    MainPage.Self.NeedSave = true;
                 }
             }
         }
-
         public TimelineEffect CopiedEffect;
+
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
         static public double PixelsPerTimeUnit;
         public double PlayTime
@@ -135,6 +170,7 @@ namespace AuraEditor
         }
         public void Clean()
         {
+            CheckedLayer = null;
             m_TrackStackPanel.Children.Clear();
             Layers.Clear();
         }

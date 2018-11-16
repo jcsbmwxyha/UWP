@@ -327,6 +327,14 @@ namespace AuraEditor
         {
             g_LocalSettings.Values["SpaceZooming"] = SpaceManager.GetSpaceZoomPercent().ToString();
             g_LocalSettings.Values["LayerLevel"] = LayerZoomSlider.Value.ToString();
+            g_LocalSettings.Values["RecentColor1"] = g_RecentColor[0].HexColor;
+            g_LocalSettings.Values["RecentColor2"] = g_RecentColor[1].HexColor;
+            g_LocalSettings.Values["RecentColor3"] = g_RecentColor[2].HexColor;
+            g_LocalSettings.Values["RecentColor4"] = g_RecentColor[3].HexColor;
+            g_LocalSettings.Values["RecentColor5"] = g_RecentColor[4].HexColor;
+            g_LocalSettings.Values["RecentColor6"] = g_RecentColor[5].HexColor;
+            g_LocalSettings.Values["RecentColor7"] = g_RecentColor[6].HexColor;
+            g_LocalSettings.Values["RecentColor8"] = g_RecentColor[7].HexColor;
         }
         #endregion
 
@@ -531,7 +539,6 @@ namespace AuraEditor
         }
         private void Clean()
         {
-            SelectedEffectLine = null;
             SetLayerButton.IsEnabled = true;
             NeedSave = false;
             CurrentUserFilename = "";

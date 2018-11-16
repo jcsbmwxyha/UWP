@@ -23,32 +23,16 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
-
-        private TimelineEffect _selectedEffectLine;
-        public TimelineEffect SelectedEffectLine
+        
+        public TimelineEffect SelectedEffect
         {
             get
             {
-                return _selectedEffectLine;
+                return LayerManager.CheckedEffect;
             }
             set
             {
-                if (value == null)
-                {
-                    ClearEffectInfoGrid();
-
-                    if (_selectedEffectLine != null)
-                    {
-                        _selectedEffectLine.UI.IsChecked = false;
-                        _selectedEffectLine = null;
-                    }
-                }
-                else
-                {
-                    NeedSave = true;
-                    _selectedEffectLine = value;
-                    UpdateEffectInfoGrid(value);
-                }
+                LayerManager.CheckedEffect = value;
             }
         }
 
@@ -58,7 +42,7 @@ namespace AuraEditor
             ResetBtn.Visibility = Visibility.Collapsed;
             EffectInfoGroup.Visibility = Visibility.Collapsed;
         }
-        private void UpdateEffectInfoGrid(TimelineEffect effect)
+        public void UpdateEffectInfoGrid(TimelineEffect effect)
         {
             ShowEffectInfoGroupsByType(effect.Type);
             UpdateUIEffectContents(effect.Info);
@@ -264,7 +248,7 @@ namespace AuraEditor
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
-            SelectedEffectLine.Info.InitColor = newColor;
+            SelectedEffect.Info.InitColor = newColor;
             RadioButtonBg.Background = new SolidColorBrush(newColor);
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
@@ -285,20 +269,20 @@ namespace AuraEditor
         {
             if (RandomCheckBox.IsChecked == true)
             {
-                SelectedEffectLine.Info.Random = true;
+                SelectedEffect.Info.Random = true;
                 RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
-                SelectedEffectLine.Info.Random = false;
+                SelectedEffect.Info.Random = false;
                 RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
         }
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             Slider slider = sender as Slider;
             if (slider != null)
             {
@@ -331,7 +315,7 @@ namespace AuraEditor
         }
         private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             Slider slider = sender as Slider;
             if (slider != null)
             {
@@ -365,7 +349,7 @@ namespace AuraEditor
             double dy = currentLocation.Y - AngleImgCenter.Y;
             double hue = Math2.ComputeH(dx, dy);
             AngleTextBox.Text = hue.ToString("F0");
-            SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+            SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
         }
         private void AngleBgImg_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -381,7 +365,7 @@ namespace AuraEditor
                 double dy = currentLocation.Y - AngleImgCenter.Y;
                 double hue = Math2.ComputeH(dx, dy);
                 AngleTextBox.Text = hue.ToString("F0");
-                SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
                 AngleStoryboardStart(hue);
             }
         }
@@ -431,11 +415,11 @@ namespace AuraEditor
                     AngleChangeText.Text = "0";
                 }
             }
-            if (SelectedEffectLine != null)
+            if (SelectedEffect != null)
             {
                 if (AngleTextBox.Text != "")
                 {
-                    SelectedEffectLine.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                    SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
                 }
             }
         }
@@ -472,7 +456,7 @@ namespace AuraEditor
         }
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             if ((AngleTextBox.Text != ""))
             {
                 double textIncrease = Convert.ToDouble(AngleTextBox.Text);
@@ -493,7 +477,7 @@ namespace AuraEditor
         }
         private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             if ((AngleTextBox.Text != ""))
             {
                 double textdecrease = Convert.ToDouble(AngleTextBox.Text);
@@ -514,7 +498,7 @@ namespace AuraEditor
         }
         private void DirectionBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             RadioButton directionBtn = sender as RadioButton;
             switch (directionBtn.Name)
             {
@@ -534,7 +518,7 @@ namespace AuraEditor
         }
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             ui.InitColor = Colors.Red;
             ui.Brightness = 3;
             ui.Speed = 1;
@@ -562,7 +546,7 @@ namespace AuraEditor
 
         private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPoint> cp)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             PatternCanvas.Children.Clear();
             foreach (var item in ColorPoints)
             {
@@ -694,7 +678,7 @@ namespace AuraEditor
 
         private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             ToggleSwitch toggleSwitch = sender as ToggleSwitch;
             if (toggleSwitch != null)
             {

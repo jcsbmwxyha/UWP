@@ -235,7 +235,7 @@ namespace AuraEditor
 
         public void ReDrawMultiPointRectangle()
         {
-            EffectInfo ui = SelectedEffectLine.Info;
+            EffectInfo ui = SelectedEffect.Info;
             LinearGradientBrush Pattern = new LinearGradientBrush();
             Pattern.StartPoint = new Point(0, 0.5);
             Pattern.EndPoint = new Point(1, 0.5);

@@ -47,12 +47,21 @@ namespace AuraEditor
         public double _preAngle;
         Point AngleImgCenter;
 
+        public class RecentColor
+        {
+            public string HexColor { get; set; }
+            public RecentColor()
+            {
+                HexColor = "#00000000";
+            }
+        }
+
+        public RecentColor[] g_RecentColor = new RecentColor[8];
+
         #region Key Up & Down
         public bool g_PressShift;
         public bool g_PressCtrl;
-        public bool g_PressX;
-        public bool g_PressC;
-        public bool g_PressV;
+
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Shift)
@@ -66,27 +75,40 @@ namespace AuraEditor
             else if (args.VirtualKey == Windows.System.VirtualKey.X)
             {
                 if (g_PressCtrl == true)
-                    LayerManager.CopiedEffect = SelectedEffectLine;
+                    LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
-                Layer layer = SelectedEffectLine.Layer;
-                    layer.DeleteEffectLine(SelectedEffectLine.UI);
+                Layer layer = SelectedEffect.Layer;
+                    layer.DeleteEffectLine(SelectedEffect.UI);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.C)
             {
                 if (g_PressCtrl == true)
-                    LayerManager.CopiedEffect = SelectedEffectLine;
+                    LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
-                g_PressV = true;
+                if (LayerManager.CopiedEffect == null)
+                    return;
+
+                var copy = TimelineEffect.CloneEffect(LayerManager.CopiedEffect);
+
+                if (SelectedEffect != null)
+                {
+                    copy.UI.X = SelectedEffect.UI.Right;
+                    SelectedEffect.Layer.AddAndInsertTimelineEffect(copy);
+                }
+                else
+                {
+                    LayerManager.CheckedLayer.AddTimelineEffect(TimelineEffect.CloneEffect(copy));
+                }
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Delete)
             {
-                if (SelectedEffectLine == null)
+                if (SelectedEffect == null)
                     return;
 
-                Layer layer = SelectedEffectLine.Layer;
-                layer.DeleteEffectLine(SelectedEffectLine.UI);
+                Layer layer = SelectedEffect.Layer;
+                layer.DeleteEffectLine(SelectedEffect.UI);
             }
         }
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
@@ -106,6 +128,8 @@ namespace AuraEditor
         {
             _instance = this;
             this.InitializeComponent();
+            for (int i = 0; i < 8; i++)
+                g_RecentColor[i] = new RecentColor();
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
             g_PressShift = false;
@@ -167,6 +191,74 @@ namespace AuraEditor
             {
                 LayerZoomSlider.Value = 2;
             }
+
+            #region Recent Color
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor1"] as string);
+            if (successful)
+                g_RecentColor[0].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[0].HexColor = g_LocalSettings.Values["RecentColor1"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor2"] as string);
+            if (successful)
+                g_RecentColor[1].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[1].HexColor = g_LocalSettings.Values["RecentColor2"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor3"] as string);
+            if (successful)
+                g_RecentColor[2].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[2].HexColor = g_LocalSettings.Values["RecentColor3"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor4"] as string);
+            if (successful)
+                g_RecentColor[3].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[3].HexColor = g_LocalSettings.Values["RecentColor4"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor5"] as string);
+            if (successful)
+                g_RecentColor[4].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[4].HexColor = g_LocalSettings.Values["RecentColor5"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor6"] as string);
+            if (successful)
+                g_RecentColor[5].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[5].HexColor = g_LocalSettings.Values["RecentColor6"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor7"] as string);
+            if (successful)
+                g_RecentColor[6].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[6].HexColor = g_LocalSettings.Values["RecentColor7"] as string;
+            }
+
+            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor8"] as string);
+            if (successful)
+                g_RecentColor[7].HexColor = "#00000000";
+            else
+            {
+                g_RecentColor[7].HexColor = g_LocalSettings.Values["RecentColor8"] as string;
+            }
+
+            #endregion
+
         }
 
         #region Framework Element
@@ -302,7 +394,7 @@ namespace AuraEditor
             Layer layer = pair.Value as Layer;
             LayerManager.RemoveLayer(layer);
             SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-            SelectedEffectLine = null;
+            SelectedEffect = null;
             NeedSave = true;
         }
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
@@ -312,7 +404,7 @@ namespace AuraEditor
             {
                 LayerManager.RemoveLayer(layer);
                 SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
-                SelectedEffectLine = null;
+                SelectedEffect = null;
                 NeedSave = true;
             }
         }

@@ -73,6 +73,10 @@ namespace AuraEditor
             return el;
         }
 
+        public void MoveTo(double x)
+        {
+
+        }
         static public TimelineEffect CloneEffect(TimelineEffect copy)
         {
             TimelineEffect target = new TimelineEffect(copy.Type);

@@ -118,7 +118,6 @@ namespace AuraEditor
             {
                 AuraLayerManager.Self.CheckedLayer = null;
                 UnselectAllZones();
-                MainPage.Self.SelectedEffectLine = null;
             }
             m_SetLayerButton.IsEnabled = false;
         }
@@ -298,8 +297,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsCrossing(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsCrossing(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     GlobalDevices.Remove(d);
                     AuraLayerManager.Self.ClearTypeData(d.Type);
@@ -315,8 +314,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsOverlapping(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsOverlapping(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsCrossing(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsCrossing(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     return true;
                 }
@@ -342,8 +341,8 @@ namespace AuraEditor
         {
             foreach (var d in GlobalDevices)
             {
-                if (ControlHelper.IsOverlapping(gridRect.X, gridRect.Width, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsOverlapping(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsCrossing(gridRect.X, gridRect.Width, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsCrossing(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.GridHeight))
                 {
                     return d;
                 }
