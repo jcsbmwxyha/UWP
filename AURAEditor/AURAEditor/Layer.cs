@@ -146,7 +146,7 @@ namespace AuraEditor
         public void AddTimelineEffect(TimelineEffect effect)
         {
             effect.Layer = this;
-            effect.UI.X = GetFirstRoomPosition(effect.UI.Width);
+            effect.ActualX = GetFirstRoomPosition(effect.ActualWidth);
             UI_Track.AddEffectline(effect.UI);
             AnimationStart(effect.UI, "Opacity", 300, 0, 1);
 
