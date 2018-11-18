@@ -16,7 +16,7 @@ namespace AuraEditor
 {
     public class TimelineEffect : Effect
     {
-        private EffectLine UI { get; }
+        public EffectLine UI { get; }
         public override double StartTime
         {
             get
@@ -51,17 +51,6 @@ namespace AuraEditor
                 UI.Width = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
             }
         }
-        public double ActualX
-        {
-            get { return UI.X; }
-            set { UI.X = value; }
-        }
-        public double ActualWidth
-        {
-            get { return UI.Width; }
-            set { UI.Width = value; }
-        }
-        public double ActualRight { get { return ActualX + ActualWidth; } }
 
         public TimelineEffect(int effectType) : base(effectType)
         {
