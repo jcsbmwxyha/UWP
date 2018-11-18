@@ -19,14 +19,14 @@ namespace AuraEditor.UserControls
             this.InitializeComponent();
         }
 
-        public void AddEffectline(EffectLine el)
-        {
-            Track.Children.Add(el);
-        }
-        public void RemoveEffectline(EffectLine el)
-        {
-            Track.Children.Remove(el);
-        }
+        //public void AddEffectline(EffectLine el)
+        //{
+        //    Track.Children.Add(el);
+        //}
+        //public void RemoveEffectline(EffectLine el)
+        //{
+        //    Track.Children.Remove(el);
+        //}
 
         private async void Track_DragOver(object sender, DragEventArgs e)
         {

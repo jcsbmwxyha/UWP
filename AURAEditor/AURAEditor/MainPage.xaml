@@ -1844,7 +1844,7 @@
 
         <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"
                    x:FieldModifier="public"/>
-        <!--<Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
+        <Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>

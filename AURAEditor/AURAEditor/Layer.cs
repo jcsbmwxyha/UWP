@@ -1,6 +1,7 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.UserControls;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Xml;
@@ -11,12 +12,6 @@ using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor
 {
-    public enum LayerVisualStatus
-    {
-        Normal = 0,
-        Hover,
-        Selected,
-    }
     public class Layer : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -28,7 +23,7 @@ namespace AuraEditor
             }
         }
 
-        public List<TimelineEffect> TimelineEffects;
+        public ObservableCollection<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
 
         public LayerTitle UI_Title;
@@ -85,7 +80,7 @@ namespace AuraEditor
         
         public Layer(string name = "")
         {
-            TimelineEffects = new List<TimelineEffect>();
+            TimelineEffects = new ObservableCollection<TimelineEffect>();
             TriggerEffects = new List<TriggerEffect>();
 
             Name = name;
@@ -143,21 +138,23 @@ namespace AuraEditor
         }
 
         #region Track behavior
-        public void AddTimelineEffect(TimelineEffect effect)
+        public void AddTimelineEffect(TimelineEffect eff)
         {
-            effect.Layer = this;
-            effect.UI.X = GetFirstRoomPosition(effect.UI.Width);
-            UI_Track.AddEffectline(effect.UI);
-            AnimationStart(effect.UI, "Opacity", 300, 0, 1);
+            eff.Layer = this;
+            double oneSecLength = AuraLayerManager.PixelsPerTimeUnit / AuraLayerManager.SecondsPerTimeUnit;
+            eff.TestX = GetFirstRoomPosition(oneSecLength);
+            eff.TestW = oneSecLength;
+            //UI_Track.AddEffectline(effect.UI);
+            //AnimationStart(eff.UI, "Opacity", 300, 0, 1);
 
-            TimelineEffects.Add(effect);
+            TimelineEffects.Add(eff);
         }
         public async void AddAndInsertTimelineEffect(TimelineEffect effect)
         {
             effect.Layer = this;
             await TryPlaceEffect(effect);
-            UI_Track.AddEffectline(effect.UI);
-            AnimationStart(effect.UI, "Opacity", 300, 0, 1);
+            //UI_Track.AddEffectline(effect.UI);
+            //AnimationStart(effect.UI, "Opacity", 300, 0, 1);
 
             TimelineEffects.Add(effect);
         }
@@ -169,68 +166,65 @@ namespace AuraEditor
         }
         public async Task TryPlaceEffect(TimelineEffect placedEff)
         {
-            TimelineEffect crossingEL = GetFirstCrossingEffect(placedEff);
+            TimelineEffect crossingEff = GetFirstCrossingEffect(placedEff);
             placedEff.Layer = this;
 
-            if (crossingEL != null)
+            if (crossingEff != null)
             {
-                EffectLine crossingUI = crossingEL.UI;
-                EffectLine placedUI = placedEff.UI;
-
-                if (placedUI.X <= crossingUI.X)
+                if (placedEff.TestX <= crossingEff.TestX)
                 {
-                    double move = placedUI.Right - crossingUI.X;
+                    double move = placedEff.TestRight - crossingEff.TestX;
                     PushAllOnRightSide(placedEff, move);
                 }
-                else if (placedUI.X > crossingUI.X)
+                else if (placedEff.TestX > crossingEff.TestX)
                 {
-                    double source = placedUI.X;
-                    double target = source + crossingUI.Right - placedUI.X;
+                    double source = placedEff.TestX;
+                    double target = source + crossingEff.TestRight - placedEff.TestX;
 
-                    await AnimationStartAsync(placedUI.RenderTransform, "TranslateX", 200, source, target);
+                    //await AnimationStartAsync(placedUI.RenderTransform, "TranslateX", 200, source, target);
                     await TryPlaceEffect(placedEff);
                 }
             }
         }
-        public void DeleteEffectLine(EffectLine el)
+        public void DeleteEffectLine(TimelineEffect eff)
         {
-            EffectLine next = GetTheNext(el);
+            TimelineEffect next = GetTheNext(eff);
 
             if (next == null)
-                next = GetThePrevious(el);
+                next = GetThePrevious(eff);
 
             if (next != null)
-                AuraLayerManager.Self.CheckedEffect = next.MyEffect;
+                AuraLayerManager.Self.CheckedEffect = next;
             else
                 AuraLayerManager.Self.CheckedEffect = null;
 
-            UI_Track.RemoveEffectline(el);
-            TimelineEffects.Remove(el.DataContext as TimelineEffect);
+            //UI_Track.RemoveEffectline(el);
+            TimelineEffects.Remove(eff);
         }
         public TimelineEffect WhichIsOn(double x)
         {
             foreach (TimelineEffect e in TimelineEffects)
             {
-                double left = e.UI.X;
-                double width = e.UI.Width;
+                double left = e.TestX;
+                double width = e.TestW;
 
                 if ((left <= x) && (x <= left + width))
                     return e;
             }
             return null;
         }
-        public TimelineEffect GetFirstOnRight(double x)
+        public TimelineEffect GetFirstOnRightSide(double x)
         {
             TimelineEffect result = null;
 
             foreach (TimelineEffect e in TimelineEffects)
             {
-                if (e.UI.X >= x)
+                if (e.TestX >= x)
                 {
                     if (result == null)
                         result = e;
 
-                    if (e.UI.X < result.UI.X)
+                    if (e.TestX < result.TestX)
                     {
                         result = e;
                     }
@@ -244,12 +238,11 @@ namespace AuraEditor
 
             for (int i = 0; i < TimelineEffects.Count; i++)
             {
-                TimelineEffect effect = TimelineEffects[i];
-                EffectLine UI = effect.UI;
+                TimelineEffect eff = TimelineEffects[i];
 
-                if (roomX <= UI.X && UI.X < roomX + needRoomLength)
+                if (roomX <= eff.TestX && eff.TestX < roomX + needRoomLength)
                 {
-                    roomX = UI.X + UI.Width;
+                    roomX = eff.TestRight;
                     i = -1; // rescan every effect line
                 }
             }
@@ -257,36 +250,36 @@ namespace AuraEditor
             return roomX;
         }
 
-        private EffectLine GetTheNext(EffectLine el)
+        private TimelineEffect GetTheNext(TimelineEffect eff)
         {
-            TimelineEffect find = GetFirstOnRight(el.Right);
+            TimelineEffect find = GetFirstOnRightSide(eff.TestRight);
 
             if (find == null)
                 return null;
             else
-                return find.UI;
+                return find;
         }
-        private EffectLine GetThePrevious(EffectLine el)
+        private TimelineEffect GetThePrevious(TimelineEffect eff)
         {
             double rightmostPosition = 0;
             TimelineEffect previousEffect = null;
 
-            foreach (var effect in TimelineEffects)
+            foreach (var e in TimelineEffects)
             {
-                if (effect.UI.Equals(el))
+                if (e.Equals(eff))
                     continue;
 
-                double end = effect.EndTime;
+                double end = e.EndTime;
 
                 if (end > rightmostPosition)
                 {
                     rightmostPosition = end;
-                    previousEffect = effect;
+                    previousEffect = e;
                 }
             }
 
             if (previousEffect != null)
-                return previousEffect.UI;
+                return previousEffect;
             else
                 return null;
         }
@@ -297,12 +290,13 @@ namespace AuraEditor
                 if (effect.Equals(e))
                     continue;
 
-                if (effect.UI.X <= e.UI.X)
+                if (effect.TestX <= e.TestX)
                 {
-                    double source = e.UI.X;
-                    double target = source + move;
+                    e.TestX += move;
+                    //double source = e.UI.X;
+                    //double target = source + move;
 
-                    AnimationStart(e.UI.RenderTransform, "TranslateX", 200, source, target);
+                    //AnimationStart(e.UI.RenderTransform, "TranslateX", 200, source, target);
                 }
             }
         }
@@ -319,7 +313,7 @@ namespace AuraEditor
                 {
                     if (result == null)
                         result = e;
-                    else if (e.UI.X < result.UI.X)
+                    else if (e.TestX < result.TestX)
                     {
                         result = e;
                     }
@@ -330,12 +324,9 @@ namespace AuraEditor
         }
         static private bool IsCrossing(TimelineEffect effect1, TimelineEffect effect2)
         {
-            EffectLine UI_1 = effect1.UI;
-            EffectLine UI_2 = effect2.UI;
-
             return ControlHelper.IsCrossing(
-                UI_1.X, UI_1.Width,
-                UI_2.X, UI_2.Width);
+                effect1.TestX, effect1.TestW,
+                effect2.TestX, effect2.TestW);
         }
         #endregion
 

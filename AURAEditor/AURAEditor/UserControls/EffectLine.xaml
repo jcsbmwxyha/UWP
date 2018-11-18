@@ -22,7 +22,9 @@
             <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
 
             <Style x:Key="EffectLineStyle"  TargetType="RadioButton">
+                <Setter Property="Canvas.Top" Value="7"/>
                 <Setter Property="MinWidth" Value="36" />
+                <Setter Property="MaxHeight" Value="40" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="RadioButton">
@@ -54,7 +56,7 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="2"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="28"/>
                                 </Grid.ColumnDefinitions>
@@ -76,7 +78,6 @@
     </UserControl.RenderTransform>
 
     <RadioButton Name="EffectlineRadioButton"
-                 HorizontalAlignment="Left"
                  ManipulationMode="TranslateX"
                  ManipulationStarted="EffectLine_ManipulationStarted"
                  ManipulationDelta="EffectLine_ManipulationDelta"

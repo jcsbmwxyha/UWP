@@ -78,7 +78,7 @@ namespace AuraEditor
                     LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
                 Layer layer = SelectedEffect.Layer;
-                    layer.DeleteEffectLine(SelectedEffect.UI);
+                    layer.DeleteEffectLine(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.C)
             {
@@ -94,7 +94,7 @@ namespace AuraEditor
 
                 if (SelectedEffect != null)
                 {
-                    copy.UI.X = SelectedEffect.UI.Right;
+                    copy.TestX = SelectedEffect.TestRight;
                     SelectedEffect.Layer.AddAndInsertTimelineEffect(copy);
                 }
                 else
@@ -108,7 +108,7 @@ namespace AuraEditor
                     return;
 
                 Layer layer = SelectedEffect.Layer;
-                layer.DeleteEffectLine(SelectedEffect.UI);
+                layer.DeleteEffectLine(SelectedEffect);
             }
         }
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
@@ -548,7 +548,7 @@ namespace AuraEditor
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            ConnectedDevicesDialog.Rescan();
+
         }
     }
 }

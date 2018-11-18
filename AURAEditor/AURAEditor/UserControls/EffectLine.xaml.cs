@@ -310,17 +310,17 @@ namespace AuraEditor.UserControls
                 return;
 
             var copy = TimelineEffect.CloneEffect(AuraLayerManager.Self.CopiedEffect);
-            copy.UI.X = this.Right;
+            copy.TestX = this.Right;
             MyEffect.Layer.AddAndInsertTimelineEffect(copy);
         }
         private void CutItem_Click(object sender, RoutedEventArgs e)
         {
             AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
-            MyEffect.Layer.DeleteEffectLine(this);
+            MyEffect.Layer.DeleteEffectLine(this.DataContext as TimelineEffect);
         }
         private void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
-            MyEffect.Layer.DeleteEffectLine(this);
+            MyEffect.Layer.DeleteEffectLine(this.DataContext as TimelineEffect);
         }
         #endregion
     }

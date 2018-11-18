@@ -49,7 +49,7 @@ namespace AuraEditor
                     
                     if (CheckedEffect == null || CheckedEffect.Layer != value)
                     {
-                        var find = value.GetFirstOnRight(0);
+                        var find = value.GetFirstOnRightSide(0);
 
                         if (find != null)
                             CheckedEffect = find;
@@ -83,14 +83,14 @@ namespace AuraEditor
 
                     if (_checkedEffect != null)
                     {
-                        _checkedEffect.UI.IsChecked = false;
+                        _checkedEffect.TestIsChecked = false;
                         _checkedEffect = null;
                     }
                 }
                 else
                 {
                     _checkedEffect = value;
-                    value.UI.IsChecked = true;
+                    value.TestIsChecked = true;
                     MainPage.Self.UpdateEffectInfoGrid(value);
                     MainPage.Self.NeedSave = true;
                 }
@@ -115,7 +115,7 @@ namespace AuraEditor
             {
                 TimelineEffect effect = GetRightmostEffect();
 
-                return (effect != null) ? effect.UI.X + effect.UI.Width : 0;
+                return (effect != null) ? effect.TestRight + effect.TestW : 0;
             }
         }
 
@@ -207,8 +207,8 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    effect.UI.X = effect.UI.X * rate;
-                    effect.UI.Width = effect.UI.Width * rate;
+                    effect.TestX = effect.TestX * rate;
+                    effect.TestW = effect.TestW * rate;
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    position = effect.UI.X + effect.UI.Width;
+                    position = effect.TestX + effect.TestW;
 
                     if (position > rightmostPosition)
                     {
