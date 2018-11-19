@@ -54,7 +54,7 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2"/>
+                                    <ColumnDefinition Width="4"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="28"/>
                                 </Grid.ColumnDefinitions>

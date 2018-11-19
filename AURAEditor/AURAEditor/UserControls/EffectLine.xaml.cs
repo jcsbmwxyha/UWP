@@ -36,8 +36,12 @@ namespace AuraEditor.UserControls
         }
         public bool TestIsChecked
         {
-            get { return (bool)GetValue(LabelProperty); }
-            set { SetValue(LabelProperty, value); }
+            get {
+                return (bool)GetValue(LabelProperty);
+            }
+            set {
+                SetValue(LabelProperty, value);
+            }
         }
 
         public double X
@@ -54,23 +58,23 @@ namespace AuraEditor.UserControls
             }
         }
         public double Right { get { return X + Width; } }
-        public bool IsChecked
-        {
-            get
-            {
-                if (EffectlineRadioButton.IsChecked != true)
-                    return false;
-                else
-                    return true;
-            }
-            set
-            {
-                if (EffectlineRadioButton.IsChecked != value)
-                {
-                    EffectlineRadioButton.IsChecked = value;
-                }
-            }
-        }
+        //public bool IsChecked
+        //{
+        //    get
+        //    {
+        //        if (EffectlineRadioButton.IsChecked != true)
+        //            return false;
+        //        else
+        //            return true;
+        //    }
+        //    set
+        //    {
+        //        if (EffectlineRadioButton.IsChecked != value)
+        //        {
+        //            EffectlineRadioButton.IsChecked = value;
+        //        }
+        //    }
+        //}
 
         #region Intelligent auto scroll
         private int _mouseDirection;
