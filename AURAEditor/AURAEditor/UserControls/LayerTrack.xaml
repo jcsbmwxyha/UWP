@@ -25,12 +25,12 @@
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ContentPresenter">
                     <Setter Property="Margin" Value="0,7,0,0"/>
-                    <Setter Property="Height" Value="44"/>
+                    <Setter Property="Height" Value="38"/>
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <usercontrol:EffectLine Width="{Binding TestW, Mode=TwoWay}">
+                    <usercontrol:EffectLine Width="{Binding TestW, Mode=TwoWay}" TestIsChecked="{Binding TestIsChecked, Mode=TwoWay}">
                         <usercontrol:EffectLine.RenderTransform>
                             <CompositeTransform TranslateX="{Binding TestX, Mode=TwoWay}"/>
                         </usercontrol:EffectLine.RenderTransform>

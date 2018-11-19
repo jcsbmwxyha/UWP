@@ -178,9 +178,10 @@ namespace AuraEditor
                 }
                 else if (placedEff.TestX > crossingEff.TestX)
                 {
-                    double source = placedEff.TestX;
-                    double target = source + crossingEff.TestRight - placedEff.TestX;
-
+                    //double source = placedEff.TestX;
+                    //double target = source + crossingEff.TestRight - placedEff.TestX;
+                    //
+                    placedEff.TestX += crossingEff.TestRight - placedEff.TestX;
                     //await AnimationStartAsync(placedUI.RenderTransform, "TranslateX", 200, source, target);
                     await TryPlaceEffect(placedEff);
                 }

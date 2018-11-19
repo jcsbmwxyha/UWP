@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="50"
     d:DesignWidth="400">
 
     <UserControl.Resources>
@@ -22,9 +22,7 @@
             <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
 
             <Style x:Key="EffectLineStyle"  TargetType="RadioButton">
-                <Setter Property="Canvas.Top" Value="7"/>
-                <Setter Property="MinWidth" Value="36" />
-                <Setter Property="MaxHeight" Value="40" />
+                <Setter Property="MinWidth" Value="30" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="RadioButton">

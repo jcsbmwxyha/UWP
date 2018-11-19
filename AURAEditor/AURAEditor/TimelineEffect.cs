@@ -75,11 +75,11 @@ namespace AuraEditor
             }
             set
             {
-                if (_testIsChecked != value)
-                {
+                //if (_testIsChecked != value)
+                //{
                     _testIsChecked = value;
                     RaisePropertyChanged("TestIsChecked");
-                }
+                //}
             }
         }
         public override double StartTime

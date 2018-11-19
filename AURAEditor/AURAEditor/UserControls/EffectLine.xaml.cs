@@ -23,6 +23,23 @@ namespace AuraEditor.UserControls
         private double _allPosition;
         private bool _isPressed;
 
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
+           "TestIsChecked",
+           typeof(bool),
+           typeof(EffectLine),
+           new PropertyMetadata(null, new PropertyChangedCallback(OnTestIsCheckedChanged))
+        );
+
+        private static void OnTestIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as EffectLine).EffectlineRadioButton.IsChecked = (bool)e.NewValue;
+        }
+        public bool TestIsChecked
+        {
+            get { return (bool)GetValue(LabelProperty); }
+            set { SetValue(LabelProperty, value); }
+        }
+
         public double X
         {
             get
@@ -289,7 +306,8 @@ namespace AuraEditor.UserControls
         }
         private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
+            if (MyEffect != null)
+                AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
