@@ -230,6 +230,8 @@ namespace AuraEditor
                 case 1: type = "Mouse"; break;
                 case 2: type = "Keyboard"; break;
                 case 3: type = "Headset"; break;
+                case 5: type = "Desktop"; break;
+                case 6: type = "MotherBoard"; break;
             }
             XmlNode typeNode = CreateXmlNode("type");
             typeNode.InnerText = type.ToString();

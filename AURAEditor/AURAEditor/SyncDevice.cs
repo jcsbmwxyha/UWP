@@ -52,7 +52,7 @@
         {
             if (ImgType != null)
             {
-                if (ImgType == "Laptop")
+                if (ImgType == "Notebook")
                 {
                     if (Sync)
                     {

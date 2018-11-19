@@ -127,10 +127,11 @@ namespace AuraEditor
                 int gridW, gridH;
                 switch (type)
                 {
-                    case "Laptop": gridW = 27; gridH = 27; break;
+                    case "Notebook": gridW = 27; gridH = 27; break;
                     case "Mouse": gridW = 8; gridH = 10; break;
                     case "Keyboard": gridW = 25; gridH = 14; break;
-                    default: gridW = 27; gridH = 27; break;
+                    case "MotherBoard": gridW = 36; gridH = 36; break;
+                    default: gridW = 36; gridH = 36; break;
                 }
                 deviceContent.DeviceType = GetTypeByTypeName(type);
 
