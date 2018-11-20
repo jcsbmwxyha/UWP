@@ -144,18 +144,31 @@ namespace AuraEditor
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             m_LayerListView.ItemsSource = Layers;
-            m_TrackStackPanel.Children.Clear();
-            m_BackgroundStackPanel.Children.Clear();
             CheckedLayer = null;
 
-            for (int i = 0; i < Layers.Count; i++)
+            Layer layer;
+            int layerIndex;
+            switch (e.Action)
             {
-                Layers[i].Name = "Layer " + (i + 1).ToString();
-                m_TrackStackPanel.Children.Add(Layers[i].UI_Track);
-                m_BackgroundStackPanel.Children.Add(Layers[i].UI_Background);
+                case NotifyCollectionChangedAction.Remove:
+                    layer = e.OldItems[0] as Layer;
+                    m_TrackStackPanel.Children.Remove(layer.UI_Track);
+                    m_BackgroundStackPanel.Children.Remove(layer.UI_Background);
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    layer = e.NewItems[0] as Layer;
+                    layerIndex = e.NewStartingIndex;
+                    m_TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
+                    m_BackgroundStackPanel.Children.Insert(layerIndex, layer.UI_Background);
+                    break;
             }
 
             // TODO : Use MVVM instead of Update()
+            for (int i = 0; i < Layers.Count; i++)
+            {
+                Layers[i].Name = "Layer " + (i + 1).ToString();
+            }
+
             List<LayerTitle> items = FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
             foreach (var item in items)
             {

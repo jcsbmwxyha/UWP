@@ -7,10 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="50"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    Loaded="EffectLine_Loaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <Storyboard x:Name="LoadedStoryboard">
+                <DoubleAnimationUsingKeyFrames
+                     Storyboard.TargetName="EffectlineRadioButton"
+                     Storyboard.TargetProperty="Opacity" >
+                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
             <BitmapImage x:Key="LPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_l_n.png"/>
             <BitmapImage x:Key="MPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_n.png"/>
             <BitmapImage x:Key="RPart_n" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_n.png"/>
@@ -21,7 +30,7 @@
             <BitmapImage x:Key="MPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_m_s.png"/>
             <BitmapImage x:Key="RPart_s" UriSource="ms-appx:///Assets/Effectline/asus_ac_effectblock_layer_btn_r_s.png"/>
 
-            <Style x:Key="EffectLineStyle"  TargetType="RadioButton">
+            <Style x:Key="EffectLineStyle" TargetType="RadioButton">
                 <Setter Property="MinWidth" Value="30" />
                 <Setter Property="Template">
                     <Setter.Value>

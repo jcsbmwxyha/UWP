@@ -217,6 +217,10 @@ namespace AuraEditor.UserControls
             _mouseDirection = 0;
             _isPressed = false;
         }
+        private void EffectLine_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadedStoryboard.Begin();
+        }
 
         #region event
         private void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
