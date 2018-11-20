@@ -83,14 +83,14 @@ namespace AuraEditor
 
                     if (_checkedEffect != null)
                     {
-                        _checkedEffect.TestIsChecked = false;
+                        _checkedEffect.IsChecked = false;
                         _checkedEffect = null;
                     }
                 }
                 else
                 {
                     _checkedEffect = value;
-                    value.TestIsChecked = true;
+                    value.IsChecked = true;
                     MainPage.Self.UpdateEffectInfoGrid(value);
                     MainPage.Self.NeedSave = true;
                 }
@@ -115,7 +115,7 @@ namespace AuraEditor
             {
                 TimelineEffect effect = GetRightmostEffect();
 
-                return (effect != null) ? effect.TestRight + effect.TestW : 0;
+                return (effect != null) ? effect.Right + effect.Width : 0;
             }
         }
 
@@ -207,8 +207,8 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    effect.TestX = effect.TestX * rate;
-                    effect.TestW = effect.TestW * rate;
+                    effect.X = effect.X * rate;
+                    effect.Width = effect.Width * rate;
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    position = effect.TestX + effect.TestW;
+                    position = effect.X + effect.Width;
 
                     if (position > rightmostPosition)
                     {

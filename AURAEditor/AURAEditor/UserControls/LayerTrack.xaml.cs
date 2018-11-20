@@ -52,6 +52,8 @@ namespace AuraEditor.UserControls
                 int type = GetEffectIndex(effectname);
 
                 TimelineEffect effect = new TimelineEffect(type);
+                effect.StartTime = m_Layer.GetFirstRoomPosition(1000); // 1s
+                effect.DurationTime = 1000; // 1s
                 m_Layer.AddTimelineEffect(effect);
                 AuraLayerManager.Self.CheckedEffect = effect;
                 MainPage.Self.NeedSave = true;

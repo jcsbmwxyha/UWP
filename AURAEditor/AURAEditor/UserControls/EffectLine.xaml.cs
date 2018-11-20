@@ -23,28 +23,28 @@ namespace AuraEditor.UserControls
         private double _allPosition;
         private bool _isPressed;
 
-        public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
-           "TestIsChecked",
+        public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register(
+           "IsChecked",
            typeof(bool),
            typeof(EffectLine),
-           new PropertyMetadata(null, new PropertyChangedCallback(OnTestIsCheckedChanged))
+           new PropertyMetadata(null, new PropertyChangedCallback(OnIsCheckedChanged))
         );
 
-        private static void OnTestIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as EffectLine).EffectlineRadioButton.IsChecked = (bool)e.NewValue;
         }
-        public bool TestIsChecked
+        public bool IsChecked
         {
             get {
-                return (bool)GetValue(LabelProperty);
+                return (bool)GetValue(IsCheckedProperty);
             }
             set {
-                SetValue(LabelProperty, value);
+                SetValue(IsCheckedProperty, value);
             }
         }
 
-        public double X
+        private double X
         {
             get
             {
@@ -57,24 +57,7 @@ namespace AuraEditor.UserControls
                 ct.TranslateX = value;
             }
         }
-        public double Right { get { return X + Width; } }
-        //public bool IsChecked
-        //{
-        //    get
-        //    {
-        //        if (EffectlineRadioButton.IsChecked != true)
-        //            return false;
-        //        else
-        //            return true;
-        //    }
-        //    set
-        //    {
-        //        if (EffectlineRadioButton.IsChecked != value)
-        //        {
-        //            EffectlineRadioButton.IsChecked = value;
-        //        }
-        //    }
-        //}
+        private double Right { get { return X + Width; } }
 
         #region Intelligent auto scroll
         private int _mouseDirection;
@@ -302,7 +285,7 @@ namespace AuraEditor.UserControls
                 X = RoundToTens(X);
             }
 
-            await MyEffect.Layer.TryPlaceEffect(MyEffect);
+            await MyEffect.Layer.MoveToFitPosition(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;
@@ -312,6 +295,10 @@ namespace AuraEditor.UserControls
         {
             if (MyEffect != null)
                 AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
+        }
+        private void EffectlineRadioButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            IsChecked = false;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
@@ -332,8 +319,8 @@ namespace AuraEditor.UserControls
                 return;
 
             var copy = TimelineEffect.CloneEffect(AuraLayerManager.Self.CopiedEffect);
-            copy.TestX = this.Right;
-            MyEffect.Layer.AddAndInsertTimelineEffect(copy);
+            copy.X = this.Right;
+            MyEffect.Layer.InsertTimelineEffectFitly(copy);
         }
         private void CutItem_Click(object sender, RoutedEventArgs e)
         {

@@ -30,9 +30,9 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <usercontrol:EffectLine Width="{Binding TestW, Mode=TwoWay}" TestIsChecked="{Binding TestIsChecked, Mode=TwoWay}">
+                    <usercontrol:EffectLine Width="{Binding Width, Mode=TwoWay}" IsChecked="{Binding IsChecked, Mode=TwoWay}">
                         <usercontrol:EffectLine.RenderTransform>
-                            <CompositeTransform TranslateX="{Binding TestX, Mode=TwoWay}"/>
+                            <CompositeTransform TranslateX="{Binding X, Mode=TwoWay}"/>
                         </usercontrol:EffectLine.RenderTransform>
                     </usercontrol:EffectLine>
                 </DataTemplate>

@@ -85,6 +85,7 @@
                  PointerMoved="EffectLine_PointerMoved"
                  PointerExited="EffectLine_PointerExited"
                  Checked="EffectlineRadioButton_Checked"
+                 Unchecked="EffectlineRadioButton_Unchecked"
                  GroupName="Effectline"
                  Style="{StaticResource EffectLineStyle}"
                  Content="{x:Bind MyEffect.Name}">

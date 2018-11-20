@@ -25,68 +25,63 @@ namespace AuraEditor
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
             }
         }
-
-        //public EffectLine UI { get; }
         
-        private double _testX;
-        public double TestX {
+        private double _x;
+        public double X {
             get
             {
-                return _testX;
+                return _x;
             }
             set
             {
-                if (_testX != value)
+                if (_x != value)
                 {
-                    _testX = value;
-                    RaisePropertyChanged("TestX");
+                    _x = value;
+                    RaisePropertyChanged("X");
                 }
             }
         }
-        private double _testW;
-        public double TestW
+        private double _width;
+        public double Width
         {
             get
             {
-                return _testW;
+                return _width;
             }
             set
             {
-                if (_testW != value)
+                if (_width != value)
                 {
-                    _testW = value;
-                    RaisePropertyChanged("TestW");
+                    _width = value;
+                    RaisePropertyChanged("Width");
                 }
             }
         }
-        public double TestRight
+        public double Right
         {
             get
             {
-                return _testX + _testW;
+                return _x + _width;
             }
         }
-        private bool _testIsChecked;
-        public bool TestIsChecked
+        private bool _isChecked;
+        public bool IsChecked
         {
             get
             {
-                return _testIsChecked;
+                return _isChecked;
             }
             set
             {
-                //if (_testIsChecked != value)
-                //{
-                    _testIsChecked = value;
-                    RaisePropertyChanged("TestIsChecked");
-                //}
+                _isChecked = value;
+                RaisePropertyChanged("IsChecked");
             }
         }
         public override double StartTime
         {
             get
             {
-                double timeUnits = _testX / AuraLayerManager.PixelsPerTimeUnit;
+                double timeUnits = _x / AuraLayerManager.PixelsPerTimeUnit;
                 double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
 
                 return seconds * 1000;
@@ -96,15 +91,15 @@ namespace AuraEditor
                 double seconds = value / 1000;
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                _testX = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
-                RaisePropertyChanged("TestX");
+                _x = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                RaisePropertyChanged("X");
             }
         }
         public override double DurationTime
         {
             get
             {
-                double timeUnits = _testW / AuraLayerManager.PixelsPerTimeUnit;
+                double timeUnits = _width / AuraLayerManager.PixelsPerTimeUnit;
                 double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
 
                 return seconds * 1000;
@@ -114,32 +109,15 @@ namespace AuraEditor
                 double seconds = value / 1000;
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                _testW = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
-                RaisePropertyChanged("TestW");
+                _width = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                RaisePropertyChanged("Width");
             }
         }
 
         public TimelineEffect(int effectType) : base(effectType)
         {
-            //UI = CreateEffectUI(effectType);
-            //UI.DataContext = this;
             DurationTime = 1000; // 1s
         }
-        private EffectLine CreateEffectUI(int effectType)
-        {
-            EffectLine el = new EffectLine
-            {
-                Height = 34,
-                Width = AuraLayerManager.GetPixelsPerSecond(),
-                ManipulationMode = ManipulationModes.TranslateX
-            };
-
-            //CompositeTransform ct = el.RenderTransform as CompositeTransform;
-            //ct.TranslateY = 8;
-
-            return el;
-        }
-
         public void MoveTo(double x)
         {
 

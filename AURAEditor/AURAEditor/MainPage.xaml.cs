@@ -94,8 +94,8 @@ namespace AuraEditor
 
                 if (SelectedEffect != null)
                 {
-                    copy.TestX = SelectedEffect.TestRight;
-                    SelectedEffect.Layer.AddAndInsertTimelineEffect(copy);
+                    copy.X = SelectedEffect.Right;
+                    SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
                 }
                 else
                 {
