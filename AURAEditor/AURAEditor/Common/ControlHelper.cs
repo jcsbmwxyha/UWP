@@ -110,7 +110,7 @@ namespace AuraEditor.Common
             var messDialog = new MessageDialog(res);
             await messDialog.ShowAsync();
         }
-        public static bool IsCrossing(double x1, double w1, double x2, double w2)
+        public static bool IsPiling(double x1, double w1, double x2, double w2)
         {
             if ((x2 + w2 > x1) && (x1 + w1 > x2))
                 return true;

@@ -146,15 +146,13 @@ namespace AuraEditor
             eff.Layer = this;
             TimelineEffects.Add(eff);
         }
-        public async Task<double> InsertTimelineEffectFitly(TimelineEffect eff)
+        public double InsertTimelineEffectFitly(TimelineEffect eff)
         {
             eff.Layer = this;
-            await MoveToFitPosition(eff);
-            //UI_Track.AddEffectline(effect.UI);
-            //AnimationStart(effect.UI, "Opacity", 300, 0, 1);
+            double result = MoveToFitPosition(eff);
 
             TimelineEffects.Add(eff);
-            return eff.StartTime;
+            return result;
         }
         public void AppendTimelineEffect(TimelineEffect eff)
         {
@@ -172,28 +170,38 @@ namespace AuraEditor
             TimelineEffects.Add(eff);
         }
         
-        public async Task MoveToFitPosition(TimelineEffect placedEff)
+        public double MoveToFitPosition(TimelineEffect placedEff)
         {
             placedEff.Layer = this;
-            TimelineEffect crossingEff = GetFirstCrossingEffect(placedEff);
+            TimelineEffect pilingEff = GetFirstPilingEffect(placedEff);
 
-            if (crossingEff != null)
+            if (pilingEff != null)
             {
-                if (placedEff.X <= crossingEff.X)
+                if (placedEff.X <= pilingEff.X)
                 {
-                    double move = placedEff.Right - crossingEff.X;
+                    double move = placedEff.Right - pilingEff.X;
                     PushAllOnRightSide(placedEff, move);
+
+                    return placedEff.X;
                 }
-                else if (placedEff.X > crossingEff.X)
+                else
                 {
-                    //double source = placedEff.TestX;
-                    //double target = source + crossingEff.TestRight - placedEff.TestX;
-                    //
-                    placedEff.X += crossingEff.Right - placedEff.X;
-                    //await AnimationStartAsync(placedUI.RenderTransform, "TranslateX", 200, source, target);
-                    await MoveToFitPosition(placedEff);
+                    double target = pilingEff.Right;
+                    placedEff.MoveTo = target;
+
+                    TimelineEffect nextEff = GetTheNext(placedEff);
+                    if (nextEff != null && IsPiling(nextEff, placedEff))
+                    {
+                        double move = target + placedEff.Width - nextEff.X;
+                        PushAllOnRightSide(placedEff, move);
+                    }
+                    //placedEff.X += pilingEff.Right - placedEff.X;
+
+                    return target;
                 }
             }
+
+            return placedEff.X;
         }
         public void DeleteEffectLine(TimelineEffect eff)
         {
@@ -276,7 +284,7 @@ namespace AuraEditor
         }
         private TimelineEffect GetTheNext(TimelineEffect eff)
         {
-            TimelineEffect find = GetFirstOnRightSide(eff.Right);
+            TimelineEffect find = GetFirstOnRightSide(eff.X);
 
             if (find == null)
                 return null;
@@ -316,15 +324,12 @@ namespace AuraEditor
 
                 if (effect.X <= e.X)
                 {
-                    e.X += move;
-                    //double source = e.UI.X;
-                    //double target = source + move;
-
-                    //AnimationStart(e.UI.RenderTransform, "TranslateX", 200, source, target);
+                    double target = e.X + move;
+                    e.MoveTo = target;
                 }
             }
         }
-        private TimelineEffect GetFirstCrossingEffect(TimelineEffect testEffect)
+        private TimelineEffect GetFirstPilingEffect(TimelineEffect testEffect)
         {
             TimelineEffect result = null;
 
@@ -333,7 +338,7 @@ namespace AuraEditor
                 if (e.Equals(testEffect))
                     continue;
 
-                if (IsCrossing(testEffect, e))
+                if (IsPiling(testEffect, e))
                 {
                     if (result == null)
                         result = e;
@@ -346,9 +351,21 @@ namespace AuraEditor
 
             return result;
         }
-        static private bool IsCrossing(TimelineEffect effect1, TimelineEffect effect2)
+        private List<TimelineEffect> GetAllPilingEffect(double left, double right)
         {
-            return ControlHelper.IsCrossing(
+            List<TimelineEffect> result = new List<TimelineEffect>();
+
+            foreach (TimelineEffect eff in TimelineEffects)
+            {
+                if (ControlHelper.IsPiling(left, right, eff.X, eff.Width))
+                    result.Add(eff);
+            }
+
+            return result;
+        }
+        static private bool IsPiling(TimelineEffect effect1, TimelineEffect effect2)
+        {
+            return ControlHelper.IsPiling(
                 effect1.X, effect1.Width,
                 effect2.X, effect2.Width);
         }

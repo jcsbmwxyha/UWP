@@ -548,7 +548,7 @@ namespace AuraEditor
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-
+            LayerManager.CheckedEffect.MoveTo = 300;
         }
     }
 }

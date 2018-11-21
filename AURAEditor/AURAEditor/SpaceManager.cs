@@ -297,8 +297,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsCrossing(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsCrossing(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsPiling(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsPiling(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     GlobalDevices.Remove(d);
                     AuraLayerManager.Self.ClearTypeData(d.Type);
@@ -314,8 +314,8 @@ namespace AuraEditor
                 if (testDev.Equals(d))
                     continue;
 
-                if (ControlHelper.IsCrossing(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsCrossing(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsPiling(testDev.GridPosition.X, testDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsPiling(testDev.GridPosition.Y, testDev.GridHeight, d.GridPosition.Y, d.GridHeight))
                 {
                     return true;
                 }
@@ -341,8 +341,8 @@ namespace AuraEditor
         {
             foreach (var d in GlobalDevices)
             {
-                if (ControlHelper.IsCrossing(gridRect.X, gridRect.Width, d.GridPosition.X, d.GridWidth) &&
-                    ControlHelper.IsCrossing(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.GridHeight))
+                if (ControlHelper.IsPiling(gridRect.X, gridRect.Width, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsPiling(gridRect.Y, gridRect.Height, d.GridPosition.Y, d.GridHeight))
                 {
                     return d;
                 }

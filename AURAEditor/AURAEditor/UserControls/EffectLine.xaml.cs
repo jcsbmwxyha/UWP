@@ -22,14 +22,13 @@ namespace AuraEditor.UserControls
         private DispatcherTimer m_ScrollTimerClock;
         private double _allPosition;
         private bool _isPressed;
-
+        #region IsChecked
         public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register(
            "IsChecked",
            typeof(bool),
            typeof(EffectLine),
            new PropertyMetadata(null, new PropertyChangedCallback(OnIsCheckedChanged))
         );
-
         private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as EffectLine).EffectlineRadioButton.IsChecked = (bool)e.NewValue;
@@ -43,6 +42,33 @@ namespace AuraEditor.UserControls
                 SetValue(IsCheckedProperty, value);
             }
         }
+        #endregion
+        #region MoveTo
+        public static readonly DependencyProperty MoveToProperty = DependencyProperty.Register(
+          "MoveTo",
+          typeof(double),
+          typeof(EffectLine),
+          new PropertyMetadata(null, new PropertyChangedCallback(OnMoveToChanged))
+        );
+        private static void OnMoveToChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            EffectLine el = d as EffectLine;
+            CompositeTransform ct = (el as EffectLine).RenderTransform as CompositeTransform;
+            double test = (double)e.OldValue;
+            AnimationStart(el.RenderTransform, "TranslateX", 300, ct.TranslateX, (double)e.NewValue);
+        }
+        public double MoveTo
+        {
+            get
+            {
+                return (double)GetValue(MoveToProperty);
+            }
+            set
+            {
+                SetValue(MoveToProperty, value);
+            }
+        }
+        #endregion
 
         private double X
         {
@@ -266,8 +292,10 @@ namespace AuraEditor.UserControls
                 X += move;
                 Width -= move;
             }
+
+            MoveTo = X;
         }
-        private async void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             double keepWidth;
             _isPressed = false;
@@ -289,7 +317,7 @@ namespace AuraEditor.UserControls
                 X = RoundToTens(X);
             }
 
-            await MyEffect.Layer.MoveToFitPosition(MyEffect);
+            MoveTo = MyEffect.Layer.MoveToFitPosition(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;

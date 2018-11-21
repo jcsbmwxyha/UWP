@@ -77,6 +77,19 @@ namespace AuraEditor
                 RaisePropertyChanged("IsChecked");
             }
         }
+        private double _moveTo;
+        public double MoveTo
+        {
+            get
+            {
+                return _moveTo;
+            }
+            set
+            {
+                _moveTo = value;
+                RaisePropertyChanged("MoveTo");
+            }
+        }
         public override double StartTime
         {
             get
@@ -118,10 +131,7 @@ namespace AuraEditor
         {
             DurationTime = 1000; // 1s
         }
-        public void MoveTo(double x)
-        {
 
-        }
         static public TimelineEffect CloneEffect(TimelineEffect copy)
         {
             TimelineEffect target = new TimelineEffect(copy.Type);
