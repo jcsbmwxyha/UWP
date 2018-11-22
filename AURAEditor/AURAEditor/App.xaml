@@ -1481,7 +1481,7 @@
 
         <Style TargetType="RadioButton" x:Key="RogRadioColorBtn">
             <Setter Property="Margin" Value="0,0,12,0"/>
-            <Setter Property="Height" Value="49"/>
+            <Setter Property="Height" Value="48"/>
             <Setter Property="MinWidth" Value="48"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -1489,6 +1489,200 @@
                         <Grid>
                             <Polygon x:Name="PolygonColor" Points="8,8,8,36,13,41,41,41,41,8" Fill="{TemplateBinding Background}"/>
                             <Image x:Name="ColorBtnSelectBg" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_s_btn.png"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <BitmapImage x:Key="CheckBox_s_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
+        <BitmapImage x:Key="CheckBox_s_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
+        <BitmapImage x:Key="CheckBox_s_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
+        <BitmapImage x:Key="CheckBox_u_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_d.png"/>
+        <BitmapImage x:Key="CheckBox_u_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_n.png"/>
+        <BitmapImage x:Key="CheckBox_u_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_p.png"/>
+        <Style x:Key="RogCheckBoxStyle"  TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CombinedStates">
+                                    <VisualState x:Name="UncheckedNormal">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_u_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="UncheckedPointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_u_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="UncheckedPressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_u_p}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedNormal">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_s_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedPointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_s_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="CheckedPressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="TriggerButton.Source" Value="{ThemeResource CheckBox_s_p}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Name="TriggerButton" Stretch="Fill" Height="25" Width="25"/>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <SolidColorBrush x:Key="ForegroundStyle" Color="#FFFFFFFF"/>
+        <FontFamily x:Key="FontFamilyStyle">Seogoe UI</FontFamily>
+        <x:Double x:Key="FontSizeStyle">15</x:Double>
+        <BitmapImage x:Key="ToggleBtn_select_d" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_select_n.png"/>
+        <BitmapImage x:Key="ToggleBtn_select_h" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_select_icn_h.png"/>
+        <BitmapImage x:Key="ToggleBtn_select_n" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_select_icn_n.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_d" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_unselect_icn_d.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_h" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_unselect_icn_h.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_n" UriSource="ms-appx:///Assets/ToggleSwitch/asus_gc_toggle_reset_unselect_icn_n.png"/>
+        <BitmapImage x:Key="ToggleBtn_select_bg_d" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_select_bg_d.png"/>
+        <BitmapImage x:Key="ToggleBtn_select_bg_h" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_select_bg_h.png"/>
+        <BitmapImage x:Key="ToggleBtn_select_bg_n" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_select_bg_n.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_bg_d" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_unselect_bg_d.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_bg_h" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_unselect_bg_h.png"/>
+        <BitmapImage x:Key="ToggleBtn_unselect_bg_n" UriSource="ms-appx:///Assets/ToggleSwitch/asus_ac_toggle_reset_unselect_bg_n.png"/>
+        <Style TargetType="ToggleSwitch" x:Key="RogToggleSwitchStyle">
+            <Setter Property="Foreground" Value="{ThemeResource ForegroundStyle}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="FontFamily" Value="{StaticResource FontFamilyStyle}" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeStyle}" />
+            <Setter Property="Width" Value="53" />
+            <Setter Property="MaxWidth" Value="53" />
+            <Setter Property="MinWidth" Value="53" />
+            <Setter Property="Height" Value="21" />
+            <Setter Property="MaxHeight" Value="21" />
+            <Setter Property="ManipulationMode" Value="System,TranslateX" />
+            <Setter Property="UseSystemFocusVisuals" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleSwitch">
+                        <Grid Background="{TemplateBinding Background}"
+                          MaxWidth="{TemplateBinding MaxWidth}"
+                          MinWidth="{TemplateBinding MinWidth}"
+                          Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}"
+                          MaxHeight="{TemplateBinding MaxHeight}"
+                         >
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="OuterBorderOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_bg_h}"/>
+                                            <Setter Target="OuterBorderOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_bg_h}"/>
+                                            <Setter Target="SwitchKnobOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_h}"/>
+                                            <Setter Target="SwitchKnobOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="OuterBorderOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_bg_h}"/>
+                                            <Setter Target="OuterBorderOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_bg_h}"/>
+                                            <Setter Target="SwitchKnobOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_h}"/>
+                                            <Setter Target="SwitchKnobOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="OuterBorderOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_bg_d}"/>
+                                            <Setter Target="OuterBorderOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_bg_d}"/>
+                                            <Setter Target="SwitchKnobOn.Source" 
+                                                Value="{ThemeResource ToggleBtn_select_d}"/>
+                                            <Setter Target="SwitchKnobOff.Source" 
+                                                Value="{ThemeResource ToggleBtn_unselect_d}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="ToggleStates">
+                                    <VisualState x:Name="Dragging" />
+                                    <VisualState x:Name="Off" />
+                                    <VisualState x:Name="On">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SwitchKnobOn"
+                                               Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SwitchKnobOff"
+                                               Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterBorderOn"
+                                                    Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterBorderOff"
+                                                    Storyboard.TargetProperty="Opacity">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+
+                            </VisualStateManager.VisualStateGroups>
+
+
+                            <Image x:Name="OuterBorderOn"                                                                 
+                                   Opacity="0"  
+                                   Source="{ThemeResource ToggleBtn_select_bg_n}"/>
+                            <Image x:Name="OuterBorderOff"                                    
+                                   Source="{ThemeResource ToggleBtn_unselect_bg_n}"/>
+                            <Image x:Name="SwitchKnobOn" 
+                                           Opacity="0"                                
+                               HorizontalAlignment="Right"
+                               Margin="25 0 0 0"
+                                           Source="{ThemeResource ToggleBtn_select_n}"></Image>
+                            <Image x:Name="SwitchKnobOff"                                 
+                               Margin="0 0 25 0"
+                               HorizontalAlignment="Left"
+                                           Source="{ThemeResource ToggleBtn_unselect_n}"></Image>
+                            <Thumb x:Name="SwitchThumb" AutomationProperties.AccessibilityView="Raw" Grid.Row="1" Grid.RowSpan="3" Grid.ColumnSpan="3" >
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <Rectangle Fill="Black" Opacity="0.01"/>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

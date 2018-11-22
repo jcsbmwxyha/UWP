@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -19,37 +20,30 @@ namespace AuraEditor.UserControls
             this.InitializeComponent();
         }
 
-        private async void Track_DragOver(object sender, DragEventArgs e)
+        private void Track_DragOver(object sender, DragEventArgs e)
         {
-            if (e.DataView.Contains(StandardDataFormats.Text))
-            {
-                e.DragUIOverride.IsCaptionVisible = false;
-                e.DragUIOverride.IsGlyphVisible = false;
-                var effectname = await e.DataView.GetTextAsync();
+            if (e.Data == null)
+                return;
 
-                if (!IsCommonEffect(effectname))
-                    e.AcceptedOperation = DataPackageOperation.None;
-                else
-                {
-                    e.AcceptedOperation = DataPackageOperation.Copy;
-                }
-            }
+            e.DragUIOverride.IsCaptionVisible = false;
+            e.DragUIOverride.IsGlyphVisible = false;
+
+            var pair = e.Data.Properties.FirstOrDefault();
+            string effName = pair.Value as string;
+            if (effName != null)
+                e.AcceptedOperation = DataPackageOperation.Copy;
         }
-        private async void Track_Drop(object sender, DragEventArgs e)
+        private void Track_Drop(object sender, DragEventArgs e)
         {
-            if (e.DataView.Contains(StandardDataFormats.Text))
-            {
-                var effectname = await e.DataView.GetTextAsync();
-                int type = GetEffectIndex(effectname);
+            var pair = e.Data.Properties.FirstOrDefault();
+            string effName = pair.Value as string;
+            int type = GetEffectIndex(effName);
 
-                TimelineEffect effect = new TimelineEffect(type);
-                effect.StartTime = m_Layer.GetFirstRoomPosition(1000); // 1s
-                effect.DurationTime = 1000; // 1s
-                m_Layer.AddTimelineEffect(effect);
-                AuraLayerManager.Self.CheckedEffect = effect;
-                MainPage.Self.NeedSave = true;
-                var p = e.GetPosition(this);
-            }
+            TimelineEffect effect = new TimelineEffect(type);
+            effect.StartTime = m_Layer.GetFirstRoomPosition(1000); // 1s
+            m_Layer.AddTimelineEffect(effect);
+            AuraLayerManager.Self.CheckedEffect = effect;
+            MainPage.Self.NeedSave = true;
         }
 
         private void Track_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)

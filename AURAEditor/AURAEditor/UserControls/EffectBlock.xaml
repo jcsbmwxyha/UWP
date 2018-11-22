@@ -9,9 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid Height="30" Width="150" CanDrag="True"
-          DragStarting="Grid_DragStarting"
-          DropCompleted="Grid_DropCompleted"
+    <Grid Height="30" Width="150"
           PointerPressed="Grid_PointerPressed"
           PointerEntered="Grid_PointerEntered"
           PointerExited="Grid_PointerExited"

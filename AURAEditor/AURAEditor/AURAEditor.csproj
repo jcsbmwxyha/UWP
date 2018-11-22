@@ -265,6 +265,9 @@
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_l.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_m.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_r.png" />
+    <Content Include="Assets\EffectInfoGroup\asus_ac_reset_ic_h.png" />
+    <Content Include="Assets\EffectInfoGroup\asus_ac_reset_ic_n.png" />
+    <Content Include="Assets\EffectInfoGroup\asus_ac_reset_ic_p.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_n.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_nh.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_s.png" />
@@ -354,7 +357,6 @@
     <Content Include="Assets\EffectInfoGroup\asus_ac_drawerdown_ic_h.png" />
     <Content Include="Assets\EffectInfoGroup\asus_ac_drawerdown_ic_n.png" />
     <Content Include="Assets\EffectInfoGroup\asus_ac_drawerdown_ic_s.png" />
-    <Content Include="Assets\EffectInfoGroup\asus_ac_reset_btn_h.png" />
     <Content Include="Assets\EffectInfoGroup\asus_ac_slider_n.png" />
     <Content Include="Assets\EffectInfoGroup\asus_gc_aura_customize_colorpick_colormask_btn.png" />
     <Content Include="Assets\EffectInfoGroup\asus_gc_aura_customize_colorpick_edit_btn_h.png" />
@@ -388,6 +390,8 @@
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_ul.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_umid.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_ur.png" />
+    <Content Include="Assets\NoticeImage\asus_ac_notice_ic_h.png" />
+    <Content Include="Assets\NoticeImage\asus_ac_notice_ic_n.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_d.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_n.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_p.png" />
@@ -437,6 +441,18 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_d.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_h.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_n.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_unselect_bg_d.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_unselect_bg_h.png" />
+    <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_unselect_bg_n.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_select_icn_h.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_select_icn_n.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_select_n.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_d.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_h.png" />
+    <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_n.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_f.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_n.png" />

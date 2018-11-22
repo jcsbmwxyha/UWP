@@ -16,21 +16,7 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
-
-        private void Grid_DragStarting(UIElement sender, DragStartingEventArgs args)
-        {
-            var page = MainPage.Self;
-
-            args.DragUI.SetContentFromBitmapImage(page.DragEffectIcon);
-            args.Data.RequestedOperation = DataPackageOperation.Copy;
-            args.Data.SetText(MyText);
-
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
-        }
-        private void Grid_DropCompleted(UIElement sender, DropCompletedEventArgs args)
-        {
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
-        }
+        
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "PointerOver", false);

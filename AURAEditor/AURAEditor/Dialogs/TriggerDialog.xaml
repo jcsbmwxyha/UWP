@@ -270,6 +270,36 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <BitmapImage x:Key="Notice_n" UriSource="ms-appx:///Assets/NoticeImage/asus_ac_notice_ic_n.png"/>
+            <BitmapImage x:Key="Notice_h" UriSource="ms-appx:///Assets/NoticeImage/asus_ac_notice_ic_h.png"/>
+            <Style TargetType="Button" x:Key="NoticeIcButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Notice_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Notice_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </ContentDialog.Resources>
 
@@ -300,6 +330,14 @@
                             <MenuFlyoutItem x:Name="Double_Click" Text="Double Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                         </MenuFlyout>
                     </Button.Flyout>
+                </Button>
+                <Button Style="{StaticResource NoticeIcButton}" Margin="13,0,0,0" Height="21" Width="21">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Some devices may not compatible with this action."
+                                       TextWrapping="Wrap" Width="144"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
                 </Button>
             </StackPanel>
             <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,13,0,0"/>
@@ -345,7 +383,8 @@
                             <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                             <StackPanel Orientation="Horizontal">
                                 <RadioButton x:Name="TriggerColorPickerButtonBg" Style="{StaticResource RogRadioColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
-                                <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click">
+                                <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click"
+                                          Style="{StaticResource RogCheckBoxStyle}">
                                     <TextBlock Text="Random" Foreground="White"/>
                                 </CheckBox>
                             </StackPanel>

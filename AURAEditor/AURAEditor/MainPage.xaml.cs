@@ -40,7 +40,6 @@ namespace AuraEditor
         public AuraSpaceManager SpaceManager;
         public AuraLayerManager LayerManager;
         public ConnectedDevicesDialog ConnectedDevicesDialog;
-        public BitmapImage DragEffectIcon;
 
         ApplicationDataContainer g_LocalSettings;
 
@@ -80,7 +79,7 @@ namespace AuraEditor
                     LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
                 Layer layer = SelectedEffect.Layer;
-                    layer.DeleteEffectLine(SelectedEffect);
+                layer.DeleteEffectLine(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.C)
             {
@@ -110,12 +109,12 @@ namespace AuraEditor
                 ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
                     (source) =>
                     {
-                         Dispatcher.RunAsync(
-                            CoreDispatcherPriority.High,
-                            () =>
-                            {
-                                g_CanPaste = true;
-                            });
+                        Dispatcher.RunAsync(
+                           CoreDispatcherPriority.High,
+                           () =>
+                           {
+                               g_CanPaste = true;
+                           });
                     }, delay);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Delete)
@@ -162,7 +161,6 @@ namespace AuraEditor
             ConnectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceManager = new AuraSpaceManager();
             LayerManager = new AuraLayerManager();
-            InitializeDragEffectIcon();
             InitializePlayerStructure();
             SetDefaultPattern();
             await ConnectedDevicesDialog.Rescan();
@@ -174,20 +172,6 @@ namespace AuraEditor
             AngleTextBox.Text = "0";
 
             LoadSettings();
-        }
-        private async void InitializeDragEffectIcon()
-        {
-            DragEffectIcon = new BitmapImage();
-
-            string CountriesFile = @"Assets\EffectBlock\drag_effect_ic.png";
-            StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            StorageFile file = await InstallationFolder.GetFileAsync(CountriesFile);
-
-            using (Windows.Storage.Streams.IRandomAccessStream fileStream =
-                    await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
-            {
-                DragEffectIcon.SetSource(fileStream);
-            }
         }
         private void LoadSettings()
         {
@@ -282,6 +266,19 @@ namespace AuraEditor
         {
             await ConnectedDevicesDialog.ShowAsync();
         }
+
+        private void EffectBlockListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            string effName = e.Items[0] as string;
+            e.Data.Properties.Add("EffectName", effName);
+
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
+        }
+        private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
+        }
+
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             Layer layer = new Layer();
@@ -306,8 +303,7 @@ namespace AuraEditor
             }
 
             LayerManager.AddLayer(layer);
-            SpaceManager.UnselectAllZones();
-            SetLayerButton.IsEnabled = false;
+            LayerManager.CheckedLayer = layer;
             NeedSave = true;
         }
         private void SortDeviceButton_Checked(object sender, RoutedEventArgs e)
@@ -385,11 +381,6 @@ namespace AuraEditor
         {
             Layer layer = e.Items[0] as Layer;
             e.Data.Properties.Add("layer", layer);
-
-            if (layer != null)
-            {
-
-            }
         }
         private void TrashCanButton_DragOver(object sender, DragEventArgs e)
         {
@@ -513,7 +504,7 @@ namespace AuraEditor
                     port = "6667";
                     ip = "127.0.0.1";
                     cm = "I'm the message from client";
-                    HostName serverHost = new HostName("localhost");
+                    HostName serverHost = new HostName("127.0.0.1");
                     string serverPort = port;
                     await socket.ConnectAsync(serverHost, serverPort);
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
