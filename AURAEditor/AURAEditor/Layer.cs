@@ -195,7 +195,6 @@ namespace AuraEditor
                         double move = target + placedEff.Width - nextEff.X;
                         PushAllOnRightSide(placedEff, move);
                     }
-                    //placedEff.X += pilingEff.Right - placedEff.X;
 
                     return target;
                 }

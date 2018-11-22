@@ -25,9 +25,10 @@ namespace AuraEditor
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
             }
         }
-        
+
         private double _x;
-        public double X {
+        public double X
+        {
             get
             {
                 return _x;
@@ -38,6 +39,10 @@ namespace AuraEditor
                 {
                     _x = value;
                     RaisePropertyChanged("X");
+
+                    double timeUnits = _x / AuraLayerManager.PixelsPerTimeUnit;
+                    double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
+                    _startTime = seconds * 1000;
                 }
             }
         }
@@ -54,6 +59,10 @@ namespace AuraEditor
                 {
                     _width = value;
                     RaisePropertyChanged("Width");
+
+                    double timeUnits = _width / AuraLayerManager.PixelsPerTimeUnit;
+                    double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
+                    _durationTime = seconds * 1000;
                 }
             }
         }
@@ -90,14 +99,12 @@ namespace AuraEditor
                 RaisePropertyChanged("MoveTo");
             }
         }
+        private double _startTime;
         public override double StartTime
         {
             get
             {
-                double timeUnits = _x / AuraLayerManager.PixelsPerTimeUnit;
-                double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
-
-                return seconds * 1000;
+                return _startTime;
             }
             set
             {
@@ -105,17 +112,16 @@ namespace AuraEditor
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
                 _x = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                _startTime = value;
                 RaisePropertyChanged("X");
             }
         }
+        private double _durationTime;
         public override double DurationTime
         {
             get
             {
-                double timeUnits = _width / AuraLayerManager.PixelsPerTimeUnit;
-                double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
-
-                return seconds * 1000;
+                return _durationTime;
             }
             set
             {
@@ -123,6 +129,7 @@ namespace AuraEditor
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
                 _width = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                _durationTime = value;
                 RaisePropertyChanged("Width");
             }
         }

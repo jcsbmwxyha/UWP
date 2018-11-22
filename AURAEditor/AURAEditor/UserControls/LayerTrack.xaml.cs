@@ -81,7 +81,7 @@ namespace AuraEditor.UserControls
             if (copy == null)
                 return;
 
-            m_Layer.AddTimelineEffect(TimelineEffect.CloneEffect(copy));
+            m_Layer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
         }
     }
 }

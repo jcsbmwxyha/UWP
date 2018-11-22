@@ -19,6 +19,7 @@ using static AuraEditor.AuraSpaceManager;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 using Windows.Networking;
+using Windows.System.Threading;
 
 namespace AuraEditor
 {
@@ -61,6 +62,7 @@ namespace AuraEditor
         #region Key Up & Down
         public bool g_PressShift;
         public bool g_PressCtrl;
+        public bool g_CanPaste = true;
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
@@ -87,8 +89,10 @@ namespace AuraEditor
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
-                if (LayerManager.CopiedEffect == null)
+                if (g_CanPaste == false || LayerManager.CopiedEffect == null)
                     return;
+
+                g_CanPaste = false;
 
                 var copy = TimelineEffect.CloneEffect(LayerManager.CopiedEffect);
 
@@ -99,8 +103,20 @@ namespace AuraEditor
                 }
                 else
                 {
-                    LayerManager.CheckedLayer.AddTimelineEffect(TimelineEffect.CloneEffect(copy));
+                    LayerManager.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
                 }
+
+                TimeSpan delay = TimeSpan.FromMilliseconds(400);
+                ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
+                    (source) =>
+                    {
+                         Dispatcher.RunAsync(
+                            CoreDispatcherPriority.High,
+                            () =>
+                            {
+                                g_CanPaste = true;
+                            });
+                    }, delay);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Delete)
             {
