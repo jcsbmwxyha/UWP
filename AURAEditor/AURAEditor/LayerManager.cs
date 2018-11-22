@@ -36,7 +36,7 @@ namespace AuraEditor
             {
                 if (_checkedLayer == value)
                     return;
-                
+
                 if (_checkedLayer != null)
                 {
                     _checkedLayer.UI_Background.GoToState("Normal");
@@ -46,7 +46,7 @@ namespace AuraEditor
                 {
                     value.UI_Background.GoToState("Checked");
                     AuraSpaceManager.Self.WatchLayer(value);
-                    
+
                     if (CheckedEffect == null || CheckedEffect.Layer != value)
                     {
                         var find = value.GetFirstOnRightSide(0);
@@ -185,6 +185,7 @@ namespace AuraEditor
         {
             CheckedLayer = null;
             m_TrackStackPanel.Children.Clear();
+            m_BackgroundStackPanel.Children.Clear();
             Layers.Clear();
         }
         public void ClearTypeData(int deviceType)

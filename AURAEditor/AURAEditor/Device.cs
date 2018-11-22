@@ -102,6 +102,14 @@ namespace AuraEditor
         }
 
         #region Mouse event
+        public void Piling()
+        {
+            m_DotRect.Opacity = 0.6;
+        }
+        public void Unpiling()
+        {
+            m_DotRect.Opacity = 0;
+        }
         public void EnableManipulation()
         {
             m_Container.ManipulationDelta -= ImageManipulationDelta;
@@ -136,6 +144,9 @@ namespace AuraEditor
             SetPosition(
                 ct.TranslateX + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
                 ct.TranslateY + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
+
+            AuraSpaceManager.Self.OnMoveDeviceMove(this);
+            Canvas.SetZIndex(m_Container, 3);
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
@@ -145,7 +156,7 @@ namespace AuraEditor
                 RoundToGrid(ct.TranslateX),
                 RoundToGrid(ct.TranslateY));
 
-            if (!AuraSpaceManager.Self.IsOverlapping(this))
+            if (!AuraSpaceManager.Self.IsPiling(this))
             {
                 AuraSpaceManager.Self.DeleteOverlappingTempDevice(this);
                 AuraSpaceManager.Self.MoveDeviceMousePosition(this,
@@ -160,6 +171,7 @@ namespace AuraEditor
             m_DotRect.Opacity = 0.6;
             m_Image.Opacity = 1;
             MainPage.Self.NeedSave = true;
+            Canvas.SetZIndex(m_Container, 0);
         }
         private void ImagePointerPressed(object sender, PointerRoutedEventArgs e)
         {

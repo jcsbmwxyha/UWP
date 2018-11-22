@@ -23,7 +23,7 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
-        
+
         public TimelineEffect SelectedEffect
         {
             get
@@ -569,7 +569,7 @@ namespace AuraEditor
         {
             for (int i = 0; i < cl.Count; i++)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     List<RadioButton> items = FindAllControl<RadioButton>(cl[i].UI, typeof(RadioButton));
                     items[0].IsChecked = true;

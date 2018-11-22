@@ -16,7 +16,7 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
-        
+
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "PointerOver", false);

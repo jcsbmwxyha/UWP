@@ -105,8 +105,11 @@ namespace AuraEditor.Dialogs
 
             XmlNode node = result.Find(x => (x as XmlElement).GetAttribute("type") == "Notebook" ||
                                             (x as XmlElement).GetAttribute("type") == "Desktop");
-            result.Remove(node);
-            result.Insert(0, node);
+            if (node != null)
+            {
+                result.Remove(node);
+                result.Insert(0, node);
+            }
 
             return result;
         }

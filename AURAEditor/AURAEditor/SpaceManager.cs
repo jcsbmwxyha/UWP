@@ -133,6 +133,7 @@ namespace AuraEditor
         private MouseEventCtrl m_MouseEventCtrl;
         private DispatcherTimer m_ScrollTimerClock;
 
+        #region Space Zoom Factor
         private float _spaceZoomFactor;
         public float SpaceZoomFactor
         {
@@ -165,6 +166,8 @@ namespace AuraEditor
             m_ZoomButton.Content = zoomPercent.ToString() + " %";
             _spaceZoomFactor = (float)factor;
         }
+        #endregion
+
         public List<Device> GlobalDevices;
         public int MaxOperatingGridWidth
         {
@@ -305,7 +308,25 @@ namespace AuraEditor
                 }
             }
         }
-        public bool IsOverlapping(Device testDev)
+        public void OnMoveDeviceMove(Device movedDev)
+        {
+            List<Device> devices = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
+
+            foreach (var d in devices)
+            {
+                if (movedDev.Equals(d))
+                    continue;
+
+                if (ControlHelper.IsPiling(movedDev.GridPosition.X, movedDev.GridWidth, d.GridPosition.X, d.GridWidth) &&
+                    ControlHelper.IsPiling(movedDev.GridPosition.Y, movedDev.GridHeight, d.GridPosition.Y, d.GridHeight))
+                {
+                    d.Piling();
+                }
+                else
+                    d.Unpiling();
+            }
+        }
+        public bool IsPiling(Device testDev)
         {
             List<Device> devices = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
 

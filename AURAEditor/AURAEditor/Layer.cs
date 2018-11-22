@@ -78,7 +78,7 @@ namespace AuraEditor
         public LayerTrack UI_Track;
         public LayerBackground UI_Background;
         public string TriggerAction;
-        
+
         public Layer(string name = "")
         {
             TimelineEffects = new ObservableCollection<TimelineEffect>();
@@ -158,7 +158,7 @@ namespace AuraEditor
         {
             TimelineEffect rightmost = GetRightmostEffect();
 
-            if(rightmost==null)
+            if (rightmost == null)
             {
                 eff.StartTime = 0;
             }
@@ -166,10 +166,10 @@ namespace AuraEditor
             {
                 eff.StartTime = rightmost.EndTime;
             }
-            
+
             TimelineEffects.Add(eff);
         }
-        
+
         public double MoveToFitPosition(TimelineEffect placedEff)
         {
             placedEff.Layer = this;
@@ -213,7 +213,7 @@ namespace AuraEditor
                 AuraLayerManager.Self.CheckedEffect = next;
             else
                 AuraLayerManager.Self.CheckedEffect = null;
-            
+
             TimelineEffects.Remove(eff);
         }
         public TimelineEffect WhichIsOn(double x)
