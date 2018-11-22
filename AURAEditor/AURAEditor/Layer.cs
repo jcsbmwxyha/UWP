@@ -284,7 +284,7 @@ namespace AuraEditor
         }
         private TimelineEffect GetTheNext(TimelineEffect eff)
         {
-            TimelineEffect find = GetFirstOnRightSide(eff.X);
+            TimelineEffect find = GetFirstOnRightSide(eff.X + 1);
 
             if (find == null)
                 return null;
