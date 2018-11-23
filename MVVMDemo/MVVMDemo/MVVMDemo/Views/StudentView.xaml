@@ -30,6 +30,14 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListBox ItemsSource = "{Binding Students}" ItemTemplate = "{StaticResource studentsTemplate}"/>
+        <StackPanel Orientation = "Horizontal">
+            <ListBox ItemsSource = "{Binding Students}" ItemTemplate = "{StaticResource studentsTemplate}"
+                     SelectedItem = "{Binding SelectedStudent,Mode=TwoWay}"/>
+            <Button Content = "Delete"
+                    Command = "{Binding DeleteCommand}"
+                    HorizontalAlignment = "Left"
+                    VerticalAlignment = "Top"
+                    Width = "75"/>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -99,6 +99,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\StudentModel.cs" />
+    <Compile Include="MyICommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\StudentViewModel.cs" />
     <Compile Include="Views\StudentView.xaml.cs">
