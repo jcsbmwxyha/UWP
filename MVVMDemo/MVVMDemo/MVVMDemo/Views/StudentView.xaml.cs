@@ -22,6 +22,8 @@ namespace MVVMDemo.Views
         public StudentView()
         {
             this.InitializeComponent();
+            // you could also defer the construction until the Load event of the view fires.
+            //this.DataContext = new MVVMDemo.ViewModel.StudentViewModel();
         }
     }
 }
