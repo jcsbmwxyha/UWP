@@ -1,0 +1,677 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClassHierarchy.MainPage">
+    <Position X="3.25" Y="11.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="_Button" Type="Windows.UI.Xaml.Controls.Button" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="11.969" />
+        <Point X="11" Y="11.969" />
+        <Point X="11" Y="11.427" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_Grid" Type="Windows.UI.Xaml.Controls.Grid" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="12.688" />
+        <Point X="14.25" Y="12.688" />
+        <Point X="14.25" Y="9.927" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_ScrollViewer" Type="Windows.UI.Xaml.Controls.ScrollViewer" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="11.793" />
+        <Point X="9.438" Y="11.793" />
+        <Point X="9.438" Y="11.177" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_CheckBox" Type="Windows.UI.Xaml.Controls.CheckBox" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="12.188" />
+        <Point X="11.75" Y="12.188" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAgAAAAAAAAABAAAAAoA=</HashCode>
+      <FileName>MainPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_Button" />
+      <Field Name="_Grid" />
+      <Field Name="_ScrollViewer" />
+      <Field Name="_CheckBox" />
+      <Field Name="_ItemsControl" />
+    </ShowAsAssociation>
+    <Lollipop Orientation="Left" Position="0.333" />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Page">
+    <Position X="16.5" Y="4.25" Width="1.5" />
+    <Members>
+      <Property Name="BottomAppBar" Hidden="true" />
+      <Property Name="BottomAppBarProperty" Hidden="true" />
+      <Property Name="FrameProperty" Hidden="true" />
+      <Property Name="NavigationCacheMode" Hidden="true" />
+      <Property Name="TopAppBar" Hidden="true" />
+      <Property Name="TopAppBarProperty" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Frame" Type="Windows.UI.Xaml.Controls.Frame">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.227" Y="0.419" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Frame" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.UserControl">
+    <Position X="13" Y="4.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.Control" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.5" Y="4.562" />
+        <Point X="13" Y="4.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Control">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <Members>
+      <Property Name="Background" Hidden="true" />
+      <Property Name="BackgroundProperty" Hidden="true" />
+      <Property Name="BorderBrush" Hidden="true" />
+      <Property Name="BorderBrushProperty" Hidden="true" />
+      <Property Name="BorderThickness" Hidden="true" />
+      <Property Name="BorderThicknessProperty" Hidden="true" />
+      <Property Name="CharacterSpacing" Hidden="true" />
+      <Property Name="CharacterSpacingProperty" Hidden="true" />
+      <Property Name="DefaultStyleKey" Hidden="true" />
+      <Property Name="DefaultStyleKeyProperty" Hidden="true" />
+      <Property Name="DefaultStyleResourceUri" Hidden="true" />
+      <Property Name="DefaultStyleResourceUriProperty" Hidden="true" />
+      <Property Name="ElementSoundMode" Hidden="true" />
+      <Property Name="ElementSoundModeProperty" Hidden="true" />
+      <Property Name="FocusState" Hidden="true" />
+      <Property Name="FocusStateProperty" Hidden="true" />
+      <Property Name="FontFamily" Hidden="true" />
+      <Property Name="FontFamilyProperty" Hidden="true" />
+      <Property Name="FontSize" Hidden="true" />
+      <Property Name="FontSizeProperty" Hidden="true" />
+      <Property Name="FontStretch" Hidden="true" />
+      <Property Name="FontStretchProperty" Hidden="true" />
+      <Property Name="FontStyle" Hidden="true" />
+      <Property Name="FontStyleProperty" Hidden="true" />
+      <Property Name="FontWeight" Hidden="true" />
+      <Property Name="FontWeightProperty" Hidden="true" />
+      <Property Name="Foreground" Hidden="true" />
+      <Property Name="ForegroundProperty" Hidden="true" />
+      <Property Name="HorizontalContentAlignment" Hidden="true" />
+      <Property Name="HorizontalContentAlignmentProperty" Hidden="true" />
+      <Property Name="IsEnabled" Hidden="true" />
+      <Property Name="IsEnabledProperty" Hidden="true" />
+      <Property Name="IsFocusEngaged" Hidden="true" />
+      <Property Name="IsFocusEngagedProperty" Hidden="true" />
+      <Property Name="IsFocusEngagementEnabled" Hidden="true" />
+      <Property Name="IsFocusEngagementEnabledProperty" Hidden="true" />
+      <Property Name="IsTabStop" Hidden="true" />
+      <Property Name="IsTabStopProperty" Hidden="true" />
+      <Property Name="IsTemplateFocusTargetProperty" Hidden="true" />
+      <Property Name="IsTemplateKeyTipTargetProperty" Hidden="true" />
+      <Property Name="IsTextScaleFactorEnabled" Hidden="true" />
+      <Property Name="IsTextScaleFactorEnabledProperty" Hidden="true" />
+      <Property Name="Padding" Hidden="true" />
+      <Property Name="PaddingProperty" Hidden="true" />
+      <Property Name="RequiresPointer" Hidden="true" />
+      <Property Name="RequiresPointerProperty" Hidden="true" />
+      <Property Name="TabIndex" Hidden="true" />
+      <Property Name="TabIndexProperty" Hidden="true" />
+      <Property Name="TabNavigation" Hidden="true" />
+      <Property Name="TabNavigationProperty" Hidden="true" />
+      <Property Name="TemplateProperty" Hidden="true" />
+      <Property Name="UseSystemFocusVisuals" Hidden="true" />
+      <Property Name="UseSystemFocusVisualsProperty" Hidden="true" />
+      <Property Name="VerticalContentAlignment" Hidden="true" />
+      <Property Name="VerticalContentAlignmentProperty" Hidden="true" />
+      <Property Name="XYFocusDown" Hidden="true" />
+      <Property Name="XYFocusDownProperty" Hidden="true" />
+      <Property Name="XYFocusLeft" Hidden="true" />
+      <Property Name="XYFocusLeftProperty" Hidden="true" />
+      <Property Name="XYFocusRight" Hidden="true" />
+      <Property Name="XYFocusRightProperty" Hidden="true" />
+      <Property Name="XYFocusUp" Hidden="true" />
+      <Property Name="XYFocusUpProperty" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Events" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Template" Type="Windows.UI.Xaml.Controls.ControlTemplate" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10" Y="5.312" />
+        <Point X="9.625" Y="5.312" />
+        <Point X="9.625" Y="5.883" />
+        <Point X="9.25" Y="5.883" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Template" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.FrameworkElement" Collapsed="true">
+    <Position X="6.75" Y="4.25" Width="1.5" />
+    <Members>
+      <Property Name="ActualHeight" Hidden="true" />
+      <Property Name="ActualHeightProperty" Hidden="true" />
+      <Property Name="ActualTheme" Hidden="true" />
+      <Event Name="ActualThemeChanged" Hidden="true" />
+      <Property Name="ActualThemeProperty" Hidden="true" />
+      <Property Name="ActualWidth" Hidden="true" />
+      <Property Name="ActualWidthProperty" Hidden="true" />
+      <Property Name="AllowFocusOnInteraction" Hidden="true" />
+      <Property Name="AllowFocusOnInteractionProperty" Hidden="true" />
+      <Property Name="AllowFocusWhenDisabled" Hidden="true" />
+      <Property Name="AllowFocusWhenDisabledProperty" Hidden="true" />
+      <Method Name="ArrangeOverride" Hidden="true" />
+      <Property Name="BaseUri" Hidden="true" />
+      <Property Name="DataContext" Hidden="true" />
+      <Event Name="DataContextChanged" Hidden="true" />
+      <Property Name="DataContextProperty" Hidden="true" />
+      <Method Name="DeferTree" Hidden="true" />
+      <Method Name="FindName" Hidden="true" />
+      <Property Name="FlowDirection" Hidden="true" />
+      <Property Name="FlowDirectionProperty" Hidden="true" />
+      <Property Name="FocusVisualMargin" Hidden="true" />
+      <Property Name="FocusVisualMarginProperty" Hidden="true" />
+      <Property Name="FocusVisualPrimaryBrush" Hidden="true" />
+      <Property Name="FocusVisualPrimaryBrushProperty" Hidden="true" />
+      <Property Name="FocusVisualPrimaryThickness" Hidden="true" />
+      <Property Name="FocusVisualPrimaryThicknessProperty" Hidden="true" />
+      <Property Name="FocusVisualSecondaryBrush" Hidden="true" />
+      <Property Name="FocusVisualSecondaryBrushProperty" Hidden="true" />
+      <Property Name="FocusVisualSecondaryThickness" Hidden="true" />
+      <Property Name="FocusVisualSecondaryThicknessProperty" Hidden="true" />
+      <Method Name="FrameworkElement" Hidden="true" />
+      <Method Name="GetBindingExpression" Hidden="true" />
+      <Method Name="GoToElementStateCore" Hidden="true" />
+      <Property Name="Height" Hidden="true" />
+      <Property Name="HeightProperty" Hidden="true" />
+      <Property Name="HorizontalAlignment" Hidden="true" />
+      <Property Name="HorizontalAlignmentProperty" Hidden="true" />
+      <Property Name="Language" Hidden="true" />
+      <Property Name="LanguageProperty" Hidden="true" />
+      <Event Name="LayoutUpdated" Hidden="true" />
+      <Event Name="Loaded" Hidden="true" />
+      <Event Name="Loading" Hidden="true" />
+      <Property Name="Margin" Hidden="true" />
+      <Property Name="MarginProperty" Hidden="true" />
+      <Property Name="MaxHeight" Hidden="true" />
+      <Property Name="MaxHeightProperty" Hidden="true" />
+      <Property Name="MaxWidth" Hidden="true" />
+      <Property Name="MaxWidthProperty" Hidden="true" />
+      <Method Name="MeasureOverride" Hidden="true" />
+      <Property Name="MinHeight" Hidden="true" />
+      <Property Name="MinHeightProperty" Hidden="true" />
+      <Property Name="MinWidth" Hidden="true" />
+      <Property Name="MinWidthProperty" Hidden="true" />
+      <Property Name="Name" Hidden="true" />
+      <Property Name="NameProperty" Hidden="true" />
+      <Method Name="OnApplyTemplate" Hidden="true" />
+      <Property Name="Parent" Hidden="true" />
+      <Method Name="put_AllowFocusOnInteraction" Hidden="true" />
+      <Method Name="put_AllowFocusWhenDisabled" Hidden="true" />
+      <Method Name="put_DataContext" Hidden="true" />
+      <Method Name="put_FlowDirection" Hidden="true" />
+      <Method Name="put_FocusVisualMargin" Hidden="true" />
+      <Method Name="put_FocusVisualPrimaryBrush" Hidden="true" />
+      <Method Name="put_FocusVisualPrimaryThickness" Hidden="true" />
+      <Method Name="put_FocusVisualSecondaryBrush" Hidden="true" />
+      <Method Name="put_FocusVisualSecondaryThickness" Hidden="true" />
+      <Method Name="put_Height" Hidden="true" />
+      <Method Name="put_HorizontalAlignment" Hidden="true" />
+      <Method Name="put_Language" Hidden="true" />
+      <Method Name="put_Margin" Hidden="true" />
+      <Method Name="put_MaxHeight" Hidden="true" />
+      <Method Name="put_MaxWidth" Hidden="true" />
+      <Method Name="put_MinHeight" Hidden="true" />
+      <Method Name="put_MinWidth" Hidden="true" />
+      <Method Name="put_Name" Hidden="true" />
+      <Method Name="put_RequestedTheme" Hidden="true" />
+      <Method Name="put_Resources" Hidden="true" />
+      <Method Name="put_Style" Hidden="true" />
+      <Method Name="put_Tag" Hidden="true" />
+      <Method Name="put_VerticalAlignment" Hidden="true" />
+      <Method Name="put_Width" Hidden="true" />
+      <Property Name="RequestedTheme" Hidden="true" />
+      <Property Name="RequestedThemeProperty" Hidden="true" />
+      <Property Name="Resources" Hidden="true" />
+      <Method Name="SetBinding" Hidden="true" />
+      <Event Name="SizeChanged" Hidden="true" />
+      <Property Name="StyleProperty" Hidden="true" />
+      <Property Name="Tag" Hidden="true" />
+      <Property Name="TagProperty" Hidden="true" />
+      <Property Name="Triggers" Hidden="true" />
+      <Event Name="Unloaded" Hidden="true" />
+      <Property Name="VerticalAlignment" Hidden="true" />
+      <Property Name="VerticalAlignmentProperty" Hidden="true" />
+      <Property Name="Width" Hidden="true" />
+      <Property Name="WidthProperty" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Events" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Style" Type="Windows.UI.Xaml.Style">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="-0.717" Y="0.119" Height="0.174" Width="0.612" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Style" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.UIElement" Collapsed="true">
+    <Position X="4.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.DependencyObject" Collapsed="true">
+    <Position X="2.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ControlTemplate" Collapsed="true">
+    <Position X="7.75" Y="5.5" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.FrameworkTemplate" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6" Y="5.875" />
+        <Point X="6.292" Y="5.875" Type="JumpStart" />
+        <Point X="6.458" Y="5.875" Type="JumpEnd" />
+        <Point X="6.625" Y="5.875" />
+        <Point X="6.625" Y="5.875" />
+        <Point X="6.979" Y="5.875" Type="JumpStart" />
+        <Point X="7.145" Y="5.875" Type="JumpEnd" />
+        <Point X="7.355" Y="5.875" Type="JumpStart" />
+        <Point X="7.521" Y="5.875" Type="JumpEnd" />
+        <Point X="7.75" Y="5.875" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.FrameworkTemplate" Collapsed="true">
+    <Position X="4.5" Y="5.5" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.DependencyObject" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4" Y="4.625" />
+        <Point X="4.24" Y="4.625" />
+        <Point X="4.24" Y="5.875" />
+        <Point X="4.5" Y="5.875" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ContentControl">
+    <Position X="10.25" Y="8.25" Width="2" />
+    <Members>
+      <Method Name="ContentControl" Hidden="true" />
+      <Property Name="ContentProperty" Hidden="true" />
+      <Property Name="ContentTemplateProperty" Hidden="true" />
+      <Property Name="ContentTemplateRoot" Hidden="true" />
+      <Property Name="ContentTemplateSelector" Hidden="true" />
+      <Property Name="ContentTemplateSelectorProperty" Hidden="true" />
+      <Property Name="ContentTransitions" Hidden="true" />
+      <Property Name="ContentTransitionsProperty" Hidden="true" />
+      <Method Name="OnContentChanged" Hidden="true" />
+      <Method Name="OnContentTemplateChanged" Hidden="true" />
+      <Method Name="OnContentTemplateSelectorChanged" Hidden="true" />
+      <Method Name="put_Content" Hidden="true" />
+      <Method Name="put_ContentTemplate" Hidden="true" />
+      <Method Name="put_ContentTemplateSelector" Hidden="true" />
+      <Method Name="put_ContentTransitions" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.Control" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.25" Y="5.513" />
+        <Point X="11.25" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="ContentTemplate" Type="Windows.UI.Xaml.DataTemplate" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="9.25" />
+        <Point X="9.171" Y="9.25" Type="JumpStart" />
+        <Point X="9.004" Y="9.25" Type="JumpEnd" />
+        <Point X="6.458" Y="9.25" Type="JumpStart" />
+        <Point X="6.292" Y="9.25" Type="JumpEnd" />
+        <Point X="4.875" Y="9.25" />
+        <Point X="4.875" Y="8.177" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.919" Y="0.826" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="ContentTemplate" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ContentPresenter">
+    <Position X="7.25" Y="7.75" Width="1.5" />
+    <Members>
+      <Property Name="Background" Hidden="true" />
+      <Property Name="BackgroundProperty" Hidden="true" />
+      <Property Name="BorderBrush" Hidden="true" />
+      <Property Name="BorderBrushProperty" Hidden="true" />
+      <Property Name="BorderThickness" Hidden="true" />
+      <Property Name="BorderThicknessProperty" Hidden="true" />
+      <Property Name="CharacterSpacing" Hidden="true" />
+      <Property Name="CharacterSpacingProperty" Hidden="true" />
+      <Method Name="ContentPresenter" Hidden="true" />
+      <Property Name="ContentProperty" Hidden="true" />
+      <Property Name="ContentTemplateProperty" Hidden="true" />
+      <Property Name="ContentTemplateSelector" Hidden="true" />
+      <Property Name="ContentTemplateSelectorProperty" Hidden="true" />
+      <Property Name="ContentTransitions" Hidden="true" />
+      <Property Name="ContentTransitionsProperty" Hidden="true" />
+      <Property Name="CornerRadius" Hidden="true" />
+      <Property Name="CornerRadiusProperty" Hidden="true" />
+      <Property Name="FontFamily" Hidden="true" />
+      <Property Name="FontFamilyProperty" Hidden="true" />
+      <Property Name="FontSize" Hidden="true" />
+      <Property Name="FontSizeProperty" Hidden="true" />
+      <Property Name="FontStretch" Hidden="true" />
+      <Property Name="FontStretchProperty" Hidden="true" />
+      <Property Name="FontStyle" Hidden="true" />
+      <Property Name="FontStyleProperty" Hidden="true" />
+      <Property Name="FontWeight" Hidden="true" />
+      <Property Name="FontWeightProperty" Hidden="true" />
+      <Property Name="Foreground" Hidden="true" />
+      <Property Name="ForegroundProperty" Hidden="true" />
+      <Property Name="HorizontalContentAlignment" Hidden="true" />
+      <Property Name="HorizontalContentAlignmentProperty" Hidden="true" />
+      <Property Name="IsTextScaleFactorEnabled" Hidden="true" />
+      <Property Name="IsTextScaleFactorEnabledProperty" Hidden="true" />
+      <Property Name="LineHeight" Hidden="true" />
+      <Property Name="LineHeightProperty" Hidden="true" />
+      <Property Name="LineStackingStrategy" Hidden="true" />
+      <Property Name="LineStackingStrategyProperty" Hidden="true" />
+      <Property Name="MaxLines" Hidden="true" />
+      <Property Name="MaxLinesProperty" Hidden="true" />
+      <Method Name="OnContentTemplateChanged" Hidden="true" />
+      <Method Name="OnContentTemplateSelectorChanged" Hidden="true" />
+      <Property Name="OpticalMarginAlignment" Hidden="true" />
+      <Property Name="OpticalMarginAlignmentProperty" Hidden="true" />
+      <Property Name="Padding" Hidden="true" />
+      <Property Name="PaddingProperty" Hidden="true" />
+      <Method Name="put_Background" Hidden="true" />
+      <Method Name="put_BorderBrush" Hidden="true" />
+      <Method Name="put_BorderThickness" Hidden="true" />
+      <Method Name="put_CharacterSpacing" Hidden="true" />
+      <Method Name="put_Content" Hidden="true" />
+      <Method Name="put_ContentTemplate" Hidden="true" />
+      <Method Name="put_ContentTemplateSelector" Hidden="true" />
+      <Method Name="put_ContentTransitions" Hidden="true" />
+      <Method Name="put_CornerRadius" Hidden="true" />
+      <Method Name="put_FontFamily" Hidden="true" />
+      <Method Name="put_FontSize" Hidden="true" />
+      <Method Name="put_FontStretch" Hidden="true" />
+      <Method Name="put_FontStyle" Hidden="true" />
+      <Method Name="put_FontWeight" Hidden="true" />
+      <Method Name="put_Foreground" Hidden="true" />
+      <Method Name="put_HorizontalContentAlignment" Hidden="true" />
+      <Method Name="put_IsTextScaleFactorEnabled" Hidden="true" />
+      <Method Name="put_LineHeight" Hidden="true" />
+      <Method Name="put_LineStackingStrategy" Hidden="true" />
+      <Method Name="put_MaxLines" Hidden="true" />
+      <Method Name="put_OpticalMarginAlignment" Hidden="true" />
+      <Method Name="put_Padding" Hidden="true" />
+      <Method Name="put_TextLineBounds" Hidden="true" />
+      <Method Name="put_TextWrapping" Hidden="true" />
+      <Method Name="put_VerticalContentAlignment" Hidden="true" />
+      <Property Name="TextLineBounds" Hidden="true" />
+      <Property Name="TextLineBoundsProperty" Hidden="true" />
+      <Property Name="TextWrapping" Hidden="true" />
+      <Property Name="TextWrappingProperty" Hidden="true" />
+      <Property Name="VerticalContentAlignment" Hidden="true" />
+      <Property Name="VerticalContentAlignmentProperty" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <InheritanceLine Type="Windows.UI.Xaml.FrameworkElement" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.062" Y="4.927" />
+        <Point X="7.062" Y="7.854" />
+        <Point X="7.25" Y="7.854" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="ContentTemplate" Type="Windows.UI.Xaml.DataTemplate" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.25" Y="8.75" />
+        <Point X="6.458" Y="8.75" Type="JumpStart" />
+        <Point X="6.292" Y="8.75" Type="JumpEnd" />
+        <Point X="5.188" Y="8.75" />
+        <Point X="5.188" Y="8.177" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.587" Y="0.202" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="ContentTemplate" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Button" Collapsed="true">
+    <Position X="10.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Primitives.ButtonBase" Collapsed="true">
+    <Position X="11" Y="9.75" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.ContentControl" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11.312" Y="9.45" />
+        <Point X="11.312" Y="9.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.DataTemplate" Collapsed="true">
+    <Position X="4.25" Y="7.5" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.FrameworkTemplate" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.062" Y="6.177" />
+        <Point X="5.062" Y="7.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Grid" Collapsed="true">
+    <Position X="13.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ScrollViewer" Collapsed="true">
+    <Position X="8.5" Y="10.5" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.ContentControl" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="9.375" />
+        <Point X="9.5" Y="9.375" />
+        <Point X="9.5" Y="10.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Panel" Collapsed="true">
+    <Position X="13.5" Y="8.25" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.FrameworkElement" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.438" Y="4.927" />
+        <Point X="7.438" Y="7.5" />
+        <Point X="9.004" Y="7.5" Type="JumpStart" />
+        <Point X="9.171" Y="7.5" Type="JumpEnd" />
+        <Point X="11.167" Y="7.5" Type="JumpStart" />
+        <Point X="11.333" Y="7.5" Type="JumpEnd" />
+        <Point X="11.417" Y="7.5" Type="JumpStart" />
+        <Point X="11.583" Y="7.5" Type="JumpEnd" />
+        <Point X="14.375" Y="7.5" />
+        <Point X="14.375" Y="8.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Style" Collapsed="true">
+    <Position X="6.75" Y="3.25" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.DependencyObject" FixedToPoint="true">
+      <Path>
+        <Point X="3.25" Y="4.25" />
+        <Point X="3.25" Y="3.562" />
+        <Point X="6.75" Y="3.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="Setters" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Frame" Collapsed="true">
+    <Position X="15" Y="5.75" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.ContentControl" FixedFromPoint="true">
+      <Path>
+        <Point X="11.5" Y="8.25" />
+        <Point X="11.5" Y="6.802" />
+        <Point X="15.75" Y="6.802" />
+        <Point X="15.75" Y="6.427" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Windows.UI.Xaml.SetterBaseCollection" Collapsed="true">
+    <Position X="6.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Object" Collapsed="true">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.CheckBox" Collapsed="true">
+    <Position X="11.75" Y="11.75" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.Primitives.ToggleButton" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.5" Y="11.427" />
+        <Point X="12.5" Y="11.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.Primitives.ToggleButton" Collapsed="true">
+    <Position X="12" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ItemsControl">
+    <Position X="5" Y="9.5" Width="3" />
+    <Members>
+      <Method Name="ClearContainerForItemOverride" Hidden="true" />
+      <Method Name="ContainerFromIndex" Hidden="true" />
+      <Method Name="ContainerFromItem" Hidden="true" />
+      <Property Name="DisplayMemberPath" Hidden="true" />
+      <Property Name="DisplayMemberPathProperty" Hidden="true" />
+      <Method Name="GetContainerForItemOverride" Hidden="true" />
+      <Method Name="GetItemsOwner" Hidden="true" />
+      <Method Name="GroupHeaderContainerFromItemContainer" Hidden="true" />
+      <Property Name="GroupStyle" Hidden="true" />
+      <Property Name="GroupStyleSelector" Hidden="true" />
+      <Property Name="GroupStyleSelectorProperty" Hidden="true" />
+      <Method Name="IndexFromContainer" Hidden="true" />
+      <Property Name="IsGrouping" Hidden="true" />
+      <Property Name="IsGroupingProperty" Hidden="true" />
+      <Method Name="IsItemItsOwnContainerOverride" Hidden="true" />
+      <Property Name="ItemContainerGenerator" Hidden="true" />
+      <Property Name="ItemContainerStyleProperty" Hidden="true" />
+      <Property Name="ItemContainerStyleSelector" Hidden="true" />
+      <Property Name="ItemContainerStyleSelectorProperty" Hidden="true" />
+      <Property Name="ItemContainerTransitions" Hidden="true" />
+      <Property Name="ItemContainerTransitionsProperty" Hidden="true" />
+      <Method Name="ItemFromContainer" Hidden="true" />
+      <Method Name="ItemsControl" Hidden="true" />
+      <Method Name="ItemsControlFromItemContainer" Hidden="true" />
+      <Property Name="ItemsPanelProperty" Hidden="true" />
+      <Property Name="ItemsPanelRoot" Hidden="true" />
+      <Property Name="ItemsSourceProperty" Hidden="true" />
+      <Property Name="ItemTemplateProperty" Hidden="true" />
+      <Property Name="ItemTemplateSelector" Hidden="true" />
+      <Property Name="ItemTemplateSelectorProperty" Hidden="true" />
+      <Method Name="OnGroupStyleSelectorChanged" Hidden="true" />
+      <Method Name="OnItemContainerStyleChanged" Hidden="true" />
+      <Method Name="OnItemContainerStyleSelectorChanged" Hidden="true" />
+      <Method Name="OnItemsChanged" Hidden="true" />
+      <Method Name="OnItemTemplateChanged" Hidden="true" />
+      <Method Name="OnItemTemplateSelectorChanged" Hidden="true" />
+      <Method Name="PrepareContainerForItemOverride" Hidden="true" />
+      <Method Name="put_DisplayMemberPath" Hidden="true" />
+      <Method Name="put_GroupStyleSelector" Hidden="true" />
+      <Method Name="put_ItemContainerStyle" Hidden="true" />
+      <Method Name="put_ItemContainerStyleSelector" Hidden="true" />
+      <Method Name="put_ItemContainerTransitions" Hidden="true" />
+      <Method Name="put_ItemsPanel" Hidden="true" />
+      <Method Name="put_ItemsSource" Hidden="true" />
+      <Method Name="put_ItemTemplate" Hidden="true" />
+      <Method Name="put_ItemTemplateSelector" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <InheritanceLine Type="Windows.UI.Xaml.Controls.Control" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.75" Y="5.513" />
+        <Point X="10.75" Y="6.427" />
+        <Point X="9.088" Y="6.427" />
+        <Point X="9.088" Y="9.857" />
+        <Point X="8" Y="9.857" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="ItemTemplate" Type="Windows.UI.Xaml.DataTemplate" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="9.941" />
+        <Point X="4.5" Y="9.941" />
+        <Point X="4.5" Y="8.177" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.521" Y="1.283" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="ItemContainerStyle" Type="Windows.UI.Xaml.Style">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.044" Y="-0.369" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier />
+    <ShowAsAssociation>
+      <Property Name="ItemsPanel" />
+      <Property Name="ItemTemplate" />
+      <Property Name="ItemContainerStyle" />
+    </ShowAsAssociation>
+    <Lollipop Orientation="Bottom" Position="1.075" />
+  </Class>
+  <Class Name="Windows.UI.Xaml.Controls.ItemsPanelTemplate" Collapsed="true">
+    <Position X="1" Y="10" Width="1.5" />
+    <InheritanceLine Type="Windows.UI.Xaml.FrameworkTemplate" FixedFromPoint="true">
+      <Path>
+        <Point X="4.875" Y="6.177" />
+        <Point X="4.875" Y="6.552" />
+        <Point X="1.75" Y="6.552" />
+        <Point X="1.75" Y="10" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

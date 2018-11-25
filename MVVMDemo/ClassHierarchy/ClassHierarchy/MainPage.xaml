@@ -1,0 +1,16 @@
+﻿<Page
+    x:Class="ClassHierarchy.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ClassHierarchy"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="AntiqueWhite">
+        <CheckBox Background="Aqua" Height="50" Width="59" BorderBrush="Red" BorderThickness="5">
+            <Rectangle Fill="Red" Height="50" Width="59"></Rectangle>
+        </CheckBox>
+    </Grid>
+</Page>
