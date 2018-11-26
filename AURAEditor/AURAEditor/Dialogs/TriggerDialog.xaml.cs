@@ -76,6 +76,15 @@ namespace AuraEditor.Dialogs
             }
 
             TriggerEffectListView.ItemsSource = m_EffectList;
+            if (m_EffectList.Count == 0)
+            {
+                TriggerEffectTextBlock.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+                TriggerEffectListView.SelectedIndex = 0;
+            }
             defaultEffect = GetTriggerEffect()[0];
 
             foreach (var effectName in GetTriggerEffect())
@@ -111,6 +120,11 @@ namespace AuraEditor.Dialogs
             TriggerEffect effect = new TriggerEffect(defaultEffect);
             effect.Layer = m_Layer;
             m_EffectList.Add(effect);
+            if (m_EffectList.Count != 0)
+            {
+                TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+            }
+            TriggerEffectListView.SelectedIndex = m_EffectList.Count - 1;
         }
         private void FillOutParameterByIndex(int index)
         {
@@ -168,12 +182,36 @@ namespace AuraEditor.Dialogs
 
         public void DeleteTriggerEffect(TriggerEffect eff)
         {
-            if (m_EffectList.IndexOf(eff) == SelectedIndex)
+            bool listviewchange = false;
+            if (m_EffectList.IndexOf(eff) == TriggerEffectListView.SelectedIndex)
             {
-                SelectedIndex = -1;
+                if ((TriggerEffectListView.SelectedIndex - 1) != -1)
+                {
+                    TriggerEffectListView.SelectedIndex = TriggerEffectListView.SelectedIndex - 1;
+                }
+                else if (((TriggerEffectListView.SelectedIndex - 1) == -1) && (m_EffectList.Count > 1))
+                {
+                    TriggerEffectListView.SelectedIndex = TriggerEffectListView.SelectedIndex + 1;
+                    listviewchange = true;
+                }
+                else
+                {
+                    TriggerEffectListView.SelectedIndex = -1;
+                }
             }
 
             m_EffectList.Remove(eff);
+
+            //after remove effect line return right index 
+            if (listviewchange)
+            {
+                SelectedIndex = SelectedIndex - 1;
+            }
+
+            if (m_EffectList.Count == 0)
+            {
+                TriggerEffectTextBlock.Visibility = Visibility.Visible;
+            }
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {

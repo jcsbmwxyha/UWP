@@ -30,10 +30,19 @@ namespace AuraEditor
         [DllImport("RpcClient.dll")]
         static extern long CreatorTrigger(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString);
 
+        [DllImport("RpcClient.dll")]
+        static extern long CreatorTriggerTime(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString, long time);
+
+        [DllImport("RpcClient.dll")]
+        static extern long CreatorLoadFile(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string File, [MarshalAs(UnmanagedType.LPWStr)] out string Content);
+
+        [DllImport("RpcClient.dll")]
+        static extern long CreatorSaveFile(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string File, [MarshalAs(UnmanagedType.LPStr)] string Content);
+
         IntPtr rpcClient;
         long error = 0L;
         //private bool DEBUG = true;
-        string cmd = @"C:\ProgramData\Asus\AURA Creator\script\lastscript.xml";
+        string cmd = @"C:\ProgramData\Asus\AURA Creator\lastscript.xml";
         int num = 0, returnnum = 0;
 
         public async Task EffectNumber(int value)
@@ -48,14 +57,55 @@ namespace AuraEditor
             });
         }
 
-        public async Task AuraEditorTrigger()
+
+        public async Task SaveFile(string FileName, string Content)
+        {
+            await Task.Run(() =>
+            {
+                Debug.WriteLine("SaveFile by LiveService");
+                rpcClient = IntPtr.Zero;
+
+                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient)))
+                    return;
+
+                error = CreatorSaveFile(rpcClient, FileName, Content);
+
+
+            });
+        }
+
+        public string LoadFile(string FileName)
+        {
+
+            string Content = "";
+
+            Debug.WriteLine("SaveFile by LiveService");
+            rpcClient = IntPtr.Zero;
+
+            if (NotifyIfAnyError(RpcClientInitialize(out rpcClient)))
+                    return Content;
+
+            error = CreatorLoadFile(rpcClient, FileName, out Content);
+
+            return Content;
+
+        }
+
+
+
+        public async Task AuraEditorTrigger(long startTime)
         {
             await Task.Run(() =>
             {
                 Debug.WriteLine("SendTTriggerString");
                 rpcClient = IntPtr.Zero;
-                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient))) return;
+
+                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient)))
+                    return;
+
                 error = CreatorTrigger(rpcClient, cmd);
+                //error = CreatorTriggerTime(rpcClient, cmd, startTime);
+
             });
         }
 

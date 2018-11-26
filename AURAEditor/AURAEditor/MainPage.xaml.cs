@@ -65,7 +65,11 @@ namespace AuraEditor
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
-            if (args.VirtualKey == Windows.System.VirtualKey.Shift)
+            if (args.VirtualKey == Windows.System.VirtualKey.Z)
+            {
+                SpaceManager.OnSpacePressed();
+            }
+            else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
                 g_PressShift = true;
             }
@@ -128,7 +132,11 @@ namespace AuraEditor
         }
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            if (args.VirtualKey == Windows.System.VirtualKey.Shift)
+            if (args.VirtualKey == Windows.System.VirtualKey.Z)
+            {
+                SpaceManager.OnSpaceRelease();
+            }
+            else if(args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
                 g_PressShift = false;
             }
@@ -272,7 +280,7 @@ namespace AuraEditor
             string effName = e.Items[0] as string;
             e.Data.Properties.Add("EffectName", effName);
 
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DragingEffectBlock);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
         }
         private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
@@ -310,7 +318,7 @@ namespace AuraEditor
         {
             EditOKButton.IsEnabled = true;
             ShowMask("Device Sorting", "Save", "Cancel");
-            SpaceManager.SetSpaceStatus(SpaceStatus.DragingDevice);
+            SpaceManager.SetSpaceStatus(SpaceStatus.DraggingDevice);
         }
 
         private void LeftSidePanelButton_Click(object sender, RoutedEventArgs e)
@@ -400,7 +408,7 @@ namespace AuraEditor
             var pair = e.Data.Properties.FirstOrDefault();
             Layer layer = pair.Value as Layer;
             LayerManager.RemoveLayer(layer);
-            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+            SpaceManager.SetSpaceStatus(SpaceStatus.Init);
             SelectedEffect = null;
             NeedSave = true;
         }
@@ -410,7 +418,7 @@ namespace AuraEditor
             if (layer != null)
             {
                 LayerManager.RemoveLayer(layer);
-                SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+                SpaceManager.SetSpaceStatus(SpaceStatus.Init);
                 SelectedEffect = null;
                 NeedSave = true;
             }
@@ -445,15 +453,15 @@ namespace AuraEditor
                 }
 
                 NeedSave = true;
-                SpaceManager.SetSpaceStatus(SpaceStatus.WatchingLayer);
+                SpaceManager.WatchLayer(layer);
             }
             else
-                SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+                SpaceManager.SetSpaceStatus(SpaceStatus.Init);
             HideMask();
         }
         private void EditCancelButton_Click(object sender, RoutedEventArgs e)
         {
-            SpaceManager.SetSpaceStatus(SpaceStatus.Normal);
+            SpaceManager.SetSpaceStatus(SpaceStatus.Init);
             HideMask();
         }
         private void ShowMask(string descriptionText, string okText, string cancelText)

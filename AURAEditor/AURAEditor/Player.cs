@@ -181,11 +181,12 @@ namespace AuraEditor
 
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
+            long StartTime = 0;
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintScriptXml(false));
+            await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(false));
 
-            await (new ServiceViewModel()).AuraEditorTrigger();
+            await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
 
             ScrollWindowToLeftTop();
             _timelinePlayer.Play();

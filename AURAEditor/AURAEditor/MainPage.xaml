@@ -812,7 +812,14 @@
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
                 <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
-                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False"/>
+                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                                       TextWrapping="Wrap" Width="144"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
                         Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
             </StackPanel>
@@ -822,7 +829,13 @@
                 <Button Name="SaveButton" 
                         Style="{StaticResource SaveButtonStyle}"
                         Margin="1,0,0,0"
-                        Click="SaveButton_Click"/>
+                        Click="SaveButton_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Save"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
                 <Button x:Name="FileListButton" Content="" Foreground="White"
                     Width="200" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
@@ -938,13 +951,20 @@
                       Grid.Row="1" Grid.Column="2"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10,5,0,0">
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                    <TextBlock Name="Title" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"/>
+            <StackPanel>
+                <RelativePanel Margin="20,15,50,0">
+                    <TextBlock Name="Title" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
+                               RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
                     <Button Name="ResetBtn" Margin="132,0,0,0" Visibility="Collapsed"
                             Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}" Width="24" Height="24"
-                            HorizontalAlignment="Center"/>
-                </StackPanel>
+                            RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                                <TextBlock Foreground="White" Text="Reset to default"/>
+                            </ToolTip>
+                        </ToolTipService.ToolTip>
+                    </Button>
+                </RelativePanel>
                 <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
                     <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
                         <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
@@ -985,8 +1005,8 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                            <TextBlock Text="Color Segmentation" VerticalAlignment="Center" FontSize="15"/>
-                            <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="20,0,0,0"
+                            <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
+                            <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="80,0,0,0"
                                           Toggled="SegmentationSwitch_Toggled" Style="{StaticResource RogToggleSwitchStyle}"/>
                         </StackPanel>
                     </StackPanel>
@@ -1017,7 +1037,7 @@
                                     IsThumbToolTipEnabled="False"/>
                             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
                                 <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
-                                <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
+                                <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
                                 <TextBlock Text="Fast" FontSize="12"/>
                             </StackPanel>
                         </Grid>
@@ -1096,17 +1116,35 @@
                     Style="{StaticResource GoLeftButtonStyle}"
                     Click="JumpToBeginningButton_Click"
                     Margin="10,0,0,0"
-                    RelativePanel.AlignLeftWithPanel="True"/>
+                    RelativePanel.AlignLeftWithPanel="True">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Jump to beginning"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
             <Button Name="PlayButton"
                     Style="{StaticResource PlayButtonStyle}"
                     Click="PlayButton_Click"
                     Margin="3,0,0,0"
-                    RelativePanel.RightOf="GoLeftButton"/>
+                    RelativePanel.RightOf="GoLeftButton">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Play"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
             <Button Name="GoRightButton"
                     Style="{StaticResource GoRightButtonStyle}"
                     Click="JumpToEndButton_Click"
                     Margin="3,0,0,0"
-                    RelativePanel.RightOf="PlayButton"/>
+                    RelativePanel.RightOf="PlayButton">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Jump to end"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
             <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
                        Text="00:00.00"
                        HorizontalAlignment="Right"
@@ -1330,7 +1368,13 @@
         <Grid Grid.Column="0" Grid.Row="4">
             <Button x:Name="TrashCanButton" Style="{StaticResource DeleteButtonStyle}"
                     Click="TrashCanButton_Click" DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
-                    HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Delete layer"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
         </Grid>
         <RelativePanel Name="R4C1Grid" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
             <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.LeftOf="LayerZoomSlider"

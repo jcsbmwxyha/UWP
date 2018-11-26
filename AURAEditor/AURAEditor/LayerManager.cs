@@ -175,7 +175,7 @@ namespace AuraEditor
                 item.Update();
             }
 
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Normal);
+            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Init);
         }
         public int GetLayerCount()
         {

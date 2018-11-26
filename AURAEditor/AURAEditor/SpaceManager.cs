@@ -26,43 +26,51 @@ namespace AuraEditor
         public enum SpaceStatus
         {
             None = 0,
-            Normal = 1,
-            DragingDevice = 2,
-            WatchingLayer = 3,
-            DragingEffectBlock = 4,
-            ReEditing = 5,
+            Init,
+            Editing,
+            DraggingDevice,
+            WatchingLayer,
+            DraggingEffectBlock,
+            ReEditing,
+            DraggingWindow,
         }
-        private SpaceStatus spaceGridStatus;
+
+        private SpaceStatus _beforeDragWindowStatus;
+        private SpaceStatus spaceStatus;
         public SpaceStatus GetSpaceStatus()
         {
-            return spaceGridStatus;
+            return spaceStatus;
         }
         public void SetSpaceStatus(SpaceStatus value)
         {
-            if (value == spaceGridStatus)
+            if (value == spaceStatus)
                 return;
 
-            spaceGridStatus = value;
+            m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressedForDraggingWindow;
+            m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
+            m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMovedForDraggingWindow;
+            m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
+            m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
 
-            if (value == SpaceStatus.Normal)
+            if (value == SpaceStatus.Init)
             {
                 DisableAllDevicesOperation();
-                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
-                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
-                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
-
                 m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 m_SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
                 m_SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
-                OnNormalState();
+                OnInitState();
+            }
+            else if (value == SpaceStatus.Editing)
+            {
+                DisableAllDevicesOperation();
+                m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
+                m_SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
+                m_SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
+                OnEditingState();
             }
             else if (value == SpaceStatus.ReEditing)
             {
                 DisableAllDevicesOperation();
-                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
-                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
-                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
-
                 m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 m_SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
                 m_SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
@@ -71,34 +79,35 @@ namespace AuraEditor
             else if (value == SpaceStatus.WatchingLayer)
             {
                 DisableAllDevicesOperation();
-                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
                 m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
-
-                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
-                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
                 m_SetLayerButton.IsEnabled = false;
-                WatchLayer(null);
             }
-            else if (value == SpaceStatus.DragingEffectBlock)
+            else if (value == SpaceStatus.DraggingEffectBlock)
             {
                 DisableAllDevicesOperation();
-                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
                 m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
-
-                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
-                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
                 m_SetLayerButton.IsEnabled = false;
             }
-            else if (value == SpaceStatus.DragingDevice)
+            else if (value == SpaceStatus.DraggingDevice)
             {
-                EableAllDevicesOperation();
-                m_SpaceCanvas.PointerPressed -= SpaceGrid_PointerPressed;
-                m_SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
-                m_SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+                EnableAllDevicesOperation();
                 m_SetLayerButton.IsEnabled = true;
             }
+            else if (value == SpaceStatus.DraggingWindow)
+            {
+                DisableAllDevicesOperation();
+                m_SpaceCanvas.PointerPressed += SpaceGrid_PointerPressedForDraggingWindow;
+                m_SpaceCanvas.PointerMoved += SpaceGrid_PointerMovedForDraggingWindow;
+
+                _beforeDragWindowStatus = spaceStatus;
+            }
+
+            if (value == SpaceStatus.Init)
+                spaceStatus = SpaceStatus.Editing;
+            else
+                spaceStatus = value;
         }
-        private void EableAllDevicesOperation()
+        private void EnableAllDevicesOperation()
         {
             foreach (var d in GlobalDevices)
             {
@@ -112,7 +121,7 @@ namespace AuraEditor
                 d.DisableManipulation();
             }
         }
-        private void OnNormalState()
+        private void OnInitState()
         {
             if (AuraLayerManager.Self != null)
             {
@@ -120,6 +129,13 @@ namespace AuraEditor
                 UnselectAllZones();
             }
             m_SetLayerButton.IsEnabled = false;
+        }
+        private void OnEditingState()
+        {
+            if (AuraLayerManager.Self != null)
+            {
+                AuraLayerManager.Self.CheckedLayer = null;
+            }
         }
         #endregion
 
@@ -132,6 +148,7 @@ namespace AuraEditor
         private Button m_ZoomButton;
         private MouseEventCtrl m_MouseEventCtrl;
         private DispatcherTimer m_ScrollTimerClock;
+        private Point m_DragWindowPoint;
 
         #region Space Zoom Factor
         private float _spaceZoomFactor;
@@ -215,7 +232,7 @@ namespace AuraEditor
             _spaceZoomFactor = 1;
 
             GlobalDevices = new List<Device>();
-            SetSpaceStatus(SpaceStatus.Normal);
+            SetSpaceStatus(SpaceStatus.Init);
         }
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
@@ -284,7 +301,7 @@ namespace AuraEditor
         {
             IntializeMouseEventCtrl();
             GlobalDevices.Clear();
-            SetSpaceStatus(SpaceStatus.Normal);
+            SetSpaceStatus(SpaceStatus.Init);
         }
 
         #region Sort
@@ -623,7 +640,7 @@ namespace AuraEditor
 
             if (GetSpaceStatus() == SpaceStatus.WatchingLayer)
             {
-                SetSpaceStatus(SpaceStatus.Normal);
+                SetSpaceStatus(SpaceStatus.Init);
             }
 
             var fe = sender as FrameworkElement;
@@ -633,9 +650,6 @@ namespace AuraEditor
         }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (GetSpaceStatus() != SpaceStatus.Normal && GetSpaceStatus() != SpaceStatus.ReEditing)
-                return;
-
             var fe = sender as FrameworkElement;
             PointerPoint ptrPt = e.GetCurrentPoint(fe);
             Point Position = ptrPt.Position;
@@ -722,6 +736,38 @@ namespace AuraEditor
             }
         }
         #endregion
+
+        private void SpaceGrid_PointerPressedForDraggingWindow(object sender, PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            Point Position = e.GetCurrentPoint(fe).Position;
+
+            m_DragWindowPoint = Position;
+        }
+        private void SpaceGrid_PointerMovedForDraggingWindow(object sender, PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            PointerPoint ptrPt = e.GetCurrentPoint(fe);
+            Point Position = ptrPt.Position;
+
+            if (ptrPt.Properties.IsLeftButtonPressed)
+            {
+                double move_x = Position.X - m_DragWindowPoint.X;
+                double move_y = Position.Y - m_DragWindowPoint.Y;
+
+                m_SpaceScrollViewer.ChangeView(
+                    m_SpaceScrollViewer.HorizontalOffset - move_x,
+                    m_SpaceScrollViewer.VerticalOffset - move_y, _spaceZoomFactor, true);
+            }
+        }
+        public void OnSpacePressed()
+        {
+            SetSpaceStatus(SpaceStatus.DraggingWindow);
+        }
+        public void OnSpaceRelease()
+        {
+            SetSpaceStatus(_beforeDragWindowStatus);
+        }
 
         public XmlNode ToXmlNodeForUserData()
         {

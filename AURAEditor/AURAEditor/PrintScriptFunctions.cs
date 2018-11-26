@@ -11,7 +11,7 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public string PrintScriptXml(bool repeat)
+        public string GetLastScript(bool repeat)
         {
             XmlNode root = CreateXmlNode("root");
 

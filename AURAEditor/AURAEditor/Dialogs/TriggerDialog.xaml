@@ -348,6 +348,7 @@
             </StackPanel>
             <Grid>
                 <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
+                <TextBlock x:Name="TriggerEffectTextBlock" Text="No Trigger effects yet" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True" VerticalAlignment="Top"
                           Width="500" Height="170" SelectedIndex="{Binding SelectedIndex}"
                           SelectionChanged="TriggerEffectListView_SelectionChanged">
@@ -435,7 +436,7 @@
                                     IsThumbToolTipEnabled="False"/>
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
                                     <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
-                                    <TextBlock Text="Medium" Margin="0,0,55,0" FontSize="12"/>
+                                    <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
                                     <TextBlock Text="Fast" FontSize="12"/>
                                 </StackPanel>
                             </Grid>

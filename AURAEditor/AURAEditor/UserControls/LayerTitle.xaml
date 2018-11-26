@@ -31,6 +31,7 @@
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
                                                 <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_off_h}"/>
+                                                <Setter Target="EyeTextBlock.Text" Value="Hide layer"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
@@ -46,6 +47,7 @@
                                         <VisualState x:Name="CheckedPointerOver">
                                             <VisualState.Setters>
                                                 <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_on_h}"/>
+                                                <Setter Target="EyeTextBlock.Text" Value="Show layer"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="CheckedPressed">
@@ -63,7 +65,13 @@
                                     </ToggleButton.Template>
                                 </ToggleButton>
                                 <Image Name="Eye" Source="../Assets/Button/asus_ac_eye_off_n_ic.png"
-                                               Stretch="Uniform" Width="30" VerticalAlignment="Center"/>
+                                               Stretch="Uniform" Width="30" VerticalAlignment="Center">
+                                    <ToolTipService.ToolTip>
+                                        <ToolTip Background="Black" Placement="Mouse">
+                                            <TextBlock Name="EyeTextBlock" Foreground="White"/>
+                                        </ToolTip>
+                                    </ToolTipService.ToolTip>
+                                </Image>
                             </StackPanel>
                         </ControlTemplate>
                     </Setter.Value>
@@ -195,7 +203,13 @@
                           Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye}" Style="{StaticResource EyeToggleButtonStyle}"/>
             <TextBlock Name="LayerNameTextBlock" Text="{x:Bind m_Layer.Name}" RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click"/>
+                    Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Edit"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
             <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}"
                     RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click"
@@ -211,7 +225,7 @@
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter}}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Trigger Event"/>
+                        <TextBlock Foreground="White" Text="Tigger effects settings"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>

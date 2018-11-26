@@ -21,7 +21,8 @@ namespace AuraEditor
     public sealed partial class MainPage : Page
     {
         public bool NeedSave;
-        private StorageFolder m_UserFileFolder;
+        private StorageFolder m_UserFilesFolder;
+        private StorageFolder m_UserScriptsFolder;
         private List<string> GetUserFilenames()
         {
             List<string> filenames = new List<string>();
@@ -71,14 +72,15 @@ namespace AuraEditor
         {
             NeedSave = false;
             await GetOrCreateUserFilesFolder();
-            await TestOrCreateScriptFolder();
+            await GetOrCreateUserScriptsFolder();
+            //await TestOrCreateScriptFolder();
         }
         private async Task GetOrCreateUserFilesFolder()
         {
             try
             {
-                m_UserFileFolder = await StorageFolder.GetFolderFromPathAsync(UserFilesDefaultFolderPath);
-                var fileList = await m_UserFileFolder.GetFilesAsync();
+                m_UserFilesFolder = await StorageFolder.GetFolderFromPathAsync(UserFilesDefaultFolderPath);
+                var fileList = await m_UserFilesFolder.GetFilesAsync();
                 var filenameList = from file in fileList
                                    orderby file.DateCreated.ToFileTime()
                                    select file.DisplayName;
@@ -98,21 +100,22 @@ namespace AuraEditor
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
                 folder = await EnterOrCreateFolder(folder, "AURA Creator");
                 folder = await EnterOrCreateFolder(folder, "UserFiles");
-                m_UserFileFolder = folder;
+                m_UserFilesFolder = folder;
             }
         }
-        private async Task TestOrCreateScriptFolder()
+        private async Task GetOrCreateUserScriptsFolder()
         {
             try
             {
-                await StorageFolder.GetFolderFromPathAsync(DefaultScriptFolder);
+                m_UserScriptsFolder = await StorageFolder.GetFolderFromPathAsync(UserScriptsDefaultFolderPath);
             }
             catch
             {
                 // Folder doesn't exist
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS");
                 folder = await EnterOrCreateFolder(folder, "AURA Creator");
-                folder = await EnterOrCreateFolder(folder, "script");
+                folder = await EnterOrCreateFolder(folder, "UserScripts");
+                m_UserScriptsFolder = folder;
             }
         }
         #endregion
@@ -122,13 +125,14 @@ namespace AuraEditor
         {
             await SaveCurrentUserFile();
             NeedSave = false;
+            long StartTime = 0;
 
             // Apply after saving file
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\script");
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, PrintScriptXml(true));
+            await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(true));
 
-            await (new ServiceViewModel()).AuraEditorTrigger();
+            await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -166,7 +170,9 @@ namespace AuraEditor
             if (CurrentUserFilename == dialog.TheName)
                 return;
 
-            StorageFile file = await m_UserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            StorageFile script = await m_UserScriptsFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await script.RenameAsync(dialog.TheName + ".xml");
+            StorageFile file = await m_UserFilesFolder.GetFileAsync(CurrentUserFilename + ".xml");
             await file.RenameAsync(dialog.TheName + ".xml");
 
             foreach (var item in FileListMenuFlyout.Items)
@@ -196,7 +202,9 @@ namespace AuraEditor
             if (result != ContentDialogResult.Primary)
                 return;
 
-            StorageFile file = await m_UserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            StorageFile script = await m_UserScriptsFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await script.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            StorageFile file = await m_UserFilesFolder.GetFileAsync(CurrentUserFilename + ".xml");
             await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
 
             foreach (var item in FileListMenuFlyout.Items)
@@ -243,7 +251,7 @@ namespace AuraEditor
                         return;
                 }
 
-                StorageFile copyfile = await inputFile.CopyAsync(m_UserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                StorageFile copyfile = await inputFile.CopyAsync(m_UserFilesFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
                 CurrentUserFilename = copyfile.Name.Replace(".xml", "");
                 await LoadUserFile(CurrentUserFilename);
             }
@@ -348,7 +356,8 @@ namespace AuraEditor
                 if (dialog.Result == true)
                 {
                     CurrentUserFilename = dialog.TheName;
-                    await m_UserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
+                    await m_UserFilesFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
+                    await m_UserScriptsFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
                 }
                 else
                 {
@@ -358,6 +367,7 @@ namespace AuraEditor
 
             SpaceManager.ClearTempDeviceData();
             await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
+            await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript(true));
             return true;
         }
         private string GetUserData()
