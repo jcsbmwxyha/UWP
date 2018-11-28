@@ -10,7 +10,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     Width="2000"
-    Height="50" common:StateHelper.State="{x:Bind m_Layer.State, Mode=OneWay}">
+    Height="50">
     
     <UserControl.Resources>
         <ResourceDictionary>
