@@ -9,35 +9,14 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
-    
+
     <Canvas Name="Track" Width="5000" Height="50" Background="Transparent" AllowDrop="True"
+            x:FieldModifier="public"
             DragOver="Track_DragOver"
             Drop="Track_Drop"
             PointerPressed="Track_PointerPressed"
             PointerEntered="Track_PointerEntered"
             PointerExited="Track_PointerExited">
-        <ItemsControl ItemsSource="{x:Bind Path=m_Layer.TimelineEffects}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemContainerStyle>
-                <Style TargetType="ContentPresenter">
-                    <Setter Property="Margin" Value="0,7,0,0"/>
-                    <Setter Property="Height" Value="38"/>
-                </Style>
-            </ItemsControl.ItemContainerStyle>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <usercontrol:EffectLine Width="{Binding Width, Mode=TwoWay}" IsChecked="{Binding IsChecked, Mode=TwoWay}" MoveTo="{Binding MoveTo, Mode=TwoWay}">
-                        <usercontrol:EffectLine.RenderTransform>
-                            <CompositeTransform TranslateX="{Binding X, Mode=TwoWay}"/>
-                        </usercontrol:EffectLine.RenderTransform>
-                    </usercontrol:EffectLine>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
         <Canvas.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem Text="Copy" IsEnabled="False"/>

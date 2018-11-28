@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\Converter.cs" />
+    <Compile Include="Common\StateHelper.cs" />
     <Compile Include="Common\StorageHelper.cs" />
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
       <DependentUpon>ConnectedDevicesDialog.xaml</DependentUpon>

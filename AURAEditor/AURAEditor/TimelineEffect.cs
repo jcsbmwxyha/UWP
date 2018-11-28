@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.MainPage;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.ControlHelper;
 using MoonSharp.Interpreter;
 using System.ComponentModel;
 
@@ -26,6 +27,18 @@ namespace AuraEditor
             }
         }
 
+        private EffectLine _view;
+        public EffectLine View
+        {
+            get
+            {
+                return _view;
+            }
+            set
+            {
+                _view = value;
+            }
+        }
         private double _x;
         public double X
         {
@@ -86,19 +99,6 @@ namespace AuraEditor
                 RaisePropertyChanged("IsChecked");
             }
         }
-        private double _moveTo;
-        public double MoveTo
-        {
-            get
-            {
-                return _moveTo;
-            }
-            set
-            {
-                _moveTo = value;
-                RaisePropertyChanged("MoveTo");
-            }
-        }
         private double _startTime;
         public override double StartTime
         {
@@ -139,6 +139,11 @@ namespace AuraEditor
             DurationTime = 1000; // 1s
         }
 
+        public void MoveTo(double target)
+        {
+            CompositeTransform ct = View.RenderTransform as CompositeTransform;
+            AnimationStart(View.RenderTransform, "TranslateX", 300, ct.TranslateX, target);
+        }
         static public TimelineEffect CloneEffect(TimelineEffect copy)
         {
             TimelineEffect target = new TimelineEffect(copy.Type);

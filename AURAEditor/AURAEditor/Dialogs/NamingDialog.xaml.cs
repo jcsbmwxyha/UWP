@@ -40,5 +40,14 @@ namespace AuraEditor.Dialogs
             Result = false;
             this.Hide();
         }
+
+        private void NamingTextBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                Result = true;
+                this.Hide();
+            }
+        }
     }
 }

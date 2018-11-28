@@ -1181,7 +1181,7 @@
                       ViewChanged="TitleScrollViewer_ViewChanged">
             <ListView x:Name="LayerListView" x:FieldModifier="Public" HorizontalAlignment="Left"
                       CanReorderItems="True" CanDragItems="True" AllowDrop="True" SelectionMode="Extended"
-                      DragItemsStarting="LayerListView_DragItemsStarting">
+                      DragItemsStarting="LayerListView_DragItemsStarting" ItemsSource="{x:Bind LayerManager.Layers}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <usercontrol:LayerTitle HorizontalAlignment="Center"/>

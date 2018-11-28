@@ -325,7 +325,7 @@ namespace AuraEditor
                 }
             }
         }
-        public void OnMoveDeviceMove(Device movedDev)
+        public void OnDeviceMoved(Device movedDev)
         {
             List<Device> devices = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
 
@@ -341,6 +341,18 @@ namespace AuraEditor
                 }
                 else
                     d.Unpiling();
+            }
+        }
+        public void OnDeviceMoveCompleted(Device movedDev)
+        {
+            List<Device> devices = GlobalDevices.FindAll(d => d.Status == DeviceStatus.OnStage);
+
+            foreach (var d in devices)
+            {
+                if (movedDev.Equals(d))
+                    continue;
+
+                d.Unpiling();
             }
         }
         public bool IsPiling(Device testDev)

@@ -13,9 +13,5 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
-        public void GoToState(string State)
-        {
-            VisualStateManager.GoToState(this, State, false);
-        }
     }
 }

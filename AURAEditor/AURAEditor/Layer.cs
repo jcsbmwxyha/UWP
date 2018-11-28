@@ -3,6 +3,7 @@ using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Xml;
@@ -27,11 +28,13 @@ namespace AuraEditor
         public ObservableCollection<TimelineEffect> TimelineEffects;
         public List<TriggerEffect> TriggerEffects;
 
-        public LayerTitle UI_Title;
         private bool eye;
         public bool Eye
         {
-            get { return eye; }
+            get
+            {
+                return eye;
+            }
             set
             {
                 if (eye != value)
@@ -60,18 +63,16 @@ namespace AuraEditor
         private bool isTriggering;
         public bool IsTriggering
         {
-            get { return isTriggering; }
+            get
+            {
+                return isTriggering;
+            }
             set
             {
                 if (isTriggering != value)
                 {
                     isTriggering = value;
                     RaisePropertyChanged("IsTriggering");
-
-                    if (value == true)
-                        UI_Background.GoToState("Trigger");
-                    else
-                        UI_Background.GoToState("NoTrigger");
                 }
             }
         }
@@ -79,17 +80,32 @@ namespace AuraEditor
         public LayerBackground UI_Background;
         public string TriggerAction;
 
+        private string _state;
+        public string State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    RaisePropertyChanged("State");
+                }
+            }
+        }
+
         public Layer(string name = "")
         {
             TimelineEffects = new ObservableCollection<TimelineEffect>();
+            TimelineEffects.CollectionChanged += TriggerEffectsChanged;
             TriggerEffects = new List<TriggerEffect>();
 
             Name = name;
             Eye = true;
-            UI_Title = new LayerTitle
-            {
-                DataContext = this
-            };
+
             UI_Track = new LayerTrack
             {
                 DataContext = this,
@@ -101,6 +117,27 @@ namespace AuraEditor
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
             TriggerAction = "One Click";
+        }
+
+        private void TriggerEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            TimelineEffect tle;
+            EffectLine el;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    tle = e.OldItems[0] as TimelineEffect;
+                    UI_Track.Track.Children.Remove(tle.View);
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    el = new EffectLine();
+                    tle = e.NewItems[0] as TimelineEffect;
+                    el.DataContext = tle;
+                    UI_Track.Track.Children.Add(el);
+                    tle.View = el;
+                    break;
+            }
         }
 
         #region -- Zones --
@@ -187,13 +224,17 @@ namespace AuraEditor
                 else
                 {
                     double target = pilingEff.Right;
-                    placedEff.MoveTo = target;
+                    placedEff.MoveTo(target);
 
                     TimelineEffect nextEff = GetTheNext(placedEff);
-                    if (nextEff != null && IsPiling(nextEff, placedEff))
+                    if (nextEff != null)
                     {
-                        double move = target + placedEff.Width - nextEff.X;
-                        PushAllOnRightSide(placedEff, move);
+                        if (ControlHelper.IsPiling(target, placedEff.Width,
+                                                   nextEff.X, nextEff.Width))
+                        {
+                            double move = target + placedEff.Width - nextEff.X;
+                            PushAllOnRightSide(placedEff, move);
+                        }
                     }
 
                     return target;
@@ -324,7 +365,7 @@ namespace AuraEditor
                 if (effect.X <= e.X)
                 {
                     double target = e.X + move;
-                    e.MoveTo = target;
+                    e.MoveTo(target);
                 }
             }
         }

@@ -39,12 +39,12 @@ namespace AuraEditor
 
                 if (_checkedLayer != null)
                 {
-                    _checkedLayer.UI_Background.GoToState("Normal");
+                    _checkedLayer.State = "Normal";
                 }
 
                 if (value != null)
                 {
-                    value.UI_Background.GoToState("Checked");
+                    value.State = "Checked";
                     AuraSpaceManager.Self.WatchLayer(value);
 
                     if (CheckedEffect == null || CheckedEffect.Layer != value)
@@ -115,7 +115,7 @@ namespace AuraEditor
             {
                 TimelineEffect effect = GetRightmostEffect();
 
-                return (effect != null) ? effect.Right + effect.Width : 0;
+                return (effect != null) ? effect.Right : 0;
             }
         }
 
@@ -163,17 +163,8 @@ namespace AuraEditor
                     break;
             }
 
-            // TODO : Use MVVM instead of Update()
             for (int i = 0; i < Layers.Count; i++)
-            {
                 Layers[i].Name = "Layer " + (i + 1).ToString();
-            }
-
-            List<LayerTitle> items = FindAllControl<LayerTitle>(m_LayerListView, typeof(LayerTitle));
-            foreach (var item in items)
-            {
-                item.Update();
-            }
 
             AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Init);
         }

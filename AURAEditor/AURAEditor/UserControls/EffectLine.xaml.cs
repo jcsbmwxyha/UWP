@@ -22,55 +22,7 @@ namespace AuraEditor.UserControls
         private DispatcherTimer m_ScrollTimerClock;
         private double _allPosition;
         private bool _isPressed;
-        #region IsChecked
-        public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register(
-           "IsChecked",
-           typeof(bool),
-           typeof(EffectLine),
-           new PropertyMetadata(null, new PropertyChangedCallback(OnIsCheckedChanged))
-        );
-        private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            (d as EffectLine).EffectlineRadioButton.IsChecked = (bool)e.NewValue;
-        }
-        public bool IsChecked
-        {
-            get {
-                return (bool)GetValue(IsCheckedProperty);
-            }
-            set {
-                SetValue(IsCheckedProperty, value);
-            }
-        }
-        #endregion
-        #region MoveTo
-        public static readonly DependencyProperty MoveToProperty = DependencyProperty.Register(
-          "MoveTo",
-          typeof(double),
-          typeof(EffectLine),
-          new PropertyMetadata(null, new PropertyChangedCallback(OnMoveToChanged))
-        );
-        private static void OnMoveToChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            EffectLine el = d as EffectLine;
-            CompositeTransform ct = (el as EffectLine).RenderTransform as CompositeTransform;
-            double test = (double)e.OldValue;
-            AnimationStart(el.RenderTransform, "TranslateX", 300, ct.TranslateX, (double)e.NewValue);
-        }
-        public double MoveTo
-        {
-            get
-            {
-                return (double)GetValue(MoveToProperty);
-            }
-            set
-            {
-                SetValue(MoveToProperty, value);
-            }
-        }
-        #endregion
-
-        private double X
+        private double Left
         {
             get
             {
@@ -83,7 +35,7 @@ namespace AuraEditor.UserControls
                 ct.TranslateX = value;
             }
         }
-        private double Right { get { return X + Width; } }
+        private double Right { get { return Left + Width; } }
 
         #region Intelligent auto scroll
         private int _mouseDirection;
@@ -131,31 +83,31 @@ namespace AuraEditor.UserControls
 
                 if (mouseState == CursorState.SizeLeft)
                 {
-                    if (X > 0)
+                    if (Left > 0)
                     {
-                        double offset = X - move;
+                        double offset = Left - move;
                         if (offset < 0)
                         {
-                            X = 0;
+                            Left = 0;
                             Width += offset;
                         }
                         else
                         {
 
-                            X -= move;
+                            Left -= move;
                             Width += move;
                         }
                     }
                 }
                 else if (mouseState == CursorState.SizeAll)
                 {
-                    if (X > 0)
+                    if (Left > 0)
                     {
-                        double offset = X - move;
+                        double offset = Left - move;
                         if (offset < 0)
-                            X = 0;
+                            Left = 0;
                         else
-                            X -= move;
+                            Left -= move;
                     }
                 }
             }
@@ -174,7 +126,7 @@ namespace AuraEditor.UserControls
                 }
                 else if (mouseState == CursorState.SizeAll)
                 {
-                    X += move;
+                    Left += move;
                 }
             }
         }
@@ -248,7 +200,7 @@ namespace AuraEditor.UserControls
             LoadedStoryboard.Begin();
         }
 
-        #region event
+        #region -- Event --
         private void EffectLine_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             m_ScrollTimerClock.Start();
@@ -262,10 +214,10 @@ namespace AuraEditor.UserControls
         {
             if (mouseState == CursorState.SizeAll)
             {
-                if (X + e.Position.X - _allPosition < 0)
+                if (Left + e.Position.X - _allPosition < 0)
                     return;
 
-                X += e.Position.X - _allPosition;
+                Left += e.Position.X - _allPosition;
             }
             else if (mouseState == CursorState.SizeRight)
             {
@@ -280,20 +232,18 @@ namespace AuraEditor.UserControls
 
                 if (move < 0) // To left
                 {
-                    if (X <= 0)
+                    if (Left <= 0)
                         return;
                     // We should check if it will overlap another
-                    if (MyEffect.Layer.WhichIsOn(X + move) != null)
+                    if (MyEffect.Layer.WhichIsOn(Left + move) != null)
                         return;
                 }
                 if (Width - move <= 50)
                     return;
 
-                X += move;
+                Left += move;
                 Width -= move;
             }
-
-            MoveTo = X;
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
@@ -304,7 +254,7 @@ namespace AuraEditor.UserControls
             if (mouseState == CursorState.SizeLeft)
             {
                 keepWidth = Width;
-                X = RoundToTens(X);
+                Left = RoundToTens(Left);
                 Width = RoundToTens(keepWidth);
             }
             else if (mouseState == CursorState.SizeRight)
@@ -314,10 +264,10 @@ namespace AuraEditor.UserControls
             }
             else // move
             {
-                X = RoundToTens(X);
+                Left = RoundToTens(Left);
             }
 
-            MoveTo = MyEffect.Layer.MoveToFitPosition(MyEffect);
+            MyEffect.Layer.MoveToFitPosition(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;
@@ -330,7 +280,6 @@ namespace AuraEditor.UserControls
         }
         private void EffectlineRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
-            IsChecked = false;
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
@@ -340,7 +289,9 @@ namespace AuraEditor.UserControls
         {
             AuraLayerManager.Self.CheckedEffect = MyEffect;
         }
+        #endregion
 
+        #region -- Right-clicked menu --
         private void CopyItem_Click(object sender, RoutedEventArgs e)
         {
             AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);

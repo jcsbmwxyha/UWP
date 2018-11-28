@@ -118,7 +118,7 @@ namespace AuraEditor
             m_Container.PointerReleased -= ImagePointerReleased;
             m_Container.PointerEntered -= ImagePointerEntered;
             m_Container.PointerExited -= ImagePointerExited;
-            
+
             m_Container.ManipulationDelta += ImageManipulationDelta;
             m_Container.ManipulationCompleted += ImageManipulationCompleted;
             m_Container.PointerPressed += ImagePointerPressed;
@@ -145,7 +145,7 @@ namespace AuraEditor
                 ct.TranslateX + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
                 ct.TranslateY + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
 
-            AuraSpaceManager.Self.OnMoveDeviceMove(this);
+            AuraSpaceManager.Self.OnDeviceMoved(this);
             Canvas.SetZIndex(m_Container, 3);
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -167,7 +167,8 @@ namespace AuraEditor
             {
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
-            
+
+            AuraSpaceManager.Self.OnDeviceMoveCompleted(this);
             m_DotRect.Opacity = 0.6;
             m_Image.Opacity = 1;
             MainPage.Self.NeedSave = true;

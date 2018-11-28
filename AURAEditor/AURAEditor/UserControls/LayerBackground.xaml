@@ -5,11 +5,12 @@
     xmlns:local="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:AuraEditor.Common"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     Width="2000"
-    Height="50">
+    Height="50" common:StateHelper.State="{x:Bind m_Layer.State, Mode=OneWay}">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,6 +20,7 @@
             <BitmapImage x:Key="LayerBg_l_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_s.png"/>
             <BitmapImage x:Key="LayerBg_m_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_s.png"/>
             <BitmapImage x:Key="LayerBg_r_s" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_s.png"/>
+            <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -40,20 +42,6 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            <VisualStateGroup x:Name="TriggerStates">
-                <VisualState x:Name="NoTrigger">
-                    <VisualState.Setters>
-                        <Setter Target="Triggerline_head.Visibility" Value="Collapsed"/>
-                        <Setter Target="Triggerline_body.Visibility" Value="Collapsed"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Trigger">
-                    <VisualState.Setters>
-                        <Setter Target="Triggerline_head.Visibility" Value="Visible"/>
-                        <Setter Target="Triggerline_body.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
         <Grid.ColumnDefinitions>
@@ -63,21 +51,14 @@
             <ColumnDefinition Width="1"/>
         </Grid.ColumnDefinitions>
 
-        <Image Name="LayerBg_Left"
-               Grid.Column="0"
-               Stretch="Fill"
-               VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Mid"
-               Grid.Column="1" Grid.ColumnSpan="2"
-               Stretch="Fill"
-               VerticalAlignment="Center"/>
-        <Image Name="LayerBg_Right"
-               Grid.Column="3"
-               Stretch="Fill"
-               VerticalAlignment="Center"/>
-        <Image Name="Triggerline_head" Grid.Column="1" Height="10" Visibility="Collapsed"
-               HorizontalAlignment="Right" VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_head.png"/>
-        <Image Name="Triggerline_body" Grid.Column="2" Height="10" Stretch="Fill" Visibility="Collapsed"
-               VerticalAlignment="Center" Source="../Assets/Layer/asus_ac_triggerline_body.png"/>
+        <Image Name="LayerBg_Left" Grid.Column="0" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Mid" Grid.Column="1" Grid.ColumnSpan="2" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="LayerBg_Right" Grid.Column="3" Stretch="Fill" VerticalAlignment="Center"/>
+        <Image Name="Triggerline_head" Grid.Column="1" Height="10" HorizontalAlignment="Right" VerticalAlignment="Center" 
+               Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"
+               Source="../Assets/Layer/asus_ac_triggerline_head.png"/>
+        <Image Name="Triggerline_body" Grid.Column="2" Height="10" Stretch="Fill" VerticalAlignment="Center" 
+               Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}"
+               Source="../Assets/Layer/asus_ac_triggerline_body.png"/>
     </Grid>
 </UserControl>
