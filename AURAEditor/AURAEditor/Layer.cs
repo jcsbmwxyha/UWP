@@ -110,10 +110,6 @@ namespace AuraEditor
             {
                 DataContext = this,
             };
-            //UI_Background = new LayerBackground
-            //{
-            //    DataContext = this,
-            //};
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
             TriggerAction = "One Click";

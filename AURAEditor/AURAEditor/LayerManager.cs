@@ -21,12 +21,10 @@ namespace AuraEditor
 
         private ListView m_LayerListView;
         private StackPanel m_TrackStackPanel;
-        //private StackPanel m_BackgroundStackPanel;
+        private ItemsControl m_BackgroundItemsControl;
         private Canvas m_TimelineScaleCanvas;
 
-        public ObservableCollection<Layer> Layers {
-            get;
-            set; }
+        public ObservableCollection<Layer> Layers { get; set; }
         private Layer _checkedLayer;
         public Layer CheckedLayer
         {
@@ -125,13 +123,13 @@ namespace AuraEditor
         {
             Self = this;
             m_TrackStackPanel = MainPage.Self.TrackStackPanel;
-            //m_BackgroundStackPanel = MainPage.Self.BackgroundStackPanel;
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
-            m_LayerListView = MainPage.Self.LayerListView;
 
             Layers = new ObservableCollection<Layer>();
+            m_LayerListView = MainPage.Self.LayerListView;
             m_LayerListView.ItemsSource = Layers;
-            MainPage.Self.TestItemsControl.ItemsSource = Layers;
+            m_BackgroundItemsControl = MainPage.Self.LayerBackgroundItemsControl;
+            m_BackgroundItemsControl.ItemsSource = Layers;
             Layers.CollectionChanged += LayersChanged;
             PixelsPerTimeUnit = 200;
         }
@@ -156,13 +154,11 @@ namespace AuraEditor
                 case NotifyCollectionChangedAction.Remove:
                     layer = e.OldItems[0] as Layer;
                     m_TrackStackPanel.Children.Remove(layer.UI_Track);
-                    //m_BackgroundStackPanel.Children.Remove(layer.UI_Background);
                     break;
                 case NotifyCollectionChangedAction.Add:
                     layer = e.NewItems[0] as Layer;
                     layerIndex = e.NewStartingIndex;
                     m_TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
-                    //m_BackgroundStackPanel.Children.Insert(layerIndex, layer.UI_Background);
                     break;
             }
 
@@ -179,7 +175,6 @@ namespace AuraEditor
         {
             CheckedLayer = null;
             m_TrackStackPanel.Children.Clear();
-            //m_BackgroundStackPanel.Children.Clear();
             Layers.Clear();
         }
         public void ClearTypeData(int deviceType)

@@ -7,7 +7,7 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class LayerBackground : UserControl
     {
-        public Layer m_Layer { get { return this.DataContext as Layer; } }
+        private Layer m_Layer { get { return this.DataContext as Layer; } }
 
         public LayerBackground()
         {

@@ -176,6 +176,7 @@ namespace AuraEditor
             return methodNode;
         }
 
+
         private XmlNode GetWaveListXmlNode(int zoneCount)
         {
             XmlNode waveListNode = CreateXmlNode("waveList");
@@ -348,27 +349,46 @@ namespace AuraEditor
                 waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
                 waveListNode.AppendChild(waveNode);
+
+                XmlNode waveNode2 = CreateXmlNode("wave");
+                waveNode2.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("length", "23"));
+                if (Speed == 0)
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.8"));
+                else if (Speed == 1)
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "1.2"));
+                else // 2
+                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "1.6"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
+                waveListNode.AppendChild(waveNode2);
+
             }
             else if (GetEffectName(Type) == "Comet")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "TriangleWave"));
-                waveNode.AppendChild(CreateXmlNodeByValue("max", "0.1"));
+                waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
                 waveNode.AppendChild(CreateXmlNodeByValue("length", "3"));
                 if (Speed == 0)
                 {
-                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.01"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0"));
                     waveNode.AppendChild(CreateXmlNodeByValue("velocity", "10"));
                 }
                 else if (Speed == 1)
                 {
-                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.02"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0"));
                     waveNode.AppendChild(CreateXmlNodeByValue("velocity", "15"));
                 }
                 else // 2
                 {
-                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0.04"));
+                    waveNode.AppendChild(CreateXmlNodeByValue("freq", "0"));
                     waveNode.AppendChild(CreateXmlNodeByValue("velocity", "20"));
                 }
                 waveNode.AppendChild(CreateXmlNodeByValue("phase", "0"));
@@ -384,11 +404,24 @@ namespace AuraEditor
                     waveNode2.AppendChild(CreateXmlNodeByValue("type", "TriangleWave"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
-                    waveNode2.AppendChild(CreateXmlNodeByValue("length", "10"));
-                    waveNode2.AppendChild(CreateXmlNodeByValue("freq", "1"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("length", "24"));
+                    if (Speed == 0)
+                    {
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                        waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "10"));
+                    }
+                    else if (Speed == 1)
+                    {
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                        waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "15"));
+                    }
+                    else // 2
+                    {
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                        waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "20"));
+                    }
                     waveNode2.AppendChild(CreateXmlNodeByValue("phase", "0"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
-                    waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "15"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "1"));
                     waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
                     waveListNode.AppendChild(waveNode2);

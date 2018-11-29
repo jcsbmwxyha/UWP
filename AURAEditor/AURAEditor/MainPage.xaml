@@ -1363,29 +1363,24 @@
         </ScrollViewer>
         <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="-1" HorizontalAlignment="Left"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-
-            <ItemsControl Name="TestItemsControl" ItemsSource="{x:Bind Path=LayerManager.Layers}" x:FieldModifier="public">
+            <ItemsControl Name="LayerBackgroundItemsControl" ItemsSource="{x:Bind Path=LayerManager.Layers}" x:FieldModifier="public">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Margin="500,0,0,0" Width="590"  Background="Red" Height="500"/>
+                        <StackPanel/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Background" Value="Blue"/>
-                        <Setter Property="Margin" Value="0,7,0,0"/>
-                        <Setter Property="Height" Value="38"/>
-                        <Setter Property="Width" Value="2000"/>
+                        <Setter Property="Height" Value="50"/>
+                        <Setter Property="Width" Value="4000"/>
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local:Layer">
-                        <usercontrol:LayerTitle HorizontalAlignment="Center"/>
-                        <!--<usercontrol:LayerBackground common:StateHelper.State="{Binding State, Mode=OneWay}"/>-->
+                        <usercontrol:LayerBackground common:StateHelper.State="{Binding State, Mode=OneWay}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <!--<StackPanel Name="BackgroundStackPanel" x:FieldModifier="public"/>-->
         </ScrollViewer>
         
         <Grid Grid.Column="0" Grid.Row="4">
