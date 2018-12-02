@@ -2,17 +2,14 @@
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
+using Windows.Foundation;
+using Windows.UI.Xaml.Shapes;
+using System.Xml;
+using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.EffectHelper;
-using Windows.Foundation;
-using MoonSharp.Interpreter;
-using static AuraEditor.AuraSpaceManager;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI;
-using System.Xml;
-using System;
 
 namespace AuraEditor
 {

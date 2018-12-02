@@ -101,7 +101,7 @@ namespace AuraEditor
 
                 if (SelectedEffect != null)
                 {
-                    copy.X = SelectedEffect.Right;
+                    copy.Left = SelectedEffect.Right;
                     SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
                 }
                 else
@@ -136,7 +136,7 @@ namespace AuraEditor
             {
                 SpaceManager.OnSpaceRelease();
             }
-            else if(args.VirtualKey == Windows.System.VirtualKey.Shift)
+            else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
                 g_PressShift = false;
             }
@@ -483,6 +483,19 @@ namespace AuraEditor
             MaskGrid3.Visibility = Visibility.Collapsed;
         }
         #endregion
+
+        public void UpdateSupportLine(double align)
+        {
+            if (align != 0)
+            {
+                SupportLine.Visibility = Visibility.Visible;
+                SupportLineTranslateTransform.X = align - ScaleScrollViewer.HorizontalOffset;
+            }
+            else
+            {
+                SupportLine.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void SocketServerRecv_DoWork(object sender, DoWorkEventArgs e)
         {

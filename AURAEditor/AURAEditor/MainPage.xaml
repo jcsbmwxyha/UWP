@@ -1135,19 +1135,31 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="GoRightButton"
-                    Style="{StaticResource GoRightButtonStyle}"
-                    Click="JumpToEndButton_Click"
+            <Button Name="PauseButton"
+                    Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Foreground="White"
+                    Click="PauseButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="PlayButton">
+            </Button>
+            <Button Name="StopButton"
+                    Content="&#xE009;" FontFamily="Segoe MDL2 Assets" Foreground="White"
+                    Click="StopButton_Click"
+                    Margin="3,0,0,0"
+                    RelativePanel.RightOf="PauseButton">
+            </Button>
+            <Button Name="GoRightButton"
+                    Click="JumpToEndButton_Click"
+                    Margin="3,0,0,0"
+                    Style="{StaticResource GoRightButtonStyle}"
+                    RelativePanel.RightOf="StopButton">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="Jump to end"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <TextBlock Name="ClockText" Grid.Row="2" Grid.Column="0"
-                       Text="00:00.00"
+            <TextBlock Name="ClockText"
+                       Text="{Binding TimerText}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        FontSize="16"
@@ -1156,22 +1168,24 @@
                        Foreground="White"/>
         </RelativePanel>
         
-        <!-- Layer Structure-->
-        <ScrollViewer Name="IconScrollViewer" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" Canvas.ZIndex="6"
-                      HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
-                      ViewChanged="IconScrollViewer_ViewChanged" Visibility="Collapsed">
-            <Canvas Name="IconCanvas" Width="5000"
-                    VerticalAlignment="Top">
-                <Image Source="Assets/Layer/asus_auraeditor_timeline_ic.png" HorizontalAlignment="Left" Margin="-7,0,0,0">
-                    <Image.RenderTransform>
-                        <TranslateTransform x:Name="IconTranslateTransform"/>
-                    </Image.RenderTransform>
-                </Image>
-            </Canvas>
-        </ScrollViewer>
         <ScrollViewer Name="ScaleScrollViewer" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-            <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000"/>
+            <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000">
+                <usercontrol:PlayerIcon x:Name="MyPlayerIcon" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0"
+                                        Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" x:FieldModifier="public">
+                    <usercontrol:PlayerIcon.Resources>
+                        <Storyboard x:Name="IconStoryboard" x:FieldModifier="public">
+                            <DoubleAnimation x:Name="IconAnimation" x:FieldModifier="public"
+                                             Storyboard.TargetName="IconTranslateTransform"
+                                             Storyboard.TargetProperty="X">
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </usercontrol:PlayerIcon.Resources>
+                    <usercontrol:PlayerIcon.RenderTransform>
+                        <TranslateTransform x:Name="IconTranslateTransform" X="{Binding Position, Mode=TwoWay}"/>
+                    </usercontrol:PlayerIcon.RenderTransform>
+                </usercontrol:PlayerIcon>
+            </Canvas>
         </ScrollViewer>
         <ScrollViewer Name="TitleScrollViewer"
                       Grid.Column="0"
@@ -1361,6 +1375,13 @@
                       ViewChanged="TrackScrollViewer_ViewChanged">
             <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
         </ScrollViewer>
+        <Line Name="SupportLine" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
+              X1="0" Y1="10" X2="0" Y2="250" StrokeDashArray="2,1" Stroke="Green" StrokeThickness="2"
+              Canvas.ZIndex="10" Visibility="Collapsed">
+            <Line.RenderTransform>
+                <TranslateTransform x:Name="SupportLineTranslateTransform"/>
+            </Line.RenderTransform>
+        </Line>
         <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="-1" HorizontalAlignment="Left"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
             <ItemsControl Name="LayerBackgroundItemsControl" ItemsSource="{x:Bind Path=LayerManager.Layers}" x:FieldModifier="public">

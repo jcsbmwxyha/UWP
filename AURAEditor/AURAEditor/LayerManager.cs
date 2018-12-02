@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using AuraEditor.UserControls;
-using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.AuraSpaceManager;
@@ -19,6 +19,7 @@ namespace AuraEditor
     {
         static public AuraLayerManager Self;
 
+        private PlayerIcon m_PlayerIcon;
         private ListView m_LayerListView;
         private StackPanel m_TrackStackPanel;
         private ItemsControl m_BackgroundItemsControl;
@@ -99,7 +100,7 @@ namespace AuraEditor
         public TimelineEffect CopiedEffect;
 
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
-        static public double PixelsPerTimeUnit;
+        static public double PixelsPerSecond { get { return PixelsPerTimeUnit / SecondsPerTimeUnit; } }
         public double PlayTime
         {
             get
@@ -124,6 +125,7 @@ namespace AuraEditor
             Self = this;
             m_TrackStackPanel = MainPage.Self.TrackStackPanel;
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
+            m_PlayerIcon = MainPage.Self.MyPlayerIcon;
 
             Layers = new ObservableCollection<Layer>();
             m_LayerListView = MainPage.Self.LayerListView;
@@ -131,7 +133,6 @@ namespace AuraEditor
             m_BackgroundItemsControl = MainPage.Self.LayerBackgroundItemsControl;
             m_BackgroundItemsControl.ItemsSource = Layers;
             Layers.CollectionChanged += LayersChanged;
-            PixelsPerTimeUnit = 200;
         }
 
         #region Layer
@@ -195,9 +196,9 @@ namespace AuraEditor
         #endregion
 
         #region Timeline scale
-        static public double GetPixelsPerSecond()
+        static public double PositionToTime(double position)
         {
-            return (int)PixelsPerTimeUnit / SecondsPerTimeUnit;
+            return position / PixelsPerSecond;
         }
         public void SetTimeUnit(int newSecondsPerTimeUnit)
         {
@@ -210,7 +211,7 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    effect.X = effect.X * rate;
+                    effect.Left = effect.Left * rate;
                     effect.Width = effect.Width * rate;
                 }
             }
@@ -225,7 +226,7 @@ namespace AuraEditor
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
-                    position = effect.X + effect.Width;
+                    position = effect.Left + effect.Width;
 
                     if (position > rightmostPosition)
                     {
@@ -236,6 +237,21 @@ namespace AuraEditor
             }
             return rightmostEffect;
         }
+        public double[] GetAlignPositions(TimelineEffect eff)
+        {
+            Layer layer = eff.Layer;
+            List<double> result = new List<double>();
+            int i = Layers.IndexOf(layer);
+
+            result.Add(MainPage.Self.Player.GetPointerPosition());
+            result.AddRange(Layers[i].GetHeadAndTailPositions(eff));
+            if (i > 0)
+                result.AddRange(Layers[i - 1].GetHeadAndTailPositions(null));
+            if(i<Layers.Count - 1)
+                result.AddRange(Layers[i +1].GetHeadAndTailPositions(null));
+            return result.ToArray();
+        }
+
         private void DrawTimelineScale()
         {
             TimeSpan ts = new TimeSpan(0, 0, SecondsPerTimeUnit);
@@ -250,6 +266,7 @@ namespace AuraEditor
             int totalLineCount = width / minimumScaleUnitLength;
 
             m_TimelineScaleCanvas.Children.Clear();
+            m_TimelineScaleCanvas.Children.Add(m_PlayerIcon);
 
             for (int i = 1; i < totalLineCount; i++)
             {

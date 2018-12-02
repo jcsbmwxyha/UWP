@@ -83,7 +83,7 @@
     </UserControl.Resources>
 
     <UserControl.RenderTransform>
-        <CompositeTransform TranslateX="{x:Bind MyEffect.X,Mode=TwoWay}" TranslateY="6"/>
+        <CompositeTransform TranslateX="{x:Bind MyEffect.Left, Mode=TwoWay}" TranslateY="6"/>
     </UserControl.RenderTransform>
 
     <RadioButton Name="EffectlineRadioButton"

@@ -22,6 +22,7 @@ namespace AuraEditor.Common
             return seconds;
         }
         public const int GridPixels = 24;
+        public const double PixelsPerTimeUnit = 200;
         public const string UserScriptsDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserScripts\\";
         public const string UserFilesDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserFiles\\";
         public const string DefaultScriptFolder = "C:\\ProgramData\\ASUS\\AURA Creator\\script";

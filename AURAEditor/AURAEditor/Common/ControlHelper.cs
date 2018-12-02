@@ -7,7 +7,6 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor.Common
 {
@@ -116,14 +115,6 @@ namespace AuraEditor.Common
                 return true;
             else
                 return false;
-        }
-        public static double RoundToTens(double number)
-        {
-            return Math.Round(number / 10d, 0) * 10;
-        }
-        public static double RoundToGrid(double number)
-        {
-            return Math.Round(number / GridPixels, 0) * GridPixels;
         }
 
         static public void AnimationStart(DependencyObject o, string target, double runTime, double from, double to)

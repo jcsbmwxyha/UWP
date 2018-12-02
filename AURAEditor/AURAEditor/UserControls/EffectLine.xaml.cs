@@ -1,6 +1,5 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
@@ -8,6 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Math2;
 using CoreCursor = Windows.UI.Core.CoreCursor;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
@@ -20,7 +20,7 @@ namespace AuraEditor.UserControls
 
         private ScrollViewer m_ScrollViewer;
         private DispatcherTimer m_ScrollTimerClock;
-        private double _allPosition;
+        private double _tempSizeAllPosition;
         private bool _isPressed;
         private double Left
         {
@@ -36,6 +36,7 @@ namespace AuraEditor.UserControls
             }
         }
         private double Right { get { return Left + Width; } }
+        private double[] alignPositions;
 
         #region Intelligent auto scroll
         private int _mouseDirection;
@@ -205,74 +206,124 @@ namespace AuraEditor.UserControls
         {
             m_ScrollTimerClock.Start();
             _isPressed = true;
+
             if (mouseState == CursorState.SizeAll)
-                _allPosition = e.Position.X;
+                _tempSizeAllPosition = e.Position.X;
+
             this.Opacity = 0.5;
             this.SetValue(Canvas.ZIndexProperty, 3);
+
+            alignPositions = AuraLayerManager.Self.GetAlignPositions(MyEffect);
         }
         private void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
+            double align = 0;
+
             if (mouseState == CursorState.SizeAll)
             {
-                if (Left + e.Position.X - _allPosition < 0)
+                double tempLeft = Left + e.Position.X - _tempSizeAllPosition;
+
+                if (tempLeft < 0)
                     return;
 
-                Left += e.Position.X - _allPosition;
+                // -- Try align --
+                double tempRight = tempLeft + Width;
+
+                if (GetAlignPosition(tempLeft, ref align)) // Align left
+                {
+                    Left = align;
+                }
+                else if (GetAlignPosition(tempRight, ref align)) // Align right
+                {
+                    Left = align - Width;
+                }
+                else
+                {
+                    Left += e.Position.X - _tempSizeAllPosition;
+                }
             }
             else if (mouseState == CursorState.SizeRight)
             {
                 if (e.Position.X <= 50)
                     return;
 
-                Width = e.Position.X;
+                // -- Try align --
+                if (GetAlignPosition(Left + e.Position.X, ref align))
+                {
+                    Width = align - Left;
+                }
+                else
+                {
+                    Width = e.Position.X;
+                }
             }
             else if (mouseState == CursorState.SizeLeft)
             {
                 double move = e.Position.X;
+                double tempRight = Right;
 
                 if (move < 0) // To left
                 {
                     if (Left <= 0)
                         return;
-                    // We should check if it will overlap another
+
+                    // Hit another
                     if (MyEffect.Layer.WhichIsOn(Left + move) != null)
                         return;
                 }
                 if (Width - move <= 50)
                     return;
 
-                Left += move;
-                Width -= move;
+                // -- Try align --
+                if (GetAlignPosition(Left + e.Position.X, ref align))
+                {
+                    Left = align;
+                    Width = tempRight - Left;
+                }
+                else
+                {
+                    Left += move;
+                    Width -= move;
+                }
             }
+
+            MainPage.Self.UpdateSupportLine(align);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            double keepWidth;
             _isPressed = false;
             m_ScrollTimerClock.Stop();
 
-            if (mouseState == CursorState.SizeLeft)
-            {
-                keepWidth = Width;
-                Left = RoundToTens(Left);
-                Width = RoundToTens(keepWidth);
-            }
-            else if (mouseState == CursorState.SizeRight)
-            {
-                keepWidth = Width;
-                Width = RoundToTens(keepWidth);
-            }
-            else // move
-            {
-                Left = RoundToTens(Left);
-            }
-
+            MainPage.Self.UpdateSupportLine(0);
             MyEffect.Layer.MoveToFitPosition(MyEffect);
             mouseState = CursorState.None;
             MainPage.Self.NeedSave = true;
             this.Opacity = 1;
             this.SetValue(Canvas.ZIndexProperty, 0);
         }
+        private bool GetAlignPosition(double p, ref double result)
+        {
+            int range = 8;
+            foreach (var ap in alignPositions)
+            {
+                if (ap - range < p && p < ap + range)
+                {
+                    result = ap;
+                    return true;
+                }
+            }
+
+            // Align time scale
+            double round_p = RoundToTarget(p, 100);
+            if (Math.Abs(round_p - p) < range)
+            {
+                result = round_p;
+                return true;
+            }
+
+            return false;
+        }
+
         private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (MyEffect != null)
@@ -302,7 +353,7 @@ namespace AuraEditor.UserControls
                 return;
 
             var copy = TimelineEffect.CloneEffect(AuraLayerManager.Self.CopiedEffect);
-            copy.X = this.Right;
+            copy.Left = this.Right;
             MyEffect.Layer.InsertTimelineEffectFitly(copy);
         }
         private void CutItem_Click(object sender, RoutedEventArgs e)

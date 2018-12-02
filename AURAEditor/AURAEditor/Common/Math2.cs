@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI;
+using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor.Common
 {
@@ -104,7 +105,7 @@ namespace AuraEditor.Common
         {
             double x = 60 + s * sideLength;
             double y = 60 + sideLength - v * sideLength;
-            return new Point(x,y);
+            return new Point(x, y);
         }
         static public double ComputeH(double x, double y)
         {
@@ -141,7 +142,7 @@ namespace AuraEditor.Common
 
         static public void ComputeSquareSV(int row, int col, double squareSide, out double s, out double v)
         {
-            if(row >=60 && col >= 60)
+            if (row >= 60 && col >= 60)
             {
                 s = (col - 60) / squareSide;
                 v = (220 - row) / squareSide;
@@ -194,6 +195,19 @@ namespace AuraEditor.Common
                 Math.Abs(h * (1 / Math.Cos(radForH)))
                 ));
             return (int)maxLength;
+        }
+
+        static public double RoundToTens(double number)
+        {
+            return Math.Round(number / 10d, 0) * 10;
+        }
+        static public double RoundToGrid(double number)
+        {
+            return Math.Round(number / GridPixels, 0) * GridPixels;
+        }
+        static public double RoundToTarget(double number, double target)
+        {
+            return Math.Round(number / target, 0) * target;
         }
     }
 }

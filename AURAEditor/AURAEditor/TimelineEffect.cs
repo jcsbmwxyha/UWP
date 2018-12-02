@@ -1,17 +1,7 @@
-﻿using AuraEditor.Common;
-using AuraEditor.UserControls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+﻿using AuraEditor.UserControls;
 using Windows.UI.Xaml.Media;
-using static AuraEditor.MainPage;
-using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
-using MoonSharp.Interpreter;
+using static AuraEditor.Common.Definitions;
 using System.ComponentModel;
 
 namespace AuraEditor
@@ -39,21 +29,21 @@ namespace AuraEditor
                 _view = value;
             }
         }
-        private double _x;
-        public double X
+        private double _left;
+        public double Left
         {
             get
             {
-                return _x;
+                return _left;
             }
             set
             {
-                if (_x != value)
+                if (_left != value)
                 {
-                    _x = value;
-                    RaisePropertyChanged("X");
+                    _left = value;
+                    RaisePropertyChanged("Left");
 
-                    double timeUnits = _x / AuraLayerManager.PixelsPerTimeUnit;
+                    double timeUnits = _left / PixelsPerTimeUnit;
                     double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
                     _startTime = seconds * 1000;
                 }
@@ -73,7 +63,7 @@ namespace AuraEditor
                     _width = value;
                     RaisePropertyChanged("Width");
 
-                    double timeUnits = _width / AuraLayerManager.PixelsPerTimeUnit;
+                    double timeUnits = _width / PixelsPerTimeUnit;
                     double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
                     _durationTime = seconds * 1000;
                 }
@@ -83,7 +73,7 @@ namespace AuraEditor
         {
             get
             {
-                return _x + _width;
+                return _left + _width;
             }
         }
         private bool _isChecked;
@@ -111,7 +101,7 @@ namespace AuraEditor
                 double seconds = value / 1000;
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                _x = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                _left = timeUnits * PixelsPerTimeUnit;
                 _startTime = value;
                 RaisePropertyChanged("X");
             }
@@ -128,7 +118,7 @@ namespace AuraEditor
                 double seconds = value / 1000;
                 double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
 
-                _width = timeUnits * AuraLayerManager.PixelsPerTimeUnit;
+                _width = timeUnits * PixelsPerTimeUnit;
                 _durationTime = value;
                 RaisePropertyChanged("Width");
             }

@@ -141,6 +141,7 @@
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Effect.cs" />
+    <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="PatternColorSet.cs" />
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
@@ -178,6 +179,9 @@
     </Compile>
     <Compile Include="UserControls\LayerTrack.xaml.cs">
       <DependentUpon>LayerTrack.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PlayerIcon.xaml.cs">
+      <DependentUpon>PlayerIcon.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
@@ -553,6 +557,10 @@
     <Page Include="UserControls\LayerTrack.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PlayerIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\TriggerBlock.xaml">
       <SubType>Designer</SubType>

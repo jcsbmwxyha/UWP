@@ -266,6 +266,7 @@ namespace AuraEditor
                 await SaveFile(saveFile, GetUserData());
             }
         }
+
         private async void FileItem_Click(object sender, RoutedEventArgs e)
         {
             var item = sender as MenuFlyoutItem;
@@ -554,6 +555,7 @@ namespace AuraEditor
             CurrentUserFilename = "";
             LayerManager.Clean();
             SpaceManager.Clean();
+            Player.Stop();
         }
     }
 }

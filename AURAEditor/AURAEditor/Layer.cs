@@ -210,12 +210,12 @@ namespace AuraEditor
 
             if (pilingEff != null)
             {
-                if (placedEff.X <= pilingEff.X)
+                if (placedEff.Left <= pilingEff.Left)
                 {
-                    double move = placedEff.Right - pilingEff.X;
+                    double move = placedEff.Right - pilingEff.Left;
                     PushAllOnRightSide(placedEff, move);
 
-                    return placedEff.X;
+                    return placedEff.Left;
                 }
                 else
                 {
@@ -226,9 +226,9 @@ namespace AuraEditor
                     if (nextEff != null)
                     {
                         if (ControlHelper.IsPiling(target, placedEff.Width,
-                                                   nextEff.X, nextEff.Width))
+                                                   nextEff.Left, nextEff.Width))
                         {
-                            double move = target + placedEff.Width - nextEff.X;
+                            double move = target + placedEff.Width - nextEff.Left;
                             PushAllOnRightSide(placedEff, move);
                         }
                     }
@@ -237,7 +237,7 @@ namespace AuraEditor
                 }
             }
 
-            return placedEff.X;
+            return placedEff.Left;
         }
         public void DeleteEffectLine(TimelineEffect eff)
         {
@@ -257,7 +257,7 @@ namespace AuraEditor
         {
             foreach (TimelineEffect e in TimelineEffects)
             {
-                double left = e.X;
+                double left = e.Left;
                 double width = e.Width;
 
                 if ((left <= x) && (x <= left + width))
@@ -271,12 +271,12 @@ namespace AuraEditor
 
             foreach (TimelineEffect e in TimelineEffects)
             {
-                if (e.X >= x)
+                if (e.Left >= x)
                 {
                     if (result == null)
                         result = e;
 
-                    if (e.X < result.X)
+                    if (e.Left < result.Left)
                     {
                         result = e;
                     }
@@ -301,6 +301,19 @@ namespace AuraEditor
 
             return roomOfDuration;
         }
+        public List<double> GetHeadAndTailPositions(TimelineEffect ExceptionalEff)
+        {
+            List<double> result = new List<double>();
+            foreach(var eff in TimelineEffects)
+            {
+                if (eff == ExceptionalEff)
+                    continue;
+                result.Add(eff.Left);
+                result.Add(eff.Right);
+            }
+
+            return result;            
+        }
 
         private TimelineEffect GetRightmostEffect()
         {
@@ -320,7 +333,7 @@ namespace AuraEditor
         }
         private TimelineEffect GetTheNext(TimelineEffect eff)
         {
-            TimelineEffect find = GetFirstOnRightSide(eff.X + 1);
+            TimelineEffect find = GetFirstOnRightSide(eff.Left + 1);
 
             if (find == null)
                 return null;
@@ -358,9 +371,9 @@ namespace AuraEditor
                 if (effect.Equals(e))
                     continue;
 
-                if (effect.X <= e.X)
+                if (effect.Left <= e.Left)
                 {
-                    double target = e.X + move;
+                    double target = e.Left + move;
                     e.MoveTo(target);
                 }
             }
@@ -378,7 +391,7 @@ namespace AuraEditor
                 {
                     if (result == null)
                         result = e;
-                    else if (e.X < result.X)
+                    else if (e.Left < result.Left)
                     {
                         result = e;
                     }
@@ -393,7 +406,7 @@ namespace AuraEditor
 
             foreach (TimelineEffect eff in TimelineEffects)
             {
-                if (ControlHelper.IsPiling(left, right, eff.X, eff.Width))
+                if (ControlHelper.IsPiling(left, right, eff.Left, eff.Width))
                     result.Add(eff);
             }
 
@@ -402,8 +415,8 @@ namespace AuraEditor
         static private bool IsPiling(TimelineEffect effect1, TimelineEffect effect2)
         {
             return ControlHelper.IsPiling(
-                effect1.X, effect1.Width,
-                effect2.X, effect2.Width);
+                effect1.Left, effect1.Width,
+                effect2.Left, effect2.Width);
         }
         #endregion
 
