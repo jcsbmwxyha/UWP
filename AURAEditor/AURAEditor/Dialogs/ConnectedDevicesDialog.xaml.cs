@@ -1,4 +1,5 @@
-﻿using AuraEditor.UserControls;
+﻿using AuraEditor.Models;
+using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,10 +31,10 @@ namespace AuraEditor.Dialogs
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
+            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
             foreach (SyncDevice sd in m_SyncDeviceList)
             {
-                Device find = globalDevices.Find(d => d.Name == sd.Name);
+                DeviceModel find = globalDevices.Find(d => d.Name == sd.Name);
                 if (find != null)
                     find.Status = DeviceStatus.OnStage;
             }
@@ -144,8 +145,8 @@ namespace AuraEditor.Dialogs
         static private List<XmlNode> FilterNodes(List<XmlNode> deviceNodes)
         {
             List<XmlNode> results = new List<XmlNode>();
-            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
-            List<Device> existedDevices = globalDevices.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
+            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
+            List<DeviceModel> existedDevices = globalDevices.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
 
             while (deviceNodes.Count != 0)
             {

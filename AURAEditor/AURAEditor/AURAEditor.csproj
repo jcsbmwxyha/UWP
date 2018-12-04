@@ -109,8 +109,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorPoint.cs" />
+    <Compile Include="Common\BindingHelper.cs" />
     <Compile Include="Common\Converter.cs" />
-    <Compile Include="Common\StateHelper.cs" />
+    <Compile Include="Common\ZoneStateHelper.cs" />
+    <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="Common\StorageHelper.cs" />
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
       <DependentUpon>ConnectedDevicesDialog.xaml</DependentUpon>
@@ -141,6 +143,9 @@
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Effect.cs" />
+    <Compile Include="Models\DeviceModel.cs" />
+    <Compile Include="Models\SpecialZoneModel.cs" />
+    <Compile Include="Models\ZoneModel.cs" />
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="PatternColorSet.cs" />
     <Compile Include="PrintScriptFunctions.cs" />
@@ -157,6 +162,9 @@
     </Compile>
     <Compile Include="UserControls\ConnectedDeviceBlock.xaml.cs">
       <DependentUpon>ConnectedDeviceBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\DeviceView.xaml.cs">
+      <DependentUpon>DeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\LayerTitle.xaml.cs">
       <DependentUpon>LayerTitle.xaml</DependentUpon>
@@ -180,8 +188,8 @@
     <Compile Include="UserControls\LayerTrack.xaml.cs">
       <DependentUpon>LayerTrack.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\PlayerIcon.xaml.cs">
-      <DependentUpon>PlayerIcon.xaml</DependentUpon>
+    <Compile Include="UserControls\PlayerCursor.xaml.cs">
+      <DependentUpon>PlayerCursor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
@@ -534,6 +542,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\DeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\LayerTitle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -558,7 +570,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\PlayerIcon.xaml">
+    <Page Include="UserControls\PlayerCursor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

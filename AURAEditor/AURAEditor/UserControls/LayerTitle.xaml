@@ -216,7 +216,7 @@
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Trigger Event"/>
+                        <TextBlock Foreground="White" Text="Trigger effects settings"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -225,7 +225,7 @@
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Tigger effects settings"/>
+                        <TextBlock Foreground="White" Text="Trigger effects settings"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>

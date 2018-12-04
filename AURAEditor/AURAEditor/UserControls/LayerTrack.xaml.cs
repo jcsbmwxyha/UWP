@@ -56,16 +56,16 @@ namespace AuraEditor.UserControls
         private void Track_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (AuraLayerManager.Self.CheckedLayer == m_Layer)
-                m_Layer.State = "CheckedPointerOver";
+                m_Layer.VisualState = "CheckedPointerOver";
             else
-                m_Layer.State = "PointerOver";
+                m_Layer.VisualState = "PointerOver";
         }
         private void Track_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (AuraLayerManager.Self.CheckedLayer == m_Layer)
-                m_Layer.State = "Checked";
+                m_Layer.VisualState = "Checked";
             else
-                m_Layer.State = "Normal";
+                m_Layer.VisualState = "Normal";
         }
 
         private void PasteItem_Click(object sender, RoutedEventArgs e)

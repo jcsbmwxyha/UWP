@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Dialogs;
+using AuraEditor.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -404,7 +405,7 @@ namespace AuraEditor
         }
         private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
         {
-            List<Device> globalDevices = SpaceManager.GlobalDevices;
+            List<DeviceModel> globalDevices = SpaceManager.DeviceModelCollection;
             globalDevices.Clear();
 
             List<SyncDevice> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
@@ -414,7 +415,7 @@ namespace AuraEditor
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
                 DeviceContent dc = await DeviceContent.GetDeviceContent(node);
-                Device d = await dc.ToDevice(new Point(x, y));
+                DeviceModel d = await dc.ToDeviceModel(new Point(x, y));
 
                 if (new_SD.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
                 {
@@ -436,9 +437,9 @@ namespace AuraEditor
 
                 Rect r = new Rect(0, 0, dc.GridWidth, dc.GridHeight);
                 Point p = SpaceManager.GetFreeRoomPositionForRect(r);
-                Device d = await dc.ToDevice(p);
-                d.Status = DeviceStatus.OnStage;
-                globalDevices.Add(d);
+                DeviceModel dm = await dc.ToDeviceModel(p);
+                dm.Status = DeviceStatus.OnStage;
+                globalDevices.Add(dm);
             }
         }
         private void ParsingLayers(XmlNodeList layerNodes)
@@ -551,6 +552,7 @@ namespace AuraEditor
         private void Clean()
         {
             SetLayerButton.IsEnabled = true;
+            SetLayerRectangle.Visibility = Visibility.Collapsed;
             NeedSave = false;
             CurrentUserFilename = "";
             LayerManager.Clean();

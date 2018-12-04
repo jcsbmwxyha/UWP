@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="AuraEditor.UserControls.PlayerIcon"
+    x:Class="AuraEditor.UserControls.PlayerCursor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor.UserControls"
@@ -8,8 +8,10 @@
     mc:Ignorable="d"
     d:DesignHeight="200"
     d:DesignWidth="30"
-    ManipulationMode="TranslateX,TranslateY"
-    ManipulationDelta="PlayerIcon_ManipulationDelta">
+    ManipulationMode="TranslateX"
+    ManipulationDelta="PlayerCursor_ManipulationDelta"
+    PointerEntered="PlayerCursor_PointerEntered"
+    PointerExited="PlayerCursor_PointerExited">
 
     <Image Source="ms-appx:///Assets/Layer/asus_auraeditor_timeline_ic.png" HorizontalAlignment="Left"/>
 </UserControl>

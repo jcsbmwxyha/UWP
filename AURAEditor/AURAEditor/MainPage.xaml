@@ -824,6 +824,15 @@
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
                         Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
             </StackPanel>
+            <Rectangle x:Name="SetLayerRectangle" Width="{Binding ElementName=SetLayerButton, Path=Width}" Height="{Binding ElementName=SetLayerButton, Path=Height}"
+                       Margin="20,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                                       TextWrapping="Wrap" Width="144"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Rectangle>
         </Grid>
         <Grid x:Name="ActionBar_Column2" Grid.Column="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -1171,20 +1180,12 @@
         <ScrollViewer Name="ScaleScrollViewer" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
             <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000">
-                <usercontrol:PlayerIcon x:Name="MyPlayerIcon" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0"
+                <usercontrol:PlayerCursor x:Name="PlayerCursor_Head" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0"
                                         Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" x:FieldModifier="public">
-                    <usercontrol:PlayerIcon.Resources>
-                        <Storyboard x:Name="IconStoryboard" x:FieldModifier="public">
-                            <DoubleAnimation x:Name="IconAnimation" x:FieldModifier="public"
-                                             Storyboard.TargetName="IconTranslateTransform"
-                                             Storyboard.TargetProperty="X">
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </usercontrol:PlayerIcon.Resources>
-                    <usercontrol:PlayerIcon.RenderTransform>
-                        <TranslateTransform x:Name="IconTranslateTransform" X="{Binding Position, Mode=TwoWay}"/>
-                    </usercontrol:PlayerIcon.RenderTransform>
-                </usercontrol:PlayerIcon>
+                    <usercontrol:PlayerCursor.RenderTransform>
+                        <TranslateTransform x:Name="PlayerCursorTranslateTransform" X="{Binding Position, Mode=TwoWay}"/>
+                    </usercontrol:PlayerCursor.RenderTransform>
+                </usercontrol:PlayerCursor>
             </Canvas>
         </ScrollViewer>
         <ScrollViewer Name="TitleScrollViewer"
@@ -1373,7 +1374,14 @@
         <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged">
-            <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
+            <Canvas Name="TrackCanvas" VerticalAlignment="Top" x:FieldModifier="public">
+                <Line Name="PlayerCursor_Tail" X1="0" Y1="0" X2="0" Y2="500" Canvas.ZIndex="8" Stroke="White" StrokeThickness="0.5">
+                    <Line.RenderTransform>
+                        <TranslateTransform X="{Binding Position, Mode=OneWay}"/>
+                    </Line.RenderTransform>
+                </Line>
+                <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
+            </Canvas>
         </ScrollViewer>
         <Line Name="SupportLine" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
               X1="0" Y1="10" X2="0" Y2="250" StrokeDashArray="2,1" Stroke="Green" StrokeThickness="2"
@@ -1398,7 +1406,7 @@
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local:Layer">
-                        <usercontrol:LayerBackground common:StateHelper.State="{Binding State, Mode=OneWay}"/>
+                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -1428,7 +1436,7 @@
 
         <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"
                    x:FieldModifier="public"/>
-        <!--<Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
+        <Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>

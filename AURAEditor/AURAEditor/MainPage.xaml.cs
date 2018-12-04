@@ -20,6 +20,7 @@ using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 using Windows.Networking;
 using Windows.System.Threading;
+using AuraEditor.Models;
 
 namespace AuraEditor
 {
@@ -294,11 +295,11 @@ namespace AuraEditor
 
             layer.Name = "Layer " + (LayerManager.GetLayerCount() + 1);
 
-            foreach (Device d in SpaceManager.GlobalDevices)
+            foreach (DeviceModel d in SpaceManager.DeviceModelCollection)
             {
                 selectedIndex = new List<int>();
 
-                foreach (var zone in d.LightZones)
+                foreach (var zone in d.Zones)
                 {
                     if (zone.Selected == true)
                     {
@@ -437,11 +438,11 @@ namespace AuraEditor
                 Layer layer = LayerManager.CheckedLayer;
                 List<int> selectedIndex;
 
-                foreach (Device d in SpaceManager.GlobalDevices)
+                foreach (DeviceModel dm in SpaceManager.DeviceModelCollection)
                 {
                     selectedIndex = new List<int>();
 
-                    foreach (var zone in d.LightZones)
+                    foreach (var zone in dm.Zones)
                     {
                         if (zone.Selected == true)
                         {
@@ -449,7 +450,7 @@ namespace AuraEditor
                         }
                     }
 
-                    layer.SetDeviceZones(d.Type, selectedIndex.ToArray());
+                    layer.SetDeviceZones(dm.Type, selectedIndex.ToArray());
                 }
 
                 NeedSave = true;
@@ -574,8 +575,15 @@ namespace AuraEditor
             bgwSocketServerRecv.RunWorkerAsync();
         }
 
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
+            //SyncDevice sd = new SyncDevice()
+            //{
+            //    Name = "PUGIO",
+            //    Type = "Mouse",
+            //};
+            //DeviceContent dc = await DeviceContent.GetDeviceContent(sd);
+            //SpaceAreaCanvas.Children.Add(await dc.ToDeviceView());
         }
     }
 }

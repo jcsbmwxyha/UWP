@@ -15,59 +15,64 @@ namespace AuraEditor
     {
         public class TimelinePlayer
         {
-            private Storyboard iconStoryboard;
+            private Storyboard PlayerCursorStoryboard;
             private DoubleAnimation animation;
-            private PlayerModel model;
+            private PlayerModel pm;
 
             public TimelinePlayer(PlayerModel pm)
             {
-                iconStoryboard = Self.IconStoryboard;
-                iconStoryboard.Completed += (s, e) => model.Position = 0;
-                animation = Self.IconAnimation;
-                this.model = pm;
+                this.pm = pm;
+
+                PlayerCursorStoryboard = new Storyboard();
+                PlayerCursorStoryboard.Completed += (s, e) => pm.Position = 0;
+
+                animation = new DoubleAnimation();
+                animation.EnableDependentAnimation = true;
+                Storyboard.SetTarget(animation, Self);
+                Storyboard.SetTargetProperty(animation, "TimelineCursorPosition");
             }
 
             public void Play()
             {
-                double from = model.Position;
+                double from = pm.Position;
                 double to = AuraLayerManager.Self.RightmostPosition;
                 double duration = AuraLayerManager.PositionToTime(to) - AuraLayerManager.PositionToTime(from);
 
-                StartStoryboard(duration * 1000, from, to);
+                StartStoryboard(duration, from, to);
             }
             public void Pause()
             {
-                iconStoryboard.Pause();
+                PlayerCursorStoryboard.Pause();
             }
             public void Stop()
             {
-                iconStoryboard.Stop();
-                model.Position = 0;
+                PlayerCursorStoryboard.Stop();
+                pm.Position = 0;
             }
-            public double GetPointerPosition()
+            public double GetCursorPosition()
             {
-                return model.Position;
+                return pm.Position;
             }
 
             public void OnLevelChanged(double rate)
             {
-                model.Position = model.Position * rate;
+                pm.Position = pm.Position * rate;
 
-                if (iconStoryboard.GetCurrentState() != ClockState.Active)
+                if (PlayerCursorStoryboard.GetCurrentState() != ClockState.Active)
                     return;
 
                 double currentTime = GetStoryCurrentTime();
                 double duration = animation.Duration.TimeSpan.TotalMilliseconds;
                 double leftTime = duration - currentTime;
-                double from = model.Position;
+                double from = pm.Position;
                 double to = AuraLayerManager.Self.RightmostPosition;
 
                 StartStoryboard(leftTime, from, to);
             }
             private double GetStoryCurrentTime()
             {
-                Duration d = iconStoryboard.Duration;
-                return iconStoryboard.GetCurrentTime().TotalMilliseconds;
+                Duration d = PlayerCursorStoryboard.Duration;
+                return PlayerCursorStoryboard.GetCurrentTime().TotalMilliseconds;
             }
             private void StartStoryboard(double duration, double from, double to)
             {
@@ -75,14 +80,15 @@ namespace AuraEditor
                 animation.From = from;
                 animation.To = to;
 
-                iconStoryboard.Stop();
-                iconStoryboard.Children.Clear();
-                iconStoryboard.Children.Add(animation);
-                iconStoryboard.Begin();
+                PlayerCursorStoryboard.Stop();
+                PlayerCursorStoryboard.Children.Clear();
+                PlayerCursorStoryboard.Children.Add(animation);
+                PlayerCursorStoryboard.Begin();
             }
         }
 
         public TimelinePlayer Player;
+        PlayerModel playerModel;
 
         #region Layer Zoom level
         private int _oldLayerZoomLevel;
@@ -121,23 +127,46 @@ namespace AuraEditor
 
         private void InitializePlayerStructure()
         {
-            PlayerModel model = new PlayerModel();
+            playerModel = new PlayerModel();
 
-            Player = new TimelinePlayer(model);
-            ClockText.DataContext = model;
-            MyPlayerIcon.DataContext = model;
+            Player = new TimelinePlayer(playerModel);
+            ClockText.DataContext = playerModel;
+            PlayerCursor_Head.DataContext = playerModel;
+            PlayerCursor_Tail.DataContext = playerModel;
 
             LayerZoomSlider.Value = 2;
         }
 
+        #region Cursor position property
+        public double TimelineCursorPosition
+        {
+            get { return (double)GetValue(CursorPositionProperty); }
+            set { SetValue(CursorPositionProperty, (double)value); }
+        }
+
+        public static readonly DependencyProperty CursorPositionProperty =
+            DependencyProperty.Register("TimelineCursorPosition", typeof(double), typeof(MainPage),
+                new PropertyMetadata(0, CursorChangedCallback));
+
+        static private void CursorChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // When player stop storyboard, it will send interger 0 to this function.
+            // It will cause crash becasue interger can not convert to double.
+            if (e.NewValue is Int32)
+                (d as MainPage).playerModel.Position = 0;
+            else
+                (d as MainPage).playerModel.Position = (double)e.NewValue;
+        }
+        #endregion
+
         #region Jump to beginning or end
         public double TimelineScrollHorOffset
         {
-            get { return (double)GetValue(ScrollHorOffseProperty); }
-            set { SetValue(ScrollHorOffseProperty, (double)value); }
+            get { return (double)GetValue(ScrollHorOffsetProperty); }
+            set { SetValue(ScrollHorOffsetProperty, (double)value); }
         }
 
-        public static readonly DependencyProperty ScrollHorOffseProperty =
+        public static readonly DependencyProperty ScrollHorOffsetProperty =
             DependencyProperty.Register("TimelineScrollHorOffset", typeof(double), typeof(MainPage),
                 new PropertyMetadata(0, ScrollTimeLinePropertyChangedCallback));
 
@@ -163,26 +192,28 @@ namespace AuraEditor
 
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (IconTranslateTransform.X > LayerManager.RightmostPosition)
+            if (PlayerCursorTranslateTransform.X > LayerManager.RightmostPosition)
                 return;
 
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(false));
 
-            long StartTime = 0;
+            long StartTime = (long)AuraLayerManager.PositionToTime(Player.GetCursorPosition());
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
 
             //ScrollWindowToBeginning();
             Player.Play();
         }
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             Player.Pause();
+            await(new ServiceViewModel()).AuraEditorStopEngine();
         }
-        private void StopButton_Click(object sender, RoutedEventArgs e)
+        private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Player.Stop();
+            await(new ServiceViewModel()).AuraEditorStopEngine();
         }
         private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
@@ -195,13 +226,6 @@ namespace AuraEditor
             ScrollViewer sv = sender as ScrollViewer;
             TitleScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
             BackgroundScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
-        }
-        private void IconScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            ScrollViewer sv = sender as ScrollViewer;
-            TitleScrollViewer.ChangeView(null, sv.VerticalOffset, null, true);
-            TrackScrollViewer.ChangeView(sv.HorizontalOffset, sv.VerticalOffset, null, true);
             ScaleScrollViewer.ChangeView(sv.HorizontalOffset, null, null, true);
         }
         private void ScrollWindowToBeginning()

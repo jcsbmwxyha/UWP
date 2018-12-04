@@ -57,11 +57,11 @@ namespace AuraEditor
             XmlNode effNode = Info.ToXmlNodeForUserData();
 
             XmlNode startNode = CreateXmlNode("start");
-            startNode.InnerText = StartTime.ToString();
+            startNode.InnerText = ((int)StartTime).ToString();
             effNode.AppendChild(startNode);
 
             XmlNode durationNode = CreateXmlNode("duration");
-            durationNode.InnerText = DurationTime.ToString();
+            durationNode.InnerText = ((int)DurationTime).ToString();
             effNode.AppendChild(durationNode);
 
             return effNode;

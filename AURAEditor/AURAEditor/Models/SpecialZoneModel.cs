@@ -1,22 +1,14 @@
 ﻿using AuraEditor.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Graphics.Imaging;
-using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace AuraEditor
+namespace AuraEditor.Models
 {
-    public class SpecialLightZone : LightZone
+    public class SpecialZoneModel : ZoneModel, INotifyPropertyChanged
     {
         [ComImport]
         [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
@@ -26,49 +18,32 @@ namespace AuraEditor
             void GetBuffer(out byte* buffer, out uint capacity);
         }
 
-        //public Image SpecialFrame;
-        private SoftwareBitmap specialFrameSB;
-
-        public SpecialLightZone(LedUI led) : base(led)
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName)
         {
-        }
-        public async Task CreateSpecialFrame(LedUI led)
-        {
-            StorageFile pngFile = await StorageFile.GetFileFromPathAsync(led.PNG_Path);
-
-            using (IRandomAccessStream stream = await pngFile.OpenAsync(FileAccessMode.Read))
+            if (PropertyChanged != null)
             {
-                // Create the decoder from the stream
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
-
-                // Get the SoftwareBitmap representation of the file
-                specialFrameSB = await decoder.GetSoftwareBitmapAsync();
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
 
-            SoftwareBitmapSource source = new SoftwareBitmapSource();
-            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-            await source.SetBitmapAsync(specialFrameSB);
-
-            int frameLeft = led.Left;
-            int frameTop = led.Top;
-            int frameRight = led.Right;
-            int frameBottom = led.Bottom;
-
-            CompositeTransform ct = new CompositeTransform
+        private SoftwareBitmap _sb;
+        private SoftwareBitmapSource _imagesource;
+        public SoftwareBitmapSource ImageSource
+        {
+            get
             {
-                TranslateX = frameLeft,
-                TranslateY = frameTop
-            };
-
-            Image image = new Image
+                return _imagesource;
+            }
+            set
             {
-                RenderTransform = ct,
-                Source = source,
-                Width = frameRight - frameLeft,
-                Height = frameBottom - frameTop,
-            };
+                _imagesource = value;
+                RaisePropertyChanged("Image");
+            }
+        }
 
-            MyFrameworkElement = image;
+        public SpecialZoneModel() : base()
+        {
         }
 
         override public async void ChangeStatus(RegionStatus status)
@@ -100,19 +75,18 @@ namespace AuraEditor
                 Selected = true;
             }
 
-            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            _sb = SoftwareBitmap.Convert(_sb, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
             ChangeSpecialFrameColor(color);
-            specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            _sb = SoftwareBitmap.Convert(_sb, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
 
             var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(specialFrameSB);
+            await source.SetBitmapAsync(_sb);
 
-            Image image = MyFrameworkElement as Image;
-            image.Source = source;
+            ImageSource = source;
         }
         private unsafe void ChangeSpecialFrameColor(Color c)
         {
-            using (BitmapBuffer buffer = specialFrameSB.LockBuffer(BitmapBufferAccessMode.Write))
+            using (BitmapBuffer buffer = _sb.LockBuffer(BitmapBufferAccessMode.Write))
             {
                 using (var reference = buffer.CreateReference())
                 {

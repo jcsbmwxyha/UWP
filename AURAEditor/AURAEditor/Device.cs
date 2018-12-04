@@ -142,7 +142,7 @@ namespace AuraEditor
                 ct.TranslateX + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
                 ct.TranslateY + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
 
-            AuraSpaceManager.Self.OnDeviceMoved(this);
+            //AuraSpaceManager.Self.OnDeviceMoved(this);
             Canvas.SetZIndex(m_Container, 3);
         }
         private void ImageManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -153,19 +153,19 @@ namespace AuraEditor
                 RoundToGrid(ct.TranslateX),
                 RoundToGrid(ct.TranslateY));
 
-            if (!AuraSpaceManager.Self.IsPiling(this))
-            {
-                AuraSpaceManager.Self.DeleteOverlappingTempDevice(this);
-                AuraSpaceManager.Self.MoveDeviceMousePosition(this,
-                    RoundToGrid(ct.TranslateX - _oldPixelPosition.X),
-                    RoundToGrid(ct.TranslateY - _oldPixelPosition.Y));
-            }
-            else
-            {
-                SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
-            }
+            //if (!AuraSpaceManager.Self.IsPiling(this))
+            //{
+            //    AuraSpaceManager.Self.DeleteOverlappingTempDevice(this);
+            //    AuraSpaceManager.Self.MoveDeviceMousePosition(this,
+            //        RoundToGrid(ct.TranslateX - _oldPixelPosition.X),
+            //        RoundToGrid(ct.TranslateY - _oldPixelPosition.Y));
+            //}
+            //else
+            //{
+            //    SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
+            //}
 
-            AuraSpaceManager.Self.OnDeviceMoveCompleted(this);
+            //AuraSpaceManager.Self.OnDeviceMoveCompleted(this);
             m_DotRect.Opacity = 0.6;
             m_Image.Opacity = 1;
             MainPage.Self.NeedSave = true;

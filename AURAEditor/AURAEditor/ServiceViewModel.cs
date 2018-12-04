@@ -34,6 +34,9 @@ namespace AuraEditor
         static extern long CreatorTriggerTime(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString, long time);
 
         [DllImport("RpcClient.dll")]
+        static extern long CreatorSetEngine(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string TriggerString);
+
+        [DllImport("RpcClient.dll")]
         static extern long CreatorLoadFile(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string File, [MarshalAs(UnmanagedType.LPWStr)] out string Content);
 
         [DllImport("RpcClient.dll")]
@@ -103,8 +106,23 @@ namespace AuraEditor
                 if (NotifyIfAnyError(RpcClientInitialize(out rpcClient)))
                     return;
 
-                error = CreatorTrigger(rpcClient, cmd);
-                //error = CreatorTriggerTime(rpcClient, cmd, startTime);
+                //error = CreatorTrigger(rpcClient, cmd);
+                error = CreatorTriggerTime(rpcClient, cmd, startTime);
+
+            });
+        }
+
+        public async Task AuraEditorStopEngine()
+        {
+            await Task.Run(() =>
+            {
+                Debug.WriteLine("SendTTriggerString");
+                rpcClient = IntPtr.Zero;
+
+                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient)))
+                    return;
+
+                error = CreatorSetEngine(rpcClient, "stop");
 
             });
         }

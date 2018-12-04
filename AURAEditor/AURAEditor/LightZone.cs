@@ -99,7 +99,7 @@ namespace AuraEditor
                 RadiusY = 3
             };
 
-            rectangle.Stroke = new SolidColorBrush(Colors.Black);
+            rectangle.Stroke = new SolidColorBrush(Colors.White);
 
             return rectangle;
         }

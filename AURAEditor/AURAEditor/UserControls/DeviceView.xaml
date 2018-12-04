@@ -1,0 +1,79 @@
+﻿<UserControl
+    x:Class="AuraEditor.UserControls.DeviceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:auraeditor="using:AuraEditor"
+    xmlns:models="using:AuraEditor.Models"
+    xmlns:local="using:AuraEditor.UserControls"
+    xmlns:common="using:AuraEditor.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    PointerPressed="Device_PointerPressed"
+    PointerReleased="Device_PointerReleased"
+    PointerEntered="Device_PointerEntered"
+    PointerExited="Device_PointerExited"
+    ManipulationDelta="Device_ManipulationDelta"
+    ManipulationCompleted="Device_ManipulationCompleted"
+    ManipulationMode="TranslateX,TranslateY"
+    Canvas.ZIndex="8">
+    <UserControl.DataContext>
+        <models:DeviceModel/>
+    </UserControl.DataContext>
+    <UserControl.RenderTransform>
+        <TranslateTransform x:Name="TT"
+                            X="{x:Bind m_DeviceModel.PixelLeft}"
+                            Y="{x:Bind m_DeviceModel.PixelTop}"/>
+    </UserControl.RenderTransform>
+    <Canvas>
+        <Rectangle Name="DashRect" Style="{StaticResource DeviceDotRectangle}" Opacity="1" StrokeDashArray="3,3"
+                   Width="{x:Bind m_DeviceModel.PixelWidth}"
+                   Height="{x:Bind m_DeviceModel.PixelHeight}"/>
+        <Image Name="DeviceImage" Width="{x:Bind m_DeviceModel.PixelWidth}" Height="{x:Bind m_DeviceModel.PixelHeight}"
+               Source="{x:Bind m_DeviceModel.Image}" Stretch="Fill"/>
+        <ItemsControl Name="Zones" ItemsSource="{x:Bind Path=m_DeviceModel.Zones}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="PixelLeft"/>
+                    <Setter Property="common:BindingHelper.CanvasTopBindingPath" Value="PixelTop"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:ZoneModel">
+                    <Rectangle StrokeThickness="1.5" RadiusX="2" RadiusY="3"
+                               Stroke="{x:Bind Stroke}"
+                               Fill="Transparent"
+                               Width="{x:Bind PixelWidth}"
+                               Height="{x:Bind PixelHeight}"
+                               common:ZoneHelper.ZoneState="{x:Bind ZoneState}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl Name="SpecialZones" ItemsSource="{x:Bind Path=m_DeviceModel.SpecialZones}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="PixelLeft"/>
+                    <Setter Property="common:BindingHelper.CanvasTopBindingPath" Value="PixelTop"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:SpecialZoneModel">
+                    <Image Stretch="Fill" Width="{x:Bind PixelWidth}" Height="{x:Bind PixelHeight}" Source="{x:Bind ImageSource}"
+                           common:ZoneHelper.ZoneState="{x:Bind ZoneState}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Canvas>
+</UserControl>

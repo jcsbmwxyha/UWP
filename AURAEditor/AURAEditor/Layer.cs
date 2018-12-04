@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Models;
 using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
@@ -80,19 +81,19 @@ namespace AuraEditor
         public LayerBackground UI_Background;
         public string TriggerAction;
 
-        private string _state;
-        public string State
+        private string _visualstate;
+        public string VisualState
         {
             get
             {
-                return _state;
+                return _visualstate;
             }
             set
             {
-                if (_state != value)
+                if (_visualstate != value)
                 {
-                    _state = value;
-                    RaisePropertyChanged("State");
+                    _visualstate = value;
+                    RaisePropertyChanged("VisualState");
                 }
             }
         }
@@ -304,7 +305,7 @@ namespace AuraEditor
         public List<double> GetHeadAndTailPositions(TimelineEffect ExceptionalEff)
         {
             List<double> result = new List<double>();
-            foreach(var eff in TimelineEffects)
+            foreach (var eff in TimelineEffects)
             {
                 if (eff == ExceptionalEff)
                     continue;
@@ -312,7 +313,7 @@ namespace AuraEditor
                 result.Add(eff.Right);
             }
 
-            return result;            
+            return result;
         }
 
         private TimelineEffect GetRightmostEffect()
@@ -453,16 +454,16 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForScript()
         {
-            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
+            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
             XmlNode groupoNode = CreateXmlNode("group");
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
             attribute.Value = Name;
             groupoNode.Attributes.Append(attribute);
 
-            foreach (var d in globalDevices)
+            foreach (var dm in globalDevices)
             {
-                XmlNode deviceNode = d.ToXmlNodeForScript();
-                XmlNode usageNode = GetUsageXmlNode(d.Type);
+                XmlNode deviceNode = dm.ToXmlNodeForScript();
+                XmlNode usageNode = GetUsageXmlNode(dm.Type);
 
                 deviceNode.AppendChild(usageNode);
                 groupoNode.AppendChild(deviceNode);
@@ -509,7 +510,7 @@ namespace AuraEditor
 
             // devices
             XmlNode devicesNode = CreateXmlNode("devices");
-            List<Device> globalDevices = AuraSpaceManager.Self.GlobalDevices;
+            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
             foreach (var d in globalDevices)
             {
                 XmlNode deviceNode = GetDeviceUsageXmlNode(d);
@@ -531,7 +532,7 @@ namespace AuraEditor
 
             return layerNode;
         }
-        private XmlNode GetDeviceUsageXmlNode(Device device)
+        private XmlNode GetDeviceUsageXmlNode(DeviceModel device)
         {
             XmlNode deviceNode = CreateXmlNode("device");
 

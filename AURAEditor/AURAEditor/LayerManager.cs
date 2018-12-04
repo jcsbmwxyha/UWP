@@ -19,12 +19,13 @@ namespace AuraEditor
     {
         static public AuraLayerManager Self;
 
-        private PlayerIcon m_PlayerIcon;
+        private PlayerCursor m_PlayerCursor;
         private ListView m_LayerListView;
         private StackPanel m_TrackStackPanel;
         private ItemsControl m_BackgroundItemsControl;
         private Canvas m_TimelineScaleCanvas;
-
+        private Canvas m_TrackCanvas;
+        
         public ObservableCollection<Layer> Layers { get; set; }
         private Layer _checkedLayer;
         public Layer CheckedLayer
@@ -40,12 +41,12 @@ namespace AuraEditor
 
                 if (_checkedLayer != null)
                 {
-                    _checkedLayer.State = "Normal";
+                    _checkedLayer.VisualState = "Normal";
                 }
 
                 if (value != null)
                 {
-                    value.State = "Checked";
+                    value.VisualState = "Checked";
                     AuraSpaceManager.Self.WatchLayer(value);
 
                     if (CheckedEffect == null || CheckedEffect.Layer != value)
@@ -125,7 +126,8 @@ namespace AuraEditor
             Self = this;
             m_TrackStackPanel = MainPage.Self.TrackStackPanel;
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
-            m_PlayerIcon = MainPage.Self.MyPlayerIcon;
+            m_TrackCanvas= MainPage.Self.TrackCanvas;
+            m_PlayerCursor = MainPage.Self.PlayerCursor_Head;
 
             Layers = new ObservableCollection<Layer>();
             m_LayerListView = MainPage.Self.LayerListView;
@@ -167,6 +169,7 @@ namespace AuraEditor
                 Layers[i].Name = "Layer " + (i + 1).ToString();
 
             AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Init);
+            m_TrackCanvas.Height = Layers.Count * 50;
         }
         public int GetLayerCount()
         {
@@ -198,7 +201,7 @@ namespace AuraEditor
         #region Timeline scale
         static public double PositionToTime(double position)
         {
-            return position / PixelsPerSecond;
+            return (position / PixelsPerSecond) * 1000;
         }
         public void SetTimeUnit(int newSecondsPerTimeUnit)
         {
@@ -243,7 +246,7 @@ namespace AuraEditor
             List<double> result = new List<double>();
             int i = Layers.IndexOf(layer);
 
-            result.Add(MainPage.Self.Player.GetPointerPosition());
+            result.Add(MainPage.Self.Player.GetCursorPosition());
             result.AddRange(Layers[i].GetHeadAndTailPositions(eff));
             if (i > 0)
                 result.AddRange(Layers[i - 1].GetHeadAndTailPositions(null));
@@ -266,7 +269,7 @@ namespace AuraEditor
             int totalLineCount = width / minimumScaleUnitLength;
 
             m_TimelineScaleCanvas.Children.Clear();
-            m_TimelineScaleCanvas.Children.Add(m_PlayerIcon);
+            m_TimelineScaleCanvas.Children.Add(m_PlayerCursor);
 
             for (int i = 1; i < totalLineCount; i++)
             {

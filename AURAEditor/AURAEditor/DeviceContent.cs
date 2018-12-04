@@ -1,10 +1,14 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Models;
+using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
@@ -156,54 +160,118 @@ namespace AuraEditor
             }
         }
 
-        public async Task<Device> ToDevice()
+        public async Task<DeviceModel> ToDeviceModel()
         {
-            return await ToDevice(new Point(0, 0));
+            return await ToDeviceModel(new Point(0, 0));
         }
-        public async Task<Device> ToDevice(Point gridPosition)
+        public async Task<DeviceModel> ToDeviceModel(Point point)
         {
-            Device device;
-            Image img;
-            List<LightZone> zones = new List<LightZone>();
+            DeviceModel model = new DeviceModel();
+            ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
+            ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
 
-            img = new Image
+            model.Image = this.Image;
+            model.PixelLeft = point.X;
+            model.PixelTop = point.Y;
+            model.PixelWidth = GridWidth * 24;
+            model.PixelHeight = GridHeight * 24;
+
+            foreach (var led in Leds)
             {
-                RenderTransform = new CompositeTransform(),
-                Width = GridWidth * GridPixels,
-                Height = GridHeight * GridPixels,
-                Source = this.Image,
-                ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-                Stretch = Stretch.Fill,
-            };
-
-            for (int idx = 0; idx < this.Leds.Count; idx++)
-            {
-                LedUI led = this.Leds[idx];
-                LightZone lz;
-
                 if (led.PNG_Path == null)
                 {
-                    lz = new LightZone(led);
-                    zones.Add(lz);
+                    ZoneModel zm = new ZoneModel
+                    {
+                        PixelLeft = led.Left,
+                        PixelTop = led.Top,
+                        PixelWidth = led.Right - led.Left,
+                        PixelHeight = led.Bottom - led.Top,
+                        Zindex = led.ZIndex
+                    };
+                    zones.Add(zm);
                 }
                 else
                 {
-                    SpecialLightZone slz = new SpecialLightZone(led);
-                    await slz.CreateSpecialFrame(led);
-                    zones.Add(slz);
+                    SoftwareBitmap specialFrameSB;
+                    SpecialZoneModel szm = new SpecialZoneModel()
+                    {
+                        PixelLeft = led.Left,
+                        PixelTop = led.Top,
+                        PixelWidth = led.Right - led.Left,
+                        PixelHeight = led.Bottom - led.Top,
+                        Zindex = led.ZIndex
+                    };
+
+                    StorageFile pngFile = await StorageFile.GetFileFromPathAsync(led.PNG_Path);
+
+                    using (IRandomAccessStream stream = await pngFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+                        specialFrameSB = await decoder.GetSoftwareBitmapAsync();
+                    }
+
+                    SoftwareBitmapSource source = new SoftwareBitmapSource();
+                    specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    await source.SetBitmapAsync(specialFrameSB);
+                    szm.ImageSource = source;
+                    specialzones.Add(szm);
                 }
             }
 
-            device = new Device(img, zones.ToArray())
-            {
-                Name = this.DeviceName,
-                Type = this.DeviceType,
-                LightZones = zones.ToArray(),
-                GridPosition = new Point(gridPosition.X, gridPosition.Y),
-            };
+            model.Zones = zones;
+            model.SpecialZones = specialzones;
 
-            return device;
+            return model;
         }
+        
+        //public async Task<Device> ToDevice()
+        //{
+        //    return await ToDevice(new Point(0, 0));
+        //}
+        //public async Task<Device> ToDevice(Point gridPosition)
+        //{
+        //    Device device;
+        //    Image img;
+        //    List<LightZone> zones = new List<LightZone>();
+
+        //    img = new Image
+        //    {
+        //        RenderTransform = new CompositeTransform(),
+        //        Width = GridWidth * GridPixels,
+        //        Height = GridHeight * GridPixels,
+        //        Source = this.Image,
+        //        ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
+        //        Stretch = Stretch.Fill,
+        //    };
+
+        //    for (int idx = 0; idx < this.Leds.Count; idx++)
+        //    {
+        //        LedUI led = this.Leds[idx];
+        //        LightZone lz;
+
+        //        if (led.PNG_Path == null)
+        //        {
+        //            lz = new LightZone(led);
+        //            zones.Add(lz);
+        //        }
+        //        else
+        //        {
+        //            SpecialLightZone slz = new SpecialLightZone(led);
+        //            await slz.CreateSpecialFrame(led);
+        //            zones.Add(slz);
+        //        }
+        //    }
+
+        //    device = new Device(img, zones.ToArray())
+        //    {
+        //        Name = this.DeviceName,
+        //        Type = this.DeviceType,
+        //        LightZones = zones.ToArray(),
+        //        GridPosition = new Point(gridPosition.X, gridPosition.Y),
+        //    };
+
+        //    return device;
+        //}
     }
 }
 
