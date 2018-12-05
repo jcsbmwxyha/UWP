@@ -415,7 +415,7 @@ namespace AuraEditor
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
                 DeviceContent dc = await DeviceContent.GetDeviceContent(node);
-                DeviceModel d = await dc.ToDeviceModel(new Point(x, y));
+                DeviceModel d = await dc.ToDeviceModel(new Point(x * GridPixels, y * GridPixels));
 
                 if (new_SD.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
                 {

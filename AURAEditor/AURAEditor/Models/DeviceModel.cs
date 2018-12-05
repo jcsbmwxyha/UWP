@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Imaging;
-using AuraEditor.UserControls;
 using System.Xml;
+using Windows.UI.Xaml.Media.Imaging;
+using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor.Models
 {
+    public enum DeviceStatus
+    {
+        OnStage = 0,
+        Temp,
+    }
+
     public class DeviceModel : INotifyPropertyChanged
     {
-        #region -- Bind --
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
         {
@@ -23,7 +28,7 @@ namespace AuraEditor.Models
             }
         }
 
-        #region -- Position Property --
+        #region -- Property--
         private double _pixelLeft;
         public double PixelLeft
         {
@@ -34,6 +39,7 @@ namespace AuraEditor.Models
             set
             {
                 _pixelLeft = value;
+                AuraSpaceManager.Self.OnDeviceMoved(this);
                 RaisePropertyChanged("PixelLeft");
             }
         }
@@ -48,6 +54,7 @@ namespace AuraEditor.Models
             set
             {
                 _pixelTop = value;
+                AuraSpaceManager.Self.OnDeviceMoved(this);
                 RaisePropertyChanged("PixelTop");
             }
         }
@@ -82,7 +89,34 @@ namespace AuraEditor.Models
 
         public double PixelRight { get { return PixelLeft + PixelWidth; } }
         public double PixelBottom { get { return PixelTop + PixelHeight; } }
-        #endregion
+
+        private bool _operationenabled;
+        public bool OperationEnabled
+        {
+            get
+            {
+                return _operationenabled;
+            }
+            set
+            {
+                _operationenabled = value;
+                RaisePropertyChanged("OperationEnabled");
+            }
+        }
+
+        private string _visualstate;
+        public string VisualState
+        {
+            get
+            {
+                return _visualstate;
+            }
+            set
+            {
+                _visualstate = value;
+                RaisePropertyChanged("VisualState");
+            }
+        }
 
         public BitmapImage Image;
 
@@ -113,33 +147,89 @@ namespace AuraEditor.Models
                 RaisePropertyChanged("Zones");
             }
         }
-        #endregion
 
-        //public DeviceView View;
+        public List<ZoneModel> AllZones
+        {
+            get
+            {
+                List<ZoneModel> list = Zones.ToList();
+                list.AddRange(SpecialZones.ToList());
+
+                return list;
+            }
+        }
+
         public string Name { get; set; }
         public int Type { get; set; }
         public DeviceStatus Status { get; set; }
-        
+        #endregion
+
         public DeviceModel()
         {
         }
 
-        internal void Unpiling()
+        public XmlNode ToXmlNodeForUserData()
         {
-        }
+            XmlNode deviceNode = CreateXmlNode("device");
 
-        internal void Piling()
-        {
-        }
+            XmlAttribute attributeName = CreateXmlAttributeOfFile("name");
+            attributeName.Value = Name;
+            deviceNode.Attributes.Append(attributeName);
 
-        internal XmlNode ToXmlNodeForUserData()
-        {
-            throw new NotImplementedException();
-        }
+            XmlAttribute attributeType = CreateXmlAttributeOfFile("type");
+            attributeType.Value = GetTypeNameByType(Type);
+            deviceNode.Attributes.Append(attributeType);
 
-        internal XmlNode ToXmlNodeForScript()
+            XmlNode xNode = CreateXmlNode("x");
+            xNode.InnerText = (PixelLeft / GridPixels).ToString();
+            deviceNode.AppendChild(xNode);
+
+            XmlNode yNode = CreateXmlNode("y");
+            yNode.InnerText = (PixelTop / GridPixels).ToString();
+            deviceNode.AppendChild(yNode);
+
+            return deviceNode;
+        }
+        public XmlNode ToXmlNodeForScript()
         {
-            throw new NotImplementedException();
+            XmlNode deviceNode = CreateXmlNode("device");
+
+            XmlNode modelNode = CreateXmlNode("model");
+            modelNode.InnerText = Name.ToString();
+            deviceNode.AppendChild(modelNode);
+
+            string type = "";
+            switch (Type)
+            {
+                case 0: type = "Notebook"; break;
+                case 1: type = "Mouse"; break;
+                case 2: type = "Keyboard"; break;
+                case 3: type = "Headset"; break;
+                case 5: type = "Desktop"; break;
+                case 6: type = "MotherBoard"; break;
+            }
+            XmlNode typeNode = CreateXmlNode("type");
+            typeNode.InnerText = type.ToString();
+            deviceNode.AppendChild(typeNode);
+
+            XmlNode locationNode = GetLocationXmlNode();
+            deviceNode.AppendChild(locationNode);
+
+            return deviceNode;
+        }
+        private XmlNode GetLocationXmlNode()
+        {
+            XmlNode locationNode = CreateXmlNode("location");
+
+            XmlNode xNode = CreateXmlNode("x");
+            xNode.InnerText = (PixelLeft / GridPixels).ToString();
+            locationNode.AppendChild(xNode);
+
+            XmlNode yNode = CreateXmlNode("y");
+            yNode.InnerText = (PixelTop / GridPixels).ToString();
+            locationNode.AppendChild(yNode);
+
+            return locationNode;
         }
     }
 }

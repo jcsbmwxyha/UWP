@@ -170,11 +170,13 @@ namespace AuraEditor
             ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
             ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
 
+            model.Name = this.DeviceName;
+            model.Type = this.DeviceType;
             model.Image = this.Image;
             model.PixelLeft = point.X;
             model.PixelTop = point.Y;
-            model.PixelWidth = GridWidth * 24;
-            model.PixelHeight = GridHeight * 24;
+            model.PixelWidth = GridWidth * GridPixels;
+            model.PixelHeight = GridHeight * GridPixels;
 
             foreach (var led in Leds)
             {
@@ -182,11 +184,12 @@ namespace AuraEditor
                 {
                     ZoneModel zm = new ZoneModel
                     {
+                        Index = led.Index,
                         PixelLeft = led.Left,
                         PixelTop = led.Top,
                         PixelWidth = led.Right - led.Left,
                         PixelHeight = led.Bottom - led.Top,
-                        Zindex = led.ZIndex
+                        Zindex = led.ZIndex,
                     };
                     zones.Add(zm);
                 }
@@ -195,6 +198,7 @@ namespace AuraEditor
                     SoftwareBitmap specialFrameSB;
                     SpecialZoneModel szm = new SpecialZoneModel()
                     {
+                        Index = led.Index,
                         PixelLeft = led.Left,
                         PixelTop = led.Top,
                         PixelWidth = led.Right - led.Left,
@@ -210,10 +214,8 @@ namespace AuraEditor
                         specialFrameSB = await decoder.GetSoftwareBitmapAsync();
                     }
 
-                    SoftwareBitmapSource source = new SoftwareBitmapSource();
                     specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                    await source.SetBitmapAsync(specialFrameSB);
-                    szm.ImageSource = source;
+                    await szm.SetSoftwareBitmapAsync(specialFrameSB);
                     specialzones.Add(szm);
                 }
             }
@@ -223,55 +225,6 @@ namespace AuraEditor
 
             return model;
         }
-        
-        //public async Task<Device> ToDevice()
-        //{
-        //    return await ToDevice(new Point(0, 0));
-        //}
-        //public async Task<Device> ToDevice(Point gridPosition)
-        //{
-        //    Device device;
-        //    Image img;
-        //    List<LightZone> zones = new List<LightZone>();
-
-        //    img = new Image
-        //    {
-        //        RenderTransform = new CompositeTransform(),
-        //        Width = GridWidth * GridPixels,
-        //        Height = GridHeight * GridPixels,
-        //        Source = this.Image,
-        //        ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY,
-        //        Stretch = Stretch.Fill,
-        //    };
-
-        //    for (int idx = 0; idx < this.Leds.Count; idx++)
-        //    {
-        //        LedUI led = this.Leds[idx];
-        //        LightZone lz;
-
-        //        if (led.PNG_Path == null)
-        //        {
-        //            lz = new LightZone(led);
-        //            zones.Add(lz);
-        //        }
-        //        else
-        //        {
-        //            SpecialLightZone slz = new SpecialLightZone(led);
-        //            await slz.CreateSpecialFrame(led);
-        //            zones.Add(slz);
-        //        }
-        //    }
-
-        //    device = new Device(img, zones.ToArray())
-        //    {
-        //        Name = this.DeviceName,
-        //        Type = this.DeviceType,
-        //        LightZones = zones.ToArray(),
-        //        GridPosition = new Point(gridPosition.X, gridPosition.Y),
-        //    };
-
-        //    return device;
-        //}
     }
 }
 

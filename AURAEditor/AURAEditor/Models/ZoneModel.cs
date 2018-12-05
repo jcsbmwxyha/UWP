@@ -13,7 +13,7 @@ namespace AuraEditor.Models
 {
     public class ZoneModel : INotifyPropertyChanged
     {
-        #region -- Bind --
+        #region -- Property --
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
         {
@@ -122,25 +122,23 @@ namespace AuraEditor.Models
         }
 
         public int Index { get; internal set; }
-        #endregion
-
         public bool Hover;
         public bool Selected;
         public int Zindex;
-
-        public Rect GetRect()
-        {
-            return new Rect(
-                new Point(PixelLeft, PixelTop),
-                new Point(PixelLeft + PixelWidth, PixelTop + PixelHeight)
-            );
-        }
+        #endregion
 
         public ZoneModel()
         {
             ZoneState = "Normal";
             Stroke = new SolidColorBrush(Colors.White);
             Fill = new SolidColorBrush(Colors.Transparent);
+        }
+        public Rect GetRect()
+        {
+            return new Rect(
+                new Point(PixelLeft, PixelTop),
+                new Point(PixelLeft + PixelWidth, PixelTop + PixelHeight)
+            );
         }
 
         public void OnReceiveMouseEvent(MouseEvent mouseEvent)

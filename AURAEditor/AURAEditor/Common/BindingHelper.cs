@@ -79,19 +79,22 @@ namespace AuraEditor.Common
             if (propertyPath != null)
             {
                 DependencyProperty property = null;
-                
-                 if (e.Property == CanvasLeftBindingPathProperty)
+
+                if (e.Property == CanvasLeftBindingPathProperty)
                     property = Canvas.LeftProperty;
                 else if (e.Property == CanvasTopBindingPathProperty)
                     property = Canvas.TopProperty;
-                else if(e.Property == WidthBindingPathProperty)
+                else if (e.Property == WidthBindingPathProperty)
                     property = FrameworkElement.WidthProperty;
                 else if (e.Property == HeightBindingPathProperty)
                     property = FrameworkElement.HeightProperty;
-                 
+
                 BindingOperations.SetBinding(obj, property,
-                    new Binding { Path = new PropertyPath(propertyPath),
-                                  Mode = BindingMode.TwoWay});
+                    new Binding
+                    {
+                        Path = new PropertyPath(propertyPath),
+                        Mode = BindingMode.TwoWay
+                    });
             }
         }
     }

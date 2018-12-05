@@ -4,8 +4,6 @@ using AuraEditor.Models;
 using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Xml;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -117,16 +115,16 @@ namespace AuraEditor
         }
         private void EnableAllDevicesOperation()
         {
-            foreach (var d in DeviceModelCollection)
+            foreach (var dm in DeviceModelCollection)
             {
-                //d.EnableManipulation();
+                dm.OperationEnabled = true;
             }
         }
         private void DisableAllDevicesOperation()
         {
-            foreach (var d in DeviceModelCollection)
+            foreach (var dm in DeviceModelCollection)
             {
-                //d.DisableManipulation();
+                dm.OperationEnabled = false;
             }
         }
         private void OnInitState()
@@ -206,7 +204,7 @@ namespace AuraEditor
                 DeviceModelCollection.ForEach(d => { if (d.PixelLeft < leftmost) { leftmost = d.PixelLeft; } });
                 DeviceModelCollection.ForEach(d => { if (d.PixelRight > rightmost) { rightmost = d.PixelRight; } });
 
-                return (int)((rightmost - leftmost)/ GridPixels);
+                return (int)((rightmost - leftmost) / GridPixels);
             }
         }
         public int MaxOperatingGridHeight
@@ -247,7 +245,7 @@ namespace AuraEditor
         }
         private MouseEventCtrl IntializeMouseEventCtrl()
         {
-            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
+            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
 
             MouseEventCtrl mec = new MouseEventCtrl
             {
@@ -268,30 +266,32 @@ namespace AuraEditor
 
         public void RefreshSpaceGrid()
         {
-            List<MouseDetectionRegion> regions = new List<MouseDetectionRegion>();
+            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
 
             m_SpaceCanvas.Children.Clear();
             m_SpaceCanvas.Children.Add(m_GridImage);
             m_SpaceCanvas.Children.Add(m_MouseRectangle);
 
             var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
-            foreach (var model in onStageList)
-            {
-                SortByZIndex(model.Zones);
 
-                foreach (var zone in model.Zones)
+            foreach (var dm in onStageList)
+            {
+                List<ZoneModel> allzones = dm.AllZones;
+                SortByZIndex(allzones);
+
+                foreach (var zone in allzones)
                 {
                     Rect relative = zone.GetRect();
                     Rect absolute = new Rect(
-                        new Point(relative.Left + model.PixelLeft, relative.Top + model.PixelTop),
-                        new Point(relative.Right + model.PixelLeft, relative.Bottom + model.PixelTop)
+                        new Point(relative.Left + dm.PixelLeft, relative.Top + dm.PixelTop),
+                        new Point(relative.Right + dm.PixelLeft, relative.Bottom + dm.PixelTop)
                         );
 
-                    MouseDetectionRegion r = new MouseDetectionRegion()
+                    MouseDetectedRegion r = new MouseDetectedRegion()
                     {
                         RegionIndex = -1,
                         DetectionRect = absolute,
-                        GroupIndex = model.Type
+                        GroupIndex = dm.Type
                     };
 
                     r.Callback = zone.OnReceiveMouseEvent;
@@ -300,7 +300,7 @@ namespace AuraEditor
                 }
 
                 DeviceView view = new DeviceView();
-                view.DataContext = model;
+                view.DataContext = dm;
                 m_SpaceCanvas.Children.Add(view);
             }
 
@@ -313,8 +313,8 @@ namespace AuraEditor
         }
         public void ClearTempDeviceData()
         {
-            var list = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.Temp);
-            list.ForEach(d => AuraLayerManager.Self.ClearTypeData(d.Type));
+            var list = DeviceModelCollection.FindAll(dm => dm.Status == DeviceStatus.Temp);
+            list.ForEach(dm => AuraLayerManager.Self.ClearTypeData(dm.Type));
             DeviceModelCollection.RemoveAll(d => d.Status == DeviceStatus.Temp);
         }
         public void Clean()
@@ -332,16 +332,16 @@ namespace AuraEditor
         public void DeleteOverlappingTempDevice(DeviceModel testDev)
         {
             List<DeviceModel> tempDevices = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.Temp);
-            foreach (var d in tempDevices)
+            foreach (var dm in tempDevices)
             {
-                if (testDev.Equals(d))
+                if (testDev.Equals(dm))
                     continue;
 
-                if (ControlHelper.IsPiling(testDev.PixelLeft, testDev.PixelWidth, d.PixelLeft, d.PixelWidth) &&
-                    ControlHelper.IsPiling(testDev.PixelTop, testDev.PixelHeight, d.PixelTop, d.PixelHeight))
+                if (ControlHelper.IsPiling(testDev.PixelLeft, testDev.PixelWidth, dm.PixelLeft, dm.PixelWidth) &&
+                    ControlHelper.IsPiling(testDev.PixelTop, testDev.PixelHeight, dm.PixelTop, dm.PixelHeight))
                 {
-                    DeviceModelCollection.Remove(d);
-                    AuraLayerManager.Self.ClearTypeData(d.Type);
+                    DeviceModelCollection.Remove(dm);
+                    AuraLayerManager.Self.ClearTypeData(dm.Type);
                 }
             }
         }
@@ -357,22 +357,12 @@ namespace AuraEditor
                 if (ControlHelper.IsPiling(movedDev.PixelLeft, movedDev.PixelWidth, dm.PixelLeft, dm.PixelWidth) &&
                     ControlHelper.IsPiling(movedDev.PixelTop, movedDev.PixelHeight, dm.PixelTop, dm.PixelHeight))
                 {
-                    dm.Piling();
+                    dm.VisualState = "Hover";
                 }
                 else
-                    dm.Unpiling();
-            }
-        }
-        public void OnDeviceMoveCompleted(DeviceModel movedDev)
-        {
-            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
-
-            foreach (var dm in dms)
-            {
-                if (movedDev.Equals(dm))
-                    continue;
-
-                dm.Unpiling();
+                {
+                    dm.VisualState = "Normal";
+                }
             }
         }
         public bool IsPiling(DeviceModel testDev)
@@ -422,7 +412,7 @@ namespace AuraEditor
         #endregion
 
         #region Zones
-        private void SortByZIndex(ObservableCollection<ZoneModel> zones)
+        private void SortByZIndex(List<ZoneModel> zones)
         {
             int count = zones.Count;
 
@@ -455,13 +445,13 @@ namespace AuraEditor
             // According to the layer, assign selection status for every zone
             foreach (KeyValuePair<int, int[]> pair in dictionary)
             {
-                DeviceModel d = GetGlobalDeviceByType(pair.Key);
+                DeviceModel dm = GetGlobalDeviceByType(pair.Key);
                 int[] indexes = pair.Value;
 
-                if (d == null)
+                if (dm == null)
                     continue;
 
-                foreach (var zone in d.Zones)
+                foreach (var zone in dm.AllZones)
                 {
                     if (Array.Exists(indexes, x => x == zone.Index) == true)
                     {
@@ -486,7 +476,7 @@ namespace AuraEditor
                 if (d == null)
                     continue;
 
-                foreach (var zone in d.Zones)
+                foreach (var zone in d.AllZones)
                 {
                     if (Array.Exists(indexes, x => x == zone.Index) == true)
                     {
@@ -502,7 +492,7 @@ namespace AuraEditor
 
             foreach (var d in DeviceModelCollection)
             {
-                foreach (var zone in d.Zones)
+                foreach (var zone in d.AllZones)
                 {
                     if (zone.Selected)
                         count++;
@@ -515,7 +505,7 @@ namespace AuraEditor
         {
             foreach (var d in DeviceModelCollection)
             {
-                foreach (var zone in d.Zones)
+                foreach (var zone in d.AllZones)
                 {
                     zone.ChangeStatus(RegionStatus.Normal);
                 }
@@ -556,8 +546,8 @@ namespace AuraEditor
 
             foreach (var sd in ingroupDevices)
             {
-                DeviceModel device = DeviceModelCollection.Find(d => d.Name == sd.Name);
-                if (device == null)
+                DeviceModel dm = DeviceModelCollection.Find(d => d.Name == sd.Name);
+                if (dm == null)
                 {
                     newSD.Add(sd);
 
@@ -565,21 +555,21 @@ namespace AuraEditor
                     AuraLayerManager.Self.ClearTypeData(sd.Type);
                     DeviceModelCollection.RemoveAll(d => d.Type == GetTypeByTypeName(sd.Type));
                 }
-                else if (device.Status == DeviceStatus.Temp)
-                    tempToStage.Add(device);
-                else if (device.Status == DeviceStatus.OnStage)
+                else if (dm.Status == DeviceStatus.Temp)
+                    tempToStage.Add(dm);
+                else if (dm.Status == DeviceStatus.OnStage)
                     stageToTemp.RemoveAll(d => d.Name == sd.Name);
             }
 
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                foreach (var d in stageToTemp)
+                foreach (var dm in stageToTemp)
                 {
-                    d.Status = DeviceStatus.Temp;
+                    dm.Status = DeviceStatus.Temp;
                 }
-                foreach (var d in tempToStage)
+                foreach (var dm in tempToStage)
                 {
-                    d.Status = DeviceStatus.OnStage;
+                    dm.Status = DeviceStatus.OnStage;
                 }
                 foreach (var sd in newSD)
                 {
@@ -798,11 +788,11 @@ namespace AuraEditor
                     m_SpaceScrollViewer.VerticalOffset - move_y, _spaceZoomFactor, true);
             }
         }
-        public void OnSpacePressed()
+        public void OnZKeyPressed()
         {
             SetSpaceStatus(SpaceStatus.DraggingWindow);
         }
-        public void OnSpaceRelease()
+        public void OnZKeyRelease()
         {
             SetSpaceStatus(_beforeDragWindowStatus);
         }

@@ -68,7 +68,7 @@ namespace AuraEditor
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
-                SpaceManager.OnSpacePressed();
+                SpaceManager.OnZKeyPressed();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
@@ -135,7 +135,7 @@ namespace AuraEditor
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
-                SpaceManager.OnSpaceRelease();
+                SpaceManager.OnZKeyRelease();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
@@ -295,11 +295,11 @@ namespace AuraEditor
 
             layer.Name = "Layer " + (LayerManager.GetLayerCount() + 1);
 
-            foreach (DeviceModel d in SpaceManager.DeviceModelCollection)
+            foreach (DeviceModel dm in SpaceManager.DeviceModelCollection)
             {
                 selectedIndex = new List<int>();
 
-                foreach (var zone in d.Zones)
+                foreach (var zone in dm.AllZones)
                 {
                     if (zone.Selected == true)
                     {
@@ -308,14 +308,14 @@ namespace AuraEditor
                 }
 
                 if (selectedIndex.Count != 0)
-                    layer.AddDeviceZones(d.Type, selectedIndex.ToArray());
+                    layer.AddDeviceZones(dm.Type, selectedIndex.ToArray());
             }
 
             LayerManager.AddLayer(layer);
             LayerManager.CheckedLayer = layer;
             NeedSave = true;
         }
-        private void SortDeviceButton_Checked(object sender, RoutedEventArgs e)
+        private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             EditOKButton.IsEnabled = true;
             ShowMask("Device Sorting", "Save", "Cancel");
@@ -442,7 +442,7 @@ namespace AuraEditor
                 {
                     selectedIndex = new List<int>();
 
-                    foreach (var zone in dm.Zones)
+                    foreach (var zone in dm.AllZones)
                     {
                         if (zone.Selected == true)
                         {
@@ -577,13 +577,7 @@ namespace AuraEditor
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            //SyncDevice sd = new SyncDevice()
-            //{
-            //    Name = "PUGIO",
-            //    Type = "Mouse",
-            //};
-            //DeviceContent dc = await DeviceContent.GetDeviceContent(sd);
-            //SpaceAreaCanvas.Children.Add(await dc.ToDeviceView());
+            ConnectedDevicesDialog.Rescan();
         }
     }
 }

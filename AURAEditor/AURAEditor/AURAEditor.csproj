@@ -111,7 +111,6 @@
     <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\BindingHelper.cs" />
     <Compile Include="Common\Converter.cs" />
-    <Compile Include="Common\ZoneStateHelper.cs" />
     <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="Common\StorageHelper.cs" />
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
@@ -136,7 +135,6 @@
     <Compile Include="Common\HSVColor.cs" />
     <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
-    <Compile Include="Device.cs" />
     <Compile Include="DeviceContent.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="Dialogs\TriggerDialog.xaml.cs">
@@ -150,10 +148,8 @@
     <Compile Include="PatternColorSet.cs" />
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
-    <Compile Include="SpecialLightZone.cs" />
     <Compile Include="SyncDevice.cs" />
     <Compile Include="TimelineEffect.cs" />
-    <Compile Include="LightZone.cs" />
     <Compile Include="LayerManager.cs" />
     <Compile Include="TriggerEffect.cs" />
     <Compile Include="EffectInfo.cs" />

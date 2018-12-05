@@ -25,7 +25,7 @@ namespace AuraEditor
         private ItemsControl m_BackgroundItemsControl;
         private Canvas m_TimelineScaleCanvas;
         private Canvas m_TrackCanvas;
-        
+
         public ObservableCollection<Layer> Layers { get; set; }
         private Layer _checkedLayer;
         public Layer CheckedLayer
@@ -126,7 +126,7 @@ namespace AuraEditor
             Self = this;
             m_TrackStackPanel = MainPage.Self.TrackStackPanel;
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
-            m_TrackCanvas= MainPage.Self.TrackCanvas;
+            m_TrackCanvas = MainPage.Self.TrackCanvas;
             m_PlayerCursor = MainPage.Self.PlayerCursor_Head;
 
             Layers = new ObservableCollection<Layer>();
@@ -250,8 +250,8 @@ namespace AuraEditor
             result.AddRange(Layers[i].GetHeadAndTailPositions(eff));
             if (i > 0)
                 result.AddRange(Layers[i - 1].GetHeadAndTailPositions(null));
-            if(i<Layers.Count - 1)
-                result.AddRange(Layers[i +1].GetHeadAndTailPositions(null));
+            if (i < Layers.Count - 1)
+                result.AddRange(Layers[i + 1].GetHeadAndTailPositions(null));
             return result.ToArray();
         }
 

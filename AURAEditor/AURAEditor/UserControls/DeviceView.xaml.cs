@@ -2,6 +2,7 @@
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Math2;
@@ -19,9 +20,35 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
+
+            BindingOperations.SetBinding(this, OperationEnabledProperty,
+                    new Binding
+                    {
+                        Path = new PropertyPath("OperationEnabled"),
+                        Mode = BindingMode.OneWay
+                    });
         }
 
-        public void EnableManipulation()
+        #region -- OperationEnabled --
+        public bool OperationEnabled
+        {
+            get { return (bool)GetValue(OperationEnabledProperty); }
+            set { SetValue(OperationEnabledProperty, (bool)value); }
+        }
+
+        public static readonly DependencyProperty OperationEnabledProperty =
+            DependencyProperty.Register("OperationEnabled", typeof(bool), typeof(DeviceView),
+                new PropertyMetadata(false, OperationEnabledChangedCallback));
+
+        static private void OperationEnabledChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == true)
+                (d as DeviceView).EnableManipulation();
+            else
+                (d as DeviceView).DisableManipulation();
+        }
+
+        private void EnableManipulation()
         {
             ManipulationDelta -= Device_ManipulationDelta;
             ManipulationCompleted -= Device_ManipulationCompleted;
@@ -37,7 +64,7 @@ namespace AuraEditor.UserControls
             PointerEntered += Device_PointerEntered;
             PointerExited += Device_PointerExited;
         }
-        public void DisableManipulation()
+        private void DisableManipulation()
         {
             ManipulationDelta -= Device_ManipulationDelta;
             ManipulationCompleted -= Device_ManipulationCompleted;
@@ -48,6 +75,7 @@ namespace AuraEditor.UserControls
             DashRect.Opacity = 0;
             DeviceImage.Opacity = 1;
         }
+        #endregion
 
         private void Device_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -55,7 +83,6 @@ namespace AuraEditor.UserControls
                 TT.X + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
                 TT.Y + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
 
-            //AuraSpaceManager.Self.OnDeviceMoved(this);
             Canvas.SetZIndex(this, 3);
         }
         private void Device_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -76,38 +103,32 @@ namespace AuraEditor.UserControls
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
 
-            //AuraSpaceManager.Self.OnDeviceMoveCompleted(this);
-            DashRect.Opacity = 0.6;
-            DeviceImage.Opacity = 1;
             MainPage.Self.NeedSave = true;
             Canvas.SetZIndex(this, 0);
+            VisualStateManager.GoToState(this, "Hover", false);
         }
         private void Device_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _oldPixelPosition = new Point(TT.X, TT.Y);
-            DashRect.Opacity = 1;
-            DeviceImage.Opacity = 0.6;
+            VisualStateManager.GoToState(this, "Pressed", false);
         }
         private void Device_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            DashRect.Opacity = 0.6;
-            DeviceImage.Opacity = 1;
+            VisualStateManager.GoToState(this, "Hover", false);
         }
         private void Device_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.SizeAll, 0);
 
-            DashRect.Opacity = 0.6;
-            DeviceImage.Opacity = 1;
+            VisualStateManager.GoToState(this, "Hover", false);
         }
         private void Device_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor
                 = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 
-            DashRect.Opacity = 0;
-            DeviceImage.Opacity = 1;
+            VisualStateManager.GoToState(this, "Normal", false);
         }
 
         private void SetPosition(double x, double y)
@@ -124,12 +145,11 @@ namespace AuraEditor.UserControls
 
             source = TT.X;
             targetX = x;
-            AnimationStart(TT, "TranslateX", runTime, source, targetX);
+            AnimationStart(TT, "X", runTime, source, targetX);
 
             source = TT.Y;
             targetY = y;
-            AnimationStart(TT, "TranslateY", runTime, source, targetY);
+            AnimationStart(TT, "Y", runTime, source, targetY);
         }
-
     }
 }

@@ -8,27 +8,47 @@
     xmlns:common="using:AuraEditor.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    common:VisualStateHelper.VisualState="{x:Bind m_DeviceModel.VisualState, Mode=OneWay}"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    PointerPressed="Device_PointerPressed"
-    PointerReleased="Device_PointerReleased"
-    PointerEntered="Device_PointerEntered"
-    PointerExited="Device_PointerExited"
-    ManipulationDelta="Device_ManipulationDelta"
-    ManipulationCompleted="Device_ManipulationCompleted"
     ManipulationMode="TranslateX,TranslateY"
-    Canvas.ZIndex="8">
+    Canvas.ZIndex="0">
     <UserControl.DataContext>
         <models:DeviceModel/>
     </UserControl.DataContext>
     <UserControl.RenderTransform>
         <TranslateTransform x:Name="TT"
-                            X="{x:Bind m_DeviceModel.PixelLeft}"
-                            Y="{x:Bind m_DeviceModel.PixelTop}"/>
+                            X="{x:Bind m_DeviceModel.PixelLeft, Mode=TwoWay}"
+                            Y="{x:Bind m_DeviceModel.PixelTop, Mode=TwoWay}"/>
     </UserControl.RenderTransform>
     <Canvas>
-        <Rectangle Name="DashRect" Style="{StaticResource DeviceDotRectangle}" Opacity="1" StrokeDashArray="3,3"
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="0"/>
+                        <Setter Target="DeviceImage.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Hover">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="0.6"/>
+                        <Setter Target="DeviceImage.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.Opacity" Value="0.6"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="3"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Rectangle Name="DashRect" Style="{StaticResource DeviceDotRectangle}" Opacity="0" StrokeDashArray="3,3"
                    Width="{x:Bind m_DeviceModel.PixelWidth}"
                    Height="{x:Bind m_DeviceModel.PixelHeight}"/>
         <Image Name="DeviceImage" Width="{x:Bind m_DeviceModel.PixelWidth}" Height="{x:Bind m_DeviceModel.PixelHeight}"
@@ -48,11 +68,10 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:ZoneModel">
                     <Rectangle StrokeThickness="1.5" RadiusX="2" RadiusY="3"
-                               Stroke="{x:Bind Stroke}"
-                               Fill="Transparent"
+                               Stroke="{x:Bind Stroke, Mode=OneWay}"
+                               Fill="{x:Bind Fill, Mode=OneWay}"
                                Width="{x:Bind PixelWidth}"
-                               Height="{x:Bind PixelHeight}"
-                               common:ZoneHelper.ZoneState="{x:Bind ZoneState}"/>
+                               Height="{x:Bind PixelHeight}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -70,8 +89,10 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:SpecialZoneModel">
-                    <Image Stretch="Fill" Width="{x:Bind PixelWidth}" Height="{x:Bind PixelHeight}" Source="{x:Bind ImageSource}"
-                           common:ZoneHelper.ZoneState="{x:Bind ZoneState}"/>
+                    <Image Stretch="Fill"
+                           Width="{x:Bind PixelWidth}"
+                           Height="{x:Bind PixelHeight}"
+                           Source="{x:Bind ImageSource, Mode=OneWay}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

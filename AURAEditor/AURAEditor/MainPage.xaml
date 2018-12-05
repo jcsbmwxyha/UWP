@@ -822,7 +822,7 @@
                     </ToolTipService.ToolTip>
                 </Button>
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
-                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Checked"/>
+                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Click"/>
             </StackPanel>
             <Rectangle x:Name="SetLayerRectangle" Width="{Binding ElementName=SetLayerButton, Path=Width}" Height="{Binding ElementName=SetLayerButton, Path=Height}"
                        Margin="20,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
@@ -1436,7 +1436,7 @@
 
         <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"
                    x:FieldModifier="public"/>
-        <Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>
+        <!--<Button Name="DebugButton" Grid.Row="4" Grid.Column="1" Click="DebugButton_Click" Content="Rescan" Background="White"/>-->
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>

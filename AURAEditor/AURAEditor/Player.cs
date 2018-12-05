@@ -208,12 +208,12 @@ namespace AuraEditor
         private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             Player.Pause();
-            await(new ServiceViewModel()).AuraEditorStopEngine();
+            await (new ServiceViewModel()).AuraEditorStopEngine();
         }
         private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Player.Stop();
-            await(new ServiceViewModel()).AuraEditorStopEngine();
+            await (new ServiceViewModel()).AuraEditorStopEngine();
         }
         private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {

@@ -24,7 +24,7 @@ namespace AuraEditor.Common
         Watching,
     }
 
-    class MouseDetectionRegion
+    class MouseDetectedRegion
     {
         public MouseEventCtrl.MouseEventCallBack Callback { get; set; }
         public Rect DetectionRect { get; set; }
@@ -61,8 +61,8 @@ namespace AuraEditor.Common
             set => _monitorMaxRect = value;
         }
 
-        private MouseDetectionRegion[] _detectionRegions;
-        public MouseDetectionRegion[] DetectionRegions
+        private MouseDetectedRegion[] _detectionRegions;
+        public MouseDetectedRegion[] DetectionRegions
         {
             get => _detectionRegions;
             set { _detectionRegions = value; }

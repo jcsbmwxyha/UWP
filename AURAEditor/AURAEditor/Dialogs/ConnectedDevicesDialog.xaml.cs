@@ -183,7 +183,7 @@ namespace AuraEditor.Dialogs
                 foreach (var cdb in cdbList)
                 {
                     cdb.Update();
-                    if(cdb != null)
+                    if (cdb != null)
                     {
                         List<ToggleButton> toggleButtons = FindAllControl<ToggleButton>(cdb, typeof(ToggleButton));
                         toggleButtons[0].IsChecked = true;
