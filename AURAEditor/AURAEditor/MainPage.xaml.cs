@@ -21,6 +21,7 @@ using static AuraEditor.Common.EffectHelper;
 using Windows.Networking;
 using Windows.System.Threading;
 using AuraEditor.Models;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace AuraEditor
 {
@@ -180,6 +181,8 @@ namespace AuraEditor
             _preAngle = 0;
             AngleTextBox.Text = "0";
 
+            var v1 = FindControl<ScrollBar>(TrackScrollViewer, typeof(ScrollBar), "HorizontalScrollBar");
+            v1.Width = 600;
             LoadSettings();
         }
         private void LoadSettings()
