@@ -423,6 +423,14 @@ namespace AuraEditor
                 }
             }
         }
+
+        private void AngleTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (AngleTextBox.Text != "")
+            {
+                AngleStoryboardStart(Convert.ToDouble(AngleTextBox.Text));
+            }
+        }
         private void AngleStoryboardStart(double AngleImgTargetAngle)
         {
             int runTime = 300;

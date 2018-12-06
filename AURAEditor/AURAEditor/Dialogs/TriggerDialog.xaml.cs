@@ -137,18 +137,37 @@ namespace AuraEditor.Dialogs
             EffectSelectionButton.Content = effName;
 
             TriggerColorPickerButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
-            RandomCheckBox.IsChecked = effectInfo.Random;
-            if (RandomCheckBox.IsChecked == true)
+            switch (effectInfo.ColorModeSelection)
             {
-                TriggerColorPickerButtonBg.Opacity = 0.5;
-                TriggerColorPickerButtonBg.IsEnabled = false;
-            }
-            else
-            {
-                TriggerColorPickerButtonBg.Opacity = 1;
-                TriggerColorPickerButtonBg.IsEnabled = true;
+                case 1:
+                    Single.IsChecked = true;
+                    effectInfo.Random = false;
+                    TriggerColorPickerButtonBg.Opacity = 1;
+                    TriggerColorPickerButtonBg.IsEnabled = true;
+                    break;
+                case 2:
+                    Random.IsChecked = true;
+                    effectInfo.Random = true;
+                    TriggerColorPickerButtonBg.Opacity = 0.5;
+                    TriggerColorPickerButtonBg.IsEnabled = false;
+                    break;
+                case 3:
+                    Pattern.IsChecked = true;
+                    effectInfo.Random = false;
+                    TriggerColorPickerButtonBg.Opacity = 0.5;
+                    TriggerColorPickerButtonBg.IsEnabled = false;
+                    break;
             }
             SpeedSlider.Value = effectInfo.Speed;
+            TriggerPatternCanvas.Children.Clear();
+            ColorPoints.Clear();
+            foreach (var item in effectInfo.ColorPointList)
+            {
+                ColorPoints.Add(new ColorPoint(item, this));
+            }
+            ShowColorPointUI(ColorPoints);
+            ReDrawMultiPointRectangle();
+            SegmentationSwitch.IsOn = effectInfo.ColorSegmentation;
         }
 
         private void ShowUIGroups(EffectInfo effectInfo)
@@ -157,19 +176,22 @@ namespace AuraEditor.Dialogs
             if (effName == "Ripple")
             {
                 ColorGroup.Visibility = Visibility.Visible;
-                //PatternGroup.Visibility = Visibility.Visible;
+                RandomGroup.Visibility = Visibility.Visible;
+                PatternGroup.Visibility = Visibility.Visible;
                 SpeedGroup.Visibility = Visibility.Visible;
             }
             else if (effName == "Reactive")
             {
                 ColorGroup.Visibility = Visibility.Visible;
-                //PatternGroup.Visibility = Visibility.Collapsed;
+                RandomGroup.Visibility = Visibility.Visible;
+                PatternGroup.Visibility = Visibility.Collapsed;
                 SpeedGroup.Visibility = Visibility.Visible;
             }
             else if (effName == "Laser")
             {
                 ColorGroup.Visibility = Visibility.Visible;
-                //PatternGroup.Visibility = Visibility.Collapsed;
+                RandomGroup.Visibility = Visibility.Visible;
+                PatternGroup.Visibility = Visibility.Collapsed;
                 SpeedGroup.Visibility = Visibility.Visible;
             }
         }
@@ -243,20 +265,30 @@ namespace AuraEditor.Dialogs
                 return colorPickerDialog.PreColor;
             }
         }
-        private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
+        private void ColorModeSelection_Click(object sender, RoutedEventArgs e)
         {
             EffectInfo info = m_EffectList[SelectedIndex].Info;
-            if (RandomCheckBox.IsChecked == true)
+            RadioButton colormodeselectionBtn = sender as RadioButton;
+            switch (colormodeselectionBtn.Name)
             {
-                info.Random = true;
-                TriggerColorPickerButtonBg.Opacity = 0.5;
-                TriggerColorPickerButtonBg.IsEnabled = false;
-            }
-            else
-            {
-                info.Random = false;
-                TriggerColorPickerButtonBg.Opacity = 1;
-                TriggerColorPickerButtonBg.IsEnabled = true;
+                case "Single":
+                    info.ColorModeSelection = 1;
+                    info.Random = false;
+                    TriggerColorPickerButtonBg.Opacity = 1;
+                    TriggerColorPickerButtonBg.IsEnabled = true;
+                    break;
+                case "Random":
+                    info.ColorModeSelection = 2;
+                    info.Random = true;
+                    TriggerColorPickerButtonBg.Opacity = 0.5;
+                    TriggerColorPickerButtonBg.IsEnabled = false;
+                    break;
+                case "Pattern":
+                    info.ColorModeSelection = 3;
+                    info.Random = false;
+                    TriggerColorPickerButtonBg.Opacity = 0.5;
+                    TriggerColorPickerButtonBg.IsEnabled = false;
+                    break;
             }
         }
 
@@ -291,36 +323,34 @@ namespace AuraEditor.Dialogs
         private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            TriggerPatternCanvas.Children.Clear();
-            foreach (var item in ColorPoints)
-            {
-                item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-            }
-            ColorPoints.Clear();
-
-            foreach (var item in DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1])
-            {
-                ColorPoints.Add(new ColorPoint(item));
-            }
-            ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternButton.Background = mf.Foreground;
+            ClearAndDraw(mf, DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1]);
         }
 
         private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
         {
+            MenuFlyoutItem mf = sender as MenuFlyoutItem;
+            ClearAndDraw(mf, CustomizeColorPoints);
+        }
+
+        private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPoint> cp)
+        {
+            EffectInfo info = m_EffectList[SelectedIndex].Info;
             TriggerPatternCanvas.Children.Clear();
             foreach (var item in ColorPoints)
             {
                 item.UI.OnRedraw -= ReDrawMultiPointRectangle;
             }
             ColorPoints.Clear();
+            if (info.ColorPointList != null)
+                info.ColorPointList.Clear();
 
-            foreach (var item in CustomizeColorPoints)
+            foreach (var item in cp)
             {
-                ColorPoints.Add(new ColorPoint(item));
+                ColorPoints.Add(new ColorPoint(item, this));
+                info.ColorPointList.Add(new ColorPoint(item));
             }
             ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternButton.Background = CustomizeRainbow.Foreground;
+            MultiPointRectangle.Fill = TriggerPatternPolygon.Fill = mf.Foreground;
         }
 
         public void ShowColorPointUI(List<ColorPoint> cl)
@@ -334,7 +364,7 @@ namespace AuraEditor.Dialogs
 
         private void PlusItemBt(object sender, RoutedEventArgs e)
         {
-            ColorPoint newColorPointBt = new ColorPoint();
+            ColorPoint newColorPointBt = new ColorPoint(this);
             AddColorPoint(newColorPointBt);
             newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
             ReDrawMultiPointRectangle();
@@ -428,13 +458,7 @@ namespace AuraEditor.Dialogs
             }
 
             // Use the brush to paint the rectangle.
-            PatternButton.Background = MultiPointRectangle.Fill = DefaultRainbow1.Foreground = Pattern1;
-            foreach (var item in DefaultColorList[0])
-            {
-                ColorPoints.Add(new ColorPoint(item));
-            }
-
-            ShowColorPointUI(ColorPoints);
+            DefaultRainbow1.Foreground = Pattern1;
 
             // Button Color  
             LinearGradientBrush Pattern2 = new LinearGradientBrush();
@@ -508,7 +532,7 @@ namespace AuraEditor.Dialogs
                 Pattern.GradientStops.Add(new GradientStop { Color = ColorPoints[i].Color, Offset = ColorPoints[i].Offset });
             }
 
-            PatternButton.Background = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
+            TriggerPatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
             CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
             MainPage.Self.SetListBorder(ColorPoints);
         }
@@ -519,6 +543,23 @@ namespace AuraEditor.Dialogs
             string selectedAction = item.Text;
             TriggerActionButton.Content = selectedAction;
             m_Layer.TriggerAction = selectedAction;
+        }
+
+        private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            EffectInfo info = m_EffectList[SelectedIndex].Info;
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch != null)
+            {
+                if (toggleSwitch.IsOn == true)
+                {
+                    info.ColorSegmentation = true;
+                }
+                else
+                {
+                    info.ColorSegmentation = false;
+                }
+            }
         }
     }
 }

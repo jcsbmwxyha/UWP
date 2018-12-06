@@ -822,7 +822,14 @@
                     </ToolTipService.ToolTip>
                 </Button>
                 <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
-                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Click"/>
+                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
+                                       TextWrapping="Wrap" Width="144"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
             </StackPanel>
             <Rectangle x:Name="SetLayerRectangle" Width="{Binding ElementName=SetLayerButton, Path=Width}" Height="{Binding ElementName=SetLayerButton, Path=Height}"
                        Margin="20,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
@@ -991,7 +998,7 @@
                         <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
                         <Grid Margin="20,20,0,16">
                             <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
-                            <Button x:Name="PatternButton" Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
+                            <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
                                 <Button.Flyout>
                                     <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
                                         <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
@@ -1087,7 +1094,7 @@
                                     <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
                                     <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="42" HorizontalAlignment="Left"
                                          KeyDown="AngleTextBox_KeyDown" Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold"
-                                         TextChanged="AngleTextBox_TextChanged"/>
+                                         TextChanged="AngleTextBox_TextChanged" LostFocus="AngleTextBox_LostFocus"/>
                                     <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
                                 </StackPanel>
                             </Grid>
@@ -1149,12 +1156,22 @@
                     Click="PauseButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="PlayButton">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Pause"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Name="StopButton"
                     Content="&#xE009;" FontFamily="Segoe MDL2 Assets" Foreground="White"
                     Click="StopButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="PauseButton">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Stop"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Name="GoRightButton"
                     Click="JumpToEndButton_Click"
@@ -1200,7 +1217,7 @@
                       DragItemsStarting="LayerListView_DragItemsStarting" ItemsSource="{x:Bind LayerManager.Layers}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <usercontrol:LayerTitle HorizontalAlignment="Center"/>
+                        <usercontrol:LayerTitle HorizontalAlignment="Center" Height="52"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>
@@ -1400,13 +1417,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Height" Value="50"/>
+                        <Setter Property="Height" Value="52"/>
                         <Setter Property="Width" Value="4000"/>
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local:Layer">
-                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}"/>
+                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}"
+                                                     Width="4000" Height="40"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

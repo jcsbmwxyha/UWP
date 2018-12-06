@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using static AuraEditor.Common.ControlHelper;
+using AuraEditor.Dialogs;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -33,9 +33,19 @@ namespace AuraEditor.UserControls
         public double LeftBorder { get; set; }
         public double RightBorder { get; set; }
 
+        public bool FromTriggerDialog = false;
+        public TriggerDialog m_td;
+
         public ColorPointBt()
         {
             this.InitializeComponent();
+        }
+
+        public ColorPointBt(TriggerDialog td)
+        {
+            this.InitializeComponent();
+            FromTriggerDialog = true;
+            m_td = td;
         }
 
         private void ColorPointBtn_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -56,6 +66,10 @@ namespace AuraEditor.UserControls
 
         private async void ColorPointBtn_DoubleTapped(object sender, RoutedEventArgs e)
         {
+            if (FromTriggerDialog)
+            {
+                m_td.Hide();
+            }
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)ColorPointBg.Background).Color);
 
             ColorPointBg.Background = new SolidColorBrush(newColor);
@@ -64,7 +78,15 @@ namespace AuraEditor.UserControls
 
         public async Task<Color> OpenColorPickerWindow(Color c)
         {
-            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
+            ColorPickerDialog colorPickerDialog;
+            if (FromTriggerDialog)
+            {
+                colorPickerDialog = new ColorPickerDialog(c, m_td);
+            }
+            else
+            {
+                colorPickerDialog = new ColorPickerDialog(c);
+            }
             await colorPickerDialog.ShowAsync();
 
             if (colorPickerDialog.ColorPickerResult)

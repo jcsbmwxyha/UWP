@@ -19,6 +19,8 @@ namespace AuraEditor
         public double Angle;
         public int Direction;
         public bool Random;
+        //For Trigger Dialog Ripple
+        public int ColorModeSelection;
         public int High;
         public int Low;
         public List<ColorPoint> ColorPointList;
@@ -56,6 +58,7 @@ namespace AuraEditor
             Brightness = 3;
             Speed = 1;
             Direction = 2;
+            ColorModeSelection = 1;
             Angle = 90;
             Random = false;
             High = 60;
@@ -557,10 +560,10 @@ namespace AuraEditor
             else if (GetEffectName(Type) == "Ripple")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
-                waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
                 waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
-                waveNode.AppendChild(CreateXmlNodeByValue("length", "10"));
+                waveNode.AppendChild(CreateXmlNodeByValue("length", "2"));
                 if (Speed == 0)
                 {
                     waveNode.AppendChild(CreateXmlNodeByValue("freq", "1"));
@@ -581,6 +584,78 @@ namespace AuraEditor
                 waveNode.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
+
+                if(ColorModeSelection == 3)
+                {
+                    // wave 1 for HUE
+                    XmlNode waveNode1 = CreateXmlNode("wave");
+                    if (ColorSegmentation == true)
+                        waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    else // false
+                        waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                    if (Speed == 0)
+                        waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                    else if (Speed == 1)
+                        waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                    else // 2
+                        waveNode1.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode1.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode1.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                    waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 0));
+                    waveListNode.AppendChild(waveNode1);
+
+                    // wave 2 for SATURATION
+                    XmlNode waveNode2 = CreateXmlNode("wave");
+                    if (ColorSegmentation == true)
+                        waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    else // false
+                        waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                    if (Speed == 0)
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                    else if (Speed == 1)
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                    else // 2
+                        waveNode2.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
+                    waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 1));
+                    waveListNode.AppendChild(waveNode2);
+
+                    // wave 3 for LIGHTNESS
+                    XmlNode waveNode3 = CreateXmlNode("wave");
+                    if (ColorSegmentation == true)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    else // false
+                        waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
+                    if (Speed == 0)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                    else if (Speed == 1)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                    else // 2
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
+                    waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 2));
+                    waveListNode.AppendChild(waveNode3);
+                }
             }
 
             return waveListNode;
@@ -713,6 +788,10 @@ namespace AuraEditor
             XmlNode randomNode = CreateXmlNode("random");
             randomNode.InnerText = Random.ToString();
             effectNode.AppendChild(randomNode);
+
+            XmlNode colormodeselectionNode = CreateXmlNode("colormodeselection");
+            colormodeselectionNode.InnerText = ColorModeSelection.ToString();
+            effectNode.AppendChild(colormodeselectionNode);
 
             XmlNode highNode = CreateXmlNode("high");
             highNode.InnerText = High.ToString();

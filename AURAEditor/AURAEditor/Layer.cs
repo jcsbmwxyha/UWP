@@ -101,7 +101,7 @@ namespace AuraEditor
         public Layer(string name = "")
         {
             TimelineEffects = new ObservableCollection<TimelineEffect>();
-            TimelineEffects.CollectionChanged += TriggerEffectsChanged;
+            TimelineEffects.CollectionChanged += TimelineEffectsChanged;
             TriggerEffects = new List<TriggerEffect>();
 
             Name = name;
@@ -111,12 +111,13 @@ namespace AuraEditor
             {
                 DataContext = this,
             };
+            UI_Track.Height = 52;
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
             TriggerAction = "One Click";
         }
 
-        private void TriggerEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             TimelineEffect tle;
             EffectLine el;
@@ -131,6 +132,8 @@ namespace AuraEditor
                     el = new EffectLine();
                     tle = e.NewItems[0] as TimelineEffect;
                     el.DataContext = tle;
+                    el.Height = 36;
+                    Windows.UI.Xaml.Controls.Canvas.SetTop(el, 8);
                     UI_Track.Track.Children.Add(el);
                     tle.View = el;
                     break;

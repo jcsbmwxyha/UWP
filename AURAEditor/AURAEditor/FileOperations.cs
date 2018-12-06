@@ -494,6 +494,7 @@ namespace AuraEditor
                         Speed = Int32.Parse(element2.SelectSingleNode("speed").InnerText),
                         Angle = Int32.Parse(element2.SelectSingleNode("angle").InnerText),
                         Random = bool.Parse(element2.SelectSingleNode("random").InnerText),
+                        ColorModeSelection = Int32.Parse(element2.SelectSingleNode("colormodeselection").InnerText),
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
                         ColorPointList = new List<ColorPoint>(colorPoints),

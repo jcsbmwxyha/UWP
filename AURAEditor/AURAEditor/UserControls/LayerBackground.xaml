@@ -9,12 +9,11 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    HorizontalAlignment="Left"
-    Width="2000"
-    Height="50">
-    
+    HorizontalAlignment="Left">
+
     <UserControl.Resources>
         <ResourceDictionary>
+            <BitmapImage x:Key="LayerBg_n" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg.png"/>
             <BitmapImage x:Key="LayerBg_l_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_l_h.png"/>
             <BitmapImage x:Key="LayerBg_m_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_m_h.png"/>
             <BitmapImage x:Key="LayerBg_r_h" UriSource="ms-appx:///Assets/Layer/asus_ac_layer_bg_r_h.png"/>
@@ -27,7 +26,13 @@
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_n}"/>
+                        <Setter Target="LayerBg_Mid.Source" Value="{ThemeResource LayerBg_n}"/>
+                        <Setter Target="LayerBg_Right.Source" Value="{ThemeResource LayerBg_n}"/>
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
                         <Setter Target="LayerBg_Left.Source" Value="{ThemeResource LayerBg_l_h}"/>

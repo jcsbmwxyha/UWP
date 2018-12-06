@@ -8,7 +8,6 @@
     mc:Ignorable="d"
     d:DesignHeight="50"
     d:DesignWidth="400"
-    Height="38"
     Width="{x:Bind MyEffect.Width,Mode=TwoWay}"
     Loaded="EffectLine_Loaded">
 
@@ -83,7 +82,7 @@
     </UserControl.Resources>
 
     <UserControl.RenderTransform>
-        <CompositeTransform TranslateX="{x:Bind MyEffect.Left, Mode=TwoWay}" TranslateY="6"/>
+        <CompositeTransform TranslateX="{x:Bind MyEffect.Left, Mode=TwoWay}"/>
     </UserControl.RenderTransform>
 
     <RadioButton Name="EffectlineRadioButton"

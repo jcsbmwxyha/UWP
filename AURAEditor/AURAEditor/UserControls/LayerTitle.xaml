@@ -193,7 +193,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--Background is used to drag easily-->
-    <Grid Name="MyGrid" Width="250" Height="50" Background="#01000000"
+    <Grid Name="MyGrid" Width="250" Background="#01000000"
           PointerEntered="MyGrid_PointerEntered"
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">

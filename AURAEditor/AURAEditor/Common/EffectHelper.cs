@@ -148,6 +148,7 @@ namespace AuraEditor.Common
             else if (typeName == "Display") return 4;
             else if (typeName == "Desktop") return 5;
             else if (typeName == "MotherBoard") return 6;
+            else if (typeName == "MousePad") return 7;
             return 0;
         }
         static public string GetTypeNameByType(int type)
@@ -159,6 +160,7 @@ namespace AuraEditor.Common
             else if (type == 4) return "Display";
             else if (type == 5) return "Desktop";
             else if (type == 6) return "MotherBoard";
+            else if (type == 7) return "MousePad";
             return "Notebook";
         }
     }

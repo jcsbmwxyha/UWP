@@ -4,6 +4,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
+using AuraEditor.Dialogs;
 
 namespace AuraEditor
 {
@@ -43,9 +44,28 @@ namespace AuraEditor
             UI.RightBorder = 180;
         }
 
+        public ColorPoint(TriggerDialog td)
+        {
+            UI = new ColorPointBt(td);
+            UI.DataContext = this;
+            UI.X = 0;
+            UI.LeftBorder = 0;
+            UI.RightBorder = 180;
+        }
+
         public ColorPoint(ColorPoint cp)
         {
             UI = new ColorPointBt();
+            UI.DataContext = this;
+            UI.X = cp.UI.X;
+            UI.LeftBorder = cp.UI.LeftBorder;
+            UI.RightBorder = cp.UI.RightBorder;
+            Color = cp.Color;
+        }
+
+        public ColorPoint(ColorPoint cp, TriggerDialog td)
+        {
+            UI = new ColorPointBt(td);
             UI.DataContext = this;
             UI.X = cp.UI.X;
             UI.LeftBorder = cp.UI.LeftBorder;

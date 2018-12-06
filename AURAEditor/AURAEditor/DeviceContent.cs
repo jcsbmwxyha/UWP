@@ -135,6 +135,7 @@ namespace AuraEditor
                     case "Mouse": gridW = 8; gridH = 10; break;
                     case "Keyboard": gridW = 25; gridH = 14; break;
                     case "MotherBoard": gridW = 36; gridH = 36; break;
+                    case "MousePad": gridW = 12; gridH = 16; break;
                     default: gridW = 36; gridH = 36; break;
                 }
                 deviceContent.DeviceType = GetTypeByTypeName(type);
