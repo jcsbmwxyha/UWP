@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <ScrollViewer Height="500" Width="500" Background="LightGray" HorizontalScrollMode="Enabled"
+    <ScrollViewer Height="500" Width="500" Background="White" HorizontalScrollMode="Enabled"
                       VerticalScrollBarVisibility="Disabled"
                       HorizontalScrollBarVisibility="Visible" Style="{StaticResource MyScrollViewer}">
         <StackPanel Orientation="Horizontal">
