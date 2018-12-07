@@ -166,7 +166,10 @@ namespace AuraEditor
             }
 
             for (int i = 0; i < Layers.Count; i++)
-                Layers[i].Name = "Layer " + (i + 1).ToString();
+            {
+                if (Layers[i].Name == "")
+                    Layers[i].Name = "Layer " + (i + 1).ToString();
+            }
 
             AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.Init);
             m_TrackCanvas.Height = Layers.Count * 52;

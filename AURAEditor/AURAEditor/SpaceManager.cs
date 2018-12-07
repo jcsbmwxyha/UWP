@@ -148,6 +148,7 @@ namespace AuraEditor
 
         private ScrollViewer m_SpaceScrollViewer;
         private Canvas m_SpaceCanvas;
+        private Grid m_NoSupportedDeviceGrid;
         private Rectangle m_MouseRectangle;
         private Image m_GridImage;
         private Button m_SetLayerButton;
@@ -228,6 +229,7 @@ namespace AuraEditor
             m_SpaceScrollViewer.RegisterPropertyChangedCallback(ScrollViewer.ZoomFactorProperty, (s, e) => ZoomFactorChangedCallback(s, e));
             m_GridImage = MainPage.Self.GridImage;
             m_SpaceCanvas = MainPage.Self.SpaceAreaCanvas;
+            m_NoSupportedDeviceGrid = MainPage.Self.NoSupportedDeviceGrid;
             //m_SpaceCanvas.Width = m_GridImage.ActualWidth;
             //m_SpaceCanvas.Height = m_GridImage.ActualHeight;
             m_MouseRectangle = MainPage.Self.MouseRectangle;
@@ -273,6 +275,16 @@ namespace AuraEditor
             m_SpaceCanvas.Children.Add(m_MouseRectangle);
 
             var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+
+            if(onStageList.Count==0)
+            {
+                m_NoSupportedDeviceGrid.Visibility = Visibility.Visible;
+                return;
+            }
+            else
+            {
+                m_NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
+            }
 
             foreach (var dm in onStageList)
             {

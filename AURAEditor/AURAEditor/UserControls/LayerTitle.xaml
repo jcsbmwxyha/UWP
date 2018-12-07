@@ -7,8 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="80"
+    d:DesignWidth="300">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -188,6 +188,43 @@
                 </Setter>
             </Style>
 
+            <BitmapImage x:Key="EditName_n" UriSource="ms-appx:///Assets/Button/asus_ac_nameedit_ic_n.png"/>
+            <BitmapImage x:Key="EditName_h" UriSource="ms-appx:///Assets/Button/asus_ac_nameedit_ic_h.png"/>
+            <BitmapImage x:Key="EditName_p" UriSource="ms-appx:///Assets/Button/asus_ac_nameedit_ic_p.png"/>
+            <Style x:Key="EditNameButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource EditName_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource EditName_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource EditName_p}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="TriggerButton" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <common:ReverseBooleanToVisibilityConverter x:Key="reverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
@@ -198,10 +235,18 @@
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">
         
-        <RelativePanel Grid.Column="1" VerticalAlignment="Center">
+        <RelativePanel VerticalAlignment="Center">
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
                           Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye, Mode=TwoWay}" Style="{StaticResource EyeToggleButtonStyle}"/>
-            <TextBlock Name="LayerNameTextBlock" Text="{x:Bind m_Layer.Name, Mode=TwoWay}" RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock Name="NameTextBlock" Text="{x:Bind m_Layer.Name, Mode=TwoWay}"
+                       RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"/>
+            <TextBox Name="NameTextBox" Width="120" MinHeight="30" Height="30" Visibility="Collapsed"
+                     LostFocus="NameTextBox_LostFocus" KeyDown="NameTextBox_KeyDown"
+                    RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+            <Button Name="EditNameButton" Height="7" Width="7" Background="White"
+                    DoubleTapped="EditNameButton_DoubleTapped"
+                    Style="{StaticResource EditNameButtonStyle}"
+                    RelativePanel.RightOf="NameTextBlock" FontSize="16" Margin="5,0,0,0" RelativePanel.AlignBottomWithPanel="True"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click">
                 <ToolTipService.ToolTip>
