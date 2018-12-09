@@ -163,5 +163,29 @@ namespace AuraEditor.Common
             else if (type == 7) return "MousePad";
             return "Notebook";
         }
+        
+        static public void SetListBorder(List<ColorPoint> cps)
+        {
+            int width = 13;
+
+            for (int i = 0; i < cps.Count; i++)
+            {
+                if (i == 0)
+                {
+                    cps[i].UI.LeftBorder = 0;
+                    cps[i].UI.RightBorder = cps[i + 1].UI.X - width;
+                }
+                else if (i == (cps.Count - 1))
+                {
+                    cps[i].UI.LeftBorder = cps[i - 1].UI.X + width;
+                    cps[i].UI.RightBorder = 180;
+                }
+                else
+                {
+                    cps[i].UI.LeftBorder = cps[i - 1].UI.X + width;
+                    cps[i].UI.RightBorder = cps[i + 1].UI.X - width;
+                }
+            }
+        }
     }
 }

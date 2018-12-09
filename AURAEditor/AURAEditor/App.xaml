@@ -8,6 +8,12 @@
         <x:Double x:Key="ContentDialogMaxWidth">1500</x:Double>
         <x:Double x:Key="ContentDialogMaxHeight">900</x:Double>
         <SolidColorBrush x:Key="SystemControlPageBackgroundMediumAltMediumBrush" Color="#88000000" />
+
+        <Style x:Key="BasicButton" TargetType="Button">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+        </Style>
+
         <Style x:Key="RogButtonStyle"  TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -1757,6 +1763,80 @@
                             </Thumb>
 
                         </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <BitmapImage x:Key="Minus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_n.png"/>
+        <BitmapImage x:Key="Minus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_h.png"/>
+        <BitmapImage x:Key="Minus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_minus_ic_s.png"/>
+        <Style x:Key="MinusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Minus_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Minus_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Minus_s}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Image Name="Image" Stretch="Fill"/>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <BitmapImage x:Key="Plus_n" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_n.png"/>
+        <BitmapImage x:Key="Plus_h" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_h.png"/>
+        <BitmapImage x:Key="Plus_s" UriSource="ms-appx:///Assets/ZoomSlider/asus_ac_plus_ic_s.png"/>
+        <Style x:Key="PlusButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Plus_n}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Plus_h}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Image.Source" Value="{ThemeResource Plus_s}"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Image Name="Image" Stretch="Fill"/>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using Windows.UI;
 using AuraEditor.Common;
+using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
@@ -63,7 +64,7 @@ namespace AuraEditor
             Random = false;
             High = 60;
             Low = 30;
-            ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[5]);
+            ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
             ColorSegmentation = false;
         }
 

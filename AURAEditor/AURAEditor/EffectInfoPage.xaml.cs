@@ -1,9 +1,7 @@
-﻿using AuraEditor.Common;
-using AuraEditor.Dialogs;
-using AuraEditor.UserControls;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -11,50 +9,144 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
-using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.ControlHelper;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Windows.UI.Xaml.Media.Imaging;
+using AuraEditor.Common;
+using AuraEditor.Dialogs;
+using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
+using Windows.UI.Xaml.Navigation;
+
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace AuraEditor
 {
-    public sealed partial class MainPage : Page
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class EffectInfoPage : Page
     {
+        private EffectInfo m_Info;
+
+        bool _angleImgPressing;
+        public double _preAngle;
+        Point AngleImgCenter;
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
+        public List<ColorPoint> CustomizeColorPoints = new List<ColorPoint>();
 
-        public TimelineEffect SelectedEffect
+        public EffectInfoPage()
         {
-            get
+            this.InitializeComponent();
+
+            AngleImgCenter = new Point(40, 40);
+            _preAngle = 0;
+            AngleTextBox.Text = "0";
+
+            foreach (var item in DefaultColorList)
             {
-                return LayerManager.CheckedEffect;
+                SetListBorder(item);
             }
-            set
+
+            SetDefaultPattern();
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            TimelineEffect tl = e.Parameter as TimelineEffect;
+
+            if (tl == null)
+                return;
+            else
             {
-                LayerManager.CheckedEffect = value;
+                ShowGroups(tl.Name);
+
+                m_Info = tl.Info;
+                UpdateGroups(m_Info);
             }
         }
-
-        public void ClearEffectInfoGrid()
+        public void SetDefaultPattern()
         {
-            Title.Text = "";
-            ResetBtn.Visibility = Visibility.Collapsed;
-            EffectInfoGroup.Visibility = Visibility.Collapsed;
-        }
-        public void UpdateEffectInfoGrid(TimelineEffect effect)
-        {
-            ShowEffectInfoGroupsByType(effect.Type);
-            UpdateUIEffectContents(effect.Info);
+            CustomizeRainbow.Foreground = new SolidColorBrush(Colors.White);
+
+            //Button Color
+            LinearGradientBrush Pattern1 = new LinearGradientBrush();
+            Pattern1.StartPoint = new Point(0, 0.5);
+            Pattern1.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[0].Count; i++)
+            {
+                Pattern1.GradientStops.Add(new GradientStop { Color = DefaultColorList[0][i].Color, Offset = DefaultColorList[0][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow1.Foreground = Pattern1;
+
+            // Button Color  
+            LinearGradientBrush Pattern2 = new LinearGradientBrush();
+            Pattern2.StartPoint = new Point(0, 0.5);
+            Pattern2.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[1].Count; i++)
+            {
+                Pattern2.GradientStops.Add(new GradientStop { Color = DefaultColorList[1][i].Color, Offset = DefaultColorList[1][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow2.Foreground = Pattern2;
+
+            // Button Color  
+            LinearGradientBrush Pattern3 = new LinearGradientBrush();
+            Pattern3.StartPoint = new Point(0, 0.5);
+            Pattern3.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[2].Count; i++)
+            {
+                Pattern3.GradientStops.Add(new GradientStop { Color = DefaultColorList[2][i].Color, Offset = DefaultColorList[2][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow3.Foreground = Pattern3;
+
+            // Button Color  
+            LinearGradientBrush Pattern4 = new LinearGradientBrush();
+            Pattern4.StartPoint = new Point(0, 0.5);
+            Pattern4.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[3].Count; i++)
+            {
+                Pattern4.GradientStops.Add(new GradientStop { Color = DefaultColorList[3][i].Color, Offset = DefaultColorList[3][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow4.Foreground = Pattern4;
+
+            // Button Color  
+            LinearGradientBrush Pattern5 = new LinearGradientBrush();
+            Pattern5.StartPoint = new Point(0, 0.5);
+            Pattern5.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[4].Count; i++)
+            {
+                Pattern5.GradientStops.Add(new GradientStop { Color = DefaultColorList[4][i].Color, Offset = DefaultColorList[4][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow5.Foreground = Pattern5;
+
+            // Button Color  
+            LinearGradientBrush Pattern6 = new LinearGradientBrush();
+            Pattern6.StartPoint = new Point(0, 0.5);
+            Pattern6.EndPoint = new Point(1, 0.5);
+            for (int i = 0; i < Definitions.DefaultColorList[5].Count; i++)
+            {
+                Pattern6.GradientStops.Add(new GradientStop { Color = DefaultColorList[5][i].Color, Offset = DefaultColorList[5][i].Offset });
+            }
+
+            // Use the brush to paint the rectangle.
+            DefaultRainbow6.Foreground = Pattern6;
         }
 
-        private void ShowEffectInfoGroupsByType(int effectType)
+        private void ShowGroups(string name)
         {
             ResetBtn.Visibility = Visibility.Visible;
             EffectInfoGroup.Visibility = Visibility.Visible;
-            Title.Text = GetEffectName(effectType);
+            Title.Text = name;
 
-            switch (Title.Text)
+            switch (name)
             {
                 case "Static":
                     ColorGroup.Visibility = Visibility.Visible;
@@ -62,7 +154,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -72,7 +164,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -82,7 +174,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -92,7 +184,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Visible;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -102,7 +194,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -112,7 +204,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -122,7 +214,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -132,7 +224,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Visible;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -142,7 +234,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -152,7 +244,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -162,7 +254,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -172,7 +264,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Visible;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -182,7 +274,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -192,7 +284,7 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Visible;
                     break;
@@ -202,13 +294,13 @@ namespace AuraEditor
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Collapsed;
-                    DirectionGroup.Visibility = Visibility.Collapsed;
+                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
             }
         }
-        private void UpdateUIEffectContents(EffectInfo info)
+        private void UpdateGroups(EffectInfo info)
         {
             RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
             if (info.Random)
@@ -225,13 +317,13 @@ namespace AuraEditor
             }
             BrightnessSlider.Value = info.Brightness;
             SpeedSlider.Value = info.Speed;
-            switch (info.Direction)
-            {
-                case 1: Left.IsChecked = true; break;
-                case 2: Right.IsChecked = true; break;
-                case 3: Up.IsChecked = true; break;
-                case 4: Down.IsChecked = true; break;
-            }
+            //switch (info.Direction)
+            //{
+            //    case 1: Left.IsChecked = true; break;
+            //    case 2: Right.IsChecked = true; break;
+            //    case 3: Up.IsChecked = true; break;
+            //    case 4: Down.IsChecked = true; break;
+            //}
             AngleStoryboardStart(info.Angle);
             AngleTextBox.Text = info.Angle.ToString();
             PatternCanvas.Children.Clear();
@@ -245,10 +337,24 @@ namespace AuraEditor
             SegmentationSwitch.IsOn = info.ColorSegmentation;
         }
 
+        private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            m_Info.InitColor = Colors.Red;
+            m_Info.Brightness = 3;
+            m_Info.Speed = 1;
+            m_Info.Direction = 2;
+            m_Info.Angle = 90;
+            m_Info.Random = false;
+            m_Info.High = 60;
+            m_Info.Low = 30;
+            m_Info.ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
+            m_Info.ColorSegmentation = false;
+            UpdateGroups(m_Info);
+        }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
-            SelectedEffect.Info.InitColor = newColor;
+            m_Info.InitColor = newColor;
             RadioButtonBg.Background = new SolidColorBrush(newColor);
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
@@ -269,20 +375,19 @@ namespace AuraEditor
         {
             if (RandomCheckBox.IsChecked == true)
             {
-                SelectedEffect.Info.Random = true;
+                m_Info.Random = true;
                 RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
-                SelectedEffect.Info.Random = false;
+                m_Info.Random = false;
                 RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
         }
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            EffectInfo ui = SelectedEffect.Info;
             Slider slider = sender as Slider;
             if (slider != null)
             {
@@ -310,12 +415,11 @@ namespace AuraEditor
                     //ImagePoint33.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                     //ImagePoint66.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/AURASettings/asus_gc_slider2 control_d.png"));
                 }
-                ui.Brightness = (int)slider.Value;
+                m_Info.Brightness = (int)slider.Value;
             }
         }
         private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            EffectInfo ui = SelectedEffect.Info;
             Slider slider = sender as Slider;
             if (slider != null)
             {
@@ -337,9 +441,11 @@ namespace AuraEditor
                     MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                     FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                 }
-                ui.Speed = (int)slider.Value;
+                m_Info.Speed = (int)slider.Value;
             }
         }
+
+        #region -- Angle --
         private void AngleBgImg_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _angleImgPressing = true;
@@ -349,7 +455,7 @@ namespace AuraEditor
             double dy = currentLocation.Y - AngleImgCenter.Y;
             double hue = Math2.ComputeH(dx, dy);
             AngleTextBox.Text = hue.ToString("F0");
-            SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+            m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
         }
         private void AngleBgImg_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -365,7 +471,7 @@ namespace AuraEditor
                 double dy = currentLocation.Y - AngleImgCenter.Y;
                 double hue = Math2.ComputeH(dx, dy);
                 AngleTextBox.Text = hue.ToString("F0");
-                SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
                 AngleStoryboardStart(hue);
             }
         }
@@ -415,15 +521,14 @@ namespace AuraEditor
                     AngleChangeText.Text = "0";
                 }
             }
-            if (SelectedEffect != null)
+            if (m_Info != null)
             {
                 if (AngleTextBox.Text != "")
                 {
-                    SelectedEffect.Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                    m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
                 }
             }
         }
-
         private void AngleTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (AngleTextBox.Text != "")
@@ -464,7 +569,6 @@ namespace AuraEditor
         }
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffect.Info;
             if ((AngleTextBox.Text != ""))
             {
                 double textIncrease = Convert.ToDouble(AngleTextBox.Text);
@@ -480,12 +584,11 @@ namespace AuraEditor
                     AngleTextBox.Text = textIncrease.ToString();
                     AngleStoryboardStart(textIncrease);
                 }
-                ui.Angle = Convert.ToDouble(AngleTextBox.Text);
+                m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
             }
         }
         private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffect.Info;
             if ((AngleTextBox.Text != ""))
             {
                 double textdecrease = Convert.ToDouble(AngleTextBox.Text);
@@ -501,44 +604,30 @@ namespace AuraEditor
                     AngleTextBox.Text = textdecrease.ToString();
                     AngleStoryboardStart(textdecrease);
                 }
-                ui.Angle = textdecrease;
+                m_Info.Angle = textdecrease;
             }
         }
-        private void DirectionBtn_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            EffectInfo ui = SelectedEffect.Info;
-            RadioButton directionBtn = sender as RadioButton;
-            switch (directionBtn.Name)
-            {
-                case "Left":
-                    ui.Direction = 1;
-                    break;
-                case "Right":
-                    ui.Direction = 2;
-                    break;
-                case "Up":
-                    ui.Direction = 3;
-                    break;
-                case "Down":
-                    ui.Direction = 4;
-                    break;
-            }
-        }
-        private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            EffectInfo ui = SelectedEffect.Info;
-            ui.InitColor = Colors.Red;
-            ui.Brightness = 3;
-            ui.Speed = 1;
-            ui.Direction = 2;
-            ui.Angle = 90;
-            ui.Random = false;
-            ui.High = 60;
-            ui.Low = 30;
-            ui.ColorPointList = new List<ColorPoint>(MainPage.Self.CallDefaultList()[5]);
-            ui.ColorSegmentation = false;
-            UpdateUIEffectContents(ui);
-        }
+        #endregion
+
+        //private void DirectionBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        //{
+        //    RadioButton directionBtn = sender as RadioButton;
+        //    switch (directionBtn.Name)
+        //    {
+        //        case "Left":
+        //            m_Info.Direction = 1;
+        //            break;
+        //        case "Right":
+        //            m_Info.Direction = 2;
+        //            break;
+        //        case "Up":
+        //            m_Info.Direction = 3;
+        //            break;
+        //        case "Down":
+        //            m_Info.Direction = 4;
+        //            break;
+        //    }
+        //}
 
         private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
         {
@@ -554,20 +643,19 @@ namespace AuraEditor
 
         private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPoint> cp)
         {
-            EffectInfo ui = SelectedEffect.Info;
             PatternCanvas.Children.Clear();
             foreach (var item in ColorPoints)
             {
                 item.UI.OnRedraw -= ReDrawMultiPointRectangle;
             }
             ColorPoints.Clear();
-            if (ui.ColorPointList != null)
-                ui.ColorPointList.Clear();
+            if (m_Info.ColorPointList != null)
+                m_Info.ColorPointList.Clear();
 
             foreach (var item in cp)
             {
                 ColorPoints.Add(new ColorPoint(item));
-                ui.ColorPointList.Add(new ColorPoint(item));
+                m_Info.ColorPointList.Add(new ColorPoint(item));
             }
             ShowColorPointUI(ColorPoints);
             MultiPointRectangle.Fill = PatternPolygon.Fill = mf.Foreground;
@@ -686,19 +774,35 @@ namespace AuraEditor
 
         private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            EffectInfo ui = SelectedEffect.Info;
             ToggleSwitch toggleSwitch = sender as ToggleSwitch;
             if (toggleSwitch != null)
             {
                 if (toggleSwitch.IsOn == true)
                 {
-                    ui.ColorSegmentation = true;
+                    m_Info.ColorSegmentation = true;
                 }
                 else
                 {
-                    ui.ColorSegmentation = false;
+                    m_Info.ColorSegmentation = false;
                 }
             }
+        }
+
+        public void ReDrawMultiPointRectangle()
+        {
+            LinearGradientBrush Pattern = new LinearGradientBrush();
+            Pattern.StartPoint = new Point(0, 0.5);
+            Pattern.EndPoint = new Point(1, 0.5);
+
+            for (int i = 0; i < ColorPoints.Count; i++)
+            {
+                Pattern.GradientStops.Add(new GradientStop { Color = ColorPoints[i].Color, Offset = ColorPoints[i].Offset });
+            }
+
+            PatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
+            CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
+            m_Info.ColorPointList = new List<ColorPoint>(ColorPoints);
+            SetListBorder(ColorPoints);
         }
     }
 }

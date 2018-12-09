@@ -25,6 +25,7 @@ namespace AuraEditor
         private ItemsControl m_BackgroundItemsControl;
         private Canvas m_TimelineScaleCanvas;
         private Canvas m_TrackCanvas;
+        private Frame m_EffectInfoFrame;
 
         public ObservableCollection<Layer> Layers { get; set; }
         private Layer _checkedLayer;
@@ -81,19 +82,18 @@ namespace AuraEditor
 
                 if (value == null)
                 {
-                    MainPage.Self.ClearEffectInfoGrid();
-
                     if (_checkedEffect != null)
                     {
                         _checkedEffect.IsChecked = false;
                         _checkedEffect = null;
+                        m_EffectInfoFrame.Navigate(typeof(EffectInfoPage));
                     }
                 }
                 else
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    MainPage.Self.UpdateEffectInfoGrid(value);
+                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect);
                     MainPage.Self.NeedSave = true;
                 }
             }
@@ -128,6 +128,7 @@ namespace AuraEditor
             m_TimelineScaleCanvas = MainPage.Self.ScaleCanvas;
             m_TrackCanvas = MainPage.Self.TrackCanvas;
             m_PlayerCursor = MainPage.Self.PlayerCursor_Head;
+            m_EffectInfoFrame = MainPage.Self.EffectInfoFrame;
 
             Layers = new ObservableCollection<Layer>();
             m_LayerListView = MainPage.Self.LayerListView;

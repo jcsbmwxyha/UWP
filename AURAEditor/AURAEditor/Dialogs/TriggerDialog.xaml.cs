@@ -10,9 +10,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.Math2;
+using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -27,7 +27,6 @@ namespace AuraEditor.Dialogs
         private string defaultEffect;
 
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
-        public List<List<ColorPoint>> DefaultColorList = new List<List<ColorPoint>>();
         public List<ColorPoint> CustomizeColorPoints = new List<ColorPoint>();
 
         private int _selectedIndex = -1;
@@ -445,7 +444,6 @@ namespace AuraEditor.Dialogs
 
         private void SetDefaultPattern()
         {
-            DefaultColorList = MainPage.Self.CallDefaultList();
             CustomizeRainbow.Foreground = new SolidColorBrush(Colors.White);
 
             //Button Color
@@ -534,7 +532,7 @@ namespace AuraEditor.Dialogs
 
             TriggerPatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
             CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
-            MainPage.Self.SetListBorder(ColorPoints);
+            SetListBorder(ColorPoints);
         }
 
         private void ActionButton_Click(object sender, RoutedEventArgs e)

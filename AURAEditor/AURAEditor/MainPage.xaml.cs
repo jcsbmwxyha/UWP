@@ -45,9 +45,6 @@ namespace AuraEditor
 
         ApplicationDataContainer g_LocalSettings;
 
-        bool _angleImgPressing;
-        public double _preAngle;
-        Point AngleImgCenter;
 
         public class RecentColor
         {
@@ -59,6 +56,18 @@ namespace AuraEditor
         }
 
         public RecentColor[] g_RecentColor = new RecentColor[8];
+
+        public TimelineEffect SelectedEffect
+        {
+            get
+            {
+                return LayerManager.CheckedEffect;
+            }
+            set
+            {
+                LayerManager.CheckedEffect = value;
+            }
+        }
 
         #region Key Up & Down
         public bool g_PressShift;
@@ -163,7 +172,6 @@ namespace AuraEditor
             g_LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
-            SetDefaultPatternList();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -172,14 +180,9 @@ namespace AuraEditor
             SpaceManager = new AuraSpaceManager();
             LayerManager = new AuraLayerManager();
             InitializePlayerStructure();
-            SetDefaultPattern();
             await ConnectedDevicesDialog.Rescan();
             //Start SocketClient
             startclient();
-
-            AngleImgCenter = new Point(40, 40);
-            _preAngle = 0;
-            AngleTextBox.Text = "0";
 
             LoadSettings();
         }
@@ -354,9 +357,9 @@ namespace AuraEditor
         {
             int columnSpans = Grid.GetColumnSpan(SpaceGrid);
 
-            if (MainGrid.Children.Contains(EffectInfoScrollViewer))
+            if (MainGrid.Children.Contains(EffectInfoFrame))
             {
-                MainGrid.Children.Remove(EffectInfoScrollViewer);
+                MainGrid.Children.Remove(EffectInfoFrame);
                 MainGrid.Children.Remove(MaskGrid2);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
 
@@ -365,8 +368,8 @@ namespace AuraEditor
             }
             else
             {
-                Grid.SetColumn(EffectInfoScrollViewer, 2);
-                MainGrid.Children.Add(EffectInfoScrollViewer);
+                Grid.SetColumn(EffectInfoFrame, 2);
+                MainGrid.Children.Add(EffectInfoFrame);
                 Grid.SetColumn(MaskGrid2, 2);
                 MainGrid.Children.Add(MaskGrid2);
                 Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
