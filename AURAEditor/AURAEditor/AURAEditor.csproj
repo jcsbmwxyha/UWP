@@ -199,6 +199,7 @@
     <Content Include="Assets\Button\asus_ac_nameedit_ic_h.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_n.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_p.png" />
+    <Content Include="Assets\Button\asus_ac_sorting_ic.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_s.png" />

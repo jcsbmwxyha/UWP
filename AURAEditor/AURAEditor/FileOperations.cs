@@ -122,10 +122,13 @@ namespace AuraEditor
         #endregion
 
         #region Framework element
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveAndApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            await SaveCurrentUserFile();
-            NeedSave = false;
+            bool result = await SaveCurrentUserFile();
+
+            if (result == true)
+                NeedSave = false;
+
             long StartTime = 0;
 
             // Apply after saving file

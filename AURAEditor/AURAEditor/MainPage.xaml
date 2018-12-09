@@ -22,9 +22,9 @@
             <BitmapImage x:Key="GoRight_n" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_n.png"/>
             <BitmapImage x:Key="GoRight_h" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_h.png"/>
             <BitmapImage x:Key="GoRight_s" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_s.png"/>
-            <BitmapImage x:Key="Stop_n" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_n.png"/>
-            <BitmapImage x:Key="Stop_h" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_h.png"/>
-            <BitmapImage x:Key="Stop_s" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_s.png"/>
+            <BitmapImage x:Key="Pause_n" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_n.png"/>
+            <BitmapImage x:Key="Pause_h" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_h.png"/>
+            <BitmapImage x:Key="Pause_s" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_s.png"/>
             <BitmapImage x:Key="Play_n" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_n.png"/>
             <BitmapImage x:Key="Play_h" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_h.png"/>
             <BitmapImage x:Key="Play_s" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_s.png"/>
@@ -49,6 +49,64 @@
             <BitmapImage x:Key="RightSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_n.png"/>
             <BitmapImage x:Key="RightSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_h.png"/>
             <BitmapImage x:Key="RightSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_p.png"/>
+
+            <BitmapImage x:Key="DeviceSorting_icon" UriSource="ms-appx:///Assets/Button/asus_ac_sorting_ic.png"/>
+            <Style x:Key="DeviceSortingButtonStyle"  TargetType="Button">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_n_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_n_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_n_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_h_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_h_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_h_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_p_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_p_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_p_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_d_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_d_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_d_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                    <Image Source="{ThemeResource DeviceSorting_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
+                                    <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                    <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
@@ -166,7 +224,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="StopButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+            <Style x:Key="PauseButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -175,17 +233,17 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_n}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_n}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_h}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_h}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Stop_s}"/>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_s}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -1068,9 +1126,11 @@
                Stretch="Fill"/>
 
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
+            <RelativePanel HorizontalAlignment="Left" Width="{Binding ElementName=ActionBar_Column1, Path=ActualWidth}"
+                           VerticalAlignment="Center" Grid.Column="1">
                 <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
-                        x:FieldModifier="Public" Width="180" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False">
+                        RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
+                        x:FieldModifier="Public" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                             <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
@@ -1078,8 +1138,19 @@
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
-                <Button Name="SortDeviceButton" Style="{StaticResource RogButtonStyle2}"
-                        Content="&#xECE9;" FontFamily="Segoe MDL2 Assets" Margin="20,0,5,0" Click="SortDeviceButton_Click">
+                <Rectangle x:Name="SetLayerRectangle" RelativePanel.AlignLeftWithPanel="True"
+                           Width="{Binding ElementName=SetLayerButton, Path=Width}"
+                           Height="{Binding ElementName=SetLayerButton, Path=Height}"
+                           Margin="0,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                                       TextWrapping="Wrap" Width="144"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Rectangle>
+                <Button Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
+                        Content="Device Sorting" Margin="20,0,0,0" Click="SortDeviceButton_Click">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                             <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
@@ -1087,31 +1158,21 @@
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
-            </StackPanel>
-            <Rectangle x:Name="SetLayerRectangle" Width="{Binding ElementName=SetLayerButton, Path=Width}" Height="{Binding ElementName=SetLayerButton, Path=Height}"
-                       Margin="20,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
-                                       TextWrapping="Wrap" Width="144"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Rectangle>
-        </Grid>
-        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Name="SaveButton" 
-                        Style="{StaticResource SaveButtonStyle}"
-                        Margin="1,0,0,0"
-                        Click="SaveButton_Click">
+                <Button Name="SaveAndApplyButton" Style="{StaticResource RogButtonStyle2}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
+                        Content="Save and Apply" Click="SaveAndApplyButton_Click">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Save"/>
+                            <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
+                                       TextWrapping="Wrap" Width="144"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
+            </RelativePanel>
+        </Grid>
+        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button x:Name="FileListButton" Content="" Foreground="White"
-                    Width="200" Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                    Width="200" Margin="0,0,15,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
                         </MenuFlyout>
@@ -1141,9 +1202,9 @@
                       Grid.Row="1" Grid.Column="0"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" >
-            <StackPanel Margin="22,10">
-                <TextBlock Text="Effects" FontSize="20" Foreground="Gray"/>
-                <ListView x:Name="EffectBlockListView" Margin="0,10,0,0"
+            <StackPanel Margin="0,10" HorizontalAlignment="Center">
+                <TextBlock Text="Effects" FontSize="20" Foreground="Gray" Margin="0,17"/>
+                <ListView x:Name="EffectBlockListView" Margin="0,5,0,0"
                           CanDragItems="True" DragItemsStarting="EffectBlockListView_DragItemsStarting" DragItemsCompleted="EffectBlockListView_DragItemsCompleted">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -1408,8 +1469,7 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="PauseButton"
-                    Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Foreground="White"
+            <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}"
                     Click="PauseButton_Click"
                     Margin="3,0,0,0"
                     RelativePanel.RightOf="PlayButton">
@@ -1715,16 +1775,11 @@
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
-        <Grid Name="EditBar" Background="Black" Visibility="Collapsed" Grid.ColumnSpan="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="290"/>
-            </Grid.ColumnDefinitions>
-            <RelativePanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20"/>
-                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180"
-                        x:FieldModifier="Public" Margin="0,0,20,0" Style="{StaticResource RogButtonStyle2}"/>
+        <Grid Name="EditBar" Background="Black" Visibility="Collapsed" Grid.Column="1">
+            <RelativePanel Grid.Column="1" VerticalAlignment="Center" Width="{Binding ElementName=ActionBar_Column1, Path=ActualWidth}">
+                <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
+                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True"
+                        x:FieldModifier="Public" Margin="0,0,40,0" Style="{StaticResource RogButtonStyle2}"/>
                 <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
             </RelativePanel>
         </Grid>

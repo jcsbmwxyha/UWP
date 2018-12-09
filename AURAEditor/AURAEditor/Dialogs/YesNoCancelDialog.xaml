@@ -115,16 +115,18 @@
         </DataTemplate>
     </ContentDialog.TitleTemplate>
     <Grid Background="Black">
-        <StackPanel Background="Black" Margin="20">
-            <TextBlock Name="TitleTextBlock" Text="" Foreground="White" FontSize="18"/>
+        <StackPanel Background="Black" Width="384" Height="200" Margin="20">
+            <RelativePanel>
+                <TextBlock Name="TitleTextBlock" Text="" Foreground="White" FontSize="18"/>
+                <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}"
+                    Click="CancelButton_Click"/>
+            </RelativePanel>
             <TextBlock Name="ContentTextBlock" Text="" Foreground="White" Margin="0,26,0,0"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="30,30,10,15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,80,0,15">
                 <Button x:Name="OKButton" Content="Yes" Click="YesButton_Click"
-                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
-                        Width="130" Style="{StaticResource RogButtonStyle2}"/>
+                        Style="{StaticResource RogButtonStyle2}"/>
                 <Button x:Name="CancelButton" Content="No" Click="NoButton_Click"
-                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
-                        Width="130" Margin="20,0,0,0" Style="{StaticResource RogButtonStyle2}"/>
+                        Margin="20,0,0,0" Style="{StaticResource RogButtonStyle2}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

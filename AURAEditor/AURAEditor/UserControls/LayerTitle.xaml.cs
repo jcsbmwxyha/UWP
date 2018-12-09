@@ -66,12 +66,12 @@ namespace AuraEditor.UserControls
 
         private void EditNameButton_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            NameTextBox.Text = NameTextBlock.Text;
-            NameTextBox.Focus(FocusState.Programmatic);
-
             EditNameButton.Visibility = Visibility.Collapsed;
             NameTextBlock.Visibility = Visibility.Collapsed;
             NameTextBox.Visibility = Visibility.Visible;
+
+            NameTextBox.Text = NameTextBlock.Text;
+            NameTextBox.Focus(FocusState.Programmatic);
         }
 
         private void NameTextBox_LostFocus(object sender, RoutedEventArgs e)

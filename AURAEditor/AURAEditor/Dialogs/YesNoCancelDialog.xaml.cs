@@ -50,5 +50,9 @@ namespace AuraEditor.Dialogs
             Result = ContentDialogResult.Secondary;
             this.Hide();
         }
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+        }
     }
 }
