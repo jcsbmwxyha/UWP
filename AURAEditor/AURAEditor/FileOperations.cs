@@ -493,7 +493,6 @@ namespace AuraEditor
                             B = Byte.Parse(element2.SelectSingleNode("b").InnerText),
                         },
                         Type = type,
-                        Direction = Int32.Parse(element2.SelectSingleNode("direction").InnerText),
                         Speed = Int32.Parse(element2.SelectSingleNode("speed").InnerText),
                         Angle = Int32.Parse(element2.SelectSingleNode("angle").InnerText),
                         Random = bool.Parse(element2.SelectSingleNode("random").InnerText),

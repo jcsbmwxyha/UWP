@@ -7,6 +7,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using AuraEditor.Pages;
 using AuraEditor.UserControls;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;

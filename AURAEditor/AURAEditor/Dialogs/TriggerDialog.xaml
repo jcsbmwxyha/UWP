@@ -88,88 +88,6 @@
                 <Setter Property="Width" Value="24" />
                 <Setter Property="Height" Value="24" />
             </Style>
-            <Style x:Key="SliderStyle" TargetType="Slider">
-                <Setter Property="Background" Value="Gray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-                <Setter Property="FontSize" Value="30" />
-                <Setter Property="ManipulationMode" Value="None" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Slider">
-                            <Grid>
-                                <Grid.Resources>
-                                    <Style TargetType="Thumb" x:Key="SliderThumbStyle">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Background" Value="Plum" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Thumb">
-                                                    <Rectangle HorizontalAlignment="Center" VerticalAlignment="Top" Height="22" Width="40" Margin="0,5,0,0">
-                                                        <Rectangle.Fill>
-                                                            <ImageBrush ImageSource="../Assets/EffectInfoGroup/asus_ac_slider_n.png"/>
-                                                        </Rectangle.Fill>
-                                                    </Rectangle>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Grid.Resources>
-
-                                <Grid x:Name="SliderContainer" Background="Transparent" Control.IsTemplateFocusTarget="True">
-                                    <Grid x:Name="HorizontalTemplate" MinHeight="45">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="15" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="15" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle x:Name="HorizontalTrackRect" Fill="{TemplateBinding Background}" Height="2" Grid.Row="1" Grid.ColumnSpan="3" Margin="2,0,5,0"/>
-                                        <Rectangle x:Name="HorizontalDecreaseRect" Grid.Row="1">
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                    <GradientStop Color="Red" Offset="0.0"/>
-                                                    <GradientStop Color="Yellow" Offset="0.75"/>
-                                                    <GradientStop Color="White" Offset="1.0"/>
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        <Thumb x:Name="HorizontalThumb" Background="Black" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid x:Name="VerticalTemplate" Visibility="Collapsed">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="1" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="15" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="15" />
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
-                                        <Rectangle x:Name="VerticalDecreaseRect" Grid.Row="1">
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                    <GradientStop Color="Red" Offset="0.0"/>
-                                                    <GradientStop Color="Yellow" Offset="0.75"/>
-                                                    <GradientStop Color="White" Offset="1.0"/>
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        <Thumb x:Name="VerticalThumb" Background="{ThemeResource SystemControlForegroundAccentBrush}" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
 
             <Style TargetType="Button" x:Key="PatternButtonStyle">
                 <Setter Property="Background" Value="Black" />
@@ -466,7 +384,7 @@
             </StackPanel>
         </StackPanel>
         <Image Grid.Row="2" Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,-50,0,0"/>
-        <Button Grid.Row="2" Content="OK" Margin="0,20,0,0" HorizontalAlignment="Center" Width="100"
+        <Button Grid.Row="2" Content="OK" Margin="0,20,0,0" HorizontalAlignment="Center"
                 Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click"/>
     </Grid>
 </ContentDialog>

@@ -18,7 +18,6 @@ namespace AuraEditor
         public int Brightness;
         public int Speed;
         public double Angle;
-        public int Direction;
         public bool Random;
         //For Trigger Dialog Ripple
         public int ColorModeSelection;
@@ -58,7 +57,6 @@ namespace AuraEditor
             InitColor = Colors.Red;
             Brightness = 3;
             Speed = 1;
-            Direction = 2;
             ColorModeSelection = 1;
             Angle = 90;
             Random = false;
@@ -781,10 +779,6 @@ namespace AuraEditor
             XmlNode angleNode = CreateXmlNode("angle");
             angleNode.InnerText = Angle.ToString();
             effectNode.AppendChild(angleNode);
-
-            XmlNode directionNode = CreateXmlNode("direction");
-            directionNode.InnerText = Direction.ToString();
-            effectNode.AppendChild(directionNode);
 
             XmlNode randomNode = CreateXmlNode("random");
             randomNode.InnerText = Random.ToString();

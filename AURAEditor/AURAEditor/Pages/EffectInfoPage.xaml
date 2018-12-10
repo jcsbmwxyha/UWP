@@ -1,0 +1,203 @@
+﻿<Page
+    x:Class="AuraEditor.Pages.EffectInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraEditor.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="Reset_h" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_reset_ic_h.png"/>
+            <BitmapImage x:Key="Reset_n" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_reset_ic_n.png"/>
+            <BitmapImage x:Key="Reset_p" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_reset_ic_p.png"/>
+            <Style TargetType="Button" x:Key="ResetButtonStyle">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Reset_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Reset_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Reset_p}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel>
+            <RelativePanel Margin="20,15,50,0">
+                <TextBlock Name="Title" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
+                               RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                <Button Name="ResetBtn" Margin="132,0,0,0" Visibility="Collapsed"
+                            Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}" Width="24" Height="24"
+                            RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                            <TextBlock Foreground="White" Text="Reset to default"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
+            </RelativePanel>
+            <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
+                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click"
+                                      Style="{StaticResource RogCheckBoxStyle}" Visibility="Collapsed">
+                            <TextBlock Text="Random" Foreground="White"/>
+                        </CheckBox>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+                    <Grid Margin="20,20,0,16">
+                        <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
+                        <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
+                            <Button.Flyout>
+                                <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                    <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                    <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
+                                    <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+                    </Grid>
+                    <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                        <Canvas x:Name="PatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left"/>
+                        <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16" HorizontalAlignment="Left"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                            <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
+                        <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
+                        <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="80,0,0,0"
+                                          Toggled="SegmentationSwitch_Toggled" Style="{StaticResource RogToggleSwitchStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="BrightnessGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged"
+                                Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
+                        <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Text="0%"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="20,20,0,0" VerticalAlignment="Top">
+                            <Image x:Name="SlowPoint" Width="20" Height="20" Margin="0,0,65,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                            <Image x:Name="MediumPoint" Width="20" Height="20" Margin="0,0,70,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                            <Image x:Name="FastPoint" Width="20" Height="20" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                        </StackPanel>
+                        <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
+                                    Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"
+                                    IsThumbToolTipEnabled="False"/>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
+                            <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
+                            <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
+                            <TextBlock Text="Fast" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Angle" Margin="20,20,0,0" Foreground="White"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
+                            <Image x:Name="AngleIcImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
+                                       RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform x:Name="AngleIcImgRotation"/>
+                                </Image.RenderTransform>
+                            </Image>
+                            <Image x:Name="AngleBgImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_bg_n.png"
+                                       PointerPressed="AngleBgImg_PointerPressed"
+                                       PointerReleased="AngleBgImg_PointerReleased"
+                                       PointerMoved="AngleBgImg_PointerMoved"/>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="25,0,0,0">
+                            <Rectangle Width="90" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
+                                <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="42" HorizontalAlignment="Left"
+                                         KeyDown="AngleTextBox_KeyDown" Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold"
+                                         TextChanged="AngleTextBox_TextChanged" LostFocus="AngleTextBox_LostFocus"/>
+                                <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel x:Name="TemperatureGroup" Orientation="Vertical" Visibility="Collapsed">
+                    <TextBlock Text="Temperature (°C)" Margin="20,20,0,0" Foreground="White"/>
+                    <StackPanel Margin="0,20,0,0">
+                        <Rectangle Height="30" Width="250">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                    <GradientStop Color="Green" Offset="0.0"/>
+                                    <GradientStop Color="Yellow" Offset="0.5"/>
+                                    <GradientStop Color="Red" Offset="1.0"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                        <Rectangle Height="8" Width="8" Fill="Green" RadiusX="4" RadiusY="4" Margin="10,5,0,5"/>
+                        <Rectangle Height="8" Width="8" Fill="Yellow" RadiusX="4" RadiusY="4" Margin="100,5,0,5"/>
+                        <Rectangle Height="8" Width="8" Fill="Red" RadiusX="4" RadiusY="4" Margin="100,5,0,5"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                        <TextBlock Text="≤30" Margin="0,0,0,5"/>
+                        <TextBlock Text="30-60" Margin="75,0,0,5"/>
+                        <TextBlock Text="60≤" Margin="70,0,0,5"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

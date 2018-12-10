@@ -122,9 +122,6 @@
     <Compile Include="Dialogs\YesNoCancelDialog.xaml.cs">
       <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EffectInfoPage.xaml.cs">
-      <DependentUpon>EffectInfoPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="FileOperations.cs" />
     <Compile Include="Dialogs\ColorPickerDialog.xaml.cs">
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
@@ -148,6 +145,9 @@
     <Compile Include="Models\SpecialZoneModel.cs" />
     <Compile Include="Models\ZoneModel.cs" />
     <Compile Include="Models\PlayerModel.cs" />
+    <Compile Include="Pages\EffectInfoPage.xaml.cs">
+      <DependentUpon>EffectInfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PrintScriptFunctions.cs" />
     <Compile Include="SpaceManager.cs" />
     <Compile Include="SyncDevice.cs" />
@@ -535,7 +535,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EffectInfoPage.xaml">
+    <Page Include="Pages\EffectInfoPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

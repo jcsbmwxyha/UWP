@@ -163,7 +163,7 @@ namespace AuraEditor.Common
             else if (type == 7) return "MousePad";
             return "Notebook";
         }
-        
+
         static public void SetListBorder(List<ColorPoint> cps)
         {
             int width = 13;
