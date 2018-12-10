@@ -262,7 +262,7 @@
             <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
                 <TextBlock  Text="Effect order :" VerticalAlignment="Center" Foreground="White"/>
                 <Button Name="AddEffectButton" Foreground="White" Background="DarkGray" Style="{StaticResource RogButtonStyle}"
-                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="140" Height="50"/>
+                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="140"/>
             </StackPanel>
             <Grid>
                 <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
