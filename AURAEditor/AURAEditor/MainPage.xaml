@@ -798,7 +798,7 @@
                Stretch="Fill"/>
 
         <Grid x:Name="ActionBar_Column1" Grid.Column="1">
-            <RelativePanel HorizontalAlignment="Left" Width="{Binding ElementName=ActionBar_Column1, Path=ActualWidth}"
+            <RelativePanel Name="ActionBarRelativePanel" HorizontalAlignment="Left" MinWidth="600"
                            VerticalAlignment="Center" Grid.Column="1">
                 <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
@@ -1285,7 +1285,7 @@
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
         <Grid Name="EditBar" Background="Black" Visibility="Collapsed" Grid.Column="1">
-            <RelativePanel Grid.Column="1" VerticalAlignment="Center" Width="{Binding ElementName=ActionBar_Column1, Path=ActualWidth}">
+            <RelativePanel Grid.Column="1" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400">
                 <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
                 <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True"
                         x:FieldModifier="Public" Margin="0,0,40,0" Style="{StaticResource RogButtonStyle2}"/>

@@ -430,8 +430,15 @@ namespace AuraEditor
         }
         private void LayerScrollGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var v1 = FindControl<ScrollBar>(TrackScrollViewer, typeof(ScrollBar), "HorizontalScrollBar");
-            v1.Width = LayerScrollGrid.ActualWidth - 10;
+            var width = LayerScrollGrid.ActualWidth - 10;
+
+            if (width > 0)
+            {
+                var v1 = FindControl<ScrollBar>(TrackScrollViewer, typeof(ScrollBar), "HorizontalScrollBar");
+                v1.Width = LayerScrollGrid.ActualWidth - 10;
+
+                ActionBarRelativePanel.Width = LayerScrollGrid.ActualWidth;
+            }
         }
         #endregion
 
