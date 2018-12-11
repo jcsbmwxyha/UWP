@@ -31,7 +31,15 @@ namespace FrameCoordinatesGenerator
                 RaisePropertyChanged("LedIndex");
             }
         }
-
+        public int IntIndex
+        {
+            get
+            {
+                string s = _ledindex.ToLower().Replace("led", "").Replace(" ", "");
+                return Int32.Parse(s);
+            }
+        }
+    
         public bool Exist;
 
         private double _left;
@@ -107,6 +115,20 @@ namespace FrameCoordinatesGenerator
             {
                 _editing = value;
                 RaisePropertyChanged("Editing");
+            }
+        }
+
+        private bool _conflict;
+        public bool Conflict
+        {
+            get
+            {
+                return _conflict;
+            }
+            set
+            {
+                _conflict = value;
+                RaisePropertyChanged("Conflict");
             }
         }
     }

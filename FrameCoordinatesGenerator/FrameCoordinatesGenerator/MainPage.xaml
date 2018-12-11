@@ -23,7 +23,7 @@
             <Button Content="Start" Click="StartButton_Click"/>
             <TextBox Name="DifferenceTextBox" Header="高度誤差 :" PlaceholderText="Number" Width="100" Text="5" Margin="20,0,0,0"/>
         </StackPanel>
-        <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="600" Margin="5,10,0,0"
+        <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="500" Margin="5,10,0,0"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
                       MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled">
             <Grid Name="ImageGrid"/>
@@ -34,7 +34,5 @@
             <TextBlock Name="SavePathTextBlock" VerticalAlignment="Center"/>
         </StackPanel>
         <TextBlock Name="StatusTextBlock" Text="" Foreground="Red"/>
-        <!--<TextBox Name="TargetWidthTextBox" Header="Target Width Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>
-        <TextBox Name="TargetHeightTextBox" Header="Target Height Pixels" Margin="5,10,0,0" Width="150" HorizontalAlignment="Left"/>-->
     </StackPanel>
 </Page>

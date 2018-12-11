@@ -10,7 +10,7 @@ using Windows.Storage;
 namespace FrameCoordinatesGenerator
 {
 
-    public class LedCsvData
+    public class CsvLoadedData
     {
         public List<CsvRow> DataRows;
 
@@ -27,7 +27,7 @@ namespace FrameCoordinatesGenerator
         public int LedDataColumnEndIndex = -1;
         private List<int> ledOrderedIndex;
 
-        public LedCsvData(StorageFile inputFile)
+        public CsvLoadedData(StorageFile inputFile)
         {
             csvFile = inputFile;
             DataRows = new List<CsvRow>();
@@ -36,6 +36,8 @@ namespace FrameCoordinatesGenerator
 
         public async Task StartParsingAsync()
         {
+            DataRows = new List<CsvRow>();
+
             using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
             {
                 CsvRow row = new CsvRow();
@@ -65,13 +67,13 @@ namespace FrameCoordinatesGenerator
                     {
                         string row0 = row[0].ToLower();
 
-                        if (!row0.Contains("led"))
-                            continue;
+                        if (row0.Contains("led"))
+                        {
+                            row0 = row0.Replace("led", "").Replace(" ", "");
 
-                        row0 = row0.Replace("led", "").Replace(" ", "");
-
-                        if(row[column_exist] == "1")
-                            ledOrderedIndex.Add(Int32.Parse(row0));
+                            if (row[column_exist] == "1")
+                                ledOrderedIndex.Add(Int32.Parse(row0));
+                        }
                     }
 
                     DataRows.Add(row);

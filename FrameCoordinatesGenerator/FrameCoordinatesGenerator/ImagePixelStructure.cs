@@ -290,14 +290,74 @@ namespace FrameCoordinatesGenerator
             return new Point(x + 1, y);
         }
 
-        public List<Rect> GetRects(ParsingMode mode)
+        public List<Rect> GetOrderedRects(ParsingMode mode, int difference = 5)
         {
+            List<Rect> result;
             if (mode == ParsingMode.Frame)
-                return GetFrames();
-            else if (mode == ParsingMode.Key)
-                return GetKeys();
+                result = GetFrames();
             else
-                return GetFrames();
+                result = GetKeys();
+
+            return SortingByGroup(result, difference);
+        }
+        private List<Rect> SortingByGroup(List<Rect> rects, int difference)
+        {
+            List<Rect> result = new List<Rect>();
+            rects = SortByY(rects);
+
+            List<Rect> group = new List<Rect>();
+            for (int i = 0; i < rects.Count; i++)
+            {
+                if (i == 0)
+                {
+                    group.Add(rects[i]);
+                }
+                else if (rects[i].Top - rects[i - 1].Top <= difference)
+                {
+                    group.Add(rects[i]);
+                }
+                else
+                {
+                    result.AddRange(SortByX(group));
+                    group.Clear();
+                    group.Add(rects[i]);
+                }
+            }
+
+            result.AddRange(SortByX(group));
+            return result;
+        }
+        private List<Rect> SortByX(List<Rect> rects)
+        {
+            for (int i = 0; i < rects.Count - 1; i++)
+            {
+                for (int j = 0; j < rects.Count - 1 - i; j++)
+                {
+                    if (rects[j].Left > rects[j + 1].Left)
+                    {
+                        Rect temp = rects[j];
+                        rects[j] = rects[j + 1];
+                        rects[j + 1] = temp;
+                    }
+                }
+            }
+            return rects;
+        }
+        private List<Rect> SortByY(List<Rect> rects)
+        {
+            for (int i = 0; i < rects.Count - 1; i++)
+            {
+                for (int j = 0; j < rects.Count - 1 - i; j++)
+                {
+                    if (rects[j].Top > rects[j + 1].Top)
+                    {
+                        Rect temp = rects[j];
+                        rects[j] = rects[j + 1];
+                        rects[j + 1] = temp;
+                    }
+                }
+            }
+            return rects;
         }
     }
 }

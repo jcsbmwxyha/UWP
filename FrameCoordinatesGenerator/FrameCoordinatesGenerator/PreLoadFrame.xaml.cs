@@ -36,6 +36,7 @@ namespace FrameCoordinatesGenerator
         {
             m_Model.LedIndex = MyTextBox.Text;
             m_Model.Editing = false;
+            MainPage.Self.OnLostFocus();
         }
 
         private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
