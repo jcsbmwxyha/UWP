@@ -141,4 +141,9 @@ namespace CsvParse
             return (row.Count > 0);
         }
     }
+
+    public class CsvHelper
+    {
+
+    }
 }

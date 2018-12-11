@@ -10,21 +10,22 @@
 
     <StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
-            <Button Content="Load" Click="LoadButton_Click"/>
-            <TextBlock Text="Load Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
+            <Button Content="Load Image" Click="LoadButton_Click"/>
+            <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
             <TextBlock Name="LoadPathTextBlock" VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
+            <Button Content="Load CSV (Optional)" Click="LoadCSVButton_Click"/>
+            <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
+            <TextBlock Name="LoadCSVPathTextBlock" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Start" Click="StartButton_Click"/>
             <TextBox Name="DifferenceTextBox" Header="高度誤差 :" PlaceholderText="Number" Width="100" Text="5" Margin="20,0,0,0"/>
         </StackPanel>
-        <ScrollViewer Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="600"
-                      Margin="5,10,0,0"
-                      VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Visible"
-                      MinZoomFactor="0.1"
-                      MaxZoomFactor="50"
-                      ZoomMode="Enabled">
+        <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="600" Margin="5,10,0,0"
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+                      MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled">
             <Grid Name="ImageGrid"/>
         </ScrollViewer>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">

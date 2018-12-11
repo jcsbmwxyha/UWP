@@ -1,0 +1,303 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Graphics.Imaging;
+
+namespace FrameCoordinatesGenerator
+{
+    [ComImport]
+    [Guid("5b0d3235-4dba-4d44-865e-8f1d0e4fd04d")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    unsafe interface IMemoryBufferByteAccess
+    {
+        void GetBuffer(out byte* buffer, out uint capacity);
+    }
+
+    enum ParsingMode
+    {
+        Frame = 0,
+        Key = 1,
+    }
+    class ImagePixelStructure
+    {
+        private SoftwareBitmap m_SoftwareBitmap;
+        public bool[,] m_PixelBoolArray;
+
+        public ImagePixelStructure(SoftwareBitmap softwareBitmap)
+        {
+            m_SoftwareBitmap = softwareBitmap;
+            m_PixelBoolArray = GetBoolPixelArray(softwareBitmap);
+        }
+
+        public int PixelWidth
+        {
+            get
+            {
+                return m_PixelBoolArray.GetLength(1);
+            }
+        }
+        public int PixelHeight
+        {
+            get
+            {
+                return m_PixelBoolArray.GetLength(0);
+            }
+        }
+
+        private unsafe bool[,] GetBoolPixelArray(SoftwareBitmap softwareBitmap)
+        {
+            int widthPixels;
+            int heightPixels;
+            bool[,] pixelBoolArray;
+
+            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            {
+                using (var reference = buffer.CreateReference())
+                {
+                    byte* dataInBytes;
+                    uint capacity;
+                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                    // Fill-in the BGRA plane
+                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+
+                    widthPixels = bufferLayout.Width;
+                    heightPixels = bufferLayout.Height;
+                    pixelBoolArray = new bool[heightPixels, widthPixels];
+
+                    for (int y = 0; y < heightPixels; y++)
+                    {
+                        for (int x = 0; x < widthPixels; x++)
+                        {
+                            int pixelIndex = bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x;
+
+                            if (dataInBytes[pixelIndex + 0] == 255 &&
+                                dataInBytes[pixelIndex + 1] == 0 &&
+                                dataInBytes[pixelIndex + 2] == 0)
+                            {
+                                pixelBoolArray[y, x] = true;
+                            }
+                            else
+                            {
+                                pixelBoolArray[y, x] = false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return pixelBoolArray;
+        }
+
+        private List<Rect> GetFrames()
+        {
+            List<Rect> frames = new List<Rect>();
+            int widthPixels = m_PixelBoolArray.GetLength(1);
+            int heightPixels = m_PixelBoolArray.GetLength(0);
+
+            for (int y = 0; y < heightPixels; y++)
+            {
+                for (int x = 0; x < widthPixels; x++)
+                {
+                    if ((m_PixelBoolArray[y, x] == true))
+                    {
+                        Point pixel = new Point(x, y);
+
+                        if (!AlreadyHasFrame(frames, pixel))
+                        {
+                            frames.Add(GetFrame(pixel));
+                        }
+                    }
+                }
+            }
+
+            return frames;
+        }
+        private bool AlreadyHasFrame(List<Rect> frames, Point pixel)
+        {
+            Point leftTop = FindLeftTopPoint(pixel);
+
+            foreach (var frameRect in frames)
+            {
+                if ((frameRect.X == leftTop.X) && (frameRect.Y == leftTop.Y))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private Rect GetFrame(Point firstPixel)
+        {
+            int left = (int)firstPixel.X;
+            int top = (int)firstPixel.Y;
+            int right = GetRightmostValue(firstPixel);
+            int bottom = GetBottomValue(firstPixel);
+
+            return new Rect(
+                new Point(left, top),
+                new Point(right, bottom)
+                );
+        }
+        private Point FindLeftTopPoint(Point pixel)
+        {
+            int x = (int)pixel.X;
+            int y = (int)pixel.Y;
+
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y, x - 1] == true)
+                    x--;
+                else
+                    y--;
+            }
+
+            return new Point(x, y + 1);
+        }
+        private int GetRightmostValue(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y, x + 1] == true)
+                    x++;
+                else
+                    break;
+            }
+
+            return x;
+        }
+        private int GetBottomValue(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y + 1, x] == true)
+                    y++;
+                else
+                    break;
+            }
+
+            return y;
+        }
+
+        private List<Rect> GetKeys()
+        {
+            List<Rect> result = new List<Rect>();
+            int widthPixels = m_PixelBoolArray.GetLength(1);
+            int heightPixels = m_PixelBoolArray.GetLength(0);
+
+            for (int y = 0; y < heightPixels; y++)
+            {
+                for (int x = 0; x < widthPixels; x++)
+                {
+                    if ((m_PixelBoolArray[y, x] == true))
+                    {
+                        Point pixel = new Point(x, y);
+
+                        if (!AlreadyHasKey(result, pixel))
+                        {
+                            result.Add(GetKey(pixel));
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        private bool AlreadyHasKey(List<Rect> keys, Point pixel)
+        {
+            foreach (var key in keys)
+            {
+                if (key.Contains(pixel))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private Rect GetKey(Point firstPixel)
+        {
+            int left = (int)FindLeftmostPoint(firstPixel).X;
+            int top = (int)FindTopPoint(firstPixel).Y;
+
+            Point rightmostPoint = FindRightmostPoint(firstPixel);
+            int right = (int)rightmostPoint.X;
+            int bottom = (int)FindBottomPoint(rightmostPoint).Y;
+
+            return new Rect(
+                new Point(left, top),
+                new Point(right, bottom)
+                );
+        }
+        private Point FindLeftmostPoint(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y, x - 1] == true)
+                    x--;
+                else
+                    y++;
+            }
+
+            return new Point(x, y - 1);
+        }
+        private Point FindTopPoint(Point firstPixel)
+        {
+            return firstPixel;
+        }
+        private Point FindRightmostPoint(Point firstPixel)
+        {
+            int x = (int)firstPixel.X;
+            int y = (int)firstPixel.Y;
+
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y, x + 1] == true)
+                    x++;
+                else
+                    y++;
+            }
+
+            return new Point(x, y - 1);
+        }
+        private Point FindBottomPoint(Point rightmostPixel)
+        {
+            int x = (int)rightmostPixel.X;
+            int y = (int)rightmostPixel.Y;
+
+            // Start from rightmost point
+            while (m_PixelBoolArray[y, x] == true)
+            {
+                if (m_PixelBoolArray[y + 1, x] == true)
+                    y++;
+                else
+                    x--;
+            }
+
+            return new Point(x + 1, y);
+        }
+
+        public List<Rect> GetRects(ParsingMode mode)
+        {
+            if (mode == ParsingMode.Frame)
+                return GetFrames();
+            else if (mode == ParsingMode.Key)
+                return GetKeys();
+            else
+                return GetFrames();
+        }
+    }
+}
