@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FrameCoordinatesGenerator
+namespace FrameCoordinatesGenerator.Models
 {
     class PreLoadFrameModel : INotifyPropertyChanged
     {

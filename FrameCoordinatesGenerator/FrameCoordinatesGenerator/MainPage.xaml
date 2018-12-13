@@ -29,17 +29,24 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Start" Click="StartButton_Click"/>
-            <TextBox Name="DifferenceTextBox" Header="Height 容錯範圍 :" PlaceholderText="Number" Width="130" Text="5" Margin="20,0,0,0"/>
+            <TextBox Name="DifferenceTextBox" Header="Height 容錯範圍(Pixel) :" PlaceholderText="Number" Width="180" Text="5" Margin="20,0,0,0"/>
         </StackPanel>
-        <Button Content="Preview" Click="PreviewButton_Click"/>
         <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="500" Margin="5,10,0,0"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
                       MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled">
-            <Grid Name="ImageGrid">
-                <!--<Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
-                           x:FieldModifier="Public"/>-->
-            </Grid>
+            <Grid Name="ImageGrid"/>
         </ScrollViewer>
+        
+        <Button Content="Preview" Click="PreviewButton_Click" Margin="10,0,10,0"/>
+        <ScrollViewer Name="PreviewScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" Height="500" MaxHeight="500" Margin="5,10,0,0"
+                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+                      MinZoomFactor="0.5" MaxZoomFactor="15" ZoomMode="Enabled">
+            <Canvas Name="PreviewCanvas" Background="Black" Width="1600" Height="1000" PointerMoved="SpaceGrid_PointerMoved">
+                <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
+                           x:FieldModifier="Public"/>
+            </Canvas>
+        </ScrollViewer>
+        
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Save" Click="SaveButton_Click"/>
             <TextBlock Text="Save Path:  " Margin="20,0,10,0" VerticalAlignment="Center"/>

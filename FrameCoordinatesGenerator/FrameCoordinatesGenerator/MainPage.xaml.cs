@@ -1,21 +1,22 @@
 ﻿using CsvParse;
+using FrameCoordinatesGenerator.Common;
+using FrameCoordinatesGenerator.Models;
+using FrameCoordinatesGenerator.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
-using Colors = Windows.UI.Colors;
+using static FrameCoordinatesGenerator.Common.Math2;
 
 namespace FrameCoordinatesGenerator
 {
@@ -23,6 +24,7 @@ namespace FrameCoordinatesGenerator
     {
         static public MainPage Self;
 
+        private MouseEventCtrl m_MouseEventCtrl;
         MySoftwareImage g_MySoftwareImage;
         Image currentImage;
         List<PreLoadFrameModel> g_PreLoadFrameModels;
@@ -32,6 +34,7 @@ namespace FrameCoordinatesGenerator
             Self = this;
             this.InitializeComponent();
             g_PreLoadFrameModels = new List<PreLoadFrameModel>();
+            m_MouseEventCtrl = IntializeMouseEventCtrl();
         }
 
         public void OnLostFocus()
@@ -215,7 +218,7 @@ namespace FrameCoordinatesGenerator
                     {
                         SaveCsvBasingOnInputCsv(csvFile, inputCsvData);
                     }
-                    
+
                     SavePathTextBlock.Text = csvFile.Path;
                 }
                 catch (Exception ee)
@@ -281,7 +284,7 @@ namespace FrameCoordinatesGenerator
                 {
                     csvWriter.WriteRow(copiedRows[i]);
                 }
-                
+
                 csvWriter.Close();
             }
         }
@@ -292,8 +295,8 @@ namespace FrameCoordinatesGenerator
 
             int column_LeftTopX = inputCsvData.Column_LeftTopX;
             int column_LeftTopY = inputCsvData.Column_LeftTopY;
-            int column_RightBottomX= inputCsvData.Column_RightBottomX;
-            int column_RightBottomY= inputCsvData.Column_RightBottomY;
+            int column_RightBottomX = inputCsvData.Column_RightBottomX;
+            int column_RightBottomY = inputCsvData.Column_RightBottomY;
 
             for (int i = inputCsvData.AppendRowStartIndex; i < rowCount; i++)
             {
@@ -311,10 +314,198 @@ namespace FrameCoordinatesGenerator
             }
         }
         #endregion
-        
-        private void PreviewButton_Click(object sender, RoutedEventArgs e)
+
+        private async void PreviewButton_Click(object sender, RoutedEventArgs e)
         {
-            ImageGrid.Children.Clear();
+            FolderPicker folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            folderPicker.ViewMode = PickerViewMode.Thumbnail;
+            folderPicker.FileTypeFilter.Add("*");
+
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+
+            if (folder == null)
+                return;
+
+            PreviewCanvas.Children.Clear();
+            PreviewCanvas.Children.Add(GridImage);
+
+            DeviceContent dc = await GetDeviceContent(folder);
+            DeviceModel dm = await dc.ToDeviceModel(folder, new Point(120, 120));
+
+            DeviceView view = new DeviceView();
+            view.DataContext = dm;
+            PreviewCanvas.Children.Add(view);
+
+            List<ZoneModel> allzones = dm.AllZones;
+            SortByZIndex(allzones);
+            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
+
+            foreach (var zone in allzones)
+            {
+                Rect relative = zone.GetRect();
+                Rect absolute = new Rect(
+                    new Point(relative.Left + dm.PixelLeft, relative.Top + dm.PixelTop),
+                    new Point(relative.Right + dm.PixelLeft, relative.Bottom + dm.PixelTop)
+                    );
+
+                MouseDetectedRegion r = new MouseDetectedRegion()
+                {
+                    RegionIndex = -1,
+                    DetectionRect = absolute,
+                    GroupIndex = dm.Type
+                };
+
+                r.Callback = zone.OnReceiveMouseEvent;
+
+                regions.Add(r);
+            }
+            m_MouseEventCtrl.DetectionRegions = regions.ToArray();
+        }
+        private void SortByZIndex(List<ZoneModel> zones)
+        {
+            int count = zones.Count;
+
+            // Bubble sort
+            for (int i = 0; i < count - 1; i++)
+            {
+                for (int j = 0; j < count - 1 - i; j++)
+                {
+                    if (zones[j].Zindex < zones[j + 1].Zindex)
+                    {
+                        var z = zones[j];
+                        zones[j] = zones[j + 1];
+                        zones[j + 1] = z;
+                    }
+                }
+            }
+        }
+
+        private async Task<DeviceContent> GetDeviceContent(StorageFolder folder)
+        {
+            string modelName = folder.Name;
+
+            DeviceContent deviceContent = new DeviceContent();
+            
+            StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
+            StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+            double rateW = 0;
+            double rateH = 0;
+
+            deviceContent.DeviceName = modelName;
+
+            int exist_Column = -1;
+            int leftTopX_Column = -1;
+            int leftTopY_Column = -1;
+            int rightBottomX_Column = -1;
+            int rightBottomY_Column = -1;
+            int z_Column = -1;
+            int png_Column = -1;
+
+            int gridW = 5, gridH = 5;
+            int originalPixelWidth = 1000;
+            int originalPixelHeight = 1000;
+
+            if (pngFile != null)
+            {
+                using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
+                {
+                    BitmapImage bitmapImage = new BitmapImage();
+
+                    bitmapImage.SetSource(fileStream);
+                    deviceContent.Image = bitmapImage;
+                    originalPixelWidth = bitmapImage.PixelWidth;
+                    originalPixelHeight = bitmapImage.PixelHeight;
+                }
+            }
+
+            if (csvFile != null)
+            {
+                using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
+                {
+                    CsvRow row = new CsvRow();
+                    while (csvReader.ReadRow(row))
+                    {
+                        if (row[0].ToLower() == "gridwidth")
+                        {
+                            gridW = Int32.Parse(row[1]);
+                            rateW = (double)(gridW * GridPixels) / originalPixelWidth;
+                        }
+                        else if (row[0].ToLower() == "gridheight")
+                        {
+                            gridH = Int32.Parse(row[1]);
+                            rateH = (double)(gridH * GridPixels) / originalPixelHeight;
+                        }
+                        else if (row[0].ToLower() == "parameters")
+                        {
+                            for (int i = 0; i < row.Count; i++)
+                            {
+                                if (row[i].ToLower() == "exist") { exist_Column = i; }
+                                else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
+                                else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
+                                else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
+                                else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
+                                else if (row[i].ToLower() == "z_index") { z_Column = i; }
+                                else if (row[i].ToLower() == "png") { png_Column = i; }
+                            }
+                        }
+                        else if (row[0].ToLower().Contains("led "))
+                        {
+                            if (row[exist_Column] != "1")
+                                continue;
+
+                            LedUI ledui = new LedUI()
+                            {
+                                Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                Left = (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                Top = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                Right = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0),
+                                Bottom = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0),
+                                ZIndex = Int32.Parse(row[z_Column]),
+                            };
+
+                            if (png_Column != -1 && row[png_Column] != "")
+                                ledui.PNG_Path = row[png_Column];
+
+                            deviceContent.Leds.Add(ledui);
+                        }
+                    }
+                }
+            }
+
+            deviceContent.GridWidth = gridW;
+            deviceContent.GridHeight = gridH;
+            return deviceContent;
+        }
+        
+        private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            PointerPoint ptrPt = e.GetCurrentPoint(fe);
+            Point Position = ptrPt.Position;
+
+            if (ptrPt.Properties.IsLeftButtonPressed)
+            {
+                m_MouseEventCtrl.OnMouseMoved(Position, true);
+                bool _hasCapture = fe.CapturePointer(e.Pointer);
+            }
+            else
+            {
+                m_MouseEventCtrl.OnMouseMoved(Position, false);
+            }
+        }
+
+        private MouseEventCtrl IntializeMouseEventCtrl()
+        {
+            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
+
+            MouseEventCtrl mec = new MouseEventCtrl
+            {
+                MonitorMaxRect = new Rect(new Point(0, 0), new Point(1600, 1000)),
+                DetectionRegions = regions.ToArray()
+            };
+
+            return mec;
         }
     }
 }

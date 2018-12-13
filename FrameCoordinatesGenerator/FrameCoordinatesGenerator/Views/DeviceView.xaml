@@ -1,0 +1,108 @@
+﻿<UserControl
+    x:Class="FrameCoordinatesGenerator.Views.DeviceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FrameCoordinatesGenerator"
+    xmlns:common="using:FrameCoordinatesGenerator.Common"
+    xmlns:models="using:FrameCoordinatesGenerator.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    common:VisualStateHelper.VisualState="Hover"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    ManipulationMode="TranslateX,TranslateY"
+    Canvas.ZIndex="0">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Rectangle" x:Key="DeviceDotRectangle">
+                <Setter Property="Stroke" Value="Red"/>
+                <Setter Property="Opacity" Value="1"/>
+                <Setter Property="StrokeThickness" Value="2"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <models:DeviceModel/>
+    </UserControl.DataContext>
+    <UserControl.RenderTransform>
+        <TranslateTransform x:Name="TT"
+                            X="{x:Bind m_DeviceModel.PixelLeft}"
+                            Y="{x:Bind m_DeviceModel.PixelTop}"/>
+    </UserControl.RenderTransform>
+    <Canvas>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="0"/>
+                        <Setter Target="DeviceImage.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Hover">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="0.6"/>
+                        <Setter Target="DeviceImage.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="DashRect.Opacity" Value="1"/>
+                        <Setter Target="DeviceImage.Opacity" Value="0.6"/>
+                        <Setter Target="DeviceImage.(Canvas.ZIndex)" Value="3"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Rectangle Name="DashRect" Style="{StaticResource DeviceDotRectangle}" Opacity="1" StrokeDashArray="3,3"
+                   Width="{x:Bind m_DeviceModel.PixelWidth}"
+                   Height="{x:Bind m_DeviceModel.PixelHeight}"/>
+        <Image Name="DeviceImage" Width="{x:Bind m_DeviceModel.PixelWidth}" Height="{x:Bind m_DeviceModel.PixelHeight}"
+               Source="{x:Bind m_DeviceModel.Image}" Stretch="Fill"/>
+        <ItemsControl Name="Zones" ItemsSource="{x:Bind Path=m_DeviceModel.Zones}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="PixelLeft"/>
+                    <Setter Property="common:BindingHelper.CanvasTopBindingPath" Value="PixelTop"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:ZoneModel">
+                    <Rectangle StrokeThickness="1.5" RadiusX="2" RadiusY="3"
+                               Stroke="{x:Bind Stroke, Mode=OneWay}"
+                               Fill="{x:Bind Fill, Mode=OneWay}"
+                               Width="{x:Bind PixelWidth}"
+                               Height="{x:Bind PixelHeight}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl Name="SpecialZones" ItemsSource="{x:Bind Path=m_DeviceModel.SpecialZones}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="PixelLeft"/>
+                    <Setter Property="common:BindingHelper.CanvasTopBindingPath" Value="PixelTop"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:SpecialZoneModel">
+                    <Image Stretch="Fill"
+                           Width="{x:Bind PixelWidth}"
+                           Height="{x:Bind PixelHeight}"
+                           Source="{x:Bind ImageSource, Mode=OneWay}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Canvas>
+</UserControl>
