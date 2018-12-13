@@ -14,6 +14,20 @@ namespace CsvParse
     public class CsvRow : List<string>
     {
         public string LineText { get; set; }
+
+        public CsvRow Copy()
+        {
+            CsvRow cr = new CsvRow();
+
+            cr.LineText = LineText;
+
+            foreach(string s in this)
+            {
+                cr.Add(s);
+            }
+
+            return cr;
+        }
     }
 
     /// <summary>
@@ -140,10 +154,5 @@ namespace CsvParse
             // Return true if any columns read
             return (row.Count > 0);
         }
-    }
-
-    public class CsvHelper
-    {
-
     }
 }

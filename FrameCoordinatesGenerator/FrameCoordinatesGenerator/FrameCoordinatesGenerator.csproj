@@ -108,7 +108,7 @@
     </Compile>
     <Compile Include="ControlHelper.cs" />
     <Compile Include="Converter.cs" />
-    <Compile Include="CsvLoadedData.cs" />
+    <Compile Include="InputCsvData.cs" />
     <Compile Include="CsvParser.cs" />
     <Compile Include="ImagePixelStructure.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -127,6 +127,7 @@
     <None Include="FrameCoordinatesGenerator_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\grid.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />

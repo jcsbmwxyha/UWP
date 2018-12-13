@@ -22,12 +22,12 @@ namespace FrameCoordinatesGenerator
         Frame = 0,
         Key = 1,
     }
-    class ImagePixelStructure
+    class MySoftwareImage
     {
         private SoftwareBitmap m_SoftwareBitmap;
         public bool[,] m_PixelBoolArray;
 
-        public ImagePixelStructure(SoftwareBitmap softwareBitmap)
+        public MySoftwareImage(SoftwareBitmap softwareBitmap)
         {
             m_SoftwareBitmap = softwareBitmap;
             m_PixelBoolArray = GetBoolPixelArray(softwareBitmap);
@@ -290,7 +290,7 @@ namespace FrameCoordinatesGenerator
             return new Point(x + 1, y);
         }
 
-        public List<Rect> GetOrderedRects(ParsingMode mode, int difference = 5)
+        public List<Rect> GetSortedRects(ParsingMode mode, int difference = 5)
         {
             List<Rect> result;
             if (mode == ParsingMode.Frame)

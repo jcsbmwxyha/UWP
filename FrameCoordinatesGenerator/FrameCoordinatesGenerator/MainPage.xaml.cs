@@ -23,9 +23,7 @@ namespace FrameCoordinatesGenerator
     {
         static public MainPage Self;
 
-        ImagePixelStructure g_ImagePixelStructure;
-        CsvLoadedData g_CsvLoadedData;
-        List<Rect> g_LedRects;
+        MySoftwareImage g_MySoftwareImage;
         Image currentImage;
         List<PreLoadFrameModel> g_PreLoadFrameModels;
 
@@ -45,9 +43,9 @@ namespace FrameCoordinatesGenerator
 
             for (int i = 0; i < g_PreLoadFrameModels.Count; i++)
             {
-                for (int j = i; j < g_PreLoadFrameModels.Count; j++)
+                for (int j = i + 1; j < g_PreLoadFrameModels.Count; j++)
                 {
-                    if(g_PreLoadFrameModels[i].IntIndex == g_PreLoadFrameModels[j].IntIndex)
+                    if (g_PreLoadFrameModels[i].IntIndex == g_PreLoadFrameModels[j].IntIndex)
                     {
                         g_PreLoadFrameModels[i].Conflict = true;
                         g_PreLoadFrameModels[j].Conflict = true;
@@ -85,7 +83,7 @@ namespace FrameCoordinatesGenerator
                 softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
             }
 
-            g_ImagePixelStructure = new ImagePixelStructure(softwareBitmap);
+            g_MySoftwareImage = new MySoftwareImage(softwareBitmap);
             await SetMainGridImage(softwareBitmap);
 
             LoadPathTextBlock.Text = inputFile.Path;
@@ -120,37 +118,40 @@ namespace FrameCoordinatesGenerator
             if (csvFile == null)
                 return;
 
-            g_CsvLoadedData = new CsvLoadedData(csvFile);
+            new InputCsvData(csvFile);
             LoadCSVPathTextBlock.Text = csvFile.Path;
         }
         #endregion
 
         #region -- Start --
+        List<Rect> g_LedRects;
+
         private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_ImagePixelStructure == null)
+            if (g_MySoftwareImage == null)
                 return;
 
-            if (g_CsvLoadedData != null)
-                await g_CsvLoadedData.StartParsingAsync();
+            if (InputCsvData.Self != null)
+                await InputCsvData.Self.StartParsingAsync();
 
             bool tryParse = int.TryParse(DifferenceTextBox.Text, out int offset);
 
             if (tryParse == false)
-                g_LedRects = g_ImagePixelStructure.GetOrderedRects(ParsingMode.Frame);
+                g_LedRects = g_MySoftwareImage.GetSortedRects(ParsingMode.Frame);
             else
-                g_LedRects = g_ImagePixelStructure.GetOrderedRects(ParsingMode.Frame, offset);
-            
+                g_LedRects = g_MySoftwareImage.GetSortedRects(ParsingMode.Frame, offset);
+
             PreLoad(g_LedRects);
         }
         private void PreLoad(List<Rect> frameRects)
         {
+            g_PreLoadFrameModels.Clear();
             ImageGrid.Children.Clear();
             ImageGrid.Children.Add(currentImage);
-            int[] indexArray = null;
+            List<int> indexex = null;
 
-            if (g_CsvLoadedData != null)
-                indexArray = g_CsvLoadedData.GetIndexOrderArray();
+            if (InputCsvData.Self != null)
+                indexex = new List<int>(InputCsvData.Self.GetIndexOrder());
 
             for (int i = 0; i < frameRects.Count; i++)
             {
@@ -165,8 +166,8 @@ namespace FrameCoordinatesGenerator
                     LedIndex = i.ToString(),
                 };
 
-                if (indexArray != null)
-                    model.LedIndex = indexArray[i].ToString();
+                if (indexex != null)
+                    model.LedIndex = indexex[i].ToString();
 
                 view.DataContext = model;
                 ImageGrid.Children.Add(view);
@@ -178,7 +179,7 @@ namespace FrameCoordinatesGenerator
         #region -- Save --
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_ImagePixelStructure == null || g_PreLoadFrameModels.Count == 0)
+            if (g_MySoftwareImage == null || g_PreLoadFrameModels.Count == 0)
             {
                 StatusTextBlock.Text = "No frame to save !";
                 return;
@@ -202,7 +203,19 @@ namespace FrameCoordinatesGenerator
             {
                 try
                 {
-                    SaveResultToCsv(csvFile);
+                    // For overwrite file
+                    await FileIO.WriteBytesAsync(csvFile, new byte[0]);
+                    InputCsvData inputCsvData = InputCsvData.Self;
+
+                    if (inputCsvData == null)
+                    {
+                        SaveCsv(csvFile);
+                    }
+                    else
+                    {
+                        SaveCsvBasingOnInputCsv(csvFile, inputCsvData);
+                    }
+                    
                     SavePathTextBlock.Text = csvFile.Path;
                 }
                 catch (Exception ee)
@@ -211,22 +224,20 @@ namespace FrameCoordinatesGenerator
                 }
             }
         }
-        private async void SaveResultToCsv(StorageFile csvFile)
+        private async void SaveCsv(StorageFile csvFile)
         {
             // For overwrite file
             await FileIO.WriteBytesAsync(csvFile, new byte[0]);
 
             using (CsvFileWriter csvWriter = new CsvFileWriter(await csvFile.OpenStreamForWriteAsync()))
             {
-                if (g_CsvLoadedData == null)
-                {
-                    CsvRow firstRow = new CsvRow
+                CsvRow firstRow = new CsvRow
                     {
                         "Model"
                     };
-                    csvWriter.WriteRow(firstRow);
+                csvWriter.WriteRow(firstRow);
 
-                    CsvRow secondRow = new CsvRow
+                CsvRow secondRow = new CsvRow
                     {
                         "Parameters",
                         "exist",
@@ -237,11 +248,11 @@ namespace FrameCoordinatesGenerator
                         "PNG",
                         "Z_index"
                     };
-                    csvWriter.WriteRow(secondRow);
+                csvWriter.WriteRow(secondRow);
 
-                    for (int i = 0; i < g_LedRects.Count; i++)
-                    {
-                        CsvRow row = new CsvRow
+                for (int i = 0; i < g_LedRects.Count; i++)
+                {
+                    CsvRow row = new CsvRow
                         {
                             "LED " + i.ToString(),
                             1.ToString(), // exist
@@ -252,56 +263,58 @@ namespace FrameCoordinatesGenerator
                             "", // PNG
                             1.ToString(), // Z index
                         };
-                        csvWriter.WriteRow(row);
-                    }
-                }
-                else
-                {
-                    int count = g_CsvLoadedData.DataRows.Count;
-                    var rows = g_CsvLoadedData.DataRows;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        if (i < g_CsvLoadedData.LedDataRowStartIndex)
-                        {
-                        }
-                        else if (i == g_CsvLoadedData.LedDataRowStartIndex) // Append parameter name
-                        {
-                            rows[i].Add("LeftTop_x");
-                            rows[i].Add("LeftTop_y");
-                            rows[i].Add("RightBottom_x");
-                            rows[i].Add("RightBottom_y");
-                            rows[i].Add("PNG");
-                            rows[i].Add("Z_index");
-                        }
-                        else // Append parameter
-                        {
-                            string index = rows[i][0].ToLower().Replace("led", "").Replace(" ", "");
-                            PreLoadFrameModel findModel = g_PreLoadFrameModels.Find(
-                                model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index
-                            );
-
-                            if (findModel != null)
-                            {
-                                int align = g_CsvLoadedData.LedDataColumnEndIndex - rows[i].Count;
-
-                                for (int j = 0; j < align; j++)
-                                    rows[i].Add("");
-
-                                rows[i].Add(findModel.Left.ToString());
-                                rows[i].Add(findModel.Top.ToString());
-                                rows[i].Add(findModel.Right.ToString());
-                                rows[i].Add(findModel.Bottom.ToString());
-                            }
-                        }
-                        
-                        csvWriter.WriteRow(rows[i]);
-                    }
+                    csvWriter.WriteRow(row);
                 }
 
                 csvWriter.Close();
             }
         }
+        private async void SaveCsvBasingOnInputCsv(StorageFile csvFile, InputCsvData inputCsvData)
+        {
+            using (CsvFileWriter csvWriter = new CsvFileWriter(await csvFile.OpenStreamForWriteAsync()))
+            {
+                List<CsvRow> copiedRows = inputCsvData.GetCopiedDataRows();
+                FillCoordinate(copiedRows);
+                int rowCount = copiedRows.Count;
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    csvWriter.WriteRow(copiedRows[i]);
+                }
+                
+                csvWriter.Close();
+            }
+        }
+        private void FillCoordinate(List<CsvRow> copiedRows)
+        {
+            InputCsvData inputCsvData = InputCsvData.Self;
+            int rowCount = copiedRows.Count;
+
+            int column_LeftTopX = inputCsvData.Column_LeftTopX;
+            int column_LeftTopY = inputCsvData.Column_LeftTopY;
+            int column_RightBottomX= inputCsvData.Column_RightBottomX;
+            int column_RightBottomY= inputCsvData.Column_RightBottomY;
+
+            for (int i = inputCsvData.AppendRowStartIndex; i < rowCount; i++)
+            {
+                string index = copiedRows[i][0].ToLower().Replace("led", "").Replace(" ", "");
+                PreLoadFrameModel findModel = g_PreLoadFrameModels.Find(
+                        model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index);
+
+                if (findModel != null)
+                {
+                    copiedRows[i][column_LeftTopX] = findModel.Left.ToString();
+                    copiedRows[i][column_LeftTopY] = findModel.Top.ToString();
+                    copiedRows[i][column_RightBottomX] = findModel.Right.ToString();
+                    copiedRows[i][column_RightBottomY] = findModel.Bottom.ToString();
+                }
+            }
+        }
         #endregion
+        
+        private void PreviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            ImageGrid.Children.Clear();
+        }
     }
 }

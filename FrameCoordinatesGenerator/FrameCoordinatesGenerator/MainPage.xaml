@@ -7,7 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Page.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/grid.png"/>
+            <Style TargetType="Button">
+                <Setter Property="Width" Value="200"/>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    
     <StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Load Image" Click="LoadButton_Click"/>
@@ -21,12 +29,16 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Start" Click="StartButton_Click"/>
-            <TextBox Name="DifferenceTextBox" Header="高度誤差 :" PlaceholderText="Number" Width="100" Text="5" Margin="20,0,0,0"/>
+            <TextBox Name="DifferenceTextBox" Header="Height 容錯範圍 :" PlaceholderText="Number" Width="130" Text="5" Margin="20,0,0,0"/>
         </StackPanel>
+        <Button Content="Preview" Click="PreviewButton_Click"/>
         <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="3" MaxHeight="500" Margin="5,10,0,0"
                       VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
                       MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled">
-            <Grid Name="ImageGrid"/>
+            <Grid Name="ImageGrid">
+                <!--<Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
+                           x:FieldModifier="Public"/>-->
+            </Grid>
         </ScrollViewer>
         <StackPanel Orientation="Horizontal" Margin="10" VerticalAlignment="Center">
             <Button Content="Save" Click="SaveButton_Click"/>
