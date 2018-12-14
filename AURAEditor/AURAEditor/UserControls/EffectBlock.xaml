@@ -9,6 +9,14 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="EffectBlock_n" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_n.png"/>
+            <BitmapImage x:Key="EffectBlock_f" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_f.png"/>
+            <BitmapImage x:Key="EffectBlock_s" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_s.png"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid Height="30" Width="150"
           PointerPressed="Grid_PointerPressed"
           PointerEntered="Grid_PointerEntered"
@@ -17,22 +25,26 @@
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
-                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_n}"/>
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="../Assets/EffectBlock/asus_ac_effectblock_btn_f.png"/>
+                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_f}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="../Assets/EffectBlock/asus_ac_effectblock_btn_s.png"/>
+                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_s}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
         <Image Name="FrameImage"
-               Source="../Assets/EffectBlock/asus_ac_effectblock_btn_n.png"
+               Source="{ThemeResource EffectBlock_n}"
                Stretch="Fill"/>
         <TextBlock Margin="10,0,0,0"
                    Text="{Binding}"

@@ -64,7 +64,8 @@ namespace AuraEditor.UserControls
                 m_Layer.VisualState = "Normal";
         }
 
-        private void EditNameButton_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        #region -- Layer Name --
+        private void EditNameButton_Click(object sender, RoutedEventArgs e)
         {
             EditNameButton.Visibility = Visibility.Collapsed;
             NameTextBlock.Visibility = Visibility.Collapsed;
@@ -73,7 +74,6 @@ namespace AuraEditor.UserControls
             NameTextBox.Text = NameTextBlock.Text;
             NameTextBox.Focus(FocusState.Programmatic);
         }
-
         private void NameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             NameTextBlock.Text = NameTextBox.Text;
@@ -81,7 +81,6 @@ namespace AuraEditor.UserControls
             NameTextBlock.Visibility = Visibility.Visible;
             NameTextBox.Visibility = Visibility.Collapsed;
         }
-
         private void NameTextBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
@@ -92,5 +91,6 @@ namespace AuraEditor.UserControls
                 }
             }
         }
+        #endregion
     }
 }

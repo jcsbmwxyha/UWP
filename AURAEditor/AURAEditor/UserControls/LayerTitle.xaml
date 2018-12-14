@@ -244,7 +244,7 @@
                      LostFocus="NameTextBox_LostFocus" KeyDown="NameTextBox_KeyDown"
                     RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
             <Button Name="EditNameButton" Height="7" Width="7" Background="White"
-                    DoubleTapped="EditNameButton_DoubleTapped"
+                    Click="EditNameButton_Click"
                     Style="{StaticResource EditNameButtonStyle}"
                     RelativePanel.RightOf="NameTextBlock" FontSize="16" Margin="5,0,0,0" RelativePanel.AlignBottomWithPanel="True"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"

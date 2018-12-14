@@ -312,7 +312,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="ColorModeSelection_Click"
                                              GroupName="ColorModeSelection">
-                                    <TextBlock Text="Random" Foreground="White"/>
+                                    <TextBlock x:Name="RandomTextBlock" Text="Random" Foreground="White"/>
                                 </RadioButton>
                             </StackPanel>
                         </StackPanel>
@@ -321,39 +321,45 @@
                             <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                                 <RadioButton Name="Pattern" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                              GroupName="ColorModeSelection">
-                                    <TextBlock Text="Pattern" Foreground="White"/>
+                                    <TextBlock x:Name="PatternTextBlock" Text="Pattern" Foreground="White"/>
                                 </RadioButton>
                             </StackPanel>
-                            <Grid Margin="30,20,0,16">
-                                <Polygon x:Name="TriggerPatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
-                                <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
-                                    <Button.Flyout>
-                                        <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
-                                            <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                            <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
-                                            <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
-                                        </MenuFlyout>
-                                    </Button.Flyout>
-                                </Button>
-                            </Grid>
-                            <StackPanel Orientation="Vertical" Margin="30,0,0,0">
-                                <Canvas x:Name="TriggerPatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left"/>
-                                <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16" HorizontalAlignment="Left"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
-                                    <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+                            <ContentControl x:Name="PatternCBB">
+                                <Grid Margin="30,20,0,16">
+                                    <Polygon x:Name="TriggerPatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
+                                    <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
+                                        <Button.Flyout>
+                                            <MenuFlyout Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                                <MenuFlyoutItem x:Name="DefaultRainbow1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutItem x:Name="DefaultRainbow2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutItem x:Name="DefaultRainbow3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutItem x:Name="DefaultRainbow4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutItem x:Name="DefaultRainbow5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutItem x:Name="DefaultRainbow6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                                                <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
+                                                <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
+                                            </MenuFlyout>
+                                        </Button.Flyout>
+                                    </Button>
+                                </Grid>
+                            </ContentControl>
+                            <ContentControl x:Name="PatternPointRectangle">
+                                <StackPanel Orientation="Vertical" Margin="30,0,0,0">
+                                    <Canvas x:Name="TriggerPatternCanvas" Width="196" Height="20" x:FieldModifier="public" HorizontalAlignment="Left"/>
+                                    <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16" HorizontalAlignment="Left"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                                        <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="30,20,0,0">
-                                <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
-                                <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="80,0,0,0"
+                            </ContentControl>
+                            <ContentControl x:Name="PatternSwitch">
+                                <StackPanel Orientation="Horizontal" Margin="30,20,0,0">
+                                    <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
+                                    <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="80,0,0,0"
                                           Toggled="SegmentationSwitch_Toggled" Style="{StaticResource RogToggleSwitchStyle}"/>
-                            </StackPanel>
+                                </StackPanel>
+                            </ContentControl>
                         </StackPanel>
 
                         <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="Collapsed">

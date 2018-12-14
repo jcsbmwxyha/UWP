@@ -6,8 +6,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.MetroEventSource;
 using Windows.Storage;
 using AuraEditor.Models;
+using AuraEditor.Common;
 
 namespace AuraEditor
 {
@@ -198,9 +200,13 @@ namespace AuraEditor
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(false));
+            Log.Debug("[PlayButton] Save LastScript : " + sf.Path);
 
             long StartTime = (long)AuraLayerManager.PositionToTime(Player.GetCursorPosition());
+
+            Log.Debug("[PlayButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
+            Log.Debug("[PlayButton] Aft AuraEditorTrigger");
 
             //ScrollWindowToBeginning();
             Player.Play();
@@ -208,7 +214,9 @@ namespace AuraEditor
         private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             Player.Pause();
+            Log.Debug("[PauseButton] Bef AuraEditorStopEngine");
             await (new ServiceViewModel()).AuraEditorStopEngine();
+            Log.Debug("[PauseButton] Aft AuraEditorStopEngine");
         }
         private async void StopButton_Click(object sender, RoutedEventArgs e)
         {

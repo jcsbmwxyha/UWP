@@ -141,20 +141,53 @@ namespace AuraEditor.Dialogs
                 case 1:
                     Single.IsChecked = true;
                     effectInfo.Random = false;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 1;
                     TriggerColorPickerButtonBg.IsEnabled = true;
+                    // random
+                    RandomTextBlock.Opacity = 0.5;
+                    //pattern
+                    PatternTextBlock.Opacity = 0.5;
+                    PatternCBB.Opacity = 0.5;
+                    PatternCBB.IsEnabled = false;
+                    PatternPointRectangle.Opacity = 0.5;
+                    PatternPointRectangle.IsEnabled = false;
+                    PatternSwitch.Opacity = 0.5;
+                    PatternSwitch.IsEnabled = false;
                     break;
                 case 2:
                     Random.IsChecked = true;
                     effectInfo.Random = true;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
+                    // random
+                    RandomTextBlock.Opacity = 1;
+                    // pattern
+                    PatternTextBlock.Opacity = 0.5;
+                    PatternCBB.Opacity = 0.5;
+                    PatternCBB.IsEnabled = false;
+                    PatternPointRectangle.Opacity = 0.5;
+                    PatternPointRectangle.IsEnabled = false;
+                    PatternSwitch.Opacity = 0.5;
+                    PatternSwitch.IsEnabled = false;
                     break;
                 case 3:
                     Pattern.IsChecked = true;
                     effectInfo.Random = false;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
+                    // random
+                    RandomTextBlock.Opacity = 0.5;
+                    //pattern
+                    PatternTextBlock.Opacity = 1;
+                    PatternCBB.Opacity = 1;
+                    PatternCBB.IsEnabled = true;
+                    PatternPointRectangle.Opacity = 1;
+                    PatternPointRectangle.IsEnabled = true;
+                    PatternSwitch.Opacity = 1;
+                    PatternSwitch.IsEnabled = true;
                     break;
             }
             SpeedSlider.Value = effectInfo.Speed;
@@ -273,20 +306,53 @@ namespace AuraEditor.Dialogs
                 case "Single":
                     info.ColorModeSelection = 1;
                     info.Random = false;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 1;
                     TriggerColorPickerButtonBg.IsEnabled = true;
+                    // random
+                    RandomTextBlock.Opacity = 0.5;
+                    //pattern
+                    PatternTextBlock.Opacity = 0.5;
+                    PatternCBB.Opacity = 0.5;
+                    PatternCBB.IsEnabled = false;
+                    PatternPointRectangle.Opacity = 0.5;
+                    PatternPointRectangle.IsEnabled = false;
+                    PatternSwitch.Opacity = 0.5;
+                    PatternSwitch.IsEnabled = false;
                     break;
                 case "Random":
                     info.ColorModeSelection = 2;
                     info.Random = true;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
+                    // random
+                    RandomTextBlock.Opacity = 1;
+                    // pattern
+                    PatternTextBlock.Opacity = 0.5;
+                    PatternCBB.Opacity = 0.5;
+                    PatternCBB.IsEnabled = false;
+                    PatternPointRectangle.Opacity = 0.5;
+                    PatternPointRectangle.IsEnabled = false;
+                    PatternSwitch.Opacity = 0.5;
+                    PatternSwitch.IsEnabled = false;
                     break;
                 case "Pattern":
                     info.ColorModeSelection = 3;
                     info.Random = false;
+                    // single color
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
+                    // random
+                    RandomTextBlock.Opacity = 0.5;
+                    //pattern
+                    PatternTextBlock.Opacity = 1;
+                    PatternCBB.Opacity = 1;
+                    PatternCBB.IsEnabled = true;
+                    PatternPointRectangle.Opacity = 1;
+                    PatternPointRectangle.IsEnabled = true;
+                    PatternSwitch.Opacity = 1;
+                    PatternSwitch.IsEnabled = true;
                     break;
             }
         }
@@ -521,6 +587,7 @@ namespace AuraEditor.Dialogs
 
         public void ReDrawMultiPointRectangle()
         {
+            EffectInfo info = m_EffectList[SelectedIndex].Info;
             LinearGradientBrush Pattern = new LinearGradientBrush();
             Pattern.StartPoint = new Point(0, 0.5);
             Pattern.EndPoint = new Point(1, 0.5);
@@ -532,6 +599,7 @@ namespace AuraEditor.Dialogs
 
             TriggerPatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
             CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
+            info.ColorPointList = new List<ColorPoint>(ColorPoints);
             SetListBorder(ColorPoints);
         }
 

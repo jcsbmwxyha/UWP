@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
 
@@ -135,8 +136,11 @@ namespace AuraEditor
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(true));
+            Log.Debug("[SaveAndApplyButton] Save LastScript : " + sf.Path);
 
+            Log.Debug("[SaveAndApplyButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
+            Log.Debug("[SaveAndApplyButton] Aft AuraEditorTrigger");
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -256,6 +260,8 @@ namespace AuraEditor
                 }
 
                 StorageFile copyfile = await inputFile.CopyAsync(m_UserFilesFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                Log.Debug("[ImportButton] CopyAsync " + inputFile.Path + " to " + m_UserFilesFolder + "\\" + inputFile.Name);
+
                 CurrentUserFilename = copyfile.Name.Replace(".xml", "");
                 await LoadUserFile(CurrentUserFilename);
             }
@@ -268,6 +274,7 @@ namespace AuraEditor
             {
                 SpaceManager.ClearTempDeviceData();
                 await SaveFile(saveFile, GetUserData());
+                Log.Debug("[ExportButton] SaveFile : " + saveFile.Path);
             }
         }
 
@@ -302,6 +309,7 @@ namespace AuraEditor
                         return;
                 }
 
+                Log.Debug("[FileItem_Click] Selected name : " + selectedName);
                 await LoadUserFile(selectedName);
                 CurrentUserFilename = selectedName;
             }
@@ -333,6 +341,7 @@ namespace AuraEditor
                 }
 
                 SaveSettings();
+                Log.Debug("[OnCloseRequest] Exit ...");
                 CoreApplication.Exit();
             }
         }
@@ -361,6 +370,7 @@ namespace AuraEditor
                 if (dialog.Result == true)
                 {
                     CurrentUserFilename = dialog.TheName;
+                    Log.Debug("[SaveCurrentUserFile] File name : " + CurrentUserFilename);
                     await m_UserFilesFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
                     await m_UserScriptsFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.ReplaceExisting);
                 }
@@ -373,6 +383,8 @@ namespace AuraEditor
             SpaceManager.ClearTempDeviceData();
             await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
             await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript(true));
+            Log.Debug("[SaveCurrentUserFile] User file : " + UserFilesDefaultFolderPath + CurrentUserFilename);
+            Log.Debug("[SaveCurrentUserFile] User script : " + UserScriptsDefaultFolderPath + CurrentUserFilename);
             return true;
         }
         private string GetUserData()

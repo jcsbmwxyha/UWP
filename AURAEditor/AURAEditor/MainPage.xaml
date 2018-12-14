@@ -811,9 +811,9 @@
                     </ToolTipService.ToolTip>
                 </Button>
                 <Rectangle x:Name="SetLayerRectangle" RelativePanel.AlignLeftWithPanel="True"
-                           Width="{Binding ElementName=SetLayerButton, Path=Width}"
-                           Height="{Binding ElementName=SetLayerButton, Path=Height}"
-                           Margin="0,0,0,0" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
+                           Width="{Binding ElementName=SetLayerButton, Path=ActualWidth}"
+                           Height="{Binding ElementName=SetLayerButton, Path=ActualHeight}"
+                           Margin="{Binding ElementName=SetLayerButton, Path=Margin}" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                             <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"

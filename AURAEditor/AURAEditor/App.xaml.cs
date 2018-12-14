@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -67,7 +69,9 @@ namespace AuraEditor
                     // 在巡覽堆疊未還原時，巡覽至第一頁，
                     // 設定新的頁面，方式是透過傳遞必要資訊做為巡覽
                     // 參數
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    EventListener debugListener = new StorageFileEventListener("DebugLog");
+                    debugListener.EnableEvents(MetroEventSource.Log, EventLevel.Verbose);
+                    rootFrame.Navigate(typeof(WindowsPage), e.Arguments);
                 }
                 // 確定目前視窗是作用中
                 Window.Current.Activate();

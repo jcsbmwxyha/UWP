@@ -374,7 +374,7 @@ namespace AuraEditor
             else if (GetEffectName(Type) == "Comet")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
-                waveNode.AppendChild(CreateXmlNodeByValue("type", "TriangleWave"));
+                waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
                 waveNode.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode.AppendChild(CreateXmlNodeByValue("min", "0"));
                 waveNode.AppendChild(CreateXmlNodeByValue("length", "3"));

@@ -5,23 +5,22 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
+using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage;
+using Windows.System.Threading;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls.Primitives;
 using AuraEditor.Dialogs;
+using AuraEditor.Models;
 using AuraEditor.UserControls;
 using static AuraEditor.AuraSpaceManager;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
-using Windows.Networking;
-using Windows.System.Threading;
-using AuraEditor.Models;
-using Windows.UI.Xaml.Controls.Primitives;
+using static AuraEditor.Common.MetroEventSource;
 
 namespace AuraEditor
 {
@@ -90,20 +89,28 @@ namespace AuraEditor
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.X)
             {
+                if (SelectedEffect == null)
+                    return;
+
                 if (g_PressCtrl == true)
+                {
                     LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
-                Layer layer = SelectedEffect.Layer;
-                layer.DeleteEffectLine(SelectedEffect);
+                    Layer layer = SelectedEffect.Layer;
+                    layer.DeleteEffectLine(SelectedEffect);
+                }
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.C)
             {
+                if (SelectedEffect == null)
+                    return;
+
                 if (g_PressCtrl == true)
                     LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
-                if (g_CanPaste == false || LayerManager.CopiedEffect == null)
+                if (LayerManager.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerManager.CopiedEffect == null)
                     return;
 
                 g_CanPaste = false;
@@ -286,10 +293,25 @@ namespace AuraEditor
             e.Data.Properties.Add("EffectName", effName);
 
             AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
+
+            // Workaround for keeping EffectBlock in Pressed state
+            var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
+            var index = EffectBlockListView.Items.IndexOf(effName);
+            var eb = ebList[index];
+            eb.Dragging = true;
+            VisualStateManager.GoToState(eb, "Pressed", false);
         }
         private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
             AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
+
+            // Workaround for preventing EffctBlock from keeping another status after completing
+            var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
+            foreach (var eb in ebList)
+            {
+                eb.Dragging = false;
+                VisualStateManager.GoToState(eb, "Normal", false);
+            }
         }
 
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
@@ -573,6 +595,7 @@ namespace AuraEditor
                     {
                         //from Service message
                         StatusTextBlock.Text = "Service : " + response;
+                        Log.Debug("[ReceiveData] Rescan ...");
                         ConnectedDevicesDialog.Rescan();
                     });
                 }

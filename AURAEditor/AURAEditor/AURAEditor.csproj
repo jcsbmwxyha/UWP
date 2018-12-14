@@ -105,14 +105,22 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\BindingHelper.cs" />
     <Compile Include="Common\Converter.cs" />
+    <Compile Include="Common\MetroEventSource.cs" />
+    <Compile Include="Common\StorageFileEventListener.cs" />
     <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="Common\StorageHelper.cs" />
+    <Compile Include="DeviceUpdatesPage.xaml.cs">
+      <DependentUpon>DeviceUpdatesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
       <DependentUpon>ConnectedDevicesDialog.xaml</DependentUpon>
     </Compile>
@@ -121,6 +129,9 @@
     </Compile>
     <Compile Include="Dialogs\YesNoCancelDialog.xaml.cs">
       <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EULAPage.xaml.cs">
+      <DependentUpon>EULAPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileOperations.cs" />
     <Compile Include="Dialogs\ColorPickerDialog.xaml.cs">
@@ -136,6 +147,9 @@
     <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="DeviceContent.cs" />
+    <Compile Include="GeneralSettingsPage.xaml.cs">
+      <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Layer.cs" />
     <Compile Include="Dialogs\TriggerDialog.xaml.cs">
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
@@ -149,6 +163,12 @@
       <DependentUpon>EffectInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrintScriptFunctions.cs" />
+    <Compile Include="PrivacyPolicyPage.xaml.cs">
+      <DependentUpon>PrivacyPolicyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SpaceManager.cs" />
     <Compile Include="SyncDevice.cs" />
     <Compile Include="TimelineEffect.cs" />
@@ -191,16 +211,24 @@
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowsPage.xaml.cs">
+      <DependentUpon>WindowsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="Assets\Background\asus_ac_bg.png" />
+    <Content Include="Assets\Background\asus_ac_settings_bg.png" />
+    <Content Include="Assets\Background\asus_gc_aura_updates_bg.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_h.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_n.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_p.png" />
     <Content Include="Assets\Button\asus_ac_sorting_ic.png" />
+    <Content Include="Assets\Dividers\asus_gc_list_divider_l.png" />
+    <Content Include="Assets\Dividers\asus_gc_list_divider_mid.png" />
+    <Content Include="Assets\Dividers\asus_gc_list_divider_r.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_s.png" />
@@ -406,6 +434,7 @@
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_ur.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_h.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_n.png" />
+    <Content Include="Assets\TitleBar.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_d.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_n.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_p.png" />
@@ -455,6 +484,9 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\ToggleButton\asus_gc_ios_tabbar_settings_ic_hover.png" />
+    <Content Include="Assets\ToggleButton\asus_gc_ios_tabbar_settings_ic_off.png" />
+    <Content Include="Assets\ToggleButton\asus_gc_ios_tabbar_settings_ic_on.png" />
     <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_d.png" />
     <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_h.png" />
     <Content Include="Assets\ToggleSwitch\asus_ac_toggle_reset_select_bg_n.png" />
@@ -515,6 +547,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeviceUpdatesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\ColorPickerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -535,7 +575,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="EULAPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GeneralSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\EffectInfoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrivacyPolicyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -580,6 +636,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\TriggerBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

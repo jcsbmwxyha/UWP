@@ -11,6 +11,7 @@ namespace AuraEditor.UserControls
     public sealed partial class EffectBlock : UserControl
     {
         public string MyText { get { return this.DataContext as string; } }
+        public bool Dragging;
 
         public EffectBlock()
         {
@@ -23,7 +24,8 @@ namespace AuraEditor.UserControls
         }
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, "Normal", false);
+            if (Dragging != true)
+                VisualStateManager.GoToState(this, "Normal", false);
         }
         private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
