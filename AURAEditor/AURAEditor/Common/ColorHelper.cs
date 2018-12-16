@@ -9,60 +9,13 @@ namespace AuraEditor.Common
 {
     public static class AuraEditorColorHelper
     {
-        public static Brush GetSmartBrush()
+        public class RecentColor
         {
-            LinearGradientBrush lgb = new LinearGradientBrush();
-            GradientStopCollection gradientStops = new GradientStopCollection();
-            GradientStop stop1 = new GradientStop();
-            GradientStop stop2 = new GradientStop();
-            GradientStop stop3 = new GradientStop();
-            stop1.Color = Colors.Red;
-            stop2.Color = Colors.Yellow;
-            stop3.Color = Colors.LightGreen;
-            stop1.Offset = 0.1;
-            stop2.Offset = 0.4;
-            stop3.Offset = 0.75;
-            gradientStops.Add(stop1);
-            gradientStops.Add(stop2);
-            gradientStops.Add(stop3);
-            lgb.GradientStops = gradientStops;
-            lgb.StartPoint = new Point(0, 1);
-            lgb.EndPoint = new Point(0, 0);
-            return lgb;
-        }
-        public static Brush GetRainbowBrush()
-        {
-            LinearGradientBrush lgb = new LinearGradientBrush();
-            GradientStopCollection gradientStops = new GradientStopCollection();
-            GradientStop stop1 = new GradientStop();
-            GradientStop stop2 = new GradientStop();
-            GradientStop stop3 = new GradientStop();
-            GradientStop stop4 = new GradientStop();
-            GradientStop stop5 = new GradientStop();
-            GradientStop stop6 = new GradientStop();
-
-            stop1.Color = Colors.Red;
-            stop2.Color = Colors.Yellow;
-            stop3.Color = Colors.LightGreen;
-            stop4.Color = Colors.Aqua;
-            stop5.Color = Colors.Blue;
-            stop6.Color = Colors.Purple;
-            stop1.Offset = 0.1;
-            stop2.Offset = 0.25;
-            stop3.Offset = 0.4;
-            stop4.Offset = 0.6;
-            stop5.Offset = 0.75;
-            stop6.Offset = 0.9;
-            gradientStops.Add(stop1);
-            gradientStops.Add(stop2);
-            gradientStops.Add(stop3);
-            gradientStops.Add(stop4);
-            gradientStops.Add(stop5);
-            gradientStops.Add(stop6);
-            lgb.GradientStops = gradientStops;
-            lgb.StartPoint = new Point(0, 0);
-            lgb.EndPoint = new Point(1, 0);
-            return lgb;
+            public string HexColor { get; set; }
+            public RecentColor()
+            {
+                HexColor = "#00000000";
+            }
         }
 
         public static Color HSLToRGB(double a, double h, double s, double l)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuraEditor.Pages;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -39,7 +40,7 @@ namespace AuraEditor.Models
             set
             {
                 _pixelLeft = value;
-                AuraSpaceManager.Self.OnDeviceMoved(this);
+                SpacePage.Self.OnDeviceMoved(this);
                 RaisePropertyChanged("PixelLeft");
             }
         }
@@ -54,7 +55,7 @@ namespace AuraEditor.Models
             set
             {
                 _pixelTop = value;
-                AuraSpaceManager.Self.OnDeviceMoved(this);
+                SpacePage.Self.OnDeviceMoved(this);
                 RaisePropertyChanged("PixelTop");
             }
         }

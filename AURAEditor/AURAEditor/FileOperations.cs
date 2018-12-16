@@ -22,7 +22,7 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public bool NeedSave;
+
         private StorageFolder m_UserFilesFolder;
         private StorageFolder m_UserScriptsFolder;
         private List<string> GetUserFilenames()
@@ -75,7 +75,6 @@ namespace AuraEditor
             NeedSave = false;
             await GetOrCreateUserFilesFolder();
             await GetOrCreateUserScriptsFolder();
-            //await TestOrCreateScriptFolder();
         }
         private async Task GetOrCreateUserFilesFolder()
         {
@@ -272,7 +271,7 @@ namespace AuraEditor
 
             if (saveFile != null)
             {
-                SpaceManager.ClearTempDeviceData();
+                SpacePage.ClearTempDeviceData();
                 await SaveFile(saveFile, GetUserData());
                 Log.Debug("[ExportButton] SaveFile : " + saveFile.Path);
             }
@@ -347,8 +346,8 @@ namespace AuraEditor
         }
         private void SaveSettings()
         {
-            g_LocalSettings.Values["SpaceZooming"] = SpaceManager.GetSpaceZoomPercent().ToString();
-            g_LocalSettings.Values["LayerLevel"] = LayerZoomSlider.Value.ToString();
+            g_LocalSettings.Values["SpaceZooming"] = SpacePage.GetSpaceZoomPercent().ToString();
+            g_LocalSettings.Values["LayerLevel"] = LayerPage.LayerZoomSlider.Value.ToString();
             g_LocalSettings.Values["RecentColor1"] = g_RecentColor[0].HexColor;
             g_LocalSettings.Values["RecentColor2"] = g_RecentColor[1].HexColor;
             g_LocalSettings.Values["RecentColor3"] = g_RecentColor[2].HexColor;
@@ -380,7 +379,7 @@ namespace AuraEditor
                 }
             }
 
-            SpaceManager.ClearTempDeviceData();
+            SpacePage.ClearTempDeviceData();
             await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
             await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript(true));
             Log.Debug("[SaveCurrentUserFile] User file : " + UserFilesDefaultFolderPath + CurrentUserFilename);
@@ -391,8 +390,8 @@ namespace AuraEditor
         {
             XmlNode root = CreateXmlNode("root");
 
-            root.AppendChild(SpaceManager.ToXmlNodeForUserData());
-            root.AppendChild(LayerManager.ToXmlNodeForUserData());
+            root.AppendChild(SpacePage.ToXmlNodeForUserData());
+            root.AppendChild(LayerPage.ToXmlNodeForUserData());
 
             return root.OuterXml;
         }
@@ -402,7 +401,7 @@ namespace AuraEditor
             string filepath = UserFilesDefaultFolderPath + filename + ".xml";
             Clean();
             await LoadContent(await LoadFile(filepath));
-            SpaceManager.RefreshSpaceGrid();
+            SpacePage.RefreshSpaceScrollViewer();
         }
         private async Task LoadContent(string xmlContent)
         {
@@ -415,13 +414,13 @@ namespace AuraEditor
             XmlNodeList deviceNodes = spaceNode.SelectNodes("device");
             XmlNodeList layerNodes = layersNode.SelectNodes("layer");
 
-            await ParsingGlobalDevices(deviceNodes);
+            await ParsingDevices(deviceNodes);
             ParsingLayers(layerNodes);
         }
-        private async Task ParsingGlobalDevices(XmlNodeList deviceNodes)
+        private async Task ParsingDevices(XmlNodeList deviceNodes)
         {
-            List<DeviceModel> globalDevices = SpaceManager.DeviceModelCollection;
-            globalDevices.Clear();
+            List<DeviceModel> deviceModels = SpacePage.DeviceModelCollection;
+            deviceModels.Clear();
 
             List<SyncDevice> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
             foreach (XmlNode node in deviceNodes)
@@ -440,7 +439,7 @@ namespace AuraEditor
                 else
                     d.Status = DeviceStatus.Temp;
 
-                globalDevices.Add(d);
+                deviceModels.Add(d);
             }
 
             foreach (var sd in new_SD)
@@ -451,10 +450,10 @@ namespace AuraEditor
                     continue;
 
                 Rect r = new Rect(0, 0, dc.GridWidth, dc.GridHeight);
-                Point p = SpaceManager.GetFreeRoomPositionForRect(r);
+                Point p = SpacePage.GetFreeRoomPositionForRect(r);
                 DeviceModel dm = await dc.ToDeviceModel(p);
                 dm.Status = DeviceStatus.OnStage;
-                globalDevices.Add(dm);
+                deviceModels.Add(dm);
             }
         }
         private void ParsingLayers(XmlNodeList layerNodes)
@@ -555,14 +554,14 @@ namespace AuraEditor
                 }
 
                 layers.Add(layer);
-                LayerManager.AddLayer(layer);
+                LayerPage.AddLayer(layer);
             }
         }
 
         private void Reset()
         {
             Clean();
-            SpaceManager.FillStageWithDevices();
+            SpacePage.FillCurrentIngroupDevices();
         }
         private void Clean()
         {
@@ -570,9 +569,8 @@ namespace AuraEditor
             SetLayerRectangle.Visibility = Visibility.Collapsed;
             NeedSave = false;
             CurrentUserFilename = "";
-            LayerManager.Clean();
-            SpaceManager.Clean();
-            Player.Stop();
+            LayerPage.Clean();
+            SpacePage.Clean();
         }
     }
 }

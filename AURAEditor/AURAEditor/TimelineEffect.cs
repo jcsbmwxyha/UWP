@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using System.ComponentModel;
+using AuraEditor.Pages;
 
 namespace AuraEditor
 {
@@ -44,7 +45,7 @@ namespace AuraEditor
                     RaisePropertyChanged("Left");
 
                     double timeUnits = _left / PixelsPerTimeUnit;
-                    double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
+                    double seconds = timeUnits * LayerPage.SecondsPerTimeUnit;
                     _startTime = seconds * 1000;
                 }
             }
@@ -64,7 +65,7 @@ namespace AuraEditor
                     RaisePropertyChanged("Width");
 
                     double timeUnits = _width / PixelsPerTimeUnit;
-                    double seconds = timeUnits * AuraLayerManager.SecondsPerTimeUnit;
+                    double seconds = timeUnits * LayerPage.SecondsPerTimeUnit;
                     _durationTime = seconds * 1000;
                 }
             }
@@ -99,7 +100,7 @@ namespace AuraEditor
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
+                double timeUnits = seconds / LayerPage.SecondsPerTimeUnit;
 
                 _left = timeUnits * PixelsPerTimeUnit;
                 _startTime = value;
@@ -116,7 +117,7 @@ namespace AuraEditor
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / AuraLayerManager.SecondsPerTimeUnit;
+                double timeUnits = seconds / LayerPage.SecondsPerTimeUnit;
 
                 _width = timeUnits * PixelsPerTimeUnit;
                 _durationTime = value;

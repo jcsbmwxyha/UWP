@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage;
@@ -13,62 +11,45 @@ using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using AuraEditor.Dialogs;
 using AuraEditor.Models;
+using AuraEditor.Pages;
 using AuraEditor.UserControls;
-using static AuraEditor.AuraSpaceManager;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.AuraEditorColorHelper;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.MetroEventSource;
+using static AuraEditor.Common.StorageHelper;
+using static AuraEditor.Pages.SpacePage;
 
 namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        // for Socket TCP use
-        private string cm;
-        private string port;
-        private string ip;
-        BackgroundWorker bgwSocketServerRecv;
-        StreamSocket socket = new StreamSocket();
-
         static MainPage _instance;
         static public MainPage Self
         {
             get { return _instance; }
         }
-        public AuraSpaceManager SpaceManager;
-        public AuraLayerManager LayerManager;
+        public SpacePage SpacePage;
+        public LayerPage LayerPage;
         public ConnectedDevicesDialog ConnectedDevicesDialog;
-
         ApplicationDataContainer g_LocalSettings;
-
-
-        public class RecentColor
-        {
-            public string HexColor { get; set; }
-            public RecentColor()
-            {
-                HexColor = "#00000000";
-            }
-        }
-
         public RecentColor[] g_RecentColor = new RecentColor[8];
 
         public TimelineEffect SelectedEffect
         {
             get
             {
-                return LayerManager.CheckedEffect;
+                return LayerPage.CheckedEffect;
             }
             set
             {
-                LayerManager.CheckedEffect = value;
+                LayerPage.CheckedEffect = value;
             }
         }
 
-        #region Key Up & Down
+        #region -- Key Up & Down --
         public bool g_PressShift;
         public bool g_PressCtrl;
         public bool g_CanPaste = true;
@@ -77,7 +58,7 @@ namespace AuraEditor
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
-                SpaceManager.OnZKeyPressed();
+                SpacePage.OnZKeyPressed();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
@@ -94,7 +75,7 @@ namespace AuraEditor
 
                 if (g_PressCtrl == true)
                 {
-                    LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
                     Layer layer = SelectedEffect.Layer;
                     layer.DeleteEffectLine(SelectedEffect);
@@ -106,16 +87,16 @@ namespace AuraEditor
                     return;
 
                 if (g_PressCtrl == true)
-                    LayerManager.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
-                if (LayerManager.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerManager.CopiedEffect == null)
+                if (LayerPage.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerPage.CopiedEffect == null)
                     return;
 
                 g_CanPaste = false;
 
-                var copy = TimelineEffect.CloneEffect(LayerManager.CopiedEffect);
+                var copy = TimelineEffect.CloneEffect(LayerPage.CopiedEffect);
 
                 if (SelectedEffect != null)
                 {
@@ -124,7 +105,7 @@ namespace AuraEditor
                 }
                 else
                 {
-                    LayerManager.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
+                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
                 }
 
                 TimeSpan delay = TimeSpan.FromMilliseconds(400);
@@ -152,7 +133,7 @@ namespace AuraEditor
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
-                SpaceManager.OnZKeyRelease();
+                SpacePage.OnZKeyRelease();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
             {
@@ -184,9 +165,12 @@ namespace AuraEditor
         {
             await IntializeFileOperations();
             ConnectedDevicesDialog = new ConnectedDevicesDialog();
-            SpaceManager = new AuraSpaceManager();
-            LayerManager = new AuraLayerManager();
-            InitializePlayerStructure();
+            SpaceFrame.Navigate(typeof(SpacePage));
+            SpacePage = SpacePage.Self;
+
+            LayerFrame.Navigate(typeof(LayerPage));
+            LayerPage = LayerPage.Self;
+
             await ConnectedDevicesDialog.Rescan();
             //Start SocketClient
             startclient();
@@ -197,19 +181,19 @@ namespace AuraEditor
         {
             bool successful = float.TryParse(g_LocalSettings.Values["SpaceZooming"] as string, out float percent);
             if (successful)
-                SpaceManager.SetSpaceZoomPercent(percent);
+                SpacePage.SetSpaceZoomPercent(percent);
             else
             {
-                SpaceManager.SetSpaceZoomPercent(50);
-                SpaceZoomButton.Content = "50 %";
+                SpacePage.SetSpaceZoomPercent(50);
+                //SpaceZoomButton.Content = "50 %";
             }
 
             successful = int.TryParse(g_LocalSettings.Values["LayerLevel"] as string, out int level);
             if (successful)
-                LayerZoomSlider.Value = level;
+                LayerPage.LayerZoomSlider.Value = level;
             else
             {
-                LayerZoomSlider.Value = 2;
+                LayerPage.LayerZoomSlider.Value = 2;
             }
 
             #region Recent Color
@@ -278,10 +262,9 @@ namespace AuraEditor
             }
 
             #endregion
-
         }
 
-        #region Framework Element
+        #region -- Event --
         private async void ConnectedDevicesButton_Click(object sender, RoutedEventArgs e)
         {
             await ConnectedDevicesDialog.ShowAsync();
@@ -292,7 +275,7 @@ namespace AuraEditor
             string effName = e.Items[0] as string;
             e.Data.Properties.Add("EffectName", effName);
 
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
+            SpacePage.Self.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
 
             // Workaround for keeping EffectBlock in Pressed state
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
@@ -303,7 +286,7 @@ namespace AuraEditor
         }
         private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            AuraSpaceManager.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
+            SpacePage.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
 
             // Workaround for preventing EffctBlock from keeping another status after completing
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
@@ -319,9 +302,9 @@ namespace AuraEditor
             Layer layer = new Layer();
             List<int> selectedIndex;
 
-            layer.Name = "Layer " + (LayerManager.GetLayerCount() + 1);
+            layer.Name = "Layer " + (LayerPage.GetLayerCount() + 1);
 
-            foreach (DeviceModel dm in SpaceManager.DeviceModelCollection)
+            foreach (DeviceModel dm in SpacePage.DeviceModelCollection)
             {
                 selectedIndex = new List<int>();
 
@@ -337,146 +320,71 @@ namespace AuraEditor
                     layer.AddDeviceZones(dm.Type, selectedIndex.ToArray());
             }
 
-            LayerManager.AddLayer(layer);
-            LayerManager.CheckedLayer = layer;
+            LayerPage.AddLayer(layer);
+            LayerPage.CheckedLayer = layer;
             NeedSave = true;
         }
         private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             EditOKButton.IsEnabled = true;
             ShowMask("Device Sorting", "Save", "Cancel");
-            SpaceManager.SetSpaceStatus(SpaceStatus.DraggingDevice);
+            SpacePage.SetSpaceStatus(SpaceStatus.DraggingDevice);
         }
 
-        private void LeftSidePanelButton_Click(object sender, RoutedEventArgs e)
+        public void OnLeftSidePanelButtonClick()
         {
-            int columnSpans = Grid.GetColumnSpan(SpaceGrid);
+            int columnSpans = Grid.GetColumnSpan(SpaceFrame);
 
             if (MainGrid.Children.Contains(EffectBlockScrollViewer))
             {
                 MainGrid.Children.Remove(EffectBlockScrollViewer);
                 MainGrid.Children.Remove(MaskGrid1);
-                Grid.SetColumn(SpaceGrid, 0);
-                Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
 
-                LeftSideOpenedButton.Visibility = Visibility.Collapsed;
-                LeftSideClosedButton.Visibility = Visibility.Visible;
+                Grid.SetColumn(SpaceFrame, 0);
+                Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
             }
             else
             {
                 Grid.SetColumn(EffectBlockScrollViewer, 0);
-                MainGrid.Children.Add(EffectBlockScrollViewer);
                 Grid.SetColumn(MaskGrid1, 0);
-                MainGrid.Children.Add(MaskGrid1);
-                Grid.SetColumn(SpaceGrid, 1);
-                Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
 
-                LeftSideOpenedButton.Visibility = Visibility.Visible;
-                LeftSideClosedButton.Visibility = Visibility.Collapsed;
+                MainGrid.Children.Add(EffectBlockScrollViewer);
+                MainGrid.Children.Add(MaskGrid1);
+
+                Grid.SetColumn(SpaceFrame, 1);
+                Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
             }
         }
-        private void RightSidePanelButton_Click(object sender, RoutedEventArgs e)
+        public void OnRightSidePanelButtonClick()
         {
-            int columnSpans = Grid.GetColumnSpan(SpaceGrid);
+            int columnSpans = Grid.GetColumnSpan(SpaceFrame);
 
             if (MainGrid.Children.Contains(EffectInfoFrame))
             {
                 MainGrid.Children.Remove(EffectInfoFrame);
                 MainGrid.Children.Remove(MaskGrid2);
-                Grid.SetColumnSpan(SpaceGrid, columnSpans + 1);
-
-                RightSideOpenedButton.Visibility = Visibility.Collapsed;
-                RightSideClosedButton.Visibility = Visibility.Visible;
+                Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
             }
             else
             {
                 Grid.SetColumn(EffectInfoFrame, 2);
-                MainGrid.Children.Add(EffectInfoFrame);
                 Grid.SetColumn(MaskGrid2, 2);
+
+                MainGrid.Children.Add(EffectInfoFrame);
                 MainGrid.Children.Add(MaskGrid2);
-                Grid.SetColumnSpan(SpaceGrid, columnSpans - 1);
 
-                RightSideOpenedButton.Visibility = Visibility.Visible;
-                RightSideClosedButton.Visibility = Visibility.Collapsed;
+                Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
             }
         }
-        private void SpaceZoom_Click(object sender, RoutedEventArgs e)
-        {
-            var item = sender as MenuFlyoutItem;
-            string itemText = item.Text;
 
-            if (itemText == SpaceZoomButton.Content as string)
-                return;
-
-            float percent = float.Parse(itemText.Replace(" %", ""));
-            SpaceManager.SetSpaceZoomPercent(percent);
-        }
-
-        private void LayerListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
-        {
-            Layer layer = e.Items[0] as Layer;
-            e.Data.Properties.Add("layer", layer);
-        }
-        private void TrashCanButton_DragOver(object sender, DragEventArgs e)
-        {
-            if (e.Data == null)
-                return;
-
-            e.DragUIOverride.IsCaptionVisible = false;
-            e.DragUIOverride.IsGlyphVisible = false;
-
-            var pair = e.Data.Properties.FirstOrDefault();
-            Layer layer = pair.Value as Layer;
-            if (layer != null)
-                e.AcceptedOperation = DataPackageOperation.Copy;
-        }
-        private void TrashCanButton_Drop(object sender, DragEventArgs e)
-        {
-            var pair = e.Data.Properties.FirstOrDefault();
-            Layer layer = pair.Value as Layer;
-            LayerManager.RemoveLayer(layer);
-            SpaceManager.SetSpaceStatus(SpaceStatus.Init);
-            SelectedEffect = null;
-            NeedSave = true;
-        }
-        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
-        {
-            Layer layer = LayerManager.CheckedLayer;
-            if (layer != null)
-            {
-                LayerManager.RemoveLayer(layer);
-                SpaceManager.SetSpaceStatus(SpaceStatus.Init);
-                SelectedEffect = null;
-                NeedSave = true;
-            }
-        }
-        private void LayerScrollGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var width = LayerScrollGrid.ActualWidth - 10;
-
-            if (width > 0)
-            {
-                var v1 = FindControl<ScrollBar>(TrackScrollViewer, typeof(ScrollBar), "HorizontalScrollBar");
-                v1.Width = LayerScrollGrid.ActualWidth - 10;
-
-                ActionBarRelativePanel.Width = LayerScrollGrid.ActualWidth;
-            }
-        }
-        #endregion
-
-        #region Mask
-        public void ShowReEditMask(Layer layer)
-        {
-            ShowMask("Edit layer: " + layer.Name, "Save", "Cancel");
-        }
         private void EditOKButton_Click(object sender, RoutedEventArgs e)
         {
-            if (SpaceManager.GetSpaceStatus() == SpaceStatus.ReEditing)
+            if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                Layer layer = LayerManager.CheckedLayer;
+                Layer layer = LayerPage.CheckedLayer;
                 List<int> selectedIndex;
 
-                foreach (DeviceModel dm in SpaceManager.DeviceModelCollection)
+                foreach (DeviceModel dm in SpacePage.DeviceModelCollection)
                 {
                     selectedIndex = new List<int>();
 
@@ -492,16 +400,24 @@ namespace AuraEditor
                 }
 
                 NeedSave = true;
-                SpaceManager.WatchLayer(layer);
+                SpacePage.WatchLayer(layer);
             }
             else
-                SpaceManager.SetSpaceStatus(SpaceStatus.Init);
+                SpacePage.SetSpaceStatus(SpaceStatus.Init);
+
             HideMask();
         }
         private void EditCancelButton_Click(object sender, RoutedEventArgs e)
         {
-            SpaceManager.SetSpaceStatus(SpaceStatus.Init);
+            SpacePage.SetSpaceStatus(SpaceStatus.Init);
             HideMask();
+        }
+        #endregion
+
+        #region -- Mask --
+        public void ShowReEditMask(Layer layer)
+        {
+            ShowMask("Edit layer : " + layer.Name, "Save", "Cancel");
         }
         private void ShowMask(string descriptionText, string okText, string cancelText)
         {
@@ -509,32 +425,24 @@ namespace AuraEditor
             EditOKButton.Content = okText;
             //EditCancelButton.Content = cancelText;
 
-            EditBar.Visibility = Visibility.Visible;
+            EditBarRelativePanel.Visibility = Visibility.Visible;
+            ActionBarRelativePanel.Visibility = Visibility.Collapsed;
             MaskGrid1.Visibility = Visibility.Visible;
             MaskGrid2.Visibility = Visibility.Visible;
             MaskGrid3.Visibility = Visibility.Visible;
         }
         private void HideMask()
         {
-            EditBar.Visibility = Visibility.Collapsed;
+            EditBarRelativePanel.Visibility = Visibility.Collapsed;
+            ActionBarRelativePanel.Visibility = Visibility.Visible;
             MaskGrid1.Visibility = Visibility.Collapsed;
             MaskGrid2.Visibility = Visibility.Collapsed;
             MaskGrid3.Visibility = Visibility.Collapsed;
         }
         #endregion
 
-        public void UpdateSupportLine(double align)
-        {
-            if (align != 0)
-            {
-                SupportLine.Visibility = Visibility.Visible;
-                SupportLineTranslateTransform.X = align - ScaleScrollViewer.HorizontalOffset;
-            }
-            else
-            {
-                SupportLine.Visibility = Visibility.Collapsed;
-            }
-        }
+        #region -- Socket --
+        StreamSocket socket = new StreamSocket();
 
         private void SocketServerRecv_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -542,7 +450,7 @@ namespace AuraEditor
         }
 
         //Use senddata(string) can send string to server
-        async void senddata(string request)
+        private async void senddata(string request)
         {
             Stream streamOut = socket.OutputStream.AsStreamForWrite();
             StreamWriter writer = new StreamWriter(streamOut);
@@ -557,6 +465,10 @@ namespace AuraEditor
         async void receivedata()
         {
             bool IsConnection = false;
+            string cm;
+            string port;
+            string ip;
+
             do
             {
                 try
@@ -608,11 +520,14 @@ namespace AuraEditor
 
         void startclient()
         {
+            BackgroundWorker bgwSocketServerRecv;
+
             //BackgroundWorker for Socket Server
             bgwSocketServerRecv = new BackgroundWorker();
             bgwSocketServerRecv.DoWork += SocketServerRecv_DoWork;
             bgwSocketServerRecv.RunWorkerAsync();
         }
+        #endregion
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {

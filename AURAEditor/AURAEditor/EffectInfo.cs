@@ -7,6 +7,7 @@ using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
+using AuraEditor.Pages;
 
 namespace AuraEditor
 {
@@ -49,7 +50,7 @@ namespace AuraEditor
             return 0;
         }
 
-        public EffectInfo() {}
+        public EffectInfo() { }
         public EffectInfo(int type)
         {
             Name = GetEffectName(type);
@@ -182,8 +183,8 @@ namespace AuraEditor
         private XmlNode GetWaveListXmlNode(int zoneCount)
         {
             XmlNode waveListNode = CreateXmlNode("waveList");
-            int maxOperatingGridWidth = AuraSpaceManager.Self.MaxOperatingGridWidth;
-            int maxOperatingGridHeight = AuraSpaceManager.Self.MaxOperatingGridHeight;
+            int maxOperatingGridWidth = SpacePage.Self.GetCurrentOperatingGridWidth;
+            int maxOperatingGridHeight = SpacePage.Self.GetCurrentOperatingGridHeight;
             double temp = Angle_CreatorToLService(Angle);
             int maxOperatingGridLength = MaxOperatingLength(maxOperatingGridWidth, maxOperatingGridHeight, Angle_CreatorToLService(Angle));
 
@@ -584,7 +585,7 @@ namespace AuraEditor
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
 
-                if(ColorModeSelection == 3)
+                if (ColorModeSelection == 3)
                 {
                     // wave 1 for HUE
                     XmlNode waveNode1 = CreateXmlNode("wave");

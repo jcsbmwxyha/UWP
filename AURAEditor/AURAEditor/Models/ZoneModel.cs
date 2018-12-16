@@ -8,6 +8,7 @@ using AuraEditor.Common;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
+using AuraEditor.Pages;
 
 namespace AuraEditor.Models
 {
@@ -143,8 +144,8 @@ namespace AuraEditor.Models
 
         public void OnReceiveMouseEvent(MouseEvent mouseEvent)
         {
-            bool shift = AuraSpaceManager.Self.PressShift;
-            bool ctrl = AuraSpaceManager.Self.PressCtrl;
+            bool shift = SpacePage.Self.PressShift;
+            bool ctrl = SpacePage.Self.PressCtrl;
 
             if (mouseEvent == MouseEvent.Click)
             {

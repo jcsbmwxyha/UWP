@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuraEditor.Pages;
+using System;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Math2;
+using static AuraEditor.Common.StorageHelper;
 using CoreCursor = Windows.UI.Core.CoreCursor;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
@@ -213,7 +215,7 @@ namespace AuraEditor.UserControls
             this.Opacity = 0.5;
             this.SetValue(Canvas.ZIndexProperty, 3);
 
-            alignPositions = AuraLayerManager.Self.GetAlignPositions(MyEffect);
+            alignPositions = LayerPage.Self.GetAlignPositions(MyEffect);
         }
         private void EffectLine_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -287,17 +289,17 @@ namespace AuraEditor.UserControls
                 }
             }
 
-            MainPage.Self.UpdateSupportLine(align);
+            LayerPage.Self.UpdateSupportLine(align);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             _isPressed = false;
             m_ScrollTimerClock.Stop();
 
-            MainPage.Self.UpdateSupportLine(0);
+            LayerPage.Self.UpdateSupportLine(0);
             MyEffect.Layer.MoveToFitPosition(MyEffect);
             mouseState = CursorState.None;
-            MainPage.Self.NeedSave = true;
+            NeedSave = true;
             this.Opacity = 1;
             this.SetValue(Canvas.ZIndexProperty, 0);
         }
@@ -327,38 +329,38 @@ namespace AuraEditor.UserControls
         private void EffectlineRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (MyEffect != null)
-                AuraLayerManager.Self.CheckedLayer = MyEffect.Layer;
+                LayerPage.Self.CheckedLayer = MyEffect.Layer;
         }
         private void EffectlineRadioButton_Unchecked(object sender, RoutedEventArgs e)
         {
         }
         private void EffectLine_Click(object sender, RoutedEventArgs e)
         {
-            AuraLayerManager.Self.CheckedEffect = MyEffect;
+            LayerPage.Self.CheckedEffect = MyEffect;
         }
         private void EffectlineRadioButton_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            AuraLayerManager.Self.CheckedEffect = MyEffect;
+            LayerPage.Self.CheckedEffect = MyEffect;
         }
         #endregion
 
         #region -- Right-clicked menu --
         private void CopyItem_Click(object sender, RoutedEventArgs e)
         {
-            AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
+            LayerPage.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
         }
         private void PasteItem_Click(object sender, RoutedEventArgs e)
         {
-            if (AuraLayerManager.Self.CopiedEffect == null)
+            if (LayerPage.Self.CopiedEffect == null)
                 return;
 
-            var copy = TimelineEffect.CloneEffect(AuraLayerManager.Self.CopiedEffect);
+            var copy = TimelineEffect.CloneEffect(LayerPage.Self.CopiedEffect);
             copy.Left = this.Right;
             MyEffect.Layer.InsertTimelineEffectFitly(copy);
         }
         private void CutItem_Click(object sender, RoutedEventArgs e)
         {
-            AuraLayerManager.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
+            LayerPage.Self.CopiedEffect = TimelineEffect.CloneEffect(MyEffect);
             MyEffect.Layer.DeleteEffectLine(this.DataContext as TimelineEffect);
         }
         private void DeleteItem_Click(object sender, RoutedEventArgs e)

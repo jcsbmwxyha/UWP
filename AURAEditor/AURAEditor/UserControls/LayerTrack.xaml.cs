@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using AuraEditor.Pages;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.StorageHelper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -42,27 +43,27 @@ namespace AuraEditor.UserControls
             TimelineEffect effect = new TimelineEffect(type);
             effect.StartTime = m_Layer.GetFirstRoomPosition(1000); // 1s
             m_Layer.AddTimelineEffect(effect);
-            AuraLayerManager.Self.CheckedEffect = effect;
-            MainPage.Self.NeedSave = true;
+            LayerPage.Self.CheckedEffect = effect;
+            NeedSave = true;
         }
 
         private void Track_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            AuraLayerManager.Self.CheckedLayer = m_Layer;
+            LayerPage.Self.CheckedLayer = m_Layer;
 
             var fe = sender as FrameworkElement;
             insertPosition = e.GetCurrentPoint(fe).Position;
         }
         private void Track_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (AuraLayerManager.Self.CheckedLayer == m_Layer)
+            if (LayerPage.Self.CheckedLayer == m_Layer)
                 m_Layer.VisualState = "CheckedPointerOver";
             else
                 m_Layer.VisualState = "PointerOver";
         }
         private void Track_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (AuraLayerManager.Self.CheckedLayer == m_Layer)
+            if (LayerPage.Self.CheckedLayer == m_Layer)
                 m_Layer.VisualState = "Checked";
             else
                 m_Layer.VisualState = "Normal";
@@ -70,7 +71,7 @@ namespace AuraEditor.UserControls
 
         private void PasteItem_Click(object sender, RoutedEventArgs e)
         {
-            var copy = AuraLayerManager.Self.CopiedEffect;
+            var copy = LayerPage.Self.CopiedEffect;
 
             if (copy == null)
                 return;

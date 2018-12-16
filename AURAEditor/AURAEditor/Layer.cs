@@ -1,5 +1,6 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.Models;
+using AuraEditor.Pages;
 using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
@@ -251,9 +252,9 @@ namespace AuraEditor
                 next = GetThePrevious(eff);
 
             if (next != null)
-                AuraLayerManager.Self.CheckedEffect = next;
+                LayerPage.Self.CheckedEffect = next;
             else
-                AuraLayerManager.Self.CheckedEffect = null;
+                LayerPage.Self.CheckedEffect = null;
 
             TimelineEffects.Remove(eff);
         }
@@ -433,8 +434,8 @@ namespace AuraEditor
         {
             double delay_accu = 0;
             double duration = 0;
-            int width = AuraSpaceManager.Self.MaxOperatingGridWidth;
-            int height = AuraSpaceManager.Self.MaxOperatingGridHeight;
+            int width = SpacePage.Self.GetCurrentOperatingGridWidth;
+            int height = SpacePage.Self.GetCurrentOperatingGridHeight;
             double angle = 0;
             double length = MaxOperatingLength(width, height, angle);
             double ledSpeed = 0;
@@ -457,13 +458,13 @@ namespace AuraEditor
 
         public XmlNode ToXmlNodeForScript()
         {
-            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
+            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
             XmlNode groupoNode = CreateXmlNode("group");
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
             attribute.Value = Name;
             groupoNode.Attributes.Append(attribute);
 
-            foreach (var dm in globalDevices)
+            foreach (var dm in deviceModels)
             {
                 XmlNode deviceNode = dm.ToXmlNodeForScript();
                 XmlNode usageNode = GetUsageXmlNode(dm.Type);
@@ -513,8 +514,8 @@ namespace AuraEditor
 
             // devices
             XmlNode devicesNode = CreateXmlNode("devices");
-            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
-            foreach (var d in globalDevices)
+            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            foreach (var d in deviceModels)
             {
                 XmlNode deviceNode = GetDeviceUsageXmlNode(d);
                 devicesNode.AppendChild(deviceNode);

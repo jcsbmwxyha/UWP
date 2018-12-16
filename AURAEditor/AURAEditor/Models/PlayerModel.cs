@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuraEditor.Pages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace AuraEditor.Models
         {
             get
             {
-                double seconds = Position / AuraLayerManager.PixelsPerSecond;
+                double seconds = Position / LayerPage.PixelsPerSecond;
                 return TimeSpan.FromSeconds(seconds).ToString("mm\\:ss\\.ff");
             }
             set

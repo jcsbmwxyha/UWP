@@ -12,38 +12,96 @@
 
     <Page.Resources>
         <ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+            <Style TargetType="Image" x:Key="DeviceImgStyle">
+                <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
+                <Setter Property="Stretch" Value="Fill"/>
+            </Style>
+            <Style TargetType="Canvas">
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+                <Setter Property="Width" Value="2500" />
+                <Setter Property="AllowDrop" Value="True" />
+            </Style>
+            
             <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/Background/grid.png"/>
-            <BitmapImage x:Key="Delete_n" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_n.png"/>
-            <BitmapImage x:Key="Delete_h" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_h.png"/>
-            <BitmapImage x:Key="Delete_s" UriSource="ms-appx:///Assets/Button/asus_ac_delect_btn_s.png"/>
-            <BitmapImage x:Key="GoLeft_n" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_n.png"/>
-            <BitmapImage x:Key="GoLeft_h" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_h.png"/>
-            <BitmapImage x:Key="GoLeft_s" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_s.png"/>
-            <BitmapImage x:Key="GoRight_n" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_n.png"/>
-            <BitmapImage x:Key="GoRight_h" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_h.png"/>
-            <BitmapImage x:Key="GoRight_s" UriSource="ms-appx:///Assets/Button/asus_ac_next_btn_s.png"/>
-            <BitmapImage x:Key="Pause_n" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_n.png"/>
-            <BitmapImage x:Key="Pause_h" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_h.png"/>
-            <BitmapImage x:Key="Pause_s" UriSource="ms-appx:///Assets/Button/asus_ac_pause_btn_s.png"/>
-            <BitmapImage x:Key="Play_n" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_n.png"/>
-            <BitmapImage x:Key="Play_h" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_h.png"/>
-            <BitmapImage x:Key="Play_s" UriSource="ms-appx:///Assets/Button/asus_ac_play_btn_s.png"/>
+            
             <BitmapImage x:Key="Save_n" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_n.png"/>
             <BitmapImage x:Key="Save_h" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_h.png"/>
             <BitmapImage x:Key="Save_s" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_s.png"/>
+            <Style x:Key="SaveButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Save_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <BitmapImage x:Key="More_n" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_n.png"/>
             <BitmapImage x:Key="More_h" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_h.png"/>
             <BitmapImage x:Key="More_s" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_s.png"/>
-            <BitmapImage x:Key="SidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_n.png"/>
-            <BitmapImage x:Key="SidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_h.png"/>
-            <BitmapImage x:Key="SidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_sidepanel_btn_p.png"/>
-            <BitmapImage x:Key="LeftSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_n.png"/>
-            <BitmapImage x:Key="LeftSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_h.png"/>
-            <BitmapImage x:Key="LeftSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_p.png"/>
-            <BitmapImage x:Key="RightSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_n.png"/>
-            <BitmapImage x:Key="RightSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_h.png"/>
-            <BitmapImage x:Key="RightSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_p.png"/>
-
+            <Style x:Key="MoreButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource More_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <BitmapImage x:Key="DeviceSorting_icon" UriSource="ms-appx:///Assets/Button/asus_ac_sorting_ic.png"/>
             <Style x:Key="DeviceSortingButtonStyle"  TargetType="Button">
                 <Setter Property="Height" Value="32"/>
@@ -102,250 +160,6 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="FontSize" Value="16"/>
-            </Style>
-            <Style TargetType="Image" x:Key="DeviceImgStyle">
-                <Setter Property="ManipulationMode" Value="TranslateX, TranslateY"/>
-                <Setter Property="Stretch" Value="Fill"/>
-            </Style>
-            <Style TargetType="Canvas">
-                <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Width" Value="2500" />
-                <Setter Property="AllowDrop" Value="True" />
-            </Style>
-            <Style x:Key="DeleteButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Delete_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="GoLeftButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoLeft_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="GoRightButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource GoRight_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="PauseButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Pause_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="PlayButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Play_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Play_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Play_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="SaveButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="MoreButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource More_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource More_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource More_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style TargetType="ListViewItem">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -368,397 +182,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
-            <Style x:Key="ZoomSliderStyle" TargetType="Slider">
-                <Setter Property="Background" Value="Gray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-                <Setter Property="FontSize" Value="30" />
-                <Setter Property="ManipulationMode" Value="None" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Slider">
-                            <Grid>
-                                <Grid.Resources>
-                                    <Style TargetType="Thumb" x:Key="SliderThumbStyle">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Background" Value="Plum" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Thumb">
-                                                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="16" Margin="2,2,0,0">
-                                                        <Rectangle.Fill>
-                                                            <ImageBrush ImageSource="Assets/ZoomSlider/asus_ac_slider_btn_n.png"/>
-                                                        </Rectangle.Fill>
-                                                    </Rectangle>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Grid.Resources>
-
-                                <Grid x:Name="SliderContainer" Background="Transparent" Control.IsTemplateFocusTarget="True">
-                                    <Grid x:Name="HorizontalTemplate" MinHeight="45">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="20" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="15" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="15" />
-                                        </Grid.RowDefinitions>
-                                        <Rectangle x:Name="HorizontalTrackRect" Fill="White"
-                                                   Height="2" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,0"/>
-                                        <Rectangle x:Name="HorizontalDecreaseRect" Grid.Row="1" Fill="White"/>
-                                        <Thumb x:Name="HorizontalThumb" Background="Black"
-                                               Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}"
-                                               Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid x:Name="VerticalTemplate" Visibility="Collapsed">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="1" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="15" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="15" />
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
-                                        <Rectangle x:Name="VerticalDecreaseRect" Grid.Row="1">
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                                    <GradientStop Color="Red" Offset="0.0"/>
-                                                    <GradientStop Color="Yellow" Offset="0.75"/>
-                                                    <GradientStop Color="White" Offset="1.0"/>
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        <Thumb x:Name="VerticalThumb" Background="{ThemeResource SystemControlForegroundAccentBrush}" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="LeftSidePanelButtonStyle"  TargetType="Button">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource LeftSidePanel_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="RightSidePanelButtonStyle"  TargetType="Button">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_n}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_h}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_s}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            
-            <Style x:Key="LayerTrackScrollViewer" TargetType="ScrollViewer">
-                <Setter Property="HorizontalScrollMode" Value="Auto" />
-                <Setter Property="VerticalScrollMode" Value="Auto" />
-                <Setter Property="IsHorizontalRailEnabled" Value="True" />
-                <Setter Property="IsVerticalRailEnabled" Value="True" />
-                <Setter Property="IsTabStop" Value="False" />
-                <Setter Property="ZoomMode" Value="Disabled" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="VerticalContentAlignment" Value="Top" />
-                <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ScrollViewer">
-                            <Border x:Name="Root" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="ScrollingIndicatorStates">
-
-                                        <VisualStateGroup.Transitions>
-                                            <VisualTransition From="MouseIndicator" To="NoIndicator">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualTransition>
-                                            <VisualTransition From="MouseIndicatorFull" To="NoIndicator">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualTransition>
-                                            <VisualTransition From="MouseIndicatorFull" To="MouseIndicator">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualTransition>
-                                            <VisualTransition From="TouchIndicator" To="NoIndicator">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
-                                                            <DiscreteObjectKeyFrame.Value>
-                                                                <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
-                                                            </DiscreteObjectKeyFrame.Value>
-                                                        </DiscreteObjectKeyFrame>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualTransition>
-                                        </VisualStateGroup.Transitions>
-                                        <VisualState x:Name="NoIndicator"/>
-                                        <VisualState x:Name="TouchIndicator">
-
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="MouseIndicator">
-
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="MouseIndicatorFull">
-
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-
-                                    <VisualStateGroup x:Name="ScrollBarSeparatorStates">
-                                        <VisualStateGroup.Transitions>
-                                            <VisualTransition From="ScrollBarSeparatorExpanded" To="ScrollBarSeparatorCollapsed">
-                                                <Storyboard>
-                                                    <DoubleAnimation Duration="{ThemeResource ScrollViewerSeparatorContractDuration}"
-                                                BeginTime="{ThemeResource ScrollViewerSeparatorContractBeginTime}"
-                                                Storyboard.TargetName="ScrollBarSeparator"
-                                                Storyboard.TargetProperty="Opacity"
-                                                To="0" />
-                                                </Storyboard>
-                                            </VisualTransition>
-                                        </VisualStateGroup.Transitions>
-                                        <VisualState x:Name="ScrollBarSeparatorCollapsed" />
-                                        <VisualState x:Name="ScrollBarSeparatorExpanded">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="{ThemeResource ScrollViewerSeparatorExpandDuration}"
-                                          BeginTime="{ThemeResource ScrollViewerSeparatorExpandBeginTime}"
-                                          Storyboard.TargetName="ScrollBarSeparator"
-                                          Storyboard.TargetProperty="Opacity"
-                                          To="1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="ScrollBarSeparatorExpandedWithoutAnimation">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0"
-                                            BeginTime="{ThemeResource ScrollViewerSeparatorExpandBeginTime}"
-                                            Storyboard.TargetName="ScrollBarSeparator"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="ScrollBarSeparatorCollapsedWithoutAnimation" >
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0"
-                                            BeginTime="{ThemeResource ScrollViewerSeparatorContractBeginTime}"
-                                            Storyboard.TargetName="ScrollBarSeparator"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="0" />
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid Background="{TemplateBinding Background}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="36" />
-                                    </Grid.RowDefinitions>
-                                    <ScrollContentPresenter x:Name="ScrollContentPresenter"
-                                                    Grid.ColumnSpan="2"
-                                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                    Margin="{TemplateBinding Padding}" />
-                                    <ScrollBar x:Name="VerticalScrollBar"
-                                       Grid.Column="1"
-                                       IsTabStop="False"
-                                       Maximum="{TemplateBinding ScrollableHeight}"
-                                       Orientation="Vertical"
-                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                       Value="{TemplateBinding VerticalOffset}"
-                                       ViewportSize="{TemplateBinding ViewportHeight}"
-                                       HorizontalAlignment="Right" />
-                                    <ScrollBar x:Name="HorizontalScrollBar"
-                                               Margin="10,0,0,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Top"
-                                               Width="1000"
-                                               IsTabStop="False"
-                                               Maximum="{TemplateBinding ScrollableWidth}"
-                                               Orientation="Horizontal"
-                                               Grid.Row="1"
-                                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                                               Value="{TemplateBinding HorizontalOffset}"
-                                               ViewportSize="{TemplateBinding ViewportWidth}" />
-                                    <Border x:Name="ScrollBarSeparator"
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Opacity="0"
-                                    Background="Transparent" />
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -766,17 +189,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="12*"/>
-            <RowDefinition Height="36"/>
-            <RowDefinition Height="160"/>
-            <RowDefinition Height="36"/>
+            <RowDefinition Height="232"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="3"
+        <!-- Backgroud image -->
+        <Image Source="Assets/Background/asus_ac_bg.png" Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
+        <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
+
+        <!-- Masks -->
+        <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="5"
               Background="#88000000" Canvas.ZIndex="9" x:FieldModifier="public" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock HorizontalAlignment="Center" FontSize="34">
@@ -787,61 +213,61 @@
                 </TextBlock>
             </StackPanel>
         </Grid>
+        <Grid Name="MaskGrid1" Background="#88000000" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2"/>
+        <Grid Name="MaskGrid2" Background="#88000000" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"/>
+        <Grid Name="MaskGrid3" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
 
-        <!--Backgroud image-->
-        <Image Source="Assets/Background/asus_ac_bg.png"
-               Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
-        <Image Grid.Row="2"
-               Grid.Column="0"
-               Grid.ColumnSpan="3"
-               Source="Assets/Layer/asus_auraeditor_time_bg.png"
-               Stretch="Fill"/>
-
-        <Grid x:Name="ActionBar_Column1" Grid.Column="1">
-            <RelativePanel Name="ActionBarRelativePanel" HorizontalAlignment="Left" MinWidth="600"
-                           VerticalAlignment="Center" Grid.Column="1">
-                <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
+        <!-- Row 0 -->
+        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
+                Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
+        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1">
+            <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
                         x:FieldModifier="Public" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
                                        TextWrapping="Wrap" Width="144"/>
-                        </ToolTip>
-                    </ToolTipService.ToolTip>
-                </Button>
-                <Rectangle x:Name="SetLayerRectangle" RelativePanel.AlignLeftWithPanel="True"
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <Rectangle x:Name="SetLayerRectangle" RelativePanel.AlignLeftWithPanel="True"
                            Width="{Binding ElementName=SetLayerButton, Path=ActualWidth}"
                            Height="{Binding ElementName=SetLayerButton, Path=ActualHeight}"
                            Margin="{Binding ElementName=SetLayerButton, Path=Margin}" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
                                        TextWrapping="Wrap" Width="144"/>
-                        </ToolTip>
-                    </ToolTipService.ToolTip>
-                </Rectangle>
-                <Button Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Rectangle>
+            <Button Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
                         Content="Device Sorting" Margin="20,0,0,0" Click="SortDeviceButton_Click">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
                                        TextWrapping="Wrap" Width="144"/>
-                        </ToolTip>
-                    </ToolTipService.ToolTip>
-                </Button>
-                <Button Name="SaveAndApplyButton" Style="{StaticResource RogButtonStyle2}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <Button Name="SaveAndApplyButton" Style="{StaticResource RogButtonStyle2}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
                         Content="Save and Apply" Click="SaveAndApplyButton_Click">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
                                        TextWrapping="Wrap" Width="144"/>
-                        </ToolTip>
-                    </ToolTipService.ToolTip>
-                </Button>
-            </RelativePanel>
-        </Grid>
-        <Grid x:Name="ActionBar_Column2" Grid.Column="2">
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+        </RelativePanel>
+        <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1" Visibility="Collapsed">
+            <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
+            <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True"
+                        x:FieldModifier="Public" Margin="0,0,40,0" Style="{StaticResource RogButtonStyle2}"/>
+            <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
+        </RelativePanel>
+        <Grid x:Name="ActionBar_Column2" Grid.Column="4">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button x:Name="FileListButton" Content="" Foreground="White"
                     Width="200" Margin="0,0,15,0" Style="{StaticResource RogComboBoxButtonStyle}">
@@ -870,6 +296,9 @@
                 </Button>
             </StackPanel>
         </Grid>
+        <!--<Button Name="DebugButton" Grid.Row="0" Click="DebugButton_Click" Content="Rescan" Background="White" Canvas.ZIndex="5"/>-->
+
+        <!-- Row 1 -->
         <ScrollViewer Name="EffectBlockScrollViewer"
                       Grid.Row="1" Grid.Column="0"
                       HorizontalScrollBarVisibility="Auto"
@@ -886,414 +315,13 @@
                 </ListView>
             </StackPanel>
         </ScrollViewer>
-        <Grid Name="SpaceGrid" Grid.Row="1" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-            </Grid.ColumnDefinitions>
-            <Button Name="LeftSideOpenedButton" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Top"
-                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="LeftSidePanelButton_Click"/>
-            <Button Name="LeftSideClosedButton" Grid.Row="1" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Top"
-                    Style="{StaticResource RightSidePanelButtonStyle}" Click="LeftSidePanelButton_Click" Visibility="Collapsed"/>
-            <Image Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png"
-                   Width="1" Stretch="Fill" HorizontalAlignment="Right"/>
-            <Button Name="RightSideOpenedButton" Grid.Row="1" Grid.Column="2" Width="10" Height="50" Canvas.ZIndex="5"
-                    VerticalAlignment="Top" HorizontalAlignment="Right"
-                    Style="{StaticResource RightSidePanelButtonStyle}" Click="RightSidePanelButton_Click"/>
-            <Button Name="RightSideClosedButton" Grid.Row="1" Grid.Column="2" Width="10" Height="50" Canvas.ZIndex="5"
-                    VerticalAlignment="Top" HorizontalAlignment="Right"
-                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="RightSidePanelButton_Click" Visibility="Collapsed"/>
-            <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Source="Assets/Line/asus_ac_shortline_v_bg.png"
-                   Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
-            <Button x:Name="SpaceZoomButton" Foreground="White" Grid.Row="1" Grid.Column="1" Content="50 %"
-                    Width="110" Canvas.ZIndex="6" VerticalAlignment="Bottom" x:FieldModifier="public"
-                    Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
-                <Button.Flyout>
-                    <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
-                        <MenuFlyout.MenuFlyoutPresenterStyle>
-                            <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource RogMenuFlyoutPresenterStyle}">
-                                <Setter Property="MaxWidth" Value="110"/>
-                            </Style>
-                        </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem Width="110" Text="25 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                        <MenuFlyoutItem Width="110" Text="50 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                        <MenuFlyoutItem Width="110" Text="75 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                        <MenuFlyoutItem Width="110" Text="100 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                        <MenuFlyoutItem Width="110" Text="125 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                        <MenuFlyoutItem Width="110" Text="150 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    </MenuFlyout>
-                </Button.Flyout>
-            </Button>
-            <ScrollViewer Name="SpaceAreaScrollViewer"
-                          x:FieldModifier="public"
-                          Grid.Column="1" Grid.RowSpan="2"
-                          MinZoomFactor="0.5" MaxZoomFactor="3" ZoomMode="Enabled"
-                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas Name="SpaceAreaCanvas"  VerticalAlignment="Top"
-                        x:FieldModifier="public" Width="4800" Height="1920"
-                        HorizontalAlignment="Left">
-                    <Rectangle Name="MouseRectangle" Width="0" Height="0"
-                               Fill="#66FF0029"
-                               Stroke="Red" StrokeThickness="2" StrokeDashArray="5,2"
-                               HorizontalAlignment="Left" VerticalAlignment="Top"
-                               x:FieldModifier="Public"
-                               Canvas.ZIndex="8">
-                        <Rectangle.RenderTransform>
-                            <CompositeTransform/>
-                        </Rectangle.RenderTransform>
-                    </Rectangle>
-                    <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
-                           x:FieldModifier="Public"/>
-                </Canvas>
-            </ScrollViewer>
-            <Image Grid.Row="1" Grid.Column="1" Canvas.ZIndex="-3"
-                   Source="Assets/Background/asus_ac_stage_bg.png" Stretch="Fill"/>
-        </Grid>
-        <Frame Name="EffectInfoFrame" Grid.Row="1" Grid.Column="2" x:FieldModifier="public"/>
-        <RelativePanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
-            <Button Name="GoLeftButton"
-                    Style="{StaticResource GoLeftButtonStyle}"
-                    Click="JumpToBeginningButton_Click"
-                    Margin="10,0,0,0"
-                    RelativePanel.AlignLeftWithPanel="True">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to beginning"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="PlayButton"
-                    Style="{StaticResource PlayButtonStyle}"
-                    Click="PlayButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="GoLeftButton">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Play"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}"
-                    Click="PauseButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="PlayButton">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Pause"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="StopButton"
-                    Content="&#xE009;" FontFamily="Segoe MDL2 Assets" Foreground="White"
-                    Click="StopButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="PauseButton">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Stop"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="GoRightButton"
-                    Click="JumpToEndButton_Click"
-                    Margin="3,0,0,0"
-                    Style="{StaticResource GoRightButtonStyle}"
-                    RelativePanel.RightOf="StopButton">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to end"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <TextBlock Name="ClockText"
-                       Text="{Binding TimerText}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontSize="16"
-                       Margin="0,0,10,0"
-                       RelativePanel.AlignRightWithPanel="True"
-                       Foreground="White"/>
-        </RelativePanel>
-        
-        <ScrollViewer Name="ScaleScrollViewer" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-            <Canvas Name="ScaleCanvas" x:FieldModifier="public" Width="5000">
-                <usercontrol:PlayerCursor x:Name="PlayerCursor_Head" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0"
-                                        Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" x:FieldModifier="public">
-                    <usercontrol:PlayerCursor.RenderTransform>
-                        <TranslateTransform x:Name="PlayerCursorTranslateTransform" X="{Binding Position, Mode=TwoWay}"/>
-                    </usercontrol:PlayerCursor.RenderTransform>
-                </usercontrol:PlayerCursor>
-            </Canvas>
-        </ScrollViewer>
-        <ScrollViewer Name="TitleScrollViewer"
-                      Grid.Column="0"
-                      Grid.Row="3"
-                      VerticalScrollMode="Enabled"
-                      VerticalScrollBarVisibility="Hidden"
-                      HorizontalAlignment="Left"
-                      ViewChanged="TitleScrollViewer_ViewChanged">
-            <ListView x:Name="LayerListView" x:FieldModifier="Public" HorizontalAlignment="Left"
-                      CanReorderItems="True" CanDragItems="True" AllowDrop="True" SelectionMode="Extended"
-                      DragItemsStarting="LayerListView_DragItemsStarting" ItemsSource="{x:Bind LayerManager.Layers}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <usercontrol:LayerTitle HorizontalAlignment="Center" Height="52"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListViewItem">
-                                    <Grid x:Name="ContentBorder"
-                                          Control.IsTemplateFocusTarget="True"
-                                          FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
-                                          Background="{TemplateBinding Background}"
-                                          BorderBrush="{TemplateBinding BorderBrush}"
-                                          BorderThickness="{TemplateBinding BorderThickness}"
-                                          RenderTransformOrigin="0.5,0.5">
-                                        <Grid.RenderTransform>
-                                            <ScaleTransform x:Name="ContentBorderScale" />
-                                        </Grid.RenderTransform>
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup x:Name="DragStates">
-                                                <VisualState x:Name="NotDragging" />
-
-                                                <VisualState x:Name="Dragging">
-
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
-                                                        <DragItemThemeAnimation TargetName="ContentBorder" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="DraggingTarget" />
-
-                                                <VisualState x:Name="MultipleDraggingPrimary">
-
-                                                    <Storyboard>
-                                                        <!-- These two Opacity animations are required - the FadeInThemeAnimations
-                                             on the same elements animate an internal Opacity. -->
-                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayText"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="1" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayTextBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="1" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectSquare"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="0" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectCheck"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="0" />
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
-                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
-                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
-                                                        <DragItemThemeAnimation TargetName="ContentBorder" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="MultipleDraggingSecondary" />
-
-                                                <VisualState x:Name="DraggedPlaceholder" />
-
-                                                <VisualState x:Name="Reordering">
-
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0:0:0.240"
-                                            To="{ThemeResource ListViewItemReorderThemeOpacity}" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="ReorderingTarget">
-
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0:0:0.240"
-                                            To="{ThemeResource ListViewItemReorderTargetThemeOpacity}" />
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
-                                            Storyboard.TargetProperty="ScaleX"
-                                            Duration="0:0:0.240"
-                                            To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
-                                            Storyboard.TargetProperty="ScaleY"
-                                            Duration="0:0:0.240"
-                                            To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="MultipleReorderingPrimary">
-
-                                                    <Storyboard>
-                                                        <!-- These two Opacity animations are required - the FadeInThemeAnimations
-                                             on the same elements animate an internal Opacity. -->
-                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayText"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="1" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiArrangeOverlayTextBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="1" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectSquare"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="0" />
-                                                        <DoubleAnimation Storyboard.TargetName="MultiSelectCheck"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="0" />
-                                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0:0:0.240"
-                                            To="{ThemeResource ListViewItemDragThemeOpacity}" />
-                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
-                                                        <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="ReorderedPlaceholder">
-
-                                                    <Storyboard>
-                                                        <FadeOutThemeAnimation TargetName="ContentBorder" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualState x:Name="DragOver">
-
-                                                    <Storyboard>
-                                                        <DropTargetItemThemeAnimation TargetName="ContentBorder" />
-                                                    </Storyboard>
-                                                </VisualState>
-
-                                                <VisualStateGroup.Transitions>
-                                                    <VisualTransition To="NotDragging" GeneratedDuration="0:0:0.2" />
-                                                </VisualStateGroup.Transitions>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <Rectangle x:Name="BorderBackground"
-                                                   IsHitTestVisible="False"
-                                                   Fill="Transparent"
-                                                   Opacity="0"
-                                                   Control.IsTemplateFocusTarget="True" />
-                                        <Grid x:Name="ContentPresenterGrid" Background="Transparent" Margin="0,0,0,0">
-                                            <Grid.RenderTransform>
-                                                <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
-                                            </Grid.RenderTransform>
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                              ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              Content="{TemplateBinding Content}"
-                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                        </Grid>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-            </ListView>
-        </ScrollViewer>
-        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2" Canvas.ZIndex="2"
-                      HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}">
-            <Canvas Name="TrackCanvas" VerticalAlignment="Top" x:FieldModifier="public">
-                <Line Name="PlayerCursor_Tail" X1="0" Y1="0" X2="0" Y2="500" Canvas.ZIndex="8" Stroke="White" StrokeThickness="0.5">
-                    <Line.RenderTransform>
-                        <TranslateTransform X="{Binding Position, Mode=OneWay}"/>
-                    </Line.RenderTransform>
-                </Line>
-                <StackPanel Name="TrackStackPanel" x:FieldModifier="public"/>
-            </Canvas>
-        </ScrollViewer>
-        <Line Name="SupportLine" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
-              X1="0" Y1="10" X2="0" Y2="250" StrokeDashArray="2,1" Stroke="Green" StrokeThickness="2"
-              Canvas.ZIndex="10" Visibility="Collapsed">
-            <Line.RenderTransform>
-                <TranslateTransform x:Name="SupportLineTranslateTransform"/>
-            </Line.RenderTransform>
-        </Line>
-        <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="-1" HorizontalAlignment="Left"
-                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-            <ItemsControl Name="LayerBackgroundItemsControl" ItemsSource="{x:Bind Path=LayerManager.Layers}" x:FieldModifier="public">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Height" Value="52"/>
-                        <Setter Property="Width" Value="4000"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="local:Layer">
-                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}"
-                                                     Width="4000" Height="40"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-        <Grid Grid.Column="0" Grid.Row="4">
-            <Button x:Name="TrashCanButton" Style="{StaticResource DeleteButtonStyle}" VerticalAlignment="Top"
-                    Click="TrashCanButton_Click" DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
-                    HorizontalAlignment="Right">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Delete layer"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-        </Grid>
-        <Grid Name="LayerScrollGrid" Grid.Row="4" Grid.Column="1" SizeChanged="LayerScrollGrid_SizeChanged"/>
-        <RelativePanel Name="LayerSliderGrid" Grid.Row="4" Grid.Column="2" Canvas.ZIndex="8">
-            <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.AlignLeftWithPanel="True"
-                    Click="MinusButton_Click" Margin="3,3,0,0"/>
-            <Slider Name="LayerZoomSlider" Style="{StaticResource ZoomSliderStyle}"
-                    HorizontalAlignment="Left" VerticalAlignment="Center" RelativePanel.LeftOf="PlusButton"
-                    Maximum="6" Minimum="1" Width="223" Margin="0,0,0,0"
-                    ValueChanged="LayerZoomSlider_ValueChanged"/>
-            <Button Name="PlusButton" Style="{StaticResource PlusButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Click="PlusButton_Click" Margin="0,3,3,0" VerticalAlignment="Center"/>
-        </RelativePanel>
-
-        <TextBlock x:Name="StatusTextBlock" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="20,10,0,0" Text="" VerticalAlignment="Top" Width="168" Foreground="White"
+        <TextBlock x:Name="StatusTextBlock" Grid.Row="1" HorizontalAlignment="Left" FontSize="10"
+                   VerticalAlignment="Bottom" Text="" Width="168" Foreground="White"
                    x:FieldModifier="public"/>
-        <!--<Button Name="DebugButton" Grid.Row="4" Click="DebugButton_Click" Content="Rescan" Background="White" Canvas.ZIndex="20"/>-->
-        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
-                Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
-        <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
-        <Grid Name="EditBar" Background="Black" Visibility="Collapsed" Grid.Column="1">
-            <RelativePanel Grid.Column="1" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400">
-                <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
-                <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True"
-                        x:FieldModifier="Public" Margin="0,0,40,0" Style="{StaticResource RogButtonStyle2}"/>
-                <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
-            </RelativePanel>
-        </Grid>
-        <Grid Name="MaskGrid1" Background="#88000000" Visibility="Collapsed" Grid.Row="1"/>
-        <Grid Name="MaskGrid2" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2"/>
-        <Grid Name="MaskGrid3" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
+        <Frame Name="SpaceFrame" Grid.Row="1" Grid.Column="1"/>
+        <Frame Name="EffectInfoFrame" Grid.Row="1" Grid.Column="4" x:FieldModifier="public"/>
+
+        <!-- Row 2 -->
+        <Frame Name="LayerFrame" Grid.Row="2" Grid.ColumnSpan="3"/>
     </Grid>
 </Page>

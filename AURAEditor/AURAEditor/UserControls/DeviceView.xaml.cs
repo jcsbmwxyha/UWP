@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Models;
+using AuraEditor.Pages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -6,6 +7,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Math2;
+using static AuraEditor.Common.StorageHelper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -80,8 +82,8 @@ namespace AuraEditor.UserControls
         private void Device_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             SetPosition(
-                TT.X + e.Delta.Translation.X / AuraSpaceManager.Self.SpaceZoomFactor,
-                TT.Y + e.Delta.Translation.Y / AuraSpaceManager.Self.SpaceZoomFactor);
+                TT.X + e.Delta.Translation.X / SpacePage.Self.SpaceZoomFactor,
+                TT.Y + e.Delta.Translation.Y / SpacePage.Self.SpaceZoomFactor);
 
             Canvas.SetZIndex(this, 3);
         }
@@ -91,10 +93,10 @@ namespace AuraEditor.UserControls
                 RoundToGrid(TT.X),
                 RoundToGrid(TT.Y));
 
-            if (!AuraSpaceManager.Self.IsPiling(m_DeviceModel))
+            if (!SpacePage.Self.IsPiling(m_DeviceModel))
             {
-                AuraSpaceManager.Self.DeleteOverlappingTempDevice(m_DeviceModel);
-                AuraSpaceManager.Self.MoveDeviceMousePosition(m_DeviceModel,
+                SpacePage.Self.DeleteOverlappingTempDevice(m_DeviceModel);
+                SpacePage.Self.MoveDeviceMousePosition(m_DeviceModel,
                     RoundToGrid(TT.X - _oldPixelPosition.X),
                     RoundToGrid(TT.Y - _oldPixelPosition.Y));
             }
@@ -103,7 +105,7 @@ namespace AuraEditor.UserControls
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
 
-            MainPage.Self.NeedSave = true;
+            NeedSave = true;
             Canvas.SetZIndex(this, 0);
             VisualStateManager.GoToState(this, "Hover", false);
         }

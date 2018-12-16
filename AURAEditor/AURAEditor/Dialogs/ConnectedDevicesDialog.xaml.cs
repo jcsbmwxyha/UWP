@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Models;
+using AuraEditor.Pages;
 using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
@@ -31,20 +32,20 @@ namespace AuraEditor.Dialogs
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
+            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
             foreach (SyncDevice sd in m_SyncDeviceList)
             {
-                DeviceModel find = globalDevices.Find(d => d.Name == sd.Name);
+                DeviceModel find = deviceModels.Find(d => d.Name == sd.Name);
                 if (find != null)
                     find.Status = DeviceStatus.OnStage;
             }
 
-            NotifySpaceManager();
+            NotifyIngroupDevicesChanged();
             this.Hide();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            NotifySpaceManager();
+            NotifyIngroupDevicesChanged();
             this.Hide();
         }
 
@@ -68,7 +69,7 @@ namespace AuraEditor.Dialogs
                 }
                 ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
 
-                NotifySpaceManager();
+                NotifyIngroupDevicesChanged();
                 UpdateSelectedText();
             }
             catch
@@ -76,9 +77,9 @@ namespace AuraEditor.Dialogs
                 MainPage.Self.StatusTextBlock.Text = "Rescan failed !";
             }
         }
-        private void NotifySpaceManager()
+        private void NotifyIngroupDevicesChanged()
         {
-            AuraSpaceManager.Self.RefreshStageDevices(GetIngroupDevices());
+            SpacePage.Self.OnIngroupDevicesChanged();
         }
         public List<SyncDevice> GetIngroupDevices()
         {
@@ -145,8 +146,8 @@ namespace AuraEditor.Dialogs
         static private List<XmlNode> FilterNodes(List<XmlNode> deviceNodes)
         {
             List<XmlNode> results = new List<XmlNode>();
-            List<DeviceModel> globalDevices = AuraSpaceManager.Self.DeviceModelCollection;
-            List<DeviceModel> existedDevices = globalDevices.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
+            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            List<DeviceModel> existedDevices = deviceModels.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
 
             while (deviceNodes.Count != 0)
             {

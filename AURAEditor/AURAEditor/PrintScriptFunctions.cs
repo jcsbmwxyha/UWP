@@ -34,14 +34,14 @@ namespace AuraEditor
             XmlNode effectProviderNode = CreateXmlNode("effectProvider");
 
             XmlNode periodNode = CreateXmlNode("period");
-            periodNode.InnerText = LayerManager.PlayTime.ToString();
+            periodNode.InnerText = LayerPage.PlayTime.ToString();
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            if(repeat)
+            if (repeat)
                 attribute.Value = "true";
             else
                 attribute.Value = "false";
             periodNode.Attributes.Append(attribute);
-            
+
             effectProviderNode.AppendChild(periodNode);
             effectProviderNode.AppendChild(GetQueueXmlNode());
 
@@ -50,11 +50,11 @@ namespace AuraEditor
         private XmlNode GetQueueXmlNode()
         {
             XmlNode queueNode = CreateXmlNode("queue");
-            double maxDistance = MaxOperatingLength(SpaceManager.MaxOperatingGridWidth, SpaceManager.MaxOperatingGridHeight, 0);
+            double maxDistance = MaxOperatingLength(SpacePage.GetCurrentOperatingGridWidth, SpacePage.GetCurrentOperatingGridHeight, 0);
             int effectCount = 0;
             int layerCount = 0;
 
-            foreach (Layer layer in LayerManager.Layers)
+            foreach (Layer layer in LayerPage.Layers)
             {
                 if (layer.Eye == false)
                     continue;
@@ -117,7 +117,7 @@ namespace AuraEditor
         {
             XmlNode viewportNode = CreateXmlNode("viewport");
 
-            foreach (Layer layer in LayerManager.Layers)
+            foreach (Layer layer in LayerPage.Layers)
             {
                 viewportNode.AppendChild(layer.ToXmlNodeForScript());
             }
@@ -128,7 +128,7 @@ namespace AuraEditor
         {
             XmlNode effectListNode = CreateXmlNode("effectList");
 
-            foreach (Layer layer in LayerManager.Layers)
+            foreach (Layer layer in LayerPage.Layers)
             {
                 if (layer.Eye == false)
                     continue;
