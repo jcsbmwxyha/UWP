@@ -47,7 +47,7 @@ namespace FrameCoordinatesGenerator
                 if (MyTextBox.Text != "")
                 {
                     m_Model.Editing = false;
-                    this.Focus(FocusState.Programmatic);
+                    MainPage.Self.ImageScrollViewer.Focus(FocusState.Programmatic);
                 }
             }
             else if (!e.Key.ToString().Contains("Number"))
