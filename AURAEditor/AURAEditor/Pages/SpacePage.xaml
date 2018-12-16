@@ -113,25 +113,31 @@
         </ScrollViewer>
         <Image Grid.Row="1" Grid.Column="1" Canvas.ZIndex="-3"
                Source="ms-appx:///Assets/Background/asus_ac_stage_bg.png" Stretch="Fill"/>
-        <Button x:Name="SpaceZoomButton" Foreground="White" Grid.Row="1" Grid.Column="1" Content="50 %"
+        <RelativePanel VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1">
+            <Button x:Name="SpaceZoomButton" Foreground="White" Grid.Row="1" Grid.Column="1" Content="50 %"
                     Width="110" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="0,0,0,15" Style="{StaticResource RogComboBoxButtonStyle}">
-            <Button.Flyout>
-                <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
-                    <MenuFlyout.MenuFlyoutPresenterStyle>
-                        <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource RogMenuFlyoutPresenterStyle}">
-                            <Setter Property="MaxWidth" Value="110"/>
-                        </Style>
-                    </MenuFlyout.MenuFlyoutPresenterStyle>
-                    <MenuFlyoutItem Width="110" Text="25 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    <MenuFlyoutItem Width="110" Text="50 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    <MenuFlyoutItem Width="110" Text="75 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    <MenuFlyoutItem Width="110" Text="100 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    <MenuFlyoutItem Width="110" Text="125 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                    <MenuFlyoutItem Width="110" Text="150 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                </MenuFlyout>
-            </Button.Flyout>
-        </Button>
+                <Button.Flyout>
+                    <MenuFlyout x:Name="MenuFlyout" Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                <Setter Property="MaxWidth" Value="110"/>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem Width="110" Text="25 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                        <MenuFlyoutItem Width="110" Text="50 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                        <MenuFlyoutItem Width="110" Text="75 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                        <MenuFlyoutItem Width="110" Text="100 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                        <MenuFlyoutItem Width="110" Text="125 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                        <MenuFlyoutItem Width="110" Text="150 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+            <Button Name="DefaultViewButton" RelativePanel.RightOf="SpaceZoomButton" Height="32" Width="36" Margin="2,8,0,0" FontSize="16"
+                    Content="&#xE81D;" FontFamily="Segoe MDL2 Assets" Foreground="White" Click="DefaultViewButton_Click"/>
+            <Button Name="FitAllButton" RelativePanel.RightOf="DefaultViewButton" Height="32" Width="36" Margin="2,8,0,0" FontSize="16"
+                    Content="&#xE960;" FontFamily="Segoe MDL2 Assets" Foreground="White" Click="FitAllButton_Click"/>
+        </RelativePanel>
         
         <!-- Sidepanel Button -->
         <Button Name="LeftSideOpenedButton" Grid.RowSpan="2" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Center"

@@ -858,5 +858,15 @@ namespace AuraEditor.Pages
 
             return spaceNode;
         }
+
+        private void FitAllButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DefaultViewButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
