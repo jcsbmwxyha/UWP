@@ -27,6 +27,7 @@ namespace AuraEditor.Pages
     public sealed partial class LayerPage : Page
     {
         static public LayerPage Self;
+        private PlayerModel playerModel;
 
         public LayerPage()
         {
@@ -38,7 +39,10 @@ namespace AuraEditor.Pages
             LayerListView.ItemsSource = Layers;
             LayerBackgroundItemsControl.ItemsSource = Layers;
             Layers.CollectionChanged += LayersChanged;
-            InitializePlayerStructure();
+            InitializeCursor();
+            playerModel = new PlayerModel();
+
+            LayerZoomSlider.Value = 2;
         }
 
         private Frame m_EffectInfoFrame;
@@ -134,6 +138,27 @@ namespace AuraEditor.Pages
                 return (effect != null) ? effect.Right : 0;
             }
         }
+        private TimelineEffect GetRightmostEffect()
+        {
+            double position = 0;
+            double rightmostPosition = 0;
+            TimelineEffect rightmostEffect = null;
+
+            foreach (Layer layer in Layers)
+            {
+                foreach (var effect in layer.TimelineEffects)
+                {
+                    position = effect.Left + effect.Width;
+
+                    if (position > rightmostPosition)
+                    {
+                        rightmostPosition = position;
+                        rightmostEffect = effect;
+                    }
+                }
+            }
+            return rightmostEffect;
+        }
 
         #region -- Layers --
         public ObservableCollection<Layer> Layers { get; set; }
@@ -225,94 +250,18 @@ namespace AuraEditor.Pages
             }
         }
 
-        #region -- Player --
-        public class TimelinePlayer
+        #region -- Cursor --
+        private Storyboard cursorStoryboard;
+        private DoubleAnimation cursorAnimation;
+
+        private void InitializeCursor()
         {
-            private Storyboard PlayerCursorStoryboard;
-            private DoubleAnimation animation;
-            private PlayerModel pm;
-
-            public TimelinePlayer(PlayerModel pm)
-            {
-                this.pm = pm;
-
-                PlayerCursorStoryboard = new Storyboard();
-                PlayerCursorStoryboard.Completed += (s, e) => pm.Position = 0;
-
-                animation = new DoubleAnimation();
-                animation.EnableDependentAnimation = true;
-                Storyboard.SetTarget(animation, Self);
-                Storyboard.SetTargetProperty(animation, "TimelineCursorPosition");
-            }
-
-            public void Play()
-            {
-                double from = pm.Position;
-                double to = LayerPage.Self.RightmostPosition;
-                double duration = LayerPage.PositionToTime(to) - LayerPage.PositionToTime(from);
-
-                StartStoryboard(duration, from, to);
-            }
-            public void Pause()
-            {
-                PlayerCursorStoryboard.Pause();
-            }
-            public void Stop()
-            {
-                PlayerCursorStoryboard.Stop();
-                pm.Position = 0;
-            }
-            public double GetCursorPosition()
-            {
-                return pm.Position;
-            }
-
-            public void OnLevelChanged(double rate)
-            {
-                pm.Position = pm.Position * rate;
-
-                if (PlayerCursorStoryboard.GetCurrentState() != ClockState.Active)
-                    return;
-
-                double currentTime = GetStoryCurrentTime();
-                double duration = animation.Duration.TimeSpan.TotalMilliseconds;
-                double leftTime = duration - currentTime;
-                double from = pm.Position;
-                double to = LayerPage.Self.RightmostPosition;
-
-                StartStoryboard(leftTime, from, to);
-            }
-            private double GetStoryCurrentTime()
-            {
-                Duration d = PlayerCursorStoryboard.Duration;
-                return PlayerCursorStoryboard.GetCurrentTime().TotalMilliseconds;
-            }
-            private void StartStoryboard(double duration, double from, double to)
-            {
-                animation.Duration = TimeSpan.FromMilliseconds(duration);
-                animation.From = from;
-                animation.To = to;
-
-                PlayerCursorStoryboard.Stop();
-                PlayerCursorStoryboard.Children.Clear();
-                PlayerCursorStoryboard.Children.Add(animation);
-                PlayerCursorStoryboard.Begin();
-            }
-        }
-
-        public TimelinePlayer Player;
-        PlayerModel playerModel;
-
-        private void InitializePlayerStructure()
-        {
-            playerModel = new PlayerModel();
-
-            Player = new TimelinePlayer(playerModel);
-            ClockText.DataContext = playerModel;
-            PlayerCursor_Head.DataContext = playerModel;
-            PlayerCursor_Tail.DataContext = playerModel;
-
-            LayerZoomSlider.Value = 2;
+            cursorStoryboard = new Storyboard();
+            cursorStoryboard.Completed += CursorStoryboardCompleted;
+            cursorAnimation = new DoubleAnimation();
+            cursorAnimation.EnableDependentAnimation = true;
+            Storyboard.SetTarget(cursorAnimation, Self);
+            Storyboard.SetTargetProperty(cursorAnimation, "TimelineCursorPosition");
         }
 
         public double TimelineCursorPosition
@@ -330,14 +279,16 @@ namespace AuraEditor.Pages
             // When player stop storyboard, it will send interger 0 to this function.
             // It will cause crash becasue interger can not convert to double.
             if (e.NewValue is Int32)
-                (d as LayerPage).playerModel.Position = 0;
+            {
+                return; // Stop at current position
+                // (d as LayerPage).playerModel.Position = 0;
+            }
             else
                 (d as LayerPage).playerModel.Position = (double)e.NewValue;
         }
-
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (PlayerCursorTranslateTransform.X > RightmostPosition)
+            if (playerModel.Position > RightmostPosition)
                 return;
 
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
@@ -345,30 +296,68 @@ namespace AuraEditor.Pages
             await Windows.Storage.FileIO.WriteTextAsync(sf, MainPage.Self.GetLastScript(false));
             Log.Debug("[PlayButton] Save LastScript : " + sf.Path);
 
-            long StartTime = (long)PositionToTime(Player.GetCursorPosition());
+            long StartTime = (long)PositionToTime(playerModel.Position);
 
             Log.Debug("[PlayButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[PlayButton] Aft AuraEditorTrigger");
 
             //ScrollWindowToBeginning();
-            Player.Play();
+
+            playerModel.IsPlaying = true;
+
+            double from = playerModel.Position;
+            double to = RightmostPosition;
+            double duration = LayerPage.PositionToTime(to) - LayerPage.PositionToTime(from);
+            StartCursorStoryboard(duration, from, to);
         }
         private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            Player.Pause();
+            cursorStoryboard.Stop();
+            playerModel.IsPlaying = false;
+
             Log.Debug("[PauseButton] Bef AuraEditorStopEngine");
             await (new ServiceViewModel()).AuraEditorStopEngine();
             Log.Debug("[PauseButton] Aft AuraEditorStopEngine");
         }
-        private async void StopButton_Click(object sender, RoutedEventArgs e)
+        private void CursorStoryboardCompleted(object sender, object e)
         {
-            Player.Stop();
-            await (new ServiceViewModel()).AuraEditorStopEngine();
+            Log.Debug("[Player] Completed");
+            playerModel.IsPlaying = false;
+        }
+        public void ChangeCursorPosition(double rate)
+        {
+            playerModel.Position = playerModel.Position * rate;
+
+            if (cursorStoryboard.GetCurrentState() == ClockState.Active)
+            {
+                double currentTime = GetStoryCurrentTime();
+                double duration = cursorAnimation.Duration.TimeSpan.TotalMilliseconds;
+                double leftTime = duration - currentTime;
+                double from = playerModel.Position;
+                double to = LayerPage.Self.RightmostPosition;
+                StartCursorStoryboard(leftTime, from, to);
+            }
+        }
+        private double GetStoryCurrentTime()
+        {
+            Duration d = cursorStoryboard.Duration;
+            return cursorStoryboard.GetCurrentTime().TotalMilliseconds;
+        }
+        private void StartCursorStoryboard(double duration, double from, double to)
+        {
+            cursorAnimation.Duration = TimeSpan.FromMilliseconds(duration);
+            cursorAnimation.From = from;
+            cursorAnimation.To = to;
+
+            cursorStoryboard.Stop();
+            cursorStoryboard.Children.Clear();
+            cursorStoryboard.Children.Add(cursorAnimation);
+            cursorStoryboard.Begin();
         }
         #endregion
 
-        #region -- Layer Zoom level --
+        #region -- Slider Zoom level --
         private int _oldLayerZoomLevel;
         private void LayerZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
@@ -385,11 +374,7 @@ namespace AuraEditor.Pages
 
                 SetTimeUnit(newSecondsPerTimeUnit);
 
-                if (Player != null)
-                {
-                    Player.OnLevelChanged(rate);
-                }
-
+                ChangeCursorPosition(rate);
                 _oldLayerZoomLevel = newLevel;
             }
         }
@@ -403,19 +388,20 @@ namespace AuraEditor.Pages
         }
         #endregion
 
-        #region -- Timeline Scale --
+        #region -- Scale --
         static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
         static public double PixelsPerSecond { get { return PixelsPerTimeUnit / SecondsPerTimeUnit; } }
-
         static public double PositionToTime(double position)
         {
             return (position / PixelsPerSecond) * 1000;
         }
+
         public void SetTimeUnit(int newSecondsPerTimeUnit)
         {
             double rate = (double)SecondsPerTimeUnit / newSecondsPerTimeUnit;
 
             SecondsPerTimeUnit = newSecondsPerTimeUnit;
+            playerModel.MaxEditWidth = PixelsPerSecond * MaxEditTime;
             DrawTimelineScale();
 
             foreach (var layer in Layers)
@@ -427,34 +413,13 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        private TimelineEffect GetRightmostEffect()
-        {
-            double position = 0;
-            double rightmostPosition = 0;
-            TimelineEffect rightmostEffect = null;
-
-            foreach (Layer layer in Layers)
-            {
-                foreach (var effect in layer.TimelineEffects)
-                {
-                    position = effect.Left + effect.Width;
-
-                    if (position > rightmostPosition)
-                    {
-                        rightmostPosition = position;
-                        rightmostEffect = effect;
-                    }
-                }
-            }
-            return rightmostEffect;
-        }
         public double[] GetAlignPositions(TimelineEffect eff)
         {
             Layer layer = eff.Layer;
             List<double> result = new List<double>();
             int i = Layers.IndexOf(layer);
 
-            result.Add(Player.GetCursorPosition());
+            result.Add(playerModel.Position);
             result.AddRange(Layers[i].GetHeadAndTailPositions(eff));
             if (i > 0)
                 result.AddRange(Layers[i - 1].GetHeadAndTailPositions(null));
@@ -462,13 +427,12 @@ namespace AuraEditor.Pages
                 result.AddRange(Layers[i + 1].GetHeadAndTailPositions(null));
             return result.ToArray();
         }
-
         private void DrawTimelineScale()
         {
             TimeSpan ts = new TimeSpan(0, 0, SecondsPerTimeUnit);
             TimeSpan interval = new TimeSpan(0, 0, SecondsPerTimeUnit);
             int minimumScaleUnitLength = (int)(PixelsPerTimeUnit / 2);
-            int width = (int)ScaleCanvas.ActualWidth;
+            int width = (int)playerModel.MaxEditWidth;
             int height = (int)ScaleCanvas.ActualHeight;
             int y1_short = (int)(height / 1.5);
             int y1_long = height / 2;
@@ -543,12 +507,20 @@ namespace AuraEditor.Pages
             double source = ScaleScrollViewer.HorizontalOffset;
             double target = 0;
             AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+
+            double from = playerModel.Position;
+            double to = 0;
+            AnimationStart(this, "TimelineCursorPosition", 200, from, to);
         }
         private void JumpToEndButton_Click(object sender, RoutedEventArgs e)
         {
             double source = ScaleScrollViewer.HorizontalOffset;
             double target = RightmostPosition;
             AnimationStart(this, "TimelineScrollHorOffset", 200, source, target);
+
+            double from = playerModel.Position;
+            double to = RightmostPosition;
+            AnimationStart(this, "TimelineCursorPosition", 200, from, to);
         }
 
         private void TitleScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)

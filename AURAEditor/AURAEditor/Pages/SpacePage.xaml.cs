@@ -394,27 +394,36 @@ namespace AuraEditor.Pages
         }
         public float GetSpaceZoomPercent()
         {
-            return _spaceZoomFactor * SpaceZoomPercentFactorRate;
+            return _spaceZoomFactor * SpaceZoomDefaultPercent;
         }
         public void SetSpaceZoomPercent(float percent)
         {
-            float factor = percent / SpaceZoomPercentFactorRate;
-            float rate = factor / _spaceZoomFactor;
+            float newFactor = percent / SpaceZoomDefaultPercent;
+            float rate = newFactor / _spaceZoomFactor;
 
             SpaceScrollViewer.ChangeView(
                 SpaceScrollViewer.HorizontalOffset * rate,
-                SpaceScrollViewer.VerticalOffset * rate, factor, true);
+                SpaceScrollViewer.VerticalOffset * rate, newFactor, true);
 
-            _spaceZoomFactor = factor;
+            _spaceZoomFactor = newFactor;
         }
         private void ZoomFactorChangedCallback(DependencyObject s, DependencyProperty e)
         {
             var zoomObject = SpaceScrollViewer.GetValue(e);
             double factor = Convert.ToDouble(zoomObject);
-            int zoomPercent = (int)(Math.Round(factor * SpaceZoomPercentFactorRate, 1));
+            int zoomPercent = (int)(Math.Round(factor * SpaceZoomDefaultPercent, 1));
 
             SpaceZoomButton.Content = zoomPercent.ToString() + " %";
             _spaceZoomFactor = (float)factor;
+        }
+
+        private void DefaultViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            SpaceScrollViewer.ChangeView(0, 0, 1, true);
+        }
+        private void FitAllButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
         #endregion
 
@@ -857,16 +866,6 @@ namespace AuraEditor.Pages
             }
 
             return spaceNode;
-        }
-
-        private void FitAllButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void DefaultViewButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

@@ -338,7 +338,7 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectBlockScrollViewer))
             {
                 MainGrid.Children.Remove(EffectBlockScrollViewer);
-                MainGrid.Children.Remove(MaskGrid1);
+                MainGrid.Children.Remove(MaskEffectblockGrid);
 
                 Grid.SetColumn(SpaceFrame, 0);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
@@ -346,10 +346,10 @@ namespace AuraEditor
             else
             {
                 Grid.SetColumn(EffectBlockScrollViewer, 0);
-                Grid.SetColumn(MaskGrid1, 0);
+                Grid.SetColumn(MaskEffectblockGrid, 0);
 
                 MainGrid.Children.Add(EffectBlockScrollViewer);
-                MainGrid.Children.Add(MaskGrid1);
+                MainGrid.Children.Add(MaskEffectblockGrid);
 
                 Grid.SetColumn(SpaceFrame, 1);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
@@ -362,16 +362,16 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectInfoFrame))
             {
                 MainGrid.Children.Remove(EffectInfoFrame);
-                MainGrid.Children.Remove(MaskGrid2);
+                MainGrid.Children.Remove(MaskEffectInfoGrid);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
             }
             else
             {
                 Grid.SetColumn(EffectInfoFrame, 2);
-                Grid.SetColumn(MaskGrid2, 2);
+                Grid.SetColumn(MaskEffectInfoGrid, 2);
 
                 MainGrid.Children.Add(EffectInfoFrame);
-                MainGrid.Children.Add(MaskGrid2);
+                MainGrid.Children.Add(MaskEffectInfoGrid);
 
                 Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
             }
@@ -427,17 +427,21 @@ namespace AuraEditor
 
             EditBarRelativePanel.Visibility = Visibility.Visible;
             ActionBarRelativePanel.Visibility = Visibility.Collapsed;
-            MaskGrid1.Visibility = Visibility.Visible;
-            MaskGrid2.Visibility = Visibility.Visible;
-            MaskGrid3.Visibility = Visibility.Visible;
+            MaskConntectedDeviceGrid.Visibility = Visibility.Visible;
+            MaskFileCombobox.Visibility = Visibility.Visible;
+            MaskEffectblockGrid.Visibility = Visibility.Visible;
+            MaskEffectInfoGrid.Visibility = Visibility.Visible;
+            MaskLayerPage.Visibility = Visibility.Visible;
         }
         private void HideMask()
         {
             EditBarRelativePanel.Visibility = Visibility.Collapsed;
             ActionBarRelativePanel.Visibility = Visibility.Visible;
-            MaskGrid1.Visibility = Visibility.Collapsed;
-            MaskGrid2.Visibility = Visibility.Collapsed;
-            MaskGrid3.Visibility = Visibility.Collapsed;
+            MaskConntectedDeviceGrid.Visibility = Visibility.Collapsed;
+            MaskFileCombobox.Visibility = Visibility.Collapsed;
+            MaskEffectblockGrid.Visibility = Visibility.Collapsed;
+            MaskEffectInfoGrid.Visibility = Visibility.Collapsed;
+            MaskLayerPage.Visibility = Visibility.Collapsed;
         }
         #endregion
 
@@ -450,15 +454,15 @@ namespace AuraEditor
         }
 
         //Use senddata(string) can send string to server
-        private async void senddata(string request)
+        async void SendMessageToServer(string request)
         {
             Stream streamOut = socket.OutputStream.AsStreamForWrite();
             StreamWriter writer = new StreamWriter(streamOut);
-            await writer.WriteLineAsync(request + "\n");
+            await writer.WriteLineAsync(request);
             await writer.FlushAsync();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                StatusTextBlock.Text = "Send successful";
+                //StatusTextBlock.Text = "Send successful";
             });
         }
 
@@ -531,7 +535,8 @@ namespace AuraEditor
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            ConnectedDevicesDialog.Rescan();
+            //ConnectedDevicesDialog.Rescan();
+            LayerPage.GetLayerCount();
         }
     }
 }

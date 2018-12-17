@@ -213,9 +213,11 @@
                 </TextBlock>
             </StackPanel>
         </Grid>
-        <Grid Name="MaskGrid1" Background="#88000000" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2"/>
-        <Grid Name="MaskGrid2" Background="#88000000" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"/>
-        <Grid Name="MaskGrid3" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Canvas.ZIndex="8"/>
+        <Grid Name="MaskConntectedDeviceGrid" Background="#88000000" Visibility="Collapsed" Canvas.ZIndex="3"/>
+        <Grid Name="MaskFileCombobox" Background="#88000000" Visibility="Collapsed" Grid.Column="2" Canvas.ZIndex="3"/>
+        <Grid Name="MaskEffectblockGrid" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Canvas.ZIndex="3"/>
+        <Grid Name="MaskEffectInfoGrid" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Canvas.ZIndex="3"/>
+        <Grid Name="MaskLayerPage" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Canvas.ZIndex="3"/>
 
         <!-- Row 0 -->
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"

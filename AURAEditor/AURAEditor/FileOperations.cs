@@ -140,6 +140,9 @@ namespace AuraEditor
             Log.Debug("[SaveAndApplyButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[SaveAndApplyButton] Aft AuraEditorTrigger");
+
+            //Send to Socketserver
+            SendMessageToServer("[XML] Change");
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -191,6 +194,9 @@ namespace AuraEditor
                     CurrentUserFilename = mfi.Text;
                 };
             }
+
+            //Send to Socketserver
+            SendMessageToServer("[XML] Change");
         }
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
@@ -225,6 +231,9 @@ namespace AuraEditor
             }
 
             Reset();
+
+            //Send to Socketserver
+            SendMessageToServer("[XML] Change");
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {

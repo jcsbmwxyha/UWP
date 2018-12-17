@@ -19,6 +19,12 @@ namespace AuraEditor.Models
             }
         }
 
+        public PlayerModel()
+        {
+            Position = 0;
+            IsPlaying = false;
+        }
+
         private string _timerText;
         public string TimerText
         {
@@ -46,6 +52,34 @@ namespace AuraEditor.Models
                 _position = value;
                 RaisePropertyChanged("Position");
                 RaisePropertyChanged("TimerText");
+            }
+        }
+
+        private bool _isplaying;
+        public bool IsPlaying
+        {
+            get
+            {
+                return _isplaying;
+            }
+            set
+            {
+                _isplaying = value;
+                RaisePropertyChanged("IsPlaying");
+            }
+        }
+
+        private double _maxEditWidth;
+        public double MaxEditWidth
+        {
+            get
+            {
+                return _maxEditWidth;
+            }
+            set
+            {
+                _maxEditWidth = value;
+                RaisePropertyChanged("MaxEditWidth");
             }
         }
     }

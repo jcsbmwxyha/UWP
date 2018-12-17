@@ -104,7 +104,7 @@ namespace AuraEditor
                     Frame rootFrame = Window.Current.Content as Frame;
                     rootFrame.BackStack.Clear();
                     e.Handled = true;
-                    WindowsFrame.Navigate(typeof(MainPage));
+                    WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
                     SettingsToggleButton.IsChecked = false;
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;

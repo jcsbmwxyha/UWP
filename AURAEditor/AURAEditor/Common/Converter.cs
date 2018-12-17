@@ -50,4 +50,26 @@ namespace AuraEditor.Common
             return false;
         }
     }
+
+    public class ReverseBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is bool)
+            {
+                if ((bool)value == true)
+                    return false;
+                else
+                    return true;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            if (value is bool)
+                return !(bool)value;
+            return false;
+        }
+    }
 }

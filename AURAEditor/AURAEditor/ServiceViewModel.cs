@@ -22,6 +22,9 @@ namespace AuraEditor
         static extern long RpcClientInitialize(out IntPtr rpcClient);
 
         [DllImport("RpcClient.dll")]
+        static extern long ACTrigger(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string xmlString, out int _p_val);
+
+        [DllImport("RpcClient.dll")]
         static extern long SendEffectNumber(IntPtr rpcClient, int effect_id, out int _p_val);
 
         [DllImport("RpcClient.dll")]
@@ -43,10 +46,21 @@ namespace AuraEditor
         static extern long CreatorSaveFile(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string File, [MarshalAs(UnmanagedType.LPStr)] string Content);
 
         IntPtr rpcClient;
+        long retCode = 0L;
         long error = 0L;
         //private bool DEBUG = true;
         string cmd = @"C:\ProgramData\Asus\AURA Creator\lastscript.xml";
         int num = 0, returnnum = 0;
+
+        public async Task Sendupdatestatus(string updatestring)
+        {
+            await Task.Run(() =>
+            {
+                rpcClient = IntPtr.Zero;
+                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient))) return;
+                retCode = ACTrigger(rpcClient, updatestring.ToUpper(), out returnnum);
+            });
+        }
 
         public async Task EffectNumber(int value)
         {

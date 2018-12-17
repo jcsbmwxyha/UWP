@@ -8,11 +8,14 @@
     xmlns:auraeditor="using:AuraEditor"
     xmlns:common="using:AuraEditor.Common"
     xmlns:usercontrol="using:AuraEditor.UserControls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
+            <common:ReverseBooleanConverter x:Key="reverseBooleanConverter"/>
+            <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <common:ReverseBooleanToVisibilityConverter x:Key="reverseBooleanToVisibilityConverter" />
+            
             <BitmapImage x:Key="GoLeft_n" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_n.png"/>
             <BitmapImage x:Key="GoLeft_h" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_h.png"/>
             <BitmapImage x:Key="GoLeft_s" UriSource="ms-appx:///Assets/Button/asus_ac_rewind_btn_s.png"/>
@@ -536,69 +539,46 @@
                Source="ms-appx:///Assets/Layer/asus_auraeditor_time_bg.png"
                Stretch="Fill"/>
 
-        <RelativePanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-            <Button Name="GoLeftButton"
-                    Style="{StaticResource GoLeftButtonStyle}"
-                    Click="JumpToBeginningButton_Click"
-                    Margin="10,0,0,0"
-                    RelativePanel.AlignLeftWithPanel="True">
+        <RelativePanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch">
+            <Button Name="GoLeftButton" Style="{StaticResource GoLeftButtonStyle}" Click="JumpToBeginningButton_Click"
+                    Margin="10,0,0,0" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="Jump to beginning"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="PlayButton"
-                    Style="{StaticResource PlayButtonStyle}"
-                    Click="PlayButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="GoLeftButton">
+            <Button Name="PlayButton" Style="{StaticResource PlayButtonStyle}" Click="PlayButton_Click"
+                    Margin="3,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanToVisibilityConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="Play"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}"
-                    Click="PauseButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="PlayButton">
+            <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}" Click="PauseButton_Click"
+                    Margin="3,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="Pause"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="StopButton"
-                    Content="&#xE009;" FontFamily="Segoe MDL2 Assets" Foreground="White"
-                    Click="StopButton_Click"
-                    Margin="3,0,0,0"
-                    RelativePanel.RightOf="PauseButton">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Stop"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="GoRightButton"
-                    Click="JumpToEndButton_Click"
-                    Margin="3,0,0,0"
-                    Style="{StaticResource GoRightButtonStyle}"
-                    RelativePanel.RightOf="StopButton">
+            <Button Name="GoRightButton" Click="JumpToEndButton_Click" Style="{StaticResource GoRightButtonStyle}"
+                    Margin="27,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="Jump to end"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <TextBlock Name="ClockText"
-                       Text="{Binding TimerText}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontSize="16"
-                       Margin="0,0,10,0"
-                       RelativePanel.AlignRightWithPanel="True"
-                       Foreground="White"/>
+            <TextBlock Name="ClockText" Text="{x:Bind playerModel.TimerText, Mode=OneWay}" Foreground="White"
+                       HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="16" Margin="0,0,10,0"
+                       RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
         </RelativePanel>
         <Line Name="SupportLine" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
               X1="0" Y1="10" X2="0" Y2="250" StrokeDashArray="2,1" Stroke="Green" StrokeThickness="2"
@@ -608,12 +588,12 @@
             </Line.RenderTransform>
         </Line>
 
-        <ScrollViewer Name="ScaleScrollViewer" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
+        <ScrollViewer Name="ScaleScrollViewer" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-            <Canvas Name="ScaleCanvas" Width="5000">
+            <Canvas Name="ScaleCanvas" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" Height="36"  HorizontalAlignment="Left">
                 <usercontrol:PlayerCursor x:Name="PlayerCursor_Head" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0">
                     <usercontrol:PlayerCursor.RenderTransform>
-                        <TranslateTransform x:Name="PlayerCursorTranslateTransform" X="{Binding Position, Mode=TwoWay}"/>
+                        <TranslateTransform x:Name="PlayerCursorTranslateTransform" X="{x:Bind playerModel.Position, Mode=TwoWay}"/>
                     </usercontrol:PlayerCursor.RenderTransform>
                 </usercontrol:PlayerCursor>
             </Canvas>
@@ -801,13 +781,13 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </ScrollViewer>
-        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="4" Canvas.ZIndex="2"
+        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}">
-            <Canvas Name="TrackCanvas" VerticalAlignment="Top">
+            <Canvas Name="TrackCanvas" VerticalAlignment="Top" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" HorizontalAlignment="Left">
                 <Line Name="PlayerCursor_Tail" X1="0" Y1="0" X2="0" Y2="500" Canvas.ZIndex="8" Stroke="White" StrokeThickness="0.5">
                     <Line.RenderTransform>
-                        <TranslateTransform X="{Binding Position, Mode=OneWay}"/>
+                        <TranslateTransform X="{x:Bind playerModel.Position, Mode=OneWay}"/>
                     </Line.RenderTransform>
                 </Line>
                 <StackPanel Name="TrackStackPanel"/>
@@ -829,8 +809,7 @@
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="auraeditor:Layer">
-                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}"
-                                                     Width="4000" Height="40"/>
+                        <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}" Width="4000" Height="40"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

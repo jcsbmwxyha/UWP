@@ -125,6 +125,13 @@ namespace AuraEditor.Dialogs
             }
             TriggerEffectListView.SelectedIndex = m_EffectList.Count - 1;
         }
+        private void RemoveAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            m_EffectList.Clear();
+            TriggerEffectListView.SelectedIndex = -1;
+            TriggerEffectTextBlock.Visibility = Visibility.Visible;
+        }
+
         private void FillOutParameterByIndex(int index)
         {
             FillOutUIParameter(m_EffectList[index].Info);

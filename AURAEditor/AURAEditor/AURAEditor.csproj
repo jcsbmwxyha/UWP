@@ -528,6 +528,7 @@
     <Content Include="AURAEditor.sccd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="RpcClient.dll" />
     <None Include="AuraEditor_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
@@ -543,7 +544,6 @@
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="RpcClient.dll" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
