@@ -474,7 +474,6 @@ namespace FrameCoordinatesGenerator
                                 Top = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
                                 Right = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0),
                                 Bottom = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0),
-                                ZIndex = Int32.Parse(row[z_Column]),
                             };
 
                             if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
