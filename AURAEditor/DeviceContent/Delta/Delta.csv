@@ -1,0 +1,10 @@
+Model,,,,,,,
+Parameters,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,PNG,Z_index
+LED 0,1,322,1805,470,2045,Delta_led01.png,1
+LED 1,1,500,1986,817,2049,Delta_led02.png,1
+LED 2,1,843,1843,1151,2014,Delta_led03.png,1
+LED 3,1,1108,1620,1205,1841,Delta_led04.png,1
+LED 4,1,922,1451,1109,1622,Delta_led05.png,1
+LED 5,1,701,1305,916,1460,Delta_led06.png,1
+LED 6,1,484,1281,684,1483,Delta_led07.png,1
+LED 7,1,367,1499,503,1781,Delta_led08.png,1

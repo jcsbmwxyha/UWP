@@ -1,4 +1,7 @@
 <devices>
-  <device name="G703GI" type="Aac_NBDT" sync="true"/>
-  <device name="GLADIUS II" type="Mouse" sync="true"/>
+  <device name="GX701GX" type="Notebook" sync="true"/>
+  <device name="Gladius II" type="Mouse" sync="true"/>
+  <device name="ROG RAMPAGE VI EXTREME OMEGA" type="MotherBoard" sync="true"/>
+  <device name="Flare" type="Keyboard" sync="true"/>
+  <device name="NH01" type="MousePad" sync="true"/>
 </devices>

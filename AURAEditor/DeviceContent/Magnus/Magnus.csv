@@ -1,0 +1,5 @@
+Model,,,,,,,
+gridwidth,10,,,,,,
+girdheight,12,,,,,,
+Parameters,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,PNG,Z_index
+LED 0,1,342,402,1104,1338,Magnus_led01.png,1
