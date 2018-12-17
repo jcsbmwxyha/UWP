@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.MetroEventSource;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x404
 
@@ -69,12 +70,47 @@ namespace AuraEditor
             {
                 DeviceContent deviceContent = new DeviceContent();
                 string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+                double rateW = 0;
+                double rateH = 0;
+                int originalPixelWidth = 1000;
+                int originalPixelHeight = 1000;
 
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
 
                 deviceContent.DeviceName = modelName;
+
+                int gridW, gridH;
+                switch (type)
+                {
+                    case "Notebook": gridW = 27; gridH = 27; break;
+                    case "Mouse": gridW = 8; gridH = 10; break;
+                    case "Keyboard": gridW = 25; gridH = 14; break;
+                    case "MotherBoard": gridW = 36; gridH = 36; break;
+                    case "MousePad": gridW = 12; gridH = 16; break;
+                    case "Headset": gridW = 12; gridH = 15; break;
+                    case "Microphone": gridW = 10; gridH = 12; break;
+                    default: gridW = 36; gridH = 36; break;
+                }
+                deviceContent.DeviceType = GetTypeByTypeName(type);
+
+                if (pngFile != null)
+                {
+                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
+
+                        bitmapImage.SetSource(fileStream);
+                        deviceContent.Image = bitmapImage;
+                        deviceContent.GridWidth = gridW;
+                        deviceContent.GridHeight = gridH;
+                        rateW = (double)(gridW * GridPixels) / bitmapImage.PixelWidth;
+                        rateH = (double)(gridH * GridPixels) / bitmapImage.PixelHeight;
+                        originalPixelWidth = bitmapImage.PixelWidth;
+                        originalPixelHeight = bitmapImage.PixelHeight;
+                    }
+                }
 
                 int exist_Column = -1;
                 int leftTopX_Column = -1;
@@ -91,6 +127,18 @@ namespace AuraEditor
                         CsvRow row = new CsvRow();
                         while (csvReader.ReadRow(row))
                         {
+                            if (row[0].ToLower() == "gridwidth")
+                            {
+                                gridW = Int32.Parse(row[1]);
+                                rateW = (double)(gridW * GridPixels) / originalPixelWidth;
+                                deviceContent.GridWidth = gridW;
+                            }
+                            else if (row[0].ToLower() == "gridheight")
+                            {
+                                gridH = Int32.Parse(row[1]);
+                                rateH = (double)(gridH * GridPixels) / originalPixelHeight;
+                                deviceContent.GridHeight = gridH;
+                            }
                             if (row[0].ToLower() == "parameters")
                             {
                                 for (int i = 0; i < row.Count; i++)
@@ -112,15 +160,19 @@ namespace AuraEditor
                                 LedUI ledui = new LedUI()
                                 {
                                     Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
-                                    Left = Int32.Parse(row[leftTopX_Column]),
-                                    Top = Int32.Parse(row[leftTopY_Column]),
-                                    Right = Int32.Parse(row[rightBottomX_Column]),
-                                    Bottom = Int32.Parse(row[rightBottomY_Column]),
-                                    ZIndex = Int32.Parse(row[z_Column]),
+                                    Left = (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                    Top = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                    Right = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0),
+                                    Bottom = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0),
                                 };
 
-                                if (png_Column != -1 && row[png_Column] != "")
+                                if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
                                     ledui.PNG_Path = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
+
+                                if (z_Column != -1 && z_Column < row.Count && row[z_Column] != "")
+                                    ledui.ZIndex = Int32.Parse(row[z_Column]);
+                                else
+                                    ledui.ZIndex = 1;
 
                                 deviceContent.Leds.Add(ledui);
                             }
@@ -128,35 +180,11 @@ namespace AuraEditor
                     }
                 }
 
-                int gridW, gridH;
-                switch (type)
-                {
-                    case "Notebook": gridW = 27; gridH = 27; break;
-                    case "Mouse": gridW = 8; gridH = 10; break;
-                    case "Keyboard": gridW = 25; gridH = 14; break;
-                    case "MotherBoard": gridW = 36; gridH = 36; break;
-                    case "MousePad": gridW = 12; gridH = 16; break;
-                    default: gridW = 36; gridH = 36; break;
-                }
-                deviceContent.DeviceType = GetTypeByTypeName(type);
-
-                if (pngFile != null)
-                {
-                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
-                    {
-                        BitmapImage bitmapImage = new BitmapImage();
-
-                        bitmapImage.SetSource(fileStream);
-                        deviceContent.Image = bitmapImage;
-                        deviceContent.GridWidth = gridW;
-                        deviceContent.GridHeight = gridH;
-                    }
-                }
-
                 return deviceContent;
             }
             catch
             {
+                Log.Debug("[DeviceContent] Model load failed : " + modelName);
                 return null;
             }
         }

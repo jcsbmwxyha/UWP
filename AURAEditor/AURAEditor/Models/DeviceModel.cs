@@ -209,6 +209,7 @@ namespace AuraEditor.Models
                 case 5: type = "Desktop"; break;
                 case 6: type = "MotherBoard"; break;
                 case 7: type = "MousePad"; break;
+                case 8: type = "Microphone"; break;
             }
             XmlNode typeNode = CreateXmlNode("type");
             typeNode.InnerText = type.ToString();
