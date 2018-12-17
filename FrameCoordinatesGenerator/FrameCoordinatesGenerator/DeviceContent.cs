@@ -106,6 +106,20 @@ namespace FrameCoordinatesGenerator
 
             return model;
         }
+        public async Task<DeviceModel> ToDeviceModel(Point point)
+        {
+            DeviceModel model = new DeviceModel();
+
+            model.Name = this.DeviceName;
+            model.Type = this.DeviceType;
+            model.Image = this.Image;
+            model.PixelLeft = point.X;
+            model.PixelTop = point.Y;
+            model.PixelWidth = GridWidth * GridPixels;
+            model.PixelHeight = GridHeight * GridPixels;
+
+            return model;
+        }
     }
 }
 

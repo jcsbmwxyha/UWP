@@ -28,6 +28,7 @@ namespace FrameCoordinatesGenerator
         MySoftwareImage g_MySoftwareImage;
         Image currentImage;
         List<PreLoadFrameModel> g_PreLoadFrameModels;
+        DeviceView g_PugioView;
 
         public MainPage()
         {
@@ -35,6 +36,17 @@ namespace FrameCoordinatesGenerator
             this.InitializeComponent();
             g_PreLoadFrameModels = new List<PreLoadFrameModel>();
             m_MouseEventCtrl = IntializeMouseEventCtrl();
+        }
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // ---
+            DeviceContent pugiodc = await GetPugioDeviceContent();
+            DeviceModel pugiodm = await pugiodc.ToDeviceModel(new Point(24, 24));
+
+            g_PugioView = new DeviceView();
+            g_PugioView.DataContext = pugiodm;
+            PreviewCanvas.Children.Add(g_PugioView);
+            // ---
         }
 
         public void OnLostFocus()
@@ -329,14 +341,15 @@ namespace FrameCoordinatesGenerator
 
             PreviewCanvas.Children.Clear();
             PreviewCanvas.Children.Add(GridImage);
+            PreviewCanvas.Children.Add(g_PugioView);
 
             DeviceContent dc = await GetDeviceContent(folder);
-            DeviceModel dm = await dc.ToDeviceModel(folder, new Point(120, 120));
+            DeviceModel dm = await dc.ToDeviceModel(folder, new Point(240, 24));
 
             DeviceView view = new DeviceView();
             view.DataContext = dm;
             PreviewCanvas.Children.Add(view);
-
+            
             List<ZoneModel> allzones = dm.AllZones;
             SortByZIndex(allzones);
             List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
@@ -464,8 +477,13 @@ namespace FrameCoordinatesGenerator
                                 ZIndex = Int32.Parse(row[z_Column]),
                             };
 
-                            if (png_Column != -1 && row[png_Column] != "")
+                            if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
                                 ledui.PNG_Path = row[png_Column];
+
+                            if (z_Column != -1 && z_Column < row.Count && row[z_Column] != "")
+                                ledui.ZIndex = Int32.Parse(row[z_Column]);
+                            else
+                                ledui.ZIndex = 1;
 
                             deviceContent.Leds.Add(ledui);
                         }
@@ -477,7 +495,19 @@ namespace FrameCoordinatesGenerator
             deviceContent.GridHeight = gridH;
             return deviceContent;
         }
-        
+        private async Task<DeviceContent> GetPugioDeviceContent()
+        {
+            DeviceContent deviceContent = new DeviceContent();
+            
+            int gridW = 8, gridH = 10;
+            BitmapImage bitmapImage = new BitmapImage(new Uri(this.BaseUri, "/Assets/PUGIO.png"));
+
+            deviceContent.Image = bitmapImage;
+
+            deviceContent.GridWidth = gridW;
+            deviceContent.GridHeight = gridH;
+            return deviceContent;
+        }
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             var fe = sender as FrameworkElement;
@@ -507,5 +537,6 @@ namespace FrameCoordinatesGenerator
 
             return mec;
         }
+
     }
 }
