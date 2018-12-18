@@ -97,7 +97,8 @@ namespace AuraEditor.Common
         public const double MaxEditTime = 180; // second
         public const string UserScriptsDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserScripts\\";
         public const string UserFilesDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserFiles\\";
-        public const string DefaultScriptFolder = "C:\\ProgramData\\ASUS\\AURA Creator\\script";
+        public const string LocalUserScriptsFolderName = "UserScripts";
+        public const string LocalUserFilesFolderName = "UserFiles";
         public const float SpaceZoomDefaultPercent = 50;
 
         static public List<List<ColorPoint>> DefaultColorList;

@@ -31,7 +31,6 @@ namespace AuraEditor.Pages
             this.InitializeComponent();
             Self = this;
             SpaceScrollViewer.RegisterPropertyChangedCallback(ScrollViewer.ZoomFactorProperty, (s, e) => ZoomFactorChangedCallback(s, e));
-            m_NoSupportedDeviceGrid = MainPage.Self.NoSupportedDeviceGrid;
             m_SetLayerButton = MainPage.Self.SetLayerButton;
             m_SetLayerRectangle = MainPage.Self.SetLayerRectangle;
             m_EditOKButton = MainPage.Self.EditOKButton;
@@ -65,7 +64,6 @@ namespace AuraEditor.Pages
             return timerClock;
         }
 
-        private Grid m_NoSupportedDeviceGrid;
         private Button m_SetLayerButton;
         private Rectangle m_SetLayerRectangle;
         private Button m_EditOKButton;
@@ -190,16 +188,6 @@ namespace AuraEditor.Pages
             SpaceCanvas.Children.Add(MouseRectangle);
 
             var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
-
-            if (onStageList.Count == 0)
-            {
-                m_NoSupportedDeviceGrid.Visibility = Visibility.Visible;
-                return;
-            }
-            else
-            {
-                m_NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
-            }
 
             foreach (var dm in onStageList)
             {

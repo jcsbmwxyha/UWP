@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using Windows.Storage;
@@ -12,7 +13,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.MetroEventSource;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -32,14 +33,24 @@ namespace AuraEditor.Dialogs
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            string sendToLiveService = "[SyncStatus]";
             List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+
             foreach (SyncDevice sd in m_SyncDeviceList)
             {
                 DeviceModel find = deviceModels.Find(d => d.Name == sd.Name);
                 if (find != null)
                     find.Status = DeviceStatus.OnStage;
+
+                sendToLiveService += sd.Name + ",";
+                sendToLiveService += sd.Sync == true ? "1," : "0,";
             }
 
+            if (MainPage.IsConnection)
+            {
+                MainPage.Self.SendMessageToServer(sendToLiveService);
+                Log.Debug(sendToLiveService);
+            }
             NotifyIngroupDevicesChanged();
             this.Hide();
         }
@@ -74,12 +85,14 @@ namespace AuraEditor.Dialogs
             }
             catch
             {
-                MainPage.Self.StatusTextBlock.Text = "Rescan failed !";
+                MainPage.Self.StatusTextBlock.Text = "Rescan pluggeddevices.xml failed !";
+                Log.Debug("[Rescan] Rescan pluggeddevices.xml failed !");
             }
         }
         private void NotifyIngroupDevicesChanged()
         {
             SpacePage.Self.OnIngroupDevicesChanged();
+            MainPage.Self.OnIngroupDevicesChanged();
         }
         public List<SyncDevice> GetIngroupDevices()
         {
@@ -91,10 +104,14 @@ namespace AuraEditor.Dialogs
             }
             return result;
         }
+        public List<SyncDevice> GetPluggedDevices()
+        {
+            return m_SyncDeviceList.ToList();
+        }
 
         static private async Task<List<XmlNode>> GetSortedAndFilteredDeviceList()
         {
-            XmlNodeList deviceNodes = await GetPluggedDevices();
+            XmlNodeList deviceNodes = await GetPluggedDeviceXmlNodes();
             List<XmlNode> result = new List<XmlNode>();
 
             foreach (XmlNode n in deviceNodes)
@@ -115,7 +132,7 @@ namespace AuraEditor.Dialogs
 
             return result;
         }
-        static private async Task<XmlNodeList> GetPluggedDevices()
+        static private async Task<XmlNodeList> GetPluggedDeviceXmlNodes()
         {
             XmlDocument xmlDoc = await GetPluggedDevicesXmlDoc();
             if (xmlDoc == null)

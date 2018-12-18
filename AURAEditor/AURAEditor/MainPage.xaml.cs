@@ -129,6 +129,7 @@ namespace AuraEditor
                 layer.DeleteEffectLine(SelectedEffect);
             }
         }
+
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
@@ -412,6 +413,14 @@ namespace AuraEditor
             SpacePage.SetSpaceStatus(SpaceStatus.Init);
             HideMask();
         }
+
+        public void OnIngroupDevicesChanged()
+        {
+            if (ConnectedDevicesDialog.Self.GetPluggedDevices().Count == 0)
+                NoSupportedDeviceGrid.Visibility = Visibility.Visible;
+            else
+                NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region -- Mask --
@@ -454,7 +463,7 @@ namespace AuraEditor
         }
 
         //Use senddata(string) can send string to server
-        async void SendMessageToServer(string request)
+        public async void SendMessageToServer(string request)
         {
             Stream streamOut = socket.OutputStream.AsStreamForWrite();
             StreamWriter writer = new StreamWriter(streamOut);
@@ -466,9 +475,11 @@ namespace AuraEditor
             });
         }
 
+        public static bool IsConnection = false;
+
         async void receivedata()
         {
-            bool IsConnection = false;
+            IsConnection = false;
             string cm;
             string port;
             string ip;
@@ -517,7 +528,7 @@ namespace AuraEditor
                 }
                 catch (Exception ex)
                 {
-
+                    IsConnection = false;
                 }
             }
         }

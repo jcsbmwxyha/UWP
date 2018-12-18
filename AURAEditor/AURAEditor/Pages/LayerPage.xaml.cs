@@ -288,13 +288,17 @@ namespace AuraEditor.Pages
         }
         private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (playerModel.Position > RightmostPosition)
+            if (playerModel.Position >= RightmostPosition)
                 return;
 
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(sf, MainPage.Self.GetLastScript(false));
             Log.Debug("[PlayButton] Save LastScript : " + sf.Path);
+
+            StorageFolder localfolder = ApplicationData.Current.LocalFolder;
+            StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(localsf, MainPage.Self.GetLastScript(false));
 
             long StartTime = (long)PositionToTime(playerModel.Position);
 

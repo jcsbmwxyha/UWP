@@ -25,6 +25,8 @@ namespace AuraEditor
 
         private StorageFolder m_UserFilesFolder;
         private StorageFolder m_UserScriptsFolder;
+        private StorageFolder m_LocalUserFileFolder;
+        private StorageFolder m_LocalUserScriptFolder;
         private List<string> GetUserFilenames()
         {
             List<string> filenames = new List<string>();
@@ -75,6 +77,9 @@ namespace AuraEditor
             NeedSave = false;
             await GetOrCreateUserFilesFolder();
             await GetOrCreateUserScriptsFolder();
+
+            m_LocalUserScriptFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalUserScriptsFolderName, CreationCollisionOption.OpenIfExists);
+            m_LocalUserFileFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalUserFilesFolderName, CreationCollisionOption.OpenIfExists);
         }
         private async Task GetOrCreateUserFilesFolder()
         {
@@ -137,12 +142,17 @@ namespace AuraEditor
             await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(true));
             Log.Debug("[SaveAndApplyButton] Save LastScript : " + sf.Path);
 
+            StorageFolder localfolder = ApplicationData.Current.LocalFolder;
+            StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(localsf, GetLastScript(true));
+            
             Log.Debug("[SaveAndApplyButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[SaveAndApplyButton] Aft AuraEditorTrigger");
 
             //Send to Socketserver
-            SendMessageToServer("[XML] Change");
+            if(IsConnection)
+                SendMessageToServer("[XML] Change");
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -185,6 +195,11 @@ namespace AuraEditor
             StorageFile file = await m_UserFilesFolder.GetFileAsync(CurrentUserFilename + ".xml");
             await file.RenameAsync(dialog.TheName + ".xml");
 
+            StorageFile localscript = await m_LocalUserScriptFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await localscript.RenameAsync(dialog.TheName + ".xml");
+            StorageFile localfile = await m_LocalUserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await localfile.RenameAsync(dialog.TheName + ".xml");
+
             foreach (var item in FileListMenuFlyout.Items)
             {
                 MenuFlyoutItem mfi = item as MenuFlyoutItem;
@@ -196,7 +211,8 @@ namespace AuraEditor
             }
 
             //Send to Socketserver
-            SendMessageToServer("[XML] Change");
+            if (IsConnection)
+                SendMessageToServer("[XML] Change");
         }
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
@@ -220,6 +236,11 @@ namespace AuraEditor
             StorageFile file = await m_UserFilesFolder.GetFileAsync(CurrentUserFilename + ".xml");
             await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
 
+            StorageFile localscript = await m_LocalUserScriptFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await localscript.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            StorageFile localfile = await m_LocalUserFileFolder.GetFileAsync(CurrentUserFilename + ".xml");
+            await localfile.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
             foreach (var item in FileListMenuFlyout.Items)
             {
                 MenuFlyoutItem mfi = item as MenuFlyoutItem;
@@ -233,7 +254,8 @@ namespace AuraEditor
             Reset();
 
             //Send to Socketserver
-            SendMessageToServer("[XML] Change");
+            if (IsConnection)
+                SendMessageToServer("[XML] Change");
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
@@ -268,6 +290,7 @@ namespace AuraEditor
                 }
 
                 StorageFile copyfile = await inputFile.CopyAsync(m_UserFilesFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
+                await inputFile.CopyAsync(m_LocalUserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
                 Log.Debug("[ImportButton] CopyAsync " + inputFile.Path + " to " + m_UserFilesFolder + "\\" + inputFile.Name);
 
                 CurrentUserFilename = copyfile.Name.Replace(".xml", "");
@@ -370,6 +393,9 @@ namespace AuraEditor
 
         private async Task<bool> SaveCurrentUserFile()
         {
+            StorageFile localfile;
+            StorageFile localscript;
+
             if (CurrentUserFilename == "")
             {
                 NamingDialog dialog = new NamingDialog(GetUserFilenames());
@@ -391,6 +417,12 @@ namespace AuraEditor
             SpacePage.ClearTempDeviceData();
             await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
             await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript(true));
+
+            localfile = await m_LocalUserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.OpenIfExists);
+            localscript = await m_LocalUserScriptFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.OpenIfExists);
+            await SaveFile(localfile.Path, GetUserData());
+            await SaveFile(localscript.Path, GetLastScript(true));
+
             Log.Debug("[SaveCurrentUserFile] User file : " + UserFilesDefaultFolderPath + CurrentUserFilename);
             Log.Debug("[SaveCurrentUserFile] User script : " + UserScriptsDefaultFolderPath + CurrentUserFilename);
             return true;

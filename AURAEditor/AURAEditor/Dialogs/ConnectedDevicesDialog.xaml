@@ -93,7 +93,7 @@
         <RelativePanel Margin="21,9,17,0">
             <TextBlock Text="Connected Devices" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
             <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}"
-                    Click="CloseButton_Click"/>
+                    Click="OKButton_Click"/>
         </RelativePanel>
 
         <Grid Grid.Row="1" Margin="24,4,24,0">

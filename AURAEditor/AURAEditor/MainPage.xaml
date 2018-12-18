@@ -203,7 +203,7 @@
 
         <!-- Masks -->
         <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="5"
-              Background="#88000000" Canvas.ZIndex="9" x:FieldModifier="public" Visibility="Collapsed">
+              Background="#88000000" Canvas.ZIndex="9" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock HorizontalAlignment="Center" FontSize="34">
                     No Supported Devices Detected
