@@ -16,14 +16,25 @@ doGenerateEvent = function()
 			local lifeTime = EventProvider["queue"][key]["Duration"]
 			local trigger = EventProvider["queue"][key]["Trigger"]
 			local layer = EventProvider["queue"][key]["Layer"]
+			local isDone = EventProvider["queue"][key]["isDone"]
 
-			if (trigger == "OneTime") then
 
-				doOneTimeEffect( vp, executeName, delayMilisecond , lifeTime, layer )
+			if( not isTimeToLuanch( isDone , timer , delayMilisecond , lifeTime ))then
+				goto continue
+			end
+
+			-- if Timer is not start from 0, corret the lifeTime
+			local corretedLifeTime = delayMilisecond - timer + lifeTime
+
+			if (trigger == "OneTime" ) then
+
+				doOneTimeEffect( vp, executeName, delayMilisecond , corretedLifeTime, layer )
+				EventProvider["queue"][key]["isDone"] = true
 
 			elseif (trigger == "Period") then
 
-				doPeriodEffect2( vp, executeName, delayMilisecond , lifeTime, layer )
+				doPeriodEffect( vp, executeName, delayMilisecond , corretedLifeTime, layer )
+				EventProvider["queue"][key]["isDone"] = true
 
 			elseif (trigger == "KeyboardInput" ) then
 
@@ -56,34 +67,53 @@ doGenerateEvent = function()
 				end
 
 			end
+
+			::continue::
+
 		end
 
 		doOneTimeEffectStuff()
-
 		doPeriodEffectStuff(timer)
+
 end
 
 
 
-doPeriodEffect = function( viewprot, name, delay , duration )
+-- Check this effect 
+-- 1. Is Done already in this period ( For "OneTime" and "Period" trigger type) ?
+-- 2. Is is Time to Launch
+isTimeToLuanch = function( isDone, timer, delay, duration )
 
-	math.randomseed( os.time() )
-	if (not global.PeriodDone) then
-		Provider:makeEvent( viewprot, Event[name] , delay , duration)
+	if( (not isDone) and timer >= delay and timer < delay + duration) then
+		return true
+	else
+		return false
+	end
+
+end
+
+
+
+doPeriodEffect = function( viewprot, name, delay , duration, layer)
+
+	if (not global.PeriodDone) then	
+
+		Provider:makeEvent2( viewprot, name , delay , duration, layer)
+
 	end
 end
+
 
 doPeriodEffect2 = function( viewprot, name, delay , duration, layer)
 
-	math.randomseed( os.time() )
-	if (not global.PeriodDone) then
-		Provider:makeEvent2( viewprot, name , delay , duration, layer)
-	end
+	Provider:makeEvent2( viewprot, name , delay , duration, layer)
+
 end
 
 doOneTimeEffect = function( viewprot, event, delay , duration, layer)
 
 	if (not global.OneTimeDone) then
+
 		Provider:makeEvent2(viewprot, event , delay , duration, layer)
 	end
 end
@@ -165,14 +195,24 @@ doOneTimeEffectStuff = function()
 
 end
 
-
 doPeriodEffectStuff = function(timer)
 
 	if ( timer > EventProvider["period"]) then
-		global.PeriodDone = false
+
+		-- Reset Period Events
+		for key,value in pairs(EventProvider["queue"]) do
+
+				local trigger = EventProvider["queue"][key]["Trigger"]	
+
+				if(trigger == "Period") then
+					EventProvider["queue"][key]["isDone"] = false
+				end
+		end
+
+		-- Reset Timer
 		Provider:clock():reset()
-	else
-		global.PeriodDone = true
+
 	end
 
 end
+

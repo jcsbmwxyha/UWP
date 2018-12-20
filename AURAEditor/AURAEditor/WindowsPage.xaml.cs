@@ -15,6 +15,8 @@ namespace AuraEditor
     /// </summary>
     public sealed partial class WindowsPage : Page
     {
+        public bool needToUpdadte = false;
+
         static WindowsPage _instance;
         static public WindowsPage Self
         {
@@ -30,8 +32,9 @@ namespace AuraEditor
             WindowsFrame.Navigated += WindowsFrame_Navigated;
         }
 
-        private void WindowsPage_Loaded(object sender, RoutedEventArgs e)
+        private async void WindowsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            #region App Title Bar
             // Hide default title bar.
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
@@ -47,8 +50,35 @@ namespace AuraEditor
             // Register a handler for when the title bar visibility changes.
             // For example, when the title bar is invoked in full screen mode.
             coreTitleBar.IsVisibleChanged += CoreTitleBar_IsVisibleChanged;
+            #endregion
 
+            WindowsGrid.Visibility = Visibility.Visible;
+            WindowsGrid1.Visibility = Visibility.Collapsed;
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
+
+            #region Check for Update and show icon
+            //Disable settings button until check finish
+            SettingsToggleButton.IsEnabled = false;
+            SettingsToggleButton.Opacity = 0.5;
+            // disable end
+            await (new ServiceViewModel()).Sendupdatestatus("checkallbyservice");
+            // < 0 No checkallbyservice function
+            if (ServiceViewModel.returnnum > 0)
+            {
+                //顯示需要更新
+                SettingBtnNewTab.Visibility = Visibility.Visible;
+                needToUpdadte = true;
+            }
+            else
+            {
+                SettingBtnNewTab.Visibility = Visibility.Collapsed;
+                needToUpdadte = false;
+            }
+            //Enable settings button until check finish
+            SettingsToggleButton.IsEnabled = true;
+            SettingsToggleButton.Opacity = 1;
+            //Enable end
+            #endregion
         }
 
         private void WindowsFrame_Navigated(object sender, NavigationEventArgs e)
@@ -69,7 +99,7 @@ namespace AuraEditor
             // (returned in logical pixels), and move your content around as necessary.
             LeftPaddingColumn.Width = new GridLength(coreTitleBar.SystemOverlayLeftInset);
             RightPaddingColumn.Width = new GridLength(coreTitleBar.SystemOverlayRightInset);
-            SettingsToggleButton.Margin = new Thickness(0, 0, coreTitleBar.SystemOverlayRightInset, 0);
+            SettingRelativePanel.Margin = new Thickness(0, 0, coreTitleBar.SystemOverlayRightInset, 0);
 
             // Update title bar control size as needed to account for system size changes.
             AppTitleBar.Height = coreTitleBar.Height;
@@ -89,22 +119,24 @@ namespace AuraEditor
 
         private void SettingsToggleButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            if(SettingsToggleButton.IsChecked == true)
+            if (SettingsToggleButton.IsChecked == true)
             {
                 // Register a handler for BackRequested events and set the
                 // visibility of the Back button
                 SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                WindowsFrame.Navigate(typeof(SettingsPage), null, new SuppressNavigationTransitionInfo());
+                WindowsGrid.Visibility = Visibility.Collapsed;
+                WindowsGrid1.Visibility = Visibility.Visible;
+                WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
             }
             else
             {
-                if (WindowsFrame.CanGoBack)
+                if (WindowsFrame1.CanGoBack)
                 {
                     Frame rootFrame = Window.Current.Content as Frame;
                     rootFrame.BackStack.Clear();
-                    e.Handled = true;
-                    WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
+                    WindowsGrid.Visibility = Visibility.Visible;
+                    WindowsGrid1.Visibility = Visibility.Collapsed;
                     SettingsToggleButton.IsChecked = false;
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
@@ -114,21 +146,22 @@ namespace AuraEditor
 
         private void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (WindowsFrame.Content is SettingsPage)
+            if (WindowsFrame1.Content is SettingsPage)
             {
                 Frame rootFrame = Window.Current.Content as Frame;
                 rootFrame.BackStack.Clear();
-                WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
+                WindowsGrid.Visibility = Visibility.Visible;
+                WindowsGrid1.Visibility = Visibility.Collapsed;
                 SettingsToggleButton.IsChecked = false;
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
             }
             else
             {
-                if (WindowsFrame.CanGoBack)
+                if (WindowsFrame1.CanGoBack)
                 {
                     e.Handled = true;
-                    WindowsFrame.GoBack();
+                    WindowsFrame1.GoBack();
                 }
             }
         }

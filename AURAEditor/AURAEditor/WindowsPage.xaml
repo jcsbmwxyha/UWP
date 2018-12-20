@@ -30,13 +30,21 @@
 
         <!-- This Button has a higher z-order than AppTitleBar, 
          so it receives user input. -->
-        <ToggleButton x:Name="SettingsToggleButton" Width="40" Height="27"
-                      Style="{StaticResource RogToggleButtonStyle2}"
-                      HorizontalAlignment="Right" Tapped="SettingsToggleButton_Tapped"/>
+        <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right">
+            <ToggleButton x:Name="SettingsToggleButton" Width="40" Height="27"
+                      Style="{StaticResource RogToggleButtonStyle2}" Tapped="SettingsToggleButton_Tapped"/>
+            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
+                   RelativePanel.AlignTopWith="SettingsToggleButton" RelativePanel.AlignRightWith="SettingsToggleButton"
+                   Visibility="Collapsed"/>
+        </RelativePanel>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="WindowsGrid" Grid.Row="1">
             <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
             <Frame x:Name="WindowsFrame" x:FieldModifier="Public"/>
+        </Grid>
+        <Grid x:Name="WindowsGrid1" Grid.Row="1" Visibility="Collapsed">
+            <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
+            <Frame x:Name="WindowsFrame1" x:FieldModifier="Public"/>
         </Grid>
     </Grid>
 </Page>

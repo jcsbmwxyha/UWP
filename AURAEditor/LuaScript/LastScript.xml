@@ -3,7 +3,7 @@
     <header>AURA_Creator</header>
     <version>1.0</version>
     <effectProvider>
-        <period key="true">500000</period>
+        <period key="true">5000</period>
         <queue>
             <!--effect key="Static">
                 <viewport>All</viewport>
@@ -12,27 +12,27 @@
                 <duration>500000</duration>
                 <layer>1</layer>
             </effect-->
-            <effect key="Star">
+            <!--effect key="Star">
                 <viewport>All</viewport>
                 <trigger>OneTime</trigger>
                 <delay>0</delay>
                 <duration>-1</duration>
                 <layer>0</layer>
             </effect>
-            <!--effect key="Laser">
+            <effect key="Laser">
+                <viewport>All</viewport>
+                <trigger>OneClick</trigger>
+                <delay>0</delay>
+                <duration>5000</duration>
+                <layer>-1</layer>
+            </effect-->
+            <effect key="Ripple">
                 <viewport>All</viewport>
                 <trigger>OneClick</trigger>
                 <delay>0</delay>
                 <duration>5000</duration>
                 <layer>-1</layer>
             </effect>
-            <effect key="Ripple">
-                <viewport>All</viewport>
-                <trigger>DoubleClick</trigger>
-                <delay>0</delay>
-                <duration>5000</duration>
-                <layer>-1</layer>
-            </effect-->
             <!--effect key="MusicSleep">
                 <viewport>All</viewport>
                 <trigger>OneTime</trigger>
@@ -237,7 +237,7 @@
                         <slot key="ALPHA" />
                     </bindToSlot>
                 </wave>
-				<wave key="1">
+                <wave key="1">
                     <type>SineWave</type>
                     <max>0.5</max>
                     <min>0</min>
@@ -401,7 +401,7 @@
                         <slot key="LIGHTNESS" />
                     </bindToSlot>
                 </wave>
-				<wave key="1">
+                <wave key="1">
                     <type>SawtoothWave</type>
                     <max>1</max>
                     <min>0</min>
@@ -720,23 +720,45 @@
                 </method>
             </viewportTransform>
             <waveList>
-                <wave key="0">
-                    <type>SineWave</type>
+                <wave key="stripe">
+                    <type>ConstantWave</type>
                     <max>1</max>
                     <min>0</min>
-                    <length>10</length>
+                    <length>2</length>
                     <freq>0</freq>
                     <phase>0</phase>
                     <start>0</start>
-                    <velocity>10</velocity>
+                    <velocity>5</velocity>
                     <bindToSlot>
                         <slot key="ALPHA" />
+                    </bindToSlot>
+                </wave>
+                <wave key="pattern">
+                    <type>CustomStepWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>22</length>
+                    <freq>1</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>5</velocity>
+                    <bindToSlot>
                         <slot key="HUE" />
                     </bindToSlot>
+                    <customized>
+                        <node key="0">
+                            <phase>0</phase>
+                            <fx>0</fx>
+                        </node>
+                        <node key="2">
+                            <phase>0.5</phase>
+                            <fx>0.7</fx>
+                        </node>
+                    </customized>
                 </wave>
             </waveList>
             <initColor>
-                <hue>0.5</hue>
+                <hue>Random</hue>
                 <saturation>1.0</saturation>
                 <lightness>0.5</lightness>
                 <alpha>1.0</alpha>
@@ -1235,7 +1257,58 @@
                     <bindToSignal>
                         <source>Thermal</source>
                         <target>phase</target>
-                        <amplify>0.00314</amplify>
+                        <amplify>1</amplify>
+                        <offset>0</offset>
+                    </bindToSignal>
+                </wave>
+            </waveList>
+            <initColor>
+                <hue>0.5</hue>
+                <saturation>1.0</saturation>
+                <lightness>0.5</lightness>
+                <alpha>1.0</alpha>
+            </initColor>
+        </effect>
+        <effect key="CPULoad">
+            <viewportTransform>
+                <rotate>
+                    <x>0</x>
+                    <y>0</y>
+                    <angle>0</angle>
+                </rotate>
+                <method key="point" />
+            </viewportTransform>
+            <waveList>
+                <wave key="CPULoad">
+                    <type>CustomStepWave</type>
+                    <max>1</max>
+                    <min>0</min>
+                    <length>13</length>
+                    <freq>0.0</freq>
+                    <phase>0</phase>
+                    <start>0</start>
+                    <velocity>0</velocity>
+                    <bindToSlot>
+                        <slot key="HUE" />
+                    </bindToSlot>
+                    <customized>
+                        <node key="0">
+                            <phase>0</phase>
+                            <fx>0.33</fx>
+                        </node>
+                        <node key="1">
+                            <phase>0.4</phase>
+                            <fx>0.16</fx>
+                        </node>
+                        <node key="2">
+                            <phase>0.60</phase>
+                            <fx>0.0</fx>
+                        </node>
+                    </customized>
+                    <bindToSignal>
+                        <source>CpuLoad</source>
+                        <target>phase</target>
+                        <amplify>1</amplify>
                         <offset>0</offset>
                     </bindToSignal>
                 </wave>

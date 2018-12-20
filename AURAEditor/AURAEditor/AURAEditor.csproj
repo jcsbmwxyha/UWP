@@ -105,7 +105,10 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AboutPage.xaml.cs">
+    <Compile Include="Dialogs\NoNetworkDialog.xaml.cs">
+      <DependentUpon>NoNetworkDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
@@ -118,7 +121,7 @@
     <Compile Include="Common\StorageFileEventListener.cs" />
     <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="Common\StorageHelper.cs" />
-    <Compile Include="DeviceUpdatesPage.xaml.cs">
+    <Compile Include="Pages\DeviceUpdatesPage.xaml.cs">
       <DependentUpon>DeviceUpdatesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ConnectedDevicesDialog.xaml.cs">
@@ -130,7 +133,7 @@
     <Compile Include="Dialogs\YesNoCancelDialog.xaml.cs">
       <DependentUpon>YesNoCancelDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EULAPage.xaml.cs">
+    <Compile Include="Pages\EULAPage.xaml.cs">
       <DependentUpon>EULAPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileOperations.cs" />
@@ -169,10 +172,10 @@
       <DependentUpon>SpacePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrintScriptFunctions.cs" />
-    <Compile Include="PrivacyPolicyPage.xaml.cs">
+    <Compile Include="Pages\PrivacyPolicyPage.xaml.cs">
       <DependentUpon>PrivacyPolicyPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsPage.xaml.cs">
+    <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SyncDevice.cs" />
@@ -225,6 +228,7 @@
     <Content Include="Assets\Background\asus_ac_bg.png" />
     <Content Include="Assets\Background\asus_ac_settings_bg.png" />
     <Content Include="Assets\Background\asus_gc_aura_updates_bg.png" />
+    <Content Include="Assets\Background\asus_gc_dailog_bg_short.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_h.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_n.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_p.png" />
@@ -435,6 +439,10 @@
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_ul.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_umid.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_ur.png" />
+    <Content Include="Assets\NewTab\asus_gc_new_big_ic.png" />
+    <Content Include="Assets\NewTab\asus_gc_new_small_ic.png" />
+    <Content Include="Assets\NoticeImage\asus_ac_correct_ic.png" />
+    <Content Include="Assets\NoticeImage\asus_ac_error_ic.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_h.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_n.png" />
     <Content Include="Assets\TitleBar.png" />
@@ -550,11 +558,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AboutPage.xaml">
+    <Page Include="Dialogs\NoNetworkDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeviceUpdatesPage.xaml">
+    <Page Include="Pages\AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DeviceUpdatesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -578,7 +590,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EULAPage.xaml">
+    <Page Include="Pages\EULAPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -598,11 +610,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PrivacyPolicyPage.xaml">
+    <Page Include="Pages\PrivacyPolicyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsPage.xaml">
+    <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

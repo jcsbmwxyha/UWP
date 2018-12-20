@@ -328,6 +328,7 @@ namespace AuraEditor.Pages
         {
             Log.Debug("[Player] Completed");
             playerModel.IsPlaying = false;
+            playerModel.Position = 0;
         }
         public void ChangeCursorPosition(double rate)
         {

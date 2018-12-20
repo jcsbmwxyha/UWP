@@ -1969,9 +1969,9 @@
             <Setter Property="CharacterSpacing" Value="{ThemeResource PivotHeaderItemCharacterSpacing}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="Padding" Value="{ThemeResource PivotHeaderItemMargin}" />
+            <Setter Property="Padding" Value="12,0,0,0" />
             <Setter Property="Height" Value="48" />
-            <Setter Property="Width" Value="180" />
+            <Setter Property="Width" Value="160" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="IsTabStop" Value="False" />
             <Setter Property="Template">
