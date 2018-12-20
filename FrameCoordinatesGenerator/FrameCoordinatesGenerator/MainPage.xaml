@@ -52,7 +52,10 @@
         </PivotItem>
         <PivotItem Header="Verify">
             <StackPanel BorderBrush="Black" BorderThickness="1">
-                <Button Content="Select Directory" Click="PreviewButton_Click" Margin="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Select Directory" Click="PreviewButton_Click" Margin="5"/>
+                    <TextBlock Name="VerifyStatus" Text="" Foreground="Red" Margin="20,0,0,0"/>
+                </StackPanel>
                 <ScrollViewer Name="PreviewScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="1"
                               MaxHeight="500" MaxWidth="1400" Margin="10,10,0,0" HorizontalAlignment="Left"
                               VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"

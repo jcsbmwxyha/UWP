@@ -339,41 +339,49 @@ namespace FrameCoordinatesGenerator
             if (folder == null)
                 return;
 
-            PreviewCanvas.Children.Clear();
-            PreviewCanvas.Children.Add(GridImage);
-            PreviewCanvas.Children.Add(g_PugioView);
-
-            DeviceContent dc = await GetDeviceContent(folder);
-            DeviceModel dm = await dc.ToDeviceModel(folder, new Point(240, 24));
-
-            DeviceView view = new DeviceView();
-            view.DataContext = dm;
-            PreviewCanvas.Children.Add(view);
-            
-            List<ZoneModel> allzones = dm.AllZones;
-            SortByZIndex(allzones);
-            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
-
-            foreach (var zone in allzones)
+            try
             {
-                Rect relative = zone.GetRect();
-                Rect absolute = new Rect(
-                    new Point(relative.Left + dm.PixelLeft, relative.Top + dm.PixelTop),
-                    new Point(relative.Right + dm.PixelLeft, relative.Bottom + dm.PixelTop)
-                    );
+                PreviewCanvas.Children.Clear();
+                PreviewCanvas.Children.Add(GridImage);
+                PreviewCanvas.Children.Add(g_PugioView);
 
-                MouseDetectedRegion r = new MouseDetectedRegion()
+                DeviceContent dc = await GetDeviceContent(folder);
+                DeviceModel dm = await dc.ToDeviceModel(folder, new Point(240, 24));
+
+                DeviceView view = new DeviceView();
+                view.DataContext = dm;
+                PreviewCanvas.Children.Add(view);
+
+                List<ZoneModel> allzones = dm.AllZones;
+                SortByZIndex(allzones);
+                List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
+
+                foreach (var zone in allzones)
                 {
-                    RegionIndex = -1,
-                    DetectionRect = absolute,
-                    GroupIndex = dm.Type
-                };
+                    Rect relative = zone.GetRect();
+                    Rect absolute = new Rect(
+                        new Point(relative.Left + dm.PixelLeft, relative.Top + dm.PixelTop),
+                        new Point(relative.Right + dm.PixelLeft, relative.Bottom + dm.PixelTop)
+                        );
 
-                r.Callback = zone.OnReceiveMouseEvent;
+                    MouseDetectedRegion r = new MouseDetectedRegion()
+                    {
+                        RegionIndex = -1,
+                        DetectionRect = absolute,
+                        GroupIndex = dm.Type
+                    };
 
-                regions.Add(r);
+                    r.Callback = zone.OnReceiveMouseEvent;
+
+                    regions.Add(r);
+                }
+                m_MouseEventCtrl.DetectionRegions = regions.ToArray();
+                VerifyStatus.Text = "";
             }
-            m_MouseEventCtrl.DetectionRegions = regions.ToArray();
+            catch
+            {
+                VerifyStatus.Text = "輸入錯誤!";
+            }
         }
         private void SortByZIndex(List<ZoneModel> zones)
         {
