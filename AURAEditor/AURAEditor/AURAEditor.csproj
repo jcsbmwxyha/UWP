@@ -149,7 +149,6 @@
     <Compile Include="Common\HSVColor.cs" />
     <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
-    <Compile Include="DeviceContent.cs" />
     <Compile Include="GeneralSettingsPage.xaml.cs">
       <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
     </Compile>

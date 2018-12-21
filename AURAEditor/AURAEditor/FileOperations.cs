@@ -469,30 +469,32 @@ namespace AuraEditor
                 XmlElement element = (XmlElement)node;
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
-                DeviceContent dc = await DeviceContent.GetDeviceContent(node);
-                DeviceModel d = await dc.ToDeviceModel(new Point(x * GridPixels, y * GridPixels));
+                DeviceModel dm = await DeviceModel.ToDeviceModelAsync(node);
+                dm.PixelLeft = x * GridPixels;
+                dm.PixelTop = y * GridPixels;
 
-                if (new_SD.Find(sd => sd.Name == d.Name && sd.Sync == true) != null)
+                if (new_SD.Find(sd => sd.Name == dm.Name && sd.Sync == true) != null)
                 {
-                    d.Status = DeviceStatus.OnStage;
-                    new_SD.RemoveAll(sd => sd.Name == d.Name && sd.Sync == true);
+                    dm.Status = DeviceStatus.OnStage;
+                    new_SD.RemoveAll(sd => sd.Name == dm.Name && sd.Sync == true);
                 }
                 else
-                    d.Status = DeviceStatus.Temp;
+                    dm.Status = DeviceStatus.Temp;
 
-                deviceModels.Add(d);
+                deviceModels.Add(dm);
             }
 
             foreach (var sd in new_SD)
             {
-                DeviceContent dc = await DeviceContent.GetDeviceContent(sd);
+                DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
 
-                if (dc == null)
+                if (dm == null)
                     continue;
 
-                Rect r = new Rect(0, 0, dc.GridWidth, dc.GridHeight);
+                Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
                 Point p = SpacePage.GetFreeRoomPositionForRect(r);
-                DeviceModel dm = await dc.ToDeviceModel(p);
+                dm.PixelLeft = p.X;
+                dm.PixelTop = p.Y;
                 dm.Status = DeviceStatus.OnStage;
                 deviceModels.Add(dm);
             }

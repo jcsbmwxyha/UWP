@@ -106,19 +106,17 @@ namespace AuraEditor.Pages
         public async void FillCurrentIngroupDevices()
         {
             List<SyncDevice> syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
-            DeviceContent deviceContent;
             DeviceModel dm;
 
             foreach (var d in syncDevices)
             {
-                deviceContent = await DeviceContent.GetDeviceContent(d);
+                dm = await DeviceModel.ToDeviceModelAsync(d);
 
-                if (deviceContent == null)
+                if (dm == null)
                     continue;
 
-                Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
+                Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
                 Point p = GetFreeRoomPositionForRect(r);
-                dm = await deviceContent.ToDeviceModel();
                 dm.PixelLeft = p.X;
                 dm.PixelTop = p.Y;
 
@@ -163,14 +161,13 @@ namespace AuraEditor.Pages
                 }
                 foreach (var sd in newSD)
                 {
-                    DeviceContent deviceContent = await DeviceContent.GetDeviceContent(sd);
+                    DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
 
-                    if (deviceContent == null)
+                    if (dm == null)
                         continue;
 
-                    Rect r = new Rect(0, 0, deviceContent.GridWidth, deviceContent.GridHeight);
+                    Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
                     Point p = GetFreeRoomPositionForRect(r);
-                    DeviceModel dm = await deviceContent.ToDeviceModel();
                     dm.PixelLeft = p.X;
                     dm.PixelTop = p.Y;
                     dm.Status = DeviceStatus.OnStage;
@@ -484,16 +481,16 @@ namespace AuraEditor.Pages
                 return GetFreeRoomPositionForRect(new Rect(
                     overlappingDM.PixelRight,
                     overlappingDM.PixelTop,
-                    overlappingDM.PixelWidth,
-                    overlappingDM.PixelHeight));
+                    rect.Width,
+                    rect.Height));
             }
         }
-        private DeviceModel GetFirstOverlappingDevice(Rect gridRect)
+        private DeviceModel GetFirstOverlappingDevice(Rect rect)
         {
             foreach (var dm in DeviceModelCollection)
             {
-                if (ControlHelper.IsPiling(gridRect.X, gridRect.Width, dm.PixelLeft, dm.PixelWidth) &&
-                    ControlHelper.IsPiling(gridRect.Y, gridRect.Height, dm.PixelTop, dm.PixelBottom))
+                if (ControlHelper.IsPiling(rect.X, rect.Width, dm.PixelLeft, dm.PixelWidth) &&
+                    ControlHelper.IsPiling(rect.Y, rect.Height, dm.PixelTop, dm.PixelBottom))
                 {
                     return dm;
                 }

@@ -1,13 +1,20 @@
-﻿using AuraEditor.Pages;
+﻿using AuraEditor.Common;
+using AuraEditor.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor.Models
@@ -167,6 +174,184 @@ namespace AuraEditor.Models
 
         public DeviceModel()
         {
+        }
+
+        static public async Task<DeviceModel> ToDeviceModelAsync(SyncDevice syncDevice)
+        {
+            string modelName = syncDevice.Name;
+            string type = syncDevice.Type;
+            return await GetDeviceModel(modelName, type);
+        }
+        static public async Task<DeviceModel> ToDeviceModelAsync(XmlNode node)
+        {
+            XmlElement elem = (XmlElement)node;
+            string modelName = elem.GetAttribute("name");
+            string type = elem.GetAttribute("type");
+            return await GetDeviceModel(modelName, type);
+        }
+        static private async Task<DeviceModel> GetDeviceModel(string modelName, string type)
+        {
+            try
+            {
+                DeviceModel dm = new DeviceModel();
+                ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
+                ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
+
+                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+                double rateW = 0;
+                double rateH = 0;
+                int originalPixelWidth = 1000;
+                int originalPixelHeight = 1000;
+
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
+                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+
+                dm.Name = modelName;
+
+                int gridW, gridH;
+                switch (type)
+                {
+                    case "Notebook": gridW = 27; gridH = 27; break;
+                    case "Mouse": gridW = 8; gridH = 10; break;
+                    case "Keyboard": gridW = 25; gridH = 14; break;
+                    case "MotherBoard": gridW = 36; gridH = 36; break;
+                    case "MousePad": gridW = 12; gridH = 16; break;
+                    case "Headset": gridW = 12; gridH = 15; break;
+                    case "Microphone": gridW = 10; gridH = 12; break;
+                    default: gridW = 36; gridH = 36; break;
+                }
+
+                dm.Type = GetTypeByTypeName(type);
+
+                if (pngFile != null)
+                {
+                    using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
+
+                        bitmapImage.SetSource(fileStream);
+
+                        dm.Image = bitmapImage;
+                        rateW = (double)(gridW * GridPixels) / bitmapImage.PixelWidth;
+                        rateH = (double)(gridH * GridPixels) / bitmapImage.PixelHeight;
+                        originalPixelWidth = bitmapImage.PixelWidth;
+                        originalPixelHeight = bitmapImage.PixelHeight;
+                    }
+                }
+
+                int exist_Column = -1;
+                int leftTopX_Column = -1;
+                int leftTopY_Column = -1;
+                int rightBottomX_Column = -1;
+                int rightBottomY_Column = -1;
+                int z_Column = -1;
+                int png_Column = -1;
+
+                if (csvFile != null)
+                {
+                    using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
+                    {
+                        CsvRow row = new CsvRow();
+                        while (csvReader.ReadRow(row))
+                        {
+                            if (row[0].ToLower() == "gridwidth")
+                            {
+                                gridW = Int32.Parse(row[1]);
+                                rateW = (double)(gridW * GridPixels) / originalPixelWidth;
+                                dm.PixelWidth = gridW * GridPixels;
+                            }
+                            else if (row[0].ToLower() == "gridheight")
+                            {
+                                gridH = Int32.Parse(row[1]);
+                                rateH = (double)(gridH * GridPixels) / originalPixelHeight;
+                                dm.PixelHeight = gridH * GridPixels;
+                            }
+                            if (row[0].ToLower() == "parameters")
+                            {
+                                for (int i = 0; i < row.Count; i++)
+                                {
+                                    if (row[i].ToLower() == "exist") { exist_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
+                                    else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
+                                    else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
+                                    else if (row[i].ToLower() == "z_index") { z_Column = i; }
+                                    else if (row[i].ToLower() == "png") { png_Column = i; }
+                                }
+                            }
+                            else if (row[0].ToLower().Contains("led "))
+                            {
+                                if (row[exist_Column] != "1")
+                                    continue;
+
+                                if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
+                                {
+                                    SoftwareBitmap specialFrameSB;
+                                    SpecialZoneModel szm = new SpecialZoneModel()
+                                    {
+                                        Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                        PixelLeft = (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                        PixelTop = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                        PixelWidth = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0)
+                                                   - (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                        PixelHeight = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0)
+                                                    - (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                    };
+
+                                    if (z_Column != -1 && z_Column < row.Count && row[z_Column] != "")
+                                        szm.Zindex = Int32.Parse(row[z_Column]);
+                                    else
+                                        szm.Zindex = 1;
+
+                                    string pngPath = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
+                                    StorageFile ledPngFile = await StorageFile.GetFileFromPathAsync(pngPath);
+
+                                    using (IRandomAccessStream stream = await ledPngFile.OpenAsync(FileAccessMode.Read))
+                                    {
+                                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+                                        specialFrameSB = await decoder.GetSoftwareBitmapAsync();
+                                    }
+
+                                    specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                                    await szm.SetSoftwareBitmapAsync(specialFrameSB);
+                                    specialzones.Add(szm);
+                                }
+                                else
+                                {
+                                    ZoneModel zm = new ZoneModel
+                                    {
+                                        Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
+                                        PixelLeft = (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                        PixelTop = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                        PixelWidth = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0)
+                                                   - (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
+                                        PixelHeight = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0)
+                                                    - (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
+                                    };
+
+                                    if (z_Column != -1 && z_Column < row.Count && row[z_Column] != "")
+                                        zm.Zindex = Int32.Parse(row[z_Column]);
+                                    else
+                                        zm.Zindex = 1;
+
+                                    zones.Add(zm);
+                                }
+
+                                dm.Zones = zones;
+                                dm.SpecialZones = specialzones;
+                            }
+                        }
+                    }
+                }
+
+                return dm;
+            }
+            catch
+            {
+                Log.Debug("[DeviceContent] Model load failed : " + modelName);
+                return null;
+            }
         }
 
         public XmlNode ToXmlNodeForUserData()
