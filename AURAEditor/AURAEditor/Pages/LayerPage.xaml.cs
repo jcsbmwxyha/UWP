@@ -425,11 +425,24 @@ namespace AuraEditor.Pages
             int i = Layers.IndexOf(layer);
 
             result.Add(playerModel.Position);
-            result.AddRange(Layers[i].GetHeadAndTailPositions(eff));
+            result.AddRange(Layers[i].GetAllEffHeadAndTailPositions(eff));
             if (i > 0)
-                result.AddRange(Layers[i - 1].GetHeadAndTailPositions(null));
+                result.AddRange(Layers[i - 1].GetAllEffHeadAndTailPositions(null));
             if (i < Layers.Count - 1)
-                result.AddRange(Layers[i + 1].GetHeadAndTailPositions(null));
+                result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
+            return result.ToArray();
+        }
+        public double[] GetAlignPositions(Layer layer)
+        {
+            List<double> result = new List<double>();
+            int i = Layers.IndexOf(layer);
+
+            result.Add(playerModel.Position);
+            result.AddRange(Layers[i].GetAllEffHeadAndTailPositions(null));
+            if (i > 0)
+                result.AddRange(Layers[i - 1].GetAllEffHeadAndTailPositions(null));
+            if (i < Layers.Count - 1)
+                result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
             return result.ToArray();
         }
         private void DrawTimelineScale()

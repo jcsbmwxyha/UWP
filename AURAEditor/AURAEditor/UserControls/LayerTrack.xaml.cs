@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using AuraEditor.Pages;
+using System;
+using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using AuraEditor.Pages;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.StorageHelper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -14,13 +15,18 @@ namespace AuraEditor.UserControls
     public sealed partial class LayerTrack : UserControl
     {
         private Layer m_Layer { get { return this.DataContext as Layer; } }
-        private Point insertPosition;
+        private double[] needAlignPositions;
+        private double align;
 
         public LayerTrack()
         {
             this.InitializeComponent();
         }
 
+        private void Track_DragEnter(object sender, DragEventArgs e)
+        {
+            needAlignPositions = LayerPage.Self.GetAlignPositions(m_Layer);
+        }
         private void Track_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data == null)
@@ -32,7 +38,18 @@ namespace AuraEditor.UserControls
             var pair = e.Data.Properties.FirstOrDefault();
             string effName = pair.Value as string;
             if (effName != null)
+            {
                 e.AcceptedOperation = DataPackageOperation.Copy;
+
+                // Try align
+                var dragOverPosition = e.GetPosition(this);
+                var actualDragOverX = dragOverPosition.X - EffectBlock.LastDraggingPoint.X;
+
+                if (GetAlignPosition(actualDragOverX, ref align))
+                    LayerPage.Self.UpdateSupportLine(align);
+                else
+                    LayerPage.Self.UpdateSupportLine(0);
+            }
         }
         private void Track_Drop(object sender, DragEventArgs e)
         {
@@ -40,11 +57,42 @@ namespace AuraEditor.UserControls
             string effName = pair.Value as string;
             int type = GetEffectIndex(effName);
 
+            var dropPosition = e.GetPosition(this);
+            var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
+
             TimelineEffect effect = new TimelineEffect(type);
-            effect.StartTime = m_Layer.GetFirstRoomPosition(1000); // 1s
-            m_Layer.AddTimelineEffect(effect);
+            effect.View = new EffectLine();
+            if (align > 0)
+                effect.Left = align;
+            else
+                effect.Left = actualDropX >= 0 ? actualDropX : 0;
+            m_Layer.InsertTimelineEffectFitly(effect);
             LayerPage.Self.CheckedEffect = effect;
+            LayerPage.Self.UpdateSupportLine(0);
             NeedSave = true;
+        }
+        private bool GetAlignPosition(double p, ref double result)
+        {
+            int range = 8;
+            foreach (var ap in needAlignPositions)
+            {
+                if (ap - range < p && p < ap + range)
+                {
+                    result = ap;
+                    return true;
+                }
+            }
+
+            // Align time scale
+            double round_p = RoundToTarget(p, 100);
+            if (Math.Abs(round_p - p) < range)
+            {
+                result = round_p;
+                return true;
+            }
+
+            result = 0;
+            return false;
         }
 
         private void Track_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -52,7 +100,6 @@ namespace AuraEditor.UserControls
             LayerPage.Self.CheckedLayer = m_Layer;
 
             var fe = sender as FrameworkElement;
-            insertPosition = e.GetCurrentPoint(fe).Position;
         }
         private void Track_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {

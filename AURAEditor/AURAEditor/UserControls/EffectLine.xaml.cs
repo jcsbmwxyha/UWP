@@ -191,6 +191,7 @@ namespace AuraEditor.UserControls
         public EffectLine()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
 
             m_ScrollTimerClock = new DispatcherTimer();
             m_ScrollTimerClock.Tick += Timer_Tick;

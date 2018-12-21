@@ -1,4 +1,6 @@
 ﻿using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -11,6 +13,7 @@ namespace AuraEditor.UserControls
     {
         public string MyText { get { return this.DataContext as string; } }
         public bool Dragging;
+        static public Point LastDraggingPoint;
 
         public EffectBlock()
         {
@@ -28,6 +31,8 @@ namespace AuraEditor.UserControls
         }
         private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            PointerPoint ptrPt = e.GetCurrentPoint(sender as UIElement);
+            LastDraggingPoint = ptrPt.Position;
             VisualStateManager.GoToState(this, "Pressed", false);
         }
         private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)

@@ -120,23 +120,23 @@ namespace AuraEditor
 
         private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TimelineEffect tle;
-            EffectLine el;
+            TimelineEffect model;
+            EffectLine view;
 
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    tle = e.OldItems[0] as TimelineEffect;
-                    UI_Track.Track.Children.Remove(tle.View);
+                    model = e.OldItems[0] as TimelineEffect;
+                    UI_Track.Track.Children.Remove(model.View);
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    el = new EffectLine();
-                    tle = e.NewItems[0] as TimelineEffect;
-                    el.DataContext = tle;
-                    el.Height = 36;
-                    Windows.UI.Xaml.Controls.Canvas.SetTop(el, 8);
-                    UI_Track.Track.Children.Add(el);
-                    tle.View = el;
+                    model = e.NewItems[0] as TimelineEffect;
+                    view = new EffectLine();
+                    view.DataContext = model;
+                    view.Height = 36;
+                    Windows.UI.Xaml.Controls.Canvas.SetTop(view, 8);
+                    model.View = view;
+                    UI_Track.Track.Children.Add(model.View);
                     break;
             }
         }
@@ -182,14 +182,15 @@ namespace AuraEditor
         public void AddTimelineEffect(TimelineEffect eff)
         {
             eff.Layer = this;
+
             TimelineEffects.Add(eff);
         }
         public double InsertTimelineEffectFitly(TimelineEffect eff)
         {
             eff.Layer = this;
+            TimelineEffects.Add(eff);
             double result = MoveToFitPosition(eff);
 
-            TimelineEffects.Add(eff);
             return result;
         }
         public void AppendTimelineEffect(TimelineEffect eff)
@@ -306,7 +307,7 @@ namespace AuraEditor
 
             return roomOfDuration;
         }
-        public List<double> GetHeadAndTailPositions(TimelineEffect ExceptionalEff)
+        public List<double> GetAllEffHeadAndTailPositions(TimelineEffect ExceptionalEff)
         {
             List<double> result = new List<double>();
             foreach (var eff in TimelineEffects)

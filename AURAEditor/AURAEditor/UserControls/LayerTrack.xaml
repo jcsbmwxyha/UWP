@@ -12,6 +12,7 @@
 
     <Canvas Name="Track" Width="5000" Background="Transparent" AllowDrop="True"
             x:FieldModifier="public"
+            DragEnter="Track_DragEnter"
             DragOver="Track_DragOver"
             Drop="Track_Drop"
             PointerPressed="Track_PointerPressed"
