@@ -1,10 +1,12 @@
-﻿using AuraEditor.Models;
+﻿using System;
+using AuraEditor.Models;
 using AuraEditor.Pages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.StorageHelper;
@@ -17,6 +19,7 @@ namespace AuraEditor.UserControls
     {
         private DeviceModel m_DeviceModel { get { return this.DataContext as DeviceModel; } }
         private Point _oldPixelPosition;
+        private Point _pressedPosition;
 
         public DeviceView()
         {
@@ -52,6 +55,7 @@ namespace AuraEditor.UserControls
 
         private void EnableManipulation()
         {
+            ManipulationStarted -= Device_ManipulationStarted;
             ManipulationDelta -= Device_ManipulationDelta;
             ManipulationCompleted -= Device_ManipulationCompleted;
             PointerPressed -= Device_PointerPressed;
@@ -59,6 +63,7 @@ namespace AuraEditor.UserControls
             PointerEntered -= Device_PointerEntered;
             PointerExited -= Device_PointerExited;
 
+            ManipulationStarted += Device_ManipulationStarted;
             ManipulationDelta += Device_ManipulationDelta;
             ManipulationCompleted += Device_ManipulationCompleted;
             PointerPressed += Device_PointerPressed;
@@ -68,6 +73,7 @@ namespace AuraEditor.UserControls
         }
         private void DisableManipulation()
         {
+            ManipulationStarted -= Device_ManipulationStarted;
             ManipulationDelta -= Device_ManipulationDelta;
             ManipulationCompleted -= Device_ManipulationCompleted;
             PointerPressed -= Device_PointerPressed;
@@ -79,19 +85,42 @@ namespace AuraEditor.UserControls
         }
         #endregion
 
+        private void Device_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            _pressedPosition = e.Position;
+            Canvas.SetZIndex(this, 3);
+        }
+
         private void Device_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            SetPosition(
-                TT.X + e.Delta.Translation.X / SpacePage.Self.SpaceZoomFactor,
-                TT.Y + e.Delta.Translation.Y / SpacePage.Self.SpaceZoomFactor);
+            var rb_Point = SpacePage.Self.GetCanvasRightBottomPoint();
 
-            Canvas.SetZIndex(this, 3);
+            var deltaX = e.Position.X - _pressedPosition.X;
+            var deltaY = e.Position.Y - _pressedPosition.Y;
+
+            deltaX = (TT.X + deltaX < 0) ? 0 : deltaX;
+            deltaY = (TT.Y + deltaY < 0) ? 0 : deltaY;
+            deltaX = (TT.X + DashRect.Width + deltaX > rb_Point.X) ? 0 : deltaX;
+            deltaY = (TT.Y + DashRect.Height + deltaX > rb_Point.Y) ? 0 : deltaY;
+
+            SetPosition(
+                TT.X + deltaX,
+                TT.Y + deltaY);
         }
         private void Device_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
+            var point = SpacePage.Self.GetCanvasRightBottomPoint();
+
+            if (TT.X < 0) TT.X = 0;
+            if (TT.Y < 0) TT.Y = 0;
+            if (TT.X + DashRect.Width > point.X) TT.X = point.X - DashRect.Width;
+            if (TT.Y + DashRect.Height > point.Y) TT.Y = point.Y - DashRect.Height;
+
             SetPosition(
                 RoundToGrid(TT.X),
                 RoundToGrid(TT.Y));
+
+            SpacePage.Self.OnDeviceMoveCompleted();
 
             if (!SpacePage.Self.IsPiling(m_DeviceModel))
             {
@@ -151,7 +180,13 @@ namespace AuraEditor.UserControls
 
             source = TT.Y;
             targetY = y;
-            AnimationStart(TT, "Y", runTime, source, targetY);
+            Storyboard sb = AnimationStart(TT, "Y", runTime, source, targetY);
+            sb.Completed += MovedCompleted;
+        }
+
+        private void MovedCompleted(object sender, object e)
+        {
+            SpacePage.Self.OnDeviceMoveCompleted();
         }
     }
 }

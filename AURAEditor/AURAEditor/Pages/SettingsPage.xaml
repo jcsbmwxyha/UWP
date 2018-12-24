@@ -16,9 +16,9 @@
                    FontFamily="Segoe UI" FontWeight="Bold" Margin="52,25,0,0"/>
 
         <Pivot x:Name="rootPivot" Grid.Row="1" Margin="49,25,0,0">
-            <PivotItem Header="General Settings">
+            <!--<PivotItem Header="General Settings">
                 <Frame Name="GeneralSettings"/>
-            </PivotItem>
+            </PivotItem>-->
             <PivotItem>
                 <PivotItem.Header>
                     <RelativePanel Height="48" Width="130">

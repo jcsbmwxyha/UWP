@@ -45,6 +45,9 @@ namespace AuraEditor
         [DllImport("RpcClient.dll")]
         static extern long CreatorSaveFile(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string File, [MarshalAs(UnmanagedType.LPStr)] string Content);
 
+        [DllImport("RpcClient.dll")]
+        static extern long CreatorGetDevice(IntPtr rpcClient, [MarshalAs(UnmanagedType.LPStr)] string cmd, out long ssize, [MarshalAs(UnmanagedType.LPWStr)] out string devicename);
+
         IntPtr rpcClient;
         long retCode = 0L;
         long error = 0L;
@@ -52,6 +55,8 @@ namespace AuraEditor
         string cmd = @"C:\ProgramData\Asus\AURA Creator\lastscript.xml";
         int num = 0;
         public static int returnnum = 0;
+        public static string devicename = "None";
+        public static long ssize = 0;
 
         public async Task Sendupdatestatus(string updatestring)
         {
@@ -139,6 +144,16 @@ namespace AuraEditor
 
                 error = CreatorSetEngine(rpcClient, "stop");
 
+            });
+        }
+
+        public async Task AuraCreatorGetDevice(string cmd)
+        {
+            await Task.Run(() =>
+            {
+                rpcClient = IntPtr.Zero;
+                if (NotifyIfAnyError(RpcClientInitialize(out rpcClient))) return;
+                retCode = CreatorGetDevice(rpcClient, cmd.ToUpper(), out ssize, out devicename);
             });
         }
 

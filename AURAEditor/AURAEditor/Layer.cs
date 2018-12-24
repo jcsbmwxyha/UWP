@@ -435,8 +435,8 @@ namespace AuraEditor
         {
             double delay_accu = 0;
             double duration = 0;
-            int width = SpacePage.Self.GetCurrentOperatingGridWidth;
-            int height = SpacePage.Self.GetCurrentOperatingGridHeight;
+            int width = SpacePage.Self.OperatingGridWidth;
+            int height = SpacePage.Self.OperatingGridHeight;
             double angle = 0;
             double length = MaxOperatingLength(width, height, angle);
             double ledSpeed = 0;

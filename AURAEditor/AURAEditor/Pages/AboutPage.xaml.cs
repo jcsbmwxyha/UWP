@@ -33,10 +33,5 @@ namespace AuraEditor
         {
             WindowsPage.Self.WindowsFrame1.Navigate(typeof(EULAPage), null, new SuppressNavigationTransitionInfo());
         }
-
-        private void PPTextBlock_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            WindowsPage.Self.WindowsFrame1.Navigate(typeof(PrivacyPolicyPage), null, new SuppressNavigationTransitionInfo());
-        }
     }
 }

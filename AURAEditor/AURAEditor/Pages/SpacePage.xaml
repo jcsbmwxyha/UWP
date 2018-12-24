@@ -10,6 +10,10 @@
     <Page.Resources>
         <ResourceDictionary>
             <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/Background/grid.png"/>
+            <BitmapImage x:Key="restrict_line_left" UriSource="ms-appx:///Assets/Line/asus_ac_stagegrill_left.png"/>
+            <BitmapImage x:Key="restrict_line_right" UriSource="ms-appx:///Assets/Line/asus_ac_stagegrill_right.png"/>
+            <BitmapImage x:Key="restrict_line_top" UriSource="ms-appx:///Assets/Line/asus_ac_stagegrill_top.png"/>
+            <BitmapImage x:Key="restrict_line_bottom" UriSource="ms-appx:///Assets/Line/asus_ac_stagegrill_bottom.png"/>
             <BitmapImage x:Key="LeftSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_n.png"/>
             <BitmapImage x:Key="LeftSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_h.png"/>
             <BitmapImage x:Key="LeftSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_r_p.png"/>
@@ -97,7 +101,7 @@
         </Grid.ColumnDefinitions>
         
         <ScrollViewer Name="SpaceScrollViewer" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Left"
-                      MinZoomFactor="0.5" MaxZoomFactor="3" ZoomMode="Enabled" x:FieldModifier="public"
+                      MinZoomFactor="0.1" MaxZoomFactor="3" ZoomMode="Enabled" x:FieldModifier="public"
                       HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Canvas Name="SpaceCanvas"  VerticalAlignment="Top" Width="4800" Height="1920" HorizontalAlignment="Left">
                 <Rectangle Name="MouseRectangle" Width="0" Height="0"
@@ -108,6 +112,14 @@
                     </Rectangle.RenderTransform>
                 </Rectangle>
                 <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"/>
+                <Image Name="RestrictLineLeft" Source="{ThemeResource restrict_line_left}" Stretch="Fill" Canvas.ZIndex="-1"
+                       Width="60" Height="1920" Canvas.Left="0" Canvas.Top="0" Visibility="Collapsed"/>
+                <Image Name="RestrictLineRight" Source="{ThemeResource restrict_line_right}" Stretch="Fill" Canvas.ZIndex="-2"
+                       Width="60" Height="1920" Canvas.Left="4740" Canvas.Top="0" Visibility="Collapsed"/>
+                <Image Name="RestrictLineTop" Source="{ThemeResource restrict_line_top}" Stretch="Fill" Canvas.ZIndex="-2"
+                       Width="4800" Height="60" Canvas.Left="0" Canvas.Top="0" Visibility="Collapsed"/>
+                <Image Name="RestrictLineBottom" Source="{ThemeResource restrict_line_bottom}" Stretch="Fill" Canvas.ZIndex="-2"
+                       Width="4800" Height="60" Canvas.Left="0" Canvas.Top="1860" Visibility="Collapsed"/>
             </Canvas>
         </ScrollViewer>
         <Image Grid.Row="1" Grid.Column="1" Canvas.ZIndex="-3"

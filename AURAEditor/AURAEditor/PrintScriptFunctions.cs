@@ -50,7 +50,7 @@ namespace AuraEditor
         private XmlNode GetQueueXmlNode()
         {
             XmlNode queueNode = CreateXmlNode("queue");
-            double maxDistance = MaxOperatingLength(SpacePage.GetCurrentOperatingGridWidth, SpacePage.GetCurrentOperatingGridHeight, 0);
+            double maxDistance = MaxOperatingLength(SpacePage.OperatingGridWidth, SpacePage.OperatingGridHeight, 0);
             int effectCount = 0;
             int layerCount = 0;
 

@@ -30,19 +30,21 @@
 
         <!-- This Button has a higher z-order than AppTitleBar, 
          so it receives user input. -->
-        <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right">
-            <ToggleButton x:Name="SettingsToggleButton" Width="40" Height="27"
-                      Style="{StaticResource RogToggleButtonStyle2}" Tapped="SettingsToggleButton_Tapped"/>
+        <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right" x:FieldModifier="Public">
+            <RadioButton x:Name="SettingsRadioButton" x:FieldModifier="Public" Width="40" Height="27"
+                      Style="{StaticResource RogRadioButtonStyle}" Click="SettingsRadioButton_Click"/>
             <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
-                   RelativePanel.AlignTopWith="SettingsToggleButton" RelativePanel.AlignRightWith="SettingsToggleButton"
+                   RelativePanel.AlignTopWith="SettingsRadioButton" RelativePanel.AlignRightWith="SettingsRadioButton"
                    Visibility="Collapsed"/>
         </RelativePanel>
 
-        <Grid x:Name="WindowsGrid" Grid.Row="1">
+        <Grid x:Name="WindowsGrid" x:FieldModifier="Public" Grid.Row="1">
             <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
             <Frame x:Name="WindowsFrame" x:FieldModifier="Public"/>
+            <Frame x:Name="MaskFrame" x:FieldModifier="Public" Background="Transparent" Visibility="Collapsed"/>
         </Grid>
-        <Grid x:Name="WindowsGrid1" Grid.Row="1" Visibility="Collapsed">
+
+        <Grid x:Name="WindowsGrid1" x:FieldModifier="Public" Grid.Row="1" Visibility="Collapsed">
             <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
             <Frame x:Name="WindowsFrame1" x:FieldModifier="Public"/>
         </Grid>

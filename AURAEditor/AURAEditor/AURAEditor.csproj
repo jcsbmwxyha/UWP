@@ -171,9 +171,6 @@
       <DependentUpon>SpacePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrintScriptFunctions.cs" />
-    <Compile Include="Pages\PrivacyPolicyPage.xaml.cs">
-      <DependentUpon>PrivacyPolicyPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -432,6 +429,10 @@
     <Content Include="Assets\EffectInfoGroup\asus_gc_list_divider_r.png" />
     <Content Include="Assets\EffectInfoGroup\asus_gc_slider2 control_d.png" />
     <Content Include="Assets\EffectInfoGroup\asus_gc_slider2 control_n.png" />
+    <Content Include="Assets\Line\asus_ac_stagegrill_top.png" />
+    <Content Include="Assets\Line\asus_ac_stagegrill_left.png" />
+    <Content Include="Assets\Line\asus_ac_stagegrill_right.png" />
+    <Content Include="Assets\Line\asus_ac_stagegrill_bottom.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_dl.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_dmid.png" />
     <Content Include="Assets\MenuFlyoutPresenter\asus_gc_header bg_dr.png" />
@@ -606,10 +607,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SpacePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\PrivacyPolicyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

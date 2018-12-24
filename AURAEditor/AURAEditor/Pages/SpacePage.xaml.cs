@@ -71,7 +71,7 @@ namespace AuraEditor.Pages
         private DispatcherTimer m_ScrollTimerClock;
 
         public List<DeviceModel> DeviceModelCollection;
-        public int GetCurrentOperatingGridWidth
+        public int OperatingGridWidth
         {
             get
             {
@@ -84,7 +84,7 @@ namespace AuraEditor.Pages
                 return (int)((rightmost - leftmost) / GridPixels);
             }
         }
-        public int GetCurrentOperatingGridHeight
+        public int OperatingGridHeight
         {
             get
             {
@@ -94,9 +94,32 @@ namespace AuraEditor.Pages
                 DeviceModelCollection.ForEach(d => { if (d.PixelTop < top) { top = d.PixelTop; } });
                 DeviceModelCollection.ForEach(d => { if (d.PixelBottom > bottom) { bottom = d.PixelBottom; } });
 
-                return (int)(bottom - top);
+                return (int)(bottom - top) / GridPixels;
             }
         }
+        public Point GetCanvasRightBottomPoint()
+        {
+            return new Point(SpaceCanvas.Width, SpaceCanvas.Height);
+        }
+        public Rect GetOperatingPixelRect()
+        {
+            DeviceModel leftmostDM = DeviceModelCollection[0];
+            DeviceModel rightmostDM = DeviceModelCollection[0];
+            DeviceModel topDM = DeviceModelCollection[0];
+            DeviceModel bottomDM = DeviceModelCollection[0];
+
+            DeviceModelCollection.ForEach(d => { if (d.PixelLeft < leftmostDM.PixelLeft) { leftmostDM = d; } });
+            DeviceModelCollection.ForEach(d => { if (d.PixelRight > rightmostDM.PixelRight) { rightmostDM = d; } });
+            DeviceModelCollection.ForEach(d => { if (d.PixelTop < topDM.PixelTop) { topDM = d; } });
+            DeviceModelCollection.ForEach(d => { if (d.PixelBottom > bottomDM.PixelBottom) { bottomDM = d; } });
+
+            return new Rect(
+                leftmostDM.PixelLeft,
+                topDM.PixelTop,
+                rightmostDM.PixelRight - leftmostDM.PixelLeft,
+                bottomDM.PixelBottom - topDM.PixelTop);
+        }
+
         public DeviceModel GetCurrentDeviceByType(int type)
         {
             return DeviceModelCollection.Find(x => x.Type == type);
@@ -182,6 +205,10 @@ namespace AuraEditor.Pages
 
             SpaceCanvas.Children.Clear();
             SpaceCanvas.Children.Add(GridImage);
+            SpaceCanvas.Children.Add(RestrictLineLeft);
+            SpaceCanvas.Children.Add(RestrictLineRight);
+            SpaceCanvas.Children.Add(RestrictLineTop);
+            SpaceCanvas.Children.Add(RestrictLineBottom);
             SpaceCanvas.Children.Add(MouseRectangle);
 
             var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
@@ -218,6 +245,7 @@ namespace AuraEditor.Pages
 
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
             UnselectAllZones();
+            OnDeviceMoveCompleted();
         }
 
         public void ClearTempDeviceData()
@@ -408,7 +436,35 @@ namespace AuraEditor.Pages
         }
         private void FitAllButton_Click(object sender, RoutedEventArgs e)
         {
+            var rect = GetOperatingPixelRect();
+            var rateW = rect.Width / SpaceScrollViewer.ActualWidth;
+            var rateH = rect.Height / SpaceScrollViewer.ActualHeight;
+            double rate;
+            double AlignLeft = rect.Left;
+            double AlignTop = rect.Top;
 
+            if (rateW > rateH)
+            {
+                rate = rateW;
+                AlignLeft = rect.Left / rate;
+                var rectW_Mid = rect.Height / rate / 2;
+                var screenW_Mid = SpaceScrollViewer.ActualHeight / 2;
+                var moveOffsetToCenter = screenW_Mid - rectW_Mid;
+                AlignTop = rect.Top / rate - moveOffsetToCenter;
+            }
+            else
+            {
+                rate = rateH;
+                var rectH_Mid = rect.Width / rate / 2;
+                var screenH_Mid = SpaceScrollViewer.ActualWidth / 2;
+                var moveOffsetToCenter = screenH_Mid - rectH_Mid;
+                AlignLeft = rect.Left / rate - moveOffsetToCenter;
+                AlignTop = rect.Top / rate;
+            }
+
+            SpaceScrollViewer.ChangeView(
+                AlignLeft, AlignTop,
+                (float)(1 / rate), true);
         }
         #endregion
 
@@ -452,6 +508,35 @@ namespace AuraEditor.Pages
                     dm.VisualState = "Normal";
                 }
             }
+
+            if (movedDev.PixelLeft < 5)
+                RestrictLineLeft.Visibility = Visibility.Visible;
+            else
+                RestrictLineLeft.Visibility = Visibility.Collapsed;
+
+            if (movedDev.PixelTop < 5)
+                RestrictLineTop.Visibility = Visibility.Visible;
+            else
+                RestrictLineTop.Visibility = Visibility.Collapsed;
+
+            Point rb_point = GetCanvasRightBottomPoint();
+
+            if (movedDev.PixelRight > rb_point.X - 5)
+                RestrictLineRight.Visibility = Visibility.Visible;
+            else
+                RestrictLineRight.Visibility = Visibility.Collapsed;
+
+            if (movedDev.PixelBottom > rb_point.Y - 5)
+                RestrictLineBottom.Visibility = Visibility.Visible;
+            else
+                RestrictLineBottom.Visibility = Visibility.Collapsed;
+        }
+        public void OnDeviceMoveCompleted()
+        {
+            RestrictLineLeft.Visibility = Visibility.Collapsed;
+            RestrictLineRight.Visibility = Visibility.Collapsed;
+            RestrictLineTop.Visibility = Visibility.Collapsed;
+            RestrictLineBottom.Visibility = Visibility.Collapsed;
         }
         public bool IsPiling(DeviceModel testDev)
         {

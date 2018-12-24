@@ -35,7 +35,6 @@ namespace AuraEditor
 
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            GeneralSettings.Navigate(typeof(GeneralSettingsPage), null, new SuppressNavigationTransitionInfo());
             About.Navigate(typeof(AboutPage), null, new SuppressNavigationTransitionInfo());
         }
 

@@ -172,7 +172,11 @@ namespace AuraEditor
             LayerFrame.Navigate(typeof(LayerPage));
             LayerPage = LayerPage.Self;
 
+            //GetDeviceNamebySerivce
+            GetDeviceName();
+
             await ConnectedDevicesDialog.Rescan();
+
             //Start SocketClient
             startclient();
 
@@ -543,6 +547,31 @@ namespace AuraEditor
             bgwSocketServerRecv.RunWorkerAsync();
         }
         #endregion
+
+
+        #region -- UI initial get device from service --
+
+        async void GetDeviceName()
+        {
+            try
+            {
+                await (new ServiceViewModel()).AuraCreatorGetDevice("CREATORGETDEVICE");
+                int listcount = Int32.Parse(ServiceViewModel.devicename);
+                for (int i = 0; i <= listcount; i++)
+                {
+                    await (new ServiceViewModel()).AuraCreatorGetDevice(i.ToString());
+                    //string format : Name,DeviceType,SyncStatus
+                    string devicename = ServiceViewModel.devicename;
+                    Console.WriteLine(devicename);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #endregion
+
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {

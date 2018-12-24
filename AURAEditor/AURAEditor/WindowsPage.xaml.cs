@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Windows.ApplicationModel.Core;
+using Windows.Storage;
 using Windows.UI.Core;
+using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -17,6 +19,9 @@ namespace AuraEditor
     {
         public bool needToUpdadte = false;
 
+        ApplicationDataContainer g_EULASettings;
+        public bool EulaAgreeOrNot = false;
+
         static WindowsPage _instance;
         static public WindowsPage Self
         {
@@ -30,6 +35,8 @@ namespace AuraEditor
             _instance = this;
 
             WindowsFrame.Navigated += WindowsFrame_Navigated;
+            SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
+            g_EULASettings = Windows.Storage.ApplicationData.Current.LocalSettings;
         }
 
         private async void WindowsPage_Loaded(object sender, RoutedEventArgs e)
@@ -52,14 +59,38 @@ namespace AuraEditor
             coreTitleBar.IsVisibleChanged += CoreTitleBar_IsVisibleChanged;
             #endregion
 
-            WindowsGrid.Visibility = Visibility.Visible;
+            WindowsGrid.Visibility = Visibility.Collapsed;
             WindowsGrid1.Visibility = Visibility.Collapsed;
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
+            LoadEULASettings();
+
+            await (new ServiceViewModel()).Sendupdatestatus("ASUSSYS");
+            if (ServiceViewModel.returnnum == 1)//ASUS SYS
+            {
+                WindowsGrid.Visibility = Visibility.Visible;
+                WindowsGrid1.Visibility = Visibility.Collapsed;
+            }
+            else//Other SYS show EULA page
+            {
+                if (EulaAgreeOrNot)
+                {
+                    WindowsGrid.Visibility = Visibility.Visible;
+                    WindowsGrid1.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    //Hide Setting Button
+                    SettingRelativePanel.Visibility = Visibility.Collapsed;
+                    WindowsGrid.Visibility = Visibility.Collapsed;
+                    WindowsGrid1.Visibility = Visibility.Visible;
+                    WindowsFrame1.Navigate(typeof(EULAPage), null, new SuppressNavigationTransitionInfo());
+                }
+            }
 
             #region Check for Update and show icon
             //Disable settings button until check finish
-            SettingsToggleButton.IsEnabled = false;
-            SettingsToggleButton.Opacity = 0.5;
+            SettingsRadioButton.IsEnabled = false;
+            SettingsRadioButton.Opacity = 0.5;
             // disable end
             await (new ServiceViewModel()).Sendupdatestatus("checkallbyservice");
             // < 0 No checkallbyservice function
@@ -75,8 +106,8 @@ namespace AuraEditor
                 needToUpdadte = false;
             }
             //Enable settings button until check finish
-            SettingsToggleButton.IsEnabled = true;
-            SettingsToggleButton.Opacity = 1;
+            SettingsRadioButton.IsEnabled = true;
+            SettingsRadioButton.Opacity = 1;
             //Enable end
             #endregion
         }
@@ -117,42 +148,24 @@ namespace AuraEditor
             }
         }
 
-        private void SettingsToggleButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void SettingsRadioButton_Click(object sender, RoutedEventArgs e)
         {
-            if (SettingsToggleButton.IsChecked == true)
-            {
-                // Register a handler for BackRequested events and set the
-                // visibility of the Back button
-                SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                WindowsGrid.Visibility = Visibility.Collapsed;
-                WindowsGrid1.Visibility = Visibility.Visible;
-                WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
-            }
-            else
-            {
-                if (WindowsFrame1.CanGoBack)
-                {
-                    Frame rootFrame = Window.Current.Content as Frame;
-                    rootFrame.BackStack.Clear();
-                    WindowsGrid.Visibility = Visibility.Visible;
-                    WindowsGrid1.Visibility = Visibility.Collapsed;
-                    SettingsToggleButton.IsChecked = false;
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                    SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
-                }
-            }
+            // Register a handler for BackRequested events and set the
+            // visibility of the Back button
+            SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            WindowsGrid.Visibility = Visibility.Collapsed;
+            WindowsGrid1.Visibility = Visibility.Visible;
+            WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
         }
 
-        private void OnBackRequested(object sender, BackRequestedEventArgs e)
+        public void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
             if (WindowsFrame1.Content is SettingsPage)
             {
-                Frame rootFrame = Window.Current.Content as Frame;
-                rootFrame.BackStack.Clear();
                 WindowsGrid.Visibility = Visibility.Visible;
                 WindowsGrid1.Visibility = Visibility.Collapsed;
-                SettingsToggleButton.IsChecked = false;
+                SettingsRadioButton.IsChecked = false;
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
             }
@@ -163,6 +176,27 @@ namespace AuraEditor
                     e.Handled = true;
                     WindowsFrame1.GoBack();
                 }
+            }
+        }
+
+        private void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
+        {
+            SaveEULASettings();
+        }
+
+        private void SaveEULASettings()
+        {
+            g_EULASettings.Values["EULAAgree"] = EulaAgreeOrNot.ToString();
+        }
+
+        private void LoadEULASettings()
+        {
+            bool successful = bool.TryParse(g_EULASettings.Values["EULAAgree"] as string, out bool agree);
+            if (successful)
+                EulaAgreeOrNot = agree;
+            else
+            {
+                EulaAgreeOrNot = false;
             }
         }
     }

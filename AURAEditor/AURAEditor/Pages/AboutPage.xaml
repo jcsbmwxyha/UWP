@@ -21,22 +21,7 @@
                 <Image Source="ms-appx:///Assets/Dividers/asus_gc_list_divider_mid.png" Grid.Column="1" Stretch="Fill"/>
                 <Image Source="ms-appx:///Assets/Dividers/asus_gc_list_divider_r.png" Grid.Column="2" Stretch="Fill"/>
             </Grid>
-            <TextBlock x:Name="PPTextBlock" FontSize="18" FontFamily="Segoe UI" Foreground="Red" Margin="0,27,0,0" Tapped="PPTextBlock_Tapped">
-                <Underline>
-                    <Run Text="Privacy Policy"/>
-                </Underline>
-            </TextBlock>
-            <Grid Width="1319" Height="2" Margin="0,24,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Image Source="ms-appx:///Assets/Dividers/asus_gc_list_divider_l.png" Grid.Column="0" Stretch="Fill"/>
-                <Image Source="ms-appx:///Assets/Dividers/asus_gc_list_divider_mid.png" Grid.Column="1" Stretch="Fill"/>
-                <Image Source="ms-appx:///Assets/Dividers/asus_gc_list_divider_r.png" Grid.Column="2" Stretch="Fill"/>
-            </Grid>
-            <TextBlock x:Name="EULATextBlock" FontSize="18" FontFamily="Segoe UI" Foreground="Red" Tapped="EULATextBlock_Tapped">
+            <TextBlock x:Name="EULATextBlock" FontSize="18" FontFamily="Segoe UI" Foreground="Red" Margin="0,27,0,0" Tapped="EULATextBlock_Tapped">
                 <Underline>
                     <Run Text="EULA"/>
                 </Underline>

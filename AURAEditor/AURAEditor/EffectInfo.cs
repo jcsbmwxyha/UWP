@@ -183,8 +183,8 @@ namespace AuraEditor
         private XmlNode GetWaveListXmlNode(int zoneCount)
         {
             XmlNode waveListNode = CreateXmlNode("waveList");
-            int maxOperatingGridWidth = SpacePage.Self.GetCurrentOperatingGridWidth;
-            int maxOperatingGridHeight = SpacePage.Self.GetCurrentOperatingGridHeight;
+            int maxOperatingGridWidth = SpacePage.Self.OperatingGridWidth;
+            int maxOperatingGridHeight = SpacePage.Self.OperatingGridHeight;
             double temp = Angle_CreatorToLService(Angle);
             int maxOperatingGridLength = MaxOperatingLength(maxOperatingGridWidth, maxOperatingGridHeight, Angle_CreatorToLService(Angle));
 

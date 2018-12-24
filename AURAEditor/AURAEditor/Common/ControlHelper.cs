@@ -117,7 +117,7 @@ namespace AuraEditor.Common
                 return false;
         }
 
-        static public void AnimationStart(DependencyObject o, string target, double runTime, double from, double to)
+        static public Storyboard AnimationStart(DependencyObject o, string target, double runTime, double from, double to)
         {
             var storyboard = new Storyboard();
             var animation = new DoubleAnimation();
@@ -131,6 +131,8 @@ namespace AuraEditor.Common
             Storyboard.SetTarget(animation, o);
             storyboard.Children.Add(animation);
             storyboard.Begin();
+
+            return storyboard;
         }
         static public async Task AnimationStartAsync(DependencyObject o, string target, double runTime, double from, double to)
         {
