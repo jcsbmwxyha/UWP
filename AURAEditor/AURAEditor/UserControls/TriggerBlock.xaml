@@ -22,7 +22,7 @@
           PointerExited="Grid_PointerExited">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40"/>
-            <ColumnDefinition Width="370"/>
+            <ColumnDefinition Width="340"/>
             <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 

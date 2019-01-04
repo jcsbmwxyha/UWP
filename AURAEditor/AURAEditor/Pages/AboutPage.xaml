@@ -10,7 +10,7 @@
     <Grid Background="Transparent" Margin="60,72,0,0">
         <StackPanel Orientation="Vertical">
             <TextBlock Text="App Version" FontSize="18" FontFamily="Segoe UI" Foreground="Red"/>
-            <TextBlock Text="Ver XXXXXXXXXXXXXXXXX" Foreground="Gray" Margin="0,17,0,0"/>
+            <TextBlock x:Name="AppVersionTextBlock" Foreground="White" Opacity="0.7" Margin="0,17,0,0"/>
             <Grid Width="1319" Height="2" Margin="0,11,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

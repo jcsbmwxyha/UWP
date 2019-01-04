@@ -105,6 +105,9 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\EULADisagreeDialog.xaml.cs">
+      <DependentUpon>EULADisagreeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NoNetworkDialog.xaml.cs">
       <DependentUpon>NoNetworkDialog.xaml</DependentUpon>
     </Compile>
@@ -222,12 +225,45 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="Assets\Background\asus_ac_bg.png" />
+    <Content Include="Assets\Background\asus_ac_dialog_smallest_bg.png" />
     <Content Include="Assets\Background\asus_ac_settings_bg.png" />
     <Content Include="Assets\Background\asus_gc_aura_updates_bg.png" />
     <Content Include="Assets\Background\asus_gc_dailog_bg_short.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_d_l.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_d_m.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_d_r.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_h_l.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_h_m.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_h_r.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_n_l.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_n_m.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_n_r.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_p_l.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_p_m.png" />
+    <Content Include="Assets\Button\asus_ac_btn1_p_r.png" />
+    <Content Include="Assets\Button\asus_ac_default_ic_h.png" />
+    <Content Include="Assets\Button\asus_ac_default_ic_n.png" />
+    <Content Include="Assets\Button\asus_ac_default_ic_s.png" />
+    <Content Include="Assets\Button\asus_ac_fitview_ic_h.png" />
+    <Content Include="Assets\Button\asus_ac_fitview_ic_n.png" />
+    <Content Include="Assets\Button\asus_ac_fitview_ic_s.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_h.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_n.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_p.png" />
+    <Content Include="Assets\Button\asus_ac_saveandapply_ic.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_l_dis.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_l_hover.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_l_n.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_l_p.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_mid_dis.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_mid_hover.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_mid_n.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_mid_p.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_r_dis.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_r_hover.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_r_n.png" />
+    <Content Include="Assets\Button\asus_ac_sbtn_r_p.png" />
+    <Content Include="Assets\Button\asus_ac_setaslayer_ic.png" />
     <Content Include="Assets\Button\asus_ac_sorting_ic.png" />
     <Content Include="Assets\Dividers\asus_gc_list_divider_l.png" />
     <Content Include="Assets\Dividers\asus_gc_list_divider_mid.png" />
@@ -340,6 +376,7 @@
     <Content Include="Assets\Layer\asus_ac_layer_s.png" />
     <Content Include="Assets\Layer\asus_ac_triggerline_body.png" />
     <Content Include="Assets\Layer\asus_ac_triggerline_head.png" />
+    <Content Include="Assets\Layer\asus_ac_trigger_layer_bg.png" />
     <Content Include="Assets\Line\asus_ac_shortline_bg.png" />
     <Content Include="Assets\Line\asus_ac_shortline_v_bg.png" />
     <Content Include="Assets\ConnectedDevices\asus_ac_cd_bg.png" />
@@ -445,6 +482,7 @@
     <Content Include="Assets\NoticeImage\asus_ac_error_ic.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_h.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_n.png" />
+    <Content Include="Assets\Tab\asus_ac_tab_select.png" />
     <Content Include="Assets\TitleBar.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_d.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_n.png" />
@@ -558,6 +596,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\EULADisagreeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\NoNetworkDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

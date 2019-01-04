@@ -129,11 +129,12 @@ namespace AuraEditor
         #region Framework element
         private async void SaveAndApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            bool result = await SaveCurrentUserFile();
+            bool successful = await SaveCurrentUserFile();
 
-            if (result == true)
-                NeedSave = false;
+            if (!successful)
+                return;
 
+            NeedSave = false;
             long StartTime = 0;
 
             // Apply after saving file
@@ -145,13 +146,13 @@ namespace AuraEditor
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(localsf, GetLastScript(true));
-            
+
             Log.Debug("[SaveAndApplyButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[SaveAndApplyButton] Aft AuraEditorTrigger");
 
             //Send to Socketserver
-            if(IsConnection)
+            if (IsConnection)
                 SendMessageToServer("[XML] Change");
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)

@@ -64,29 +64,66 @@ namespace AuraEditor.Dialogs
         {
             try
             {
-                List<XmlNode> deviceNodes = await GetSortedAndFilteredDeviceList();
-
                 m_SyncDeviceList.Clear();
-                ConnectedDevicesListView.ItemsSource = null;
-                foreach (var node in deviceNodes)
+                string deviceList = await GetPluggedDevicesFromService();
+                string[] deviceArray = deviceList.Split(':');
+
+                foreach (var deviceString in deviceArray)
                 {
+                    if (deviceString == "")
+                        continue;
+
+                    string[] deviceData = deviceString.Split(',');
+
                     SyncDevice sd = new SyncDevice
                     {
-                        Name = (node as XmlElement).GetAttribute("name"),
-                        Type = (node as XmlElement).GetAttribute("type"),
-                        Sync = Boolean.Parse((node as XmlElement).GetAttribute("sync"))
+                        Name = deviceData[0],
+                        Type = deviceData[1],
+                        Sync = Boolean.Parse(deviceData[2])
                     };
-                    m_SyncDeviceList.Add(sd);
-                }
-                ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
 
+                    if (sd.Type == "Notebook" || sd.Type == "Desktop")
+                        m_SyncDeviceList.Insert(0, sd);
+                    else
+                        m_SyncDeviceList.Add(sd);
+                }
+
+                ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
                 NotifyIngroupDevicesChanged();
                 UpdateSelectedText();
             }
             catch
             {
-                MainPage.Self.StatusTextBlock.Text = "Rescan pluggeddevices.xml failed !";
-                Log.Debug("[Rescan] Rescan pluggeddevices.xml failed !");
+                NotifyIngroupDevicesChanged();
+                MainPage.Self.StatusTextBlock.Text = "Rescan pluggeddevices failed !";
+                Log.Debug("[Rescan] Rescan pluggeddevices failed !");
+            }
+        }
+        static private async Task<string> GetPluggedDevicesFromService()
+        {
+            try
+            {
+                string result = "";
+
+                await (new ServiceViewModel()).AuraCreatorGetDevice("CREATORGETDEVICE");
+                int listcount = Int32.Parse(ServiceViewModel.devicename);
+                Log.Debug("[GetPluggedDevices] Plugged device count : " + listcount);
+                for (int i = 0; i < listcount; i++)
+                {
+                    await (new ServiceViewModel()).AuraCreatorGetDevice(i.ToString());
+                    //string format : Name,DeviceType,SyncStatus
+                    string devicename = ServiceViewModel.devicename;
+                    Console.WriteLine(devicename);
+                    result += devicename + ":";
+                }
+
+                Log.Debug("[GetPluggedDevices] Get message : " + result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
+                return null;
             }
         }
         private void NotifyIngroupDevicesChanged()
@@ -107,86 +144,6 @@ namespace AuraEditor.Dialogs
         public List<SyncDevice> GetPluggedDevices()
         {
             return m_SyncDeviceList.ToList();
-        }
-
-        static private async Task<List<XmlNode>> GetSortedAndFilteredDeviceList()
-        {
-            XmlNodeList deviceNodes = await GetPluggedDeviceXmlNodes();
-            List<XmlNode> result = new List<XmlNode>();
-
-            foreach (XmlNode n in deviceNodes)
-            {
-                XmlElement element = (XmlElement)n;
-                result.Add(n);
-            }
-
-            result = FilterNodes(result);
-
-            XmlNode node = result.Find(x => (x as XmlElement).GetAttribute("type") == "Notebook" ||
-                                            (x as XmlElement).GetAttribute("type") == "Desktop");
-            if (node != null)
-            {
-                result.Remove(node);
-                result.Insert(0, node);
-            }
-
-            return result;
-        }
-        static private async Task<XmlNodeList> GetPluggedDeviceXmlNodes()
-        {
-            XmlDocument xmlDoc = await GetPluggedDevicesXmlDoc();
-            if (xmlDoc == null)
-                return null;
-
-            XmlNode devicesNode = xmlDoc.SelectSingleNode("devices");
-            XmlNodeList deviceNodes = devicesNode.SelectNodes("device");
-
-            return deviceNodes;
-        }
-        static private async Task<XmlDocument> GetPluggedDevicesXmlDoc()
-        {
-            StorageFile sf;
-            XmlDocument devicesXml = new XmlDocument(); ;
-
-            try
-            {
-                sf = await StorageFile.GetFileFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\pluggeddevices.xml");
-                devicesXml.Load(await sf.OpenStreamForReadAsync());
-                return devicesXml;
-            }
-            catch
-            {
-                MainPage.Self.StatusTextBlock.Text = "pluggeddevices.xml doesn't exist!";
-                return null;
-            }
-        }
-        static private List<XmlNode> FilterNodes(List<XmlNode> deviceNodes)
-        {
-            List<XmlNode> results = new List<XmlNode>();
-            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
-            List<DeviceModel> existedDevices = deviceModels.FindAll(d => d.Status == DeviceStatus.OnStage || d.Status == DeviceStatus.Temp);
-
-            while (deviceNodes.Count != 0)
-            {
-                XmlNode firstNode = deviceNodes[0];
-                string firstNodeType = (firstNode as XmlElement).GetAttribute("type");
-                List<XmlNode> sameTypeList = deviceNodes.FindAll(n => (n as XmlElement).GetAttribute("type") == firstNodeType);
-
-                XmlNode findTheExistedNode = sameTypeList.Find(
-                    n => existedDevices.Find(
-                        d => d.Name == (n as XmlElement).GetAttribute("name")
-                    ) != null
-                );
-
-                if (findTheExistedNode != null)
-                    results.Add(findTheExistedNode);
-                else
-                    results.Add(firstNode);
-
-                deviceNodes.RemoveAll(n => (n as XmlElement).GetAttribute("type") == firstNodeType);
-            }
-
-            return results;
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)

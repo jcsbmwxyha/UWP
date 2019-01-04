@@ -40,7 +40,7 @@
 
         <Image Name="BG" Stretch="Fill"/>
         <StackPanel Orientation="Horizontal">
-            <ToggleButton x:Name="DeviceToggleButton" Margin="12,0,0,0" Style="{StaticResource RogToggleButtonStyle1}" Width="20" Height="20" IsChecked="{x:Bind MyDevice.Sync}" Checked="DeviceToggleButton_Checked" Unchecked="DeviceToggleButton_Unchecked"/>
+            <ToggleButton x:Name="DeviceToggleButton" Margin="12,0,0,0" Style="{StaticResource RogToggleButtonStyle}" Width="20" Height="20" IsChecked="{x:Bind MyDevice.Sync}" Checked="DeviceToggleButton_Checked" Unchecked="DeviceToggleButton_Unchecked"/>
             <Image x:Name="DeviceImg" Source="{x:Bind MyDevice.DeviceImgPath}" Width="52" Height="52" Margin="10,0,0,0" VerticalAlignment="Center"/>
             <TextBlock x:Name="DeviceName" Text="{x:Bind MyDevice.Name}" Width="300" Foreground="White" Margin="4,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>

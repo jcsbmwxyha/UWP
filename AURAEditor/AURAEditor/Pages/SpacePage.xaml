@@ -20,6 +20,12 @@
             <BitmapImage x:Key="RightSidePanel_n" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_n.png"/>
             <BitmapImage x:Key="RightSidePanel_h" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_h.png"/>
             <BitmapImage x:Key="RightSidePanel_s" UriSource="ms-appx:///Assets/Button/asus_ac_hint_btn_l_p.png"/>
+            <BitmapImage x:Key="DefaultView_n" UriSource="ms-appx:///Assets/Button/asus_ac_default_ic_n.png"/>
+            <BitmapImage x:Key="DefaultView_h" UriSource="ms-appx:///Assets/Button/asus_ac_default_ic_h.png"/>
+            <BitmapImage x:Key="DefaultView_s" UriSource="ms-appx:///Assets/Button/asus_ac_default_ic_p.png"/>
+            <BitmapImage x:Key="FitAllView_n" UriSource="ms-appx:///Assets/Button/asus_ac_fitview_ic_n.png"/>
+            <BitmapImage x:Key="FitAllView_h" UriSource="ms-appx:///Assets/Button/asus_ac_fitview_ic_h.png"/>
+            <BitmapImage x:Key="FitAllView_s" UriSource="ms-appx:///Assets/Button/asus_ac_fitview_ic_p.png"/>
             <Style x:Key="LeftSidePanelButtonStyle"  TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -73,6 +79,72 @@
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
                                                 <Setter Target="Image.Source" Value="{ThemeResource RightSidePanel_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DefaultViewButtonStyle"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource DefaultView_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource DefaultView_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource DefaultView_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="FitAllViewButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource FitAllView_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource FitAllView_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource FitAllView_s}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -144,10 +216,10 @@
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>
-            <Button Name="DefaultViewButton" RelativePanel.RightOf="SpaceZoomButton" Height="32" Width="36" Margin="2,8,0,0" FontSize="16"
-                    Content="&#xE81D;" FontFamily="Segoe MDL2 Assets" Foreground="White" Click="DefaultViewButton_Click"/>
-            <Button Name="FitAllButton" RelativePanel.RightOf="DefaultViewButton" Height="32" Width="36" Margin="2,8,0,0" FontSize="16"
-                    Content="&#xE960;" FontFamily="Segoe MDL2 Assets" Foreground="White" Click="FitAllButton_Click"/>
+            <Button Name="DefaultViewButton" RelativePanel.RightOf="SpaceZoomButton" Height="32" Width="32" Margin="12,8,0,0"
+                    Style="{StaticResource DefaultViewButtonStyle}" Click="DefaultViewButton_Click"/>
+            <Button Name="FitAllButton" RelativePanel.RightOf="DefaultViewButton" Height="32" Width="32" Margin="12,8,0,0"
+                    Style="{StaticResource FitAllViewButtonStyle}" Click="FitAllButton_Click"/>
         </RelativePanel>
         
         <!-- Sidepanel Button -->

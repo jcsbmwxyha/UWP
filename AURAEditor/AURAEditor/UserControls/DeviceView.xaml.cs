@@ -89,36 +89,35 @@ namespace AuraEditor.UserControls
         {
             _pressedPosition = e.Position;
             Canvas.SetZIndex(this, 3);
+            SpacePage.Self.OnDeviceMoveStarted();
         }
 
         private void Device_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             var rb_Point = SpacePage.Self.GetCanvasRightBottomPoint();
-
             var deltaX = e.Position.X - _pressedPosition.X;
             var deltaY = e.Position.Y - _pressedPosition.Y;
 
-            deltaX = (TT.X + deltaX < 0) ? 0 : deltaX;
-            deltaY = (TT.Y + deltaY < 0) ? 0 : deltaY;
-            deltaX = (TT.X + DashRect.Width + deltaX > rb_Point.X) ? 0 : deltaX;
-            deltaY = (TT.Y + DashRect.Height + deltaX > rb_Point.Y) ? 0 : deltaY;
+            if (TT.X + deltaX < 0)
+                TT.X = 0;
+            else if (TT.X + DashRect.Width + deltaX > rb_Point.X)
+                TT.X = rb_Point.X - DashRect.Width;
+            else
+                TT.X += deltaX;
 
-            SetPosition(
-                TT.X + deltaX,
-                TT.Y + deltaY);
+            if (TT.Y + deltaY < 0)
+                TT.Y = 0;
+            else if (TT.Y + DashRect.Height + deltaY > rb_Point.Y)
+                TT.Y = rb_Point.Y - DashRect.Height;
+            else
+                TT.Y += deltaY;
         }
         private void Device_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             var point = SpacePage.Self.GetCanvasRightBottomPoint();
 
-            if (TT.X < 0) TT.X = 0;
-            if (TT.Y < 0) TT.Y = 0;
-            if (TT.X + DashRect.Width > point.X) TT.X = point.X - DashRect.Width;
-            if (TT.Y + DashRect.Height > point.Y) TT.Y = point.Y - DashRect.Height;
-
-            SetPosition(
-                RoundToGrid(TT.X),
-                RoundToGrid(TT.Y));
+            TT.X = RoundToGrid(TT.X);
+            TT.Y = RoundToGrid(TT.Y);
 
             SpacePage.Self.OnDeviceMoveCompleted();
 
@@ -162,11 +161,6 @@ namespace AuraEditor.UserControls
             VisualStateManager.GoToState(this, "Normal", false);
         }
 
-        private void SetPosition(double x, double y)
-        {
-            TT.X = x;
-            TT.Y = y;
-        }
         private void SetPositionByAnimation(double x, double y)
         {
             double runTime = 300;

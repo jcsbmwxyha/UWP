@@ -8,24 +8,316 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
 using AuraEditor.Pages;
+using System.ComponentModel;
 
 namespace AuraEditor
 {
-    public class EffectInfo : ICloneable
+    public class EffectInfo : ICloneable, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         public string Name;
         public int Type;
-        public Color InitColor;
-        public int Brightness;
-        public int Speed;
-        public double Angle;
-        public bool Random;
+
+        public bool ColorGroupVisible;
+        public bool PatternGroupVisible;
+        public bool BrightnessGroupVisible;
+        public bool SpeedGroupVisible;
+        public bool AngleGroupVisible;
+        public bool TemperatureGroupVisible;
+        public bool RandomVisible;
+
+        private Color _initColor;
+        public Color InitColor
+        {
+            get
+            {
+                return _initColor;
+            }
+            set
+            {
+                if (value == _initColor)
+                    return;
+
+                _initColor = value;
+                RaisePropertyChanged("InitColor");
+            }
+        }
+
+        private int _brightness;
+        public int Brightness
+        {
+            get
+            {
+                return _brightness;
+            }
+            set
+            {
+                _brightness = value;
+                RaisePropertyChanged("Brightness");
+            }
+        }
+
+        private int _speed;
+        public int Speed
+        {
+            get
+            {
+                return _speed;
+            }
+            set
+            {
+                _speed = value;
+                RaisePropertyChanged("Speed");
+            }
+        }
+
+        private bool _random;
+        public bool Random
+        {
+            get
+            {
+                return _random;
+            }
+            set
+            {
+                _random = value;
+                RaisePropertyChanged("Random");
+            }
+        }
+
+        private double _angle;
+        public double Angle
+        {
+            get
+            {
+                return _angle;
+            }
+            set
+            {
+                if (_angle != value)
+                {
+                    _angle = value;
+                    RaisePropertyChanged("Angle");
+                }
+            }
+        }
+
+        private int _high;
+        public int High
+        {
+            get
+            {
+                return _high;
+            }
+            set
+            {
+                _high = value;
+                RaisePropertyChanged("High");
+            }
+        }
+
+        private int _low;
+        public int Low
+        {
+            get
+            {
+                return _low;
+            }
+            set
+            {
+                _low = value;
+                RaisePropertyChanged("Low");
+            }
+        }
+
         //For Trigger Dialog Ripple
         public int ColorModeSelection;
-        public int High;
-        public int Low;
         public List<ColorPoint> ColorPointList;
-        public bool ColorSegmentation;
+
+        private bool _colorSegmentation;
+        public bool ColorSegmentation
+        {
+            get
+            {
+                return _colorSegmentation;
+            }
+            set
+            {
+                _colorSegmentation = value;
+                RaisePropertyChanged("ColorSegmentation");
+            }
+        }
+
+        public EffectInfo() { }
+        public EffectInfo(int type)
+        {
+            Name = GetEffectName(type);
+            SetGroupVisibility(Name);
+
+            Type = type;
+            InitColor = Colors.Red;
+            Brightness = 3;
+            Speed = 1;
+            ColorModeSelection = 1;
+            Angle = 90;
+            Random = false;
+            High = 60;
+            Low = 30;
+            ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
+            ColorSegmentation = false;
+        }
+
+        private void SetGroupVisibility(string name)
+        {
+            switch (name)
+            {
+                case "Static":
+                    ColorGroupVisible = true;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = false;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Breath":
+                    ColorGroupVisible = true;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "ColorCycle":
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Rainbow":
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = true;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = true;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Strobing":
+                    ColorGroupVisible = true;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Comet":
+                    ColorGroupVisible = true;
+                    RandomVisible = true;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = true;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Star":
+                    ColorGroupVisible = true;
+                    RandomVisible = true;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Tide":
+                    ColorGroupVisible = true;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = true;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Raidus":
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = false;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Reactive":
+                    ColorGroupVisible = true;
+                    RandomVisible = true;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Laser":
+                    ColorGroupVisible = true;
+                    RandomVisible = true;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Ripple":
+                    ColorGroupVisible = true;
+                    RandomVisible = true;
+                    PatternGroupVisible = true;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = true;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Music":
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = false;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+                case "Smart":
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = false;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = true;
+                    break;
+                default:
+                    ColorGroupVisible = false;
+                    RandomVisible = false;
+                    PatternGroupVisible = false;
+                    BrightnessGroupVisible = false;
+                    SpeedGroupVisible = false;
+                    AngleGroupVisible = false;
+                    TemperatureGroupVisible = false;
+                    break;
+            }
+        }
+
+        #region Create script for lighting service
         static public double GetLedSpeed(int effType, int speed)
         {
             if (speed == 0)
@@ -50,24 +342,6 @@ namespace AuraEditor
             return 0;
         }
 
-        public EffectInfo() { }
-        public EffectInfo(int type)
-        {
-            Name = GetEffectName(type);
-            Type = type;
-            InitColor = Colors.Red;
-            Brightness = 3;
-            Speed = 1;
-            ColorModeSelection = 1;
-            Angle = 90;
-            Random = false;
-            High = 60;
-            Low = 30;
-            ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
-            ColorSegmentation = false;
-        }
-
-        #region Create script for lighting service
         public XmlNode ToXmlNodeForScript(int zoneCount)
         {
             XmlNode effectNode = CreateXmlNode("effect");

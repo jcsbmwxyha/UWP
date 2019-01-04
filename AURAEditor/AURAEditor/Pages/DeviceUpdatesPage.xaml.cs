@@ -78,7 +78,7 @@ namespace AuraEditor
                     UpdateStateTextBlock.Foreground = new SolidColorBrush(Colors.White);
 
                     int old_value = 0;
-                    await (new ServiceViewModel()).Sendupdatestatus("UWP_ALLUPDATE");
+                    await (new ServiceViewModel()).Sendupdatestatus("CreatorUpdate");
                     while (true)
                     {
                         await (new ServiceViewModel()).Sendupdatestatus(ServiceViewModel.returnnum.ToString());
@@ -153,7 +153,7 @@ namespace AuraEditor
                     UpdateButton.IsEnabled = false;
                     UpdateButton.Opacity = 0.5;
                     // disable end
-                    await (new ServiceViewModel()).Sendupdatestatus("checkallbyservice");
+                    await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
                     // < 0 No checkallbyservice function
                     if (ServiceViewModel.returnnum > 0)
                     {

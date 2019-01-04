@@ -111,7 +111,7 @@
                 <StackPanel Orientation="Horizontal" Height="36">
                     <ToggleButton x:Name="SelectAllButton" Margin="12,0,14,0" Width="20" Height="20"
                                   Click="SelectAllButton_Click"
-                                  Style="{StaticResource RogToggleButtonStyle1}"/>
+                                  Style="{StaticResource RogToggleButtonStyle}"/>
                     <TextBlock Text="Devices" VerticalAlignment="Center"/>
                 </StackPanel>
                 <ListView Name="ConnectedDevicesListView" VerticalAlignment="Top"

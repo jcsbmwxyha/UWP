@@ -21,6 +21,7 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
+using Windows.Foundation;
 
 namespace AuraEditor
 {
@@ -36,6 +37,7 @@ namespace AuraEditor
         public ConnectedDevicesDialog ConnectedDevicesDialog;
         ApplicationDataContainer g_LocalSettings;
         public RecentColor[] g_RecentColor = new RecentColor[8];
+        private Dictionary<DeviceModel, Point> oldSortingPositions;
 
         public TimelineEffect SelectedEffect
         {
@@ -161,9 +163,12 @@ namespace AuraEditor
             g_LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
             EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
+            oldSortingPositions = new Dictionary<DeviceModel, Point>();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            Log.Debug("[MainPage_Loaded] Intialize ...");
+
             await IntializeFileOperations();
             ConnectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceFrame.Navigate(typeof(SpacePage));
@@ -171,9 +176,6 @@ namespace AuraEditor
 
             LayerFrame.Navigate(typeof(LayerPage));
             LayerPage = LayerPage.Self;
-
-            //GetDeviceNamebySerivce
-            GetDeviceName();
 
             await ConnectedDevicesDialog.Rescan();
 
@@ -331,11 +333,16 @@ namespace AuraEditor
         }
         private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
         {
-            EditOKButton.IsEnabled = true;
-            ShowMask("Device Sorting", "Save", "Cancel");
+            EditDoneButton.IsEnabled = true;
+            ShowMask("Device Sorting");
             SpacePage.SetSpaceStatus(SpaceStatus.DraggingDevice);
-        }
 
+            oldSortingPositions.Clear();
+            foreach(var dm in SpacePage.DeviceModelCollection)
+            {
+                oldSortingPositions.Add(dm, new Point(dm.PixelLeft, dm.PixelTop));
+            }
+        }
         public void OnLeftSidePanelButtonClick()
         {
             int columnSpans = Grid.GetColumnSpan(SpaceFrame);
@@ -382,7 +389,17 @@ namespace AuraEditor
             }
         }
 
-        private void EditOKButton_Click(object sender, RoutedEventArgs e)
+        public void OnIngroupDevicesChanged()
+        {
+            if (ConnectedDevicesDialog.Self.GetPluggedDevices().Count == 0)
+                NoSupportedDeviceGrid.Visibility = Visibility.Visible;
+            else
+                NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
+        }
+        #endregion
+
+        #region -- Mask --
+        private void EditDoneButton_Click(object sender, RoutedEventArgs e)
         {
             if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
@@ -407,36 +424,40 @@ namespace AuraEditor
                 NeedSave = true;
                 SpacePage.WatchLayer(layer);
             }
-            else
-                SpacePage.SetSpaceStatus(SpaceStatus.Init);
+            else // Sorting
+            {
+                SpacePage.SetSpaceStatus(SpaceStatus.Clean);
+            }
 
             HideMask();
         }
         private void EditCancelButton_Click(object sender, RoutedEventArgs e)
         {
-            SpacePage.SetSpaceStatus(SpaceStatus.Init);
+            if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
+            {
+                Layer layer = LayerPage.CheckedLayer;
+                SpacePage.WatchLayer(layer);
+            }
+            else // Sorting
+            {
+                SpacePage.SetSpaceStatus(SpaceStatus.Clean);
+
+                foreach (var pair in oldSortingPositions)
+                {
+                    pair.Key.PixelLeft = pair.Value.X;
+                    pair.Key.PixelTop = pair.Value.Y;
+                }
+            }
+
             HideMask();
         }
-
-        public void OnIngroupDevicesChanged()
-        {
-            if (ConnectedDevicesDialog.Self.GetPluggedDevices().Count == 0)
-                NoSupportedDeviceGrid.Visibility = Visibility.Visible;
-            else
-                NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
-        }
-        #endregion
-
-        #region -- Mask --
         public void ShowReEditMask(Layer layer)
         {
-            ShowMask("Edit layer : " + layer.Name, "Save", "Cancel");
+            ShowMask("Edit layer : " + layer.Name);
         }
-        private void ShowMask(string descriptionText, string okText, string cancelText)
+        private void ShowMask(string descriptionText)
         {
             EditBarTextBlock.Text = descriptionText;
-            EditOKButton.Content = okText;
-            //EditCancelButton.Content = cancelText;
 
             EditBarRelativePanel.Visibility = Visibility.Visible;
             ActionBarRelativePanel.Visibility = Visibility.Collapsed;
@@ -522,12 +543,12 @@ namespace AuraEditor
                     Stream inputStream = socket.InputStream.AsStreamForRead();
                     StreamReader streamReader = new StreamReader(inputStream);
                     response = await streamReader.ReadLineAsync();
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         //from Service message
                         StatusTextBlock.Text = "Service : " + response;
                         Log.Debug("[ReceiveData] Rescan ...");
-                        ConnectedDevicesDialog.Rescan();
+                        await ConnectedDevicesDialog.Rescan();
                     });
                 }
                 catch (Exception ex)
@@ -551,24 +572,6 @@ namespace AuraEditor
 
         #region -- UI initial get device from service --
 
-        async void GetDeviceName()
-        {
-            try
-            {
-                await (new ServiceViewModel()).AuraCreatorGetDevice("CREATORGETDEVICE");
-                int listcount = Int32.Parse(ServiceViewModel.devicename);
-                for (int i = 0; i <= listcount; i++)
-                {
-                    await (new ServiceViewModel()).AuraCreatorGetDevice(i.ToString());
-                    //string format : Name,DeviceType,SyncStatus
-                    string devicename = ServiceViewModel.devicename;
-                    Console.WriteLine(devicename);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-        }
 
         #endregion
 

@@ -21,7 +21,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
             </Grid.ColumnDefinitions>
-            <Image Source="Assets/TitleBar.png"
+            <Image Source="ms-appx:///Assets/TitleBar.png"
                    Grid.Column="1" HorizontalAlignment="Left"
                    Width="20" Height="20" Margin="12,0"/>
             <TextBlock Text="AURA Creator" Foreground="White" FontFamily="Segoe UI" FontSize="16"
@@ -33,7 +33,7 @@
         <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right" x:FieldModifier="Public">
             <RadioButton x:Name="SettingsRadioButton" x:FieldModifier="Public" Width="40" Height="27"
                       Style="{StaticResource RogRadioButtonStyle}" Click="SettingsRadioButton_Click"/>
-            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
+            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                    RelativePanel.AlignTopWith="SettingsRadioButton" RelativePanel.AlignRightWith="SettingsRadioButton"
                    Visibility="Collapsed"/>
         </RelativePanel>
@@ -41,11 +41,16 @@
         <Grid x:Name="WindowsGrid" x:FieldModifier="Public" Grid.Row="1">
             <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
             <Frame x:Name="WindowsFrame" x:FieldModifier="Public"/>
-            <Frame x:Name="MaskFrame" x:FieldModifier="Public" Background="Transparent" Visibility="Collapsed"/>
+            <Frame x:Name="LoadingFrame" x:FieldModifier="Public" Background="#141214" Visibility="Collapsed">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="ms-appx:///Assets/TitleBar.png" Width="100"/>
+                    <ProgressRing x:Name="LoadingRing" Foreground="Red" Width="50" Height="100"/>
+                </StackPanel>
+            </Frame>
         </Grid>
 
         <Grid x:Name="WindowsGrid1" x:FieldModifier="Public" Grid.Row="1" Visibility="Collapsed">
-            <Image Source="Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
+            <Image Source="ms-appx:///Assets/Background/asus_ac_settings_bg.png" Stretch="Fill"/>
             <Frame x:Name="WindowsFrame1" x:FieldModifier="Public"/>
         </Grid>
     </Grid>

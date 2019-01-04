@@ -29,7 +29,6 @@ namespace AuraEditor.Pages
         private EffectInfo m_Info;
 
         bool _angleImgPressing;
-        public double _preAngle;
         Point AngleImgCenter;
         public List<ColorPoint> ColorPoints = new List<ColorPoint>();
         public List<ColorPoint> CustomizeColorPoints = new List<ColorPoint>();
@@ -39,7 +38,6 @@ namespace AuraEditor.Pages
             this.InitializeComponent();
 
             AngleImgCenter = new Point(40, 40);
-            _preAngle = 0;
             AngleTextBox.Text = "0";
 
             foreach (var item in DefaultColorList)
@@ -51,17 +49,13 @@ namespace AuraEditor.Pages
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            TimelineEffect tl = e.Parameter as TimelineEffect;
+            m_Info = e.Parameter as EffectInfo;
 
-            if (tl == null)
-                return;
-            else
-            {
-                ShowGroups(tl.Name);
+            if (m_Info == null)
+                EffectInfoStackPanel.Visibility = Visibility.Collapsed;
 
-                m_Info = tl.Info;
-                UpdateGroups(m_Info);
-            }
+            this.DataContext = m_Info;
+            Bindings.Update();
         }
         public void SetDefaultPattern()
         {
@@ -143,8 +137,8 @@ namespace AuraEditor.Pages
         private void ShowGroups(string name)
         {
             ResetBtn.Visibility = Visibility.Visible;
-            EffectInfoGroup.Visibility = Visibility.Visible;
-            Title.Text = name;
+            //EffectInfoGroup.Visibility = Visibility.Visible;
+            //Title.Text = name;
 
             switch (name)
             {
@@ -286,35 +280,41 @@ namespace AuraEditor.Pages
                     break;
             }
         }
-        private void UpdateGroups(EffectInfo info)
-        {
-            RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
-            if (info.Random)
-            {
-                RandomCheckBox.IsChecked = true;
-                RadioButtonBg.Opacity = 0.5;
-                RadioButtonBg.IsEnabled = false;
-            }
-            else
-            {
-                RandomCheckBox.IsChecked = false;
-                RadioButtonBg.Opacity = 1;
-                RadioButtonBg.IsEnabled = true;
-            }
-            BrightnessSlider.Value = info.Brightness;
-            SpeedSlider.Value = info.Speed;
-            AngleStoryboardStart(info.Angle);
-            AngleTextBox.Text = info.Angle.ToString();
-            PatternCanvas.Children.Clear();
-            ColorPoints.Clear();
-            foreach (var item in info.ColorPointList)
-            {
-                ColorPoints.Add(new ColorPoint(item));
-            }
-            ShowColorPointUI(ColorPoints);
-            ReDrawMultiPointRectangle();
-            SegmentationSwitch.IsOn = info.ColorSegmentation;
-        }
+        //private void UpdateGroups(EffectInfo info)
+        //{
+        //    RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
+        //    if (info.Random)
+        //    {
+        //        RandomCheckBox.IsChecked = true;
+        //        RadioButtonBg.Opacity = 0.5;
+        //        RadioButtonBg.IsEnabled = false;
+        //    }
+        //    else
+        //    {
+        //        RandomCheckBox.IsChecked = false;
+        //        RadioButtonBg.Opacity = 1;
+        //        RadioButtonBg.IsEnabled = true;
+        //    }
+        //    BrightnessSlider.Value = info.Brightness;
+        //    SpeedSlider.Value = info.Speed;
+        //    if (SpeedSlider.Value == 0)
+        //    {
+        //        SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
+        //        MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+        //        FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
+        //    }
+        //    AngleStoryboardStart(info.Angle);
+        //    AngleTextBox.Text = info.Angle.ToString();
+        //    PatternCanvas.Children.Clear();
+        //    ColorPoints.Clear();
+        //    foreach (var item in info.ColorPointList)
+        //    {
+        //        ColorPoints.Add(new ColorPoint(item));
+        //    }
+        //    ShowColorPointUI(ColorPoints);
+        //    ReDrawMultiPointRectangle();
+        //    SegmentationSwitch.IsOn = info.ColorSegmentation;
+        //}
 
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -327,12 +327,11 @@ namespace AuraEditor.Pages
             m_Info.Low = 30;
             m_Info.ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
             m_Info.ColorSegmentation = false;
-            UpdateGroups(m_Info);
+            //UpdateGroups(m_Info);
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
-            m_Info.InitColor = newColor;
             RadioButtonBg.Background = new SolidColorBrush(newColor);
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
@@ -353,13 +352,11 @@ namespace AuraEditor.Pages
         {
             if (RandomCheckBox.IsChecked == true)
             {
-                m_Info.Random = true;
                 RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
             }
             else
             {
-                m_Info.Random = false;
                 RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
             }
@@ -403,23 +400,19 @@ namespace AuraEditor.Pages
             {
                 if (slider.Value == 1)
                 {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                     MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                     FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                 }
                 else if (slider.Value == 2)
                 {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                     MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                     FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                 }
                 else
                 {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
                     MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                     FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                 }
-                m_Info.Speed = (int)slider.Value;
             }
         }
 
@@ -432,8 +425,6 @@ namespace AuraEditor.Pages
             double dx = currentLocation.X - AngleImgCenter.X;
             double dy = currentLocation.Y - AngleImgCenter.Y;
             double hue = Math2.ComputeH(dx, dy);
-            AngleTextBox.Text = hue.ToString("F0");
-            m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
             AngleStoryboardStart(hue);
         }
         private void AngleBgImg_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -448,9 +439,7 @@ namespace AuraEditor.Pages
                 double dx = currentLocation.X - AngleImgCenter.X;
                 double dy = currentLocation.Y - AngleImgCenter.Y;
                 double hue = Math2.ComputeH(dx, dy);
-                AngleTextBox.Text = hue.ToString("F0");
-                m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
-                AngleStoryboardStart(hue);
+                AngleIcImgRotation.Angle = hue;
             }
         }
         private void AngleTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -471,40 +460,34 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        private void AngleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void AngleTextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
         {
-            TextBox AngleChangeText = sender as TextBox;
+            string angleText = AngleTextBox.Text;
+            char[] originalText = angleText.ToCharArray();
 
-            char[] originalText = AngleChangeText.Text.ToCharArray();
-            if (AngleChangeText.Text.Length > 0)
+            for (int i = 0; i < originalText.Length; i++)
             {
-                foreach (char c in originalText)
+                char c = originalText[i];
+                if (!(Char.IsNumber(c)))
                 {
-                    if (!(Char.IsNumber(c)))
-                    {
-                        AngleChangeText.Text = AngleChangeText.Text.Replace(Convert.ToString(c), "");
-                        break;
-                    }
+                    if (i == 0 && c == '-')
+                        continue;
+
+                    angleText = angleText.Replace(Convert.ToString(c), "");
+                    break;
                 }
             }
-
-            if ((AngleChangeText.Text != ""))
+            
+            bool successful = Double.TryParse(angleText, out double d);
+            if (successful)
             {
-                if (double.Parse(AngleChangeText.Text) > 360)
-                {
-                    AngleChangeText.Text = "360";
-                }
-                else if (double.Parse(AngleChangeText.Text) < 0)
-                {
-                    AngleChangeText.Text = "0";
-                }
+                int value = (int)d;
+                value = (value + 360) % 360; // +360 make it positive
+                AngleTextBox.Text = value.ToString();
             }
-            if (m_Info != null)
+            else
             {
-                if (AngleTextBox.Text != "")
-                {
-                    m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
-                }
+                AngleTextBox.Text = "90";
             }
         }
         private void AngleTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -514,35 +497,33 @@ namespace AuraEditor.Pages
                 AngleStoryboardStart(Convert.ToDouble(AngleTextBox.Text));
             }
         }
-        private void AngleStoryboardStart(double AngleImgTargetAngle)
+        private void AngleStoryboardStart(double targetAngle)
         {
             int runTime = 300;
             var storyboard = new Storyboard();
             var angleIcAnimation = new DoubleAnimation();
-
-            if (_preAngle != AngleImgTargetAngle)
+            double sourceAngle = AngleIcImgRotation.Angle;
+            if (sourceAngle != targetAngle)
             {
-                AngleImgTargetAngle = AngleImgTargetAngle % 360;
-                if (_preAngle - AngleImgTargetAngle > 180)
+                targetAngle = targetAngle % 360;
+                if (sourceAngle - targetAngle > 180)
                 {
-                    _preAngle -= 360;
+                    sourceAngle -= 360;
                 }
-                else if (_preAngle - AngleImgTargetAngle < -180)
+                else if (sourceAngle - targetAngle < -180)
                 {
-                    _preAngle += 360;
+                    sourceAngle += 360;
                 }
 
                 // triangle
                 angleIcAnimation.Duration = TimeSpan.FromMilliseconds(runTime);
                 angleIcAnimation.EnableDependentAnimation = true;
-                angleIcAnimation.From = _preAngle;
-                angleIcAnimation.To = AngleImgTargetAngle;
+                angleIcAnimation.From = sourceAngle;
+                angleIcAnimation.To = targetAngle;
                 Storyboard.SetTargetProperty(angleIcAnimation, "Angle");
                 Storyboard.SetTarget(angleIcAnimation, AngleIcImgRotation);
                 storyboard.Children.Add(angleIcAnimation);
                 storyboard.Begin();
-
-                _preAngle = AngleImgTargetAngle;
             }
         }
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
@@ -551,18 +532,8 @@ namespace AuraEditor.Pages
             {
                 double textIncrease = Convert.ToDouble(AngleTextBox.Text);
                 textIncrease += 5;
-                if (textIncrease > 360)
-                {
-                    textIncrease = 360;
-                    AngleTextBox.Text = textIncrease.ToString();
-                    AngleStoryboardStart(textIncrease);
-                }
-                else
-                {
-                    AngleTextBox.Text = textIncrease.ToString();
-                    AngleStoryboardStart(textIncrease);
-                }
-                m_Info.Angle = Convert.ToDouble(AngleTextBox.Text);
+                textIncrease %= 360;
+                AngleStoryboardStart(textIncrease);
             }
         }
         private void DecreaseBtn_Click(object sender, RoutedEventArgs e)
@@ -571,18 +542,8 @@ namespace AuraEditor.Pages
             {
                 double textdecrease = Convert.ToDouble(AngleTextBox.Text);
                 textdecrease -= 5;
-                if (textdecrease < 0)
-                {
-                    textdecrease = 0;
-                    AngleTextBox.Text = textdecrease.ToString();
-                    AngleStoryboardStart(textdecrease);
-                }
-                else
-                {
-                    AngleTextBox.Text = textdecrease.ToString();
-                    AngleStoryboardStart(textdecrease);
-                }
-                m_Info.Angle = textdecrease;
+                textdecrease %= 360;
+                AngleStoryboardStart(textdecrease);
             }
         }
         #endregion
@@ -640,8 +601,7 @@ namespace AuraEditor.Pages
             newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
             ReDrawMultiPointRectangle();
         }
-
-        public void AddColorPoint(ColorPoint colorPoint)
+        private void AddColorPoint(ColorPoint colorPoint)
         {
             int curIndex = 0;
             if (ColorPoints.Count < 7)
@@ -688,14 +648,12 @@ namespace AuraEditor.Pages
                 }
             }
         }
-
         private void MinusItemBt(object sender, RoutedEventArgs e)
         {
             RemoveColorPoint();
             ReDrawMultiPointRectangle();
         }
-
-        public void RemoveColorPoint()
+        private void RemoveColorPoint()
         {
             if (ColorPoints.Count > 2)
             {
@@ -726,22 +684,6 @@ namespace AuraEditor.Pages
                         PatternCanvas.Children.Remove(item.UI);
                         break;
                     }
-                }
-            }
-        }
-
-        private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
-            if (toggleSwitch != null)
-            {
-                if (toggleSwitch.IsOn == true)
-                {
-                    m_Info.ColorSegmentation = true;
-                }
-                else
-                {
-                    m_Info.ColorSegmentation = false;
                 }
             }
         }

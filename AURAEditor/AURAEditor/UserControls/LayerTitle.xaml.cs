@@ -66,16 +66,18 @@ namespace AuraEditor.UserControls
         #region -- Layer Name --
         private void EditNameButton_Click(object sender, RoutedEventArgs e)
         {
+            NameTextBox.Text = "";
             EditNameButton.Visibility = Visibility.Collapsed;
             NameTextBlock.Visibility = Visibility.Collapsed;
             NameTextBox.Visibility = Visibility.Visible;
 
-            NameTextBox.Text = NameTextBlock.Text;
             NameTextBox.Focus(FocusState.Programmatic);
         }
         private void NameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            NameTextBlock.Text = NameTextBox.Text;
+            if (NameTextBox.Text.Replace(" ","") != "")
+                NameTextBlock.Text = NameTextBox.Text;
+
             EditNameButton.Visibility = Visibility.Visible;
             NameTextBlock.Visibility = Visibility.Visible;
             NameTextBox.Visibility = Visibility.Collapsed;
@@ -84,10 +86,7 @@ namespace AuraEditor.UserControls
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                if (NameTextBox.Text != "")
-                {
-                    SpacePage.Self.SpaceScrollViewer.Focus(FocusState.Programmatic);
-                }
+                SpacePage.Self.SpaceScrollViewer.Focus(FocusState.Programmatic);
             }
         }
         #endregion

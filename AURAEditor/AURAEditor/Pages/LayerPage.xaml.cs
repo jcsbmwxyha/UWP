@@ -113,7 +113,7 @@ namespace AuraEditor.Pages
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect);
+                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Info);
                     NeedSave = true;
                 }
             }
@@ -196,7 +196,7 @@ namespace AuraEditor.Pages
                     Layers[i].Name = "Layer " + (i + 1).ToString();
             }
 
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.Init);
+            SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
             TrackCanvas.Height = Layers.Count * 52;
         }
         public int GetLayerCount()
@@ -585,7 +585,7 @@ namespace AuraEditor.Pages
             var pair = e.Data.Properties.FirstOrDefault();
             Layer layer = pair.Value as Layer;
             RemoveLayer(layer);
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.Init);
+            SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
             MainPage.Self.SelectedEffect = null;
             NeedSave = true;
         }
@@ -595,7 +595,7 @@ namespace AuraEditor.Pages
             if (layer != null)
             {
                 RemoveLayer(layer);
-                SpacePage.Self.SetSpaceStatus(SpaceStatus.Init);
+                SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
                 MainPage.Self.SelectedEffect = null;
                 NeedSave = true;
             }

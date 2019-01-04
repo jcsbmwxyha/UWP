@@ -203,6 +203,7 @@ namespace AuraEditor.Models
                 int originalPixelWidth = 1000;
                 int originalPixelHeight = 1000;
 
+                Log.Debug("[GetDeviceModel] Model name : " + modelName + ", Type name : " + type);
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
@@ -226,6 +227,7 @@ namespace AuraEditor.Models
 
                 if (pngFile != null)
                 {
+                    Log.Debug("[GetDeviceModel] Parse PNG info ...");
                     using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
                     {
                         BitmapImage bitmapImage = new BitmapImage();
@@ -250,6 +252,7 @@ namespace AuraEditor.Models
 
                 if (csvFile != null)
                 {
+                    Log.Debug("[GetDeviceModel] Parse CSV info ...");
                     using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
                     {
                         CsvRow row = new CsvRow();
@@ -306,6 +309,7 @@ namespace AuraEditor.Models
 
                                     string pngPath = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
                                     StorageFile ledPngFile = await StorageFile.GetFileFromPathAsync(pngPath);
+                                    Log.Debug("[GetDeviceModel] Parse led png : " + ledPngFile.Name);
 
                                     using (IRandomAccessStream stream = await ledPngFile.OpenAsync(FileAccessMode.Read))
                                     {
@@ -347,9 +351,9 @@ namespace AuraEditor.Models
 
                 return dm;
             }
-            catch
+            catch(Exception ex)
             {
-                Log.Debug("[DeviceContent] Model load failed : " + modelName);
+                Log.Debug("[DeviceContent] Model load failed : " + modelName + ", " + ex.ToString());
                 return null;
             }
         }

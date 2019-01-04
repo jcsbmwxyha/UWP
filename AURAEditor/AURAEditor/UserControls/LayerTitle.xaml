@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     d:DesignHeight="80"
     d:DesignWidth="300">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <BitmapImage x:Key="EyeToggleButton_on_n" UriSource="ms-appx:///Assets/Button/asus_ac_eye_on_n_ic.png"/>
@@ -77,7 +77,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
             <BitmapImage x:Key="TriggerButtonOn_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
             <BitmapImage x:Key="TriggerButtonOn_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
             <BitmapImage x:Key="TriggerButtonOn_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
@@ -224,7 +224,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
             <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <common:ReverseBooleanToVisibilityConverter x:Key="reverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
@@ -234,7 +234,7 @@
           PointerEntered="MyGrid_PointerEntered"
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">
-        
+
         <RelativePanel VerticalAlignment="Center">
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
                           Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye, Mode=TwoWay}" Style="{StaticResource EyeToggleButtonStyle}"/>
@@ -256,8 +256,8 @@
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}"
-                    RelativePanel.AlignRightWithPanel="True"
-                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click"
+                    RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Width="22" Height="22" Margin="0,0,10,0" Click="TriggerDialogButton_Click"
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
@@ -265,8 +265,8 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Width="22" Height="22" Margin="0,0,15,0" Click="TriggerDialogButton_Click"
+            <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Width="22" Height="22" Margin="0,0,10,0" Click="TriggerDialogButton_Click"
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">

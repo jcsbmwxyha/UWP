@@ -5,6 +5,7 @@
     xmlns:local="using:AuraEditor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:AuraEditor.Common"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -13,6 +14,8 @@
             <BitmapImage x:Key="Reset_n" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_reset_ic_n.png"/>
             <BitmapImage x:Key="Reset_p" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_reset_ic_p.png"/>
             <Style TargetType="Button" x:Key="ResetButtonStyle">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -44,17 +47,19 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <common:ColorToSolidColorBrushConverter x:Key="colorToSolidColorBrushConverter" />
+            <common:DoubleToInt32ToStringConverter x:Key="doubleToInt32ToStringConverter" />
         </ResourceDictionary>
     </Page.Resources>
 
     <ScrollViewer>
-        <StackPanel>
+        <StackPanel Name="EffectInfoStackPanel">
             <RelativePanel Margin="20,15,50,0">
-                <TextBlock Name="Title" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
+                <TextBlock Name="TitleTextBlock" Text="{x:Bind m_Info.Name}" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
                                RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
-                <Button Name="ResetBtn" Margin="132,0,0,0" Visibility="Collapsed"
-                            Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}" Width="24" Height="24"
-                            RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                <Button Name="ResetBtn" Margin="132,0,0,0" Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}"
+                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                             <TextBlock Foreground="White" Text="Reset to default"/>
@@ -62,19 +67,22 @@
                     </ToolTipService.ToolTip>
                 </Button>
             </RelativePanel>
-            <StackPanel x:Name="EffectInfoGroup" Orientation="Vertical" Visibility="Collapsed">
-                <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="Collapsed">
+            <StackPanel>
+                <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Background="Red" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"/>
-                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="RandomCheckBox_Click"
-                                      Style="{StaticResource RogCheckBoxStyle}" Visibility="Collapsed">
+                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"
+                                      Background="{x:Bind m_Info.InitColor, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
+                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0"
+                                  Click="RandomCheckBox_Click" Style="{StaticResource RogCheckBoxStyle}" 
+                                  Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"
+                                  IsChecked="{x:Bind m_Info.Random, Mode=TwoWay}">
                             <TextBlock Text="Random" Foreground="White"/>
                         </CheckBox>
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.PatternGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
                     <Grid Margin="20,20,0,16">
                         <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
@@ -103,20 +111,22 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                         <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
-                        <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="False" VerticalAlignment="Center" Margin="80,0,0,0"
-                                          Toggled="SegmentationSwitch_Toggled" Style="{StaticResource RogToggleSwitchStyle}"/>
+                        <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}" VerticalAlignment="Center" Margin="80,0,0,0"
+                                      Style="{StaticResource RogToggleSwitchStyle}"/>
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="BrightnessGroup" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel x:Name="BrightnessGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.BrightnessGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
                         <Slider x:Name="BrightnessSlider" Width="200" HorizontalAlignment="Left" ValueChanged="BrightnessValueChanged"
+                                Value="{x:Bind m_Info.Brightness, Mode=TwoWay}"
                                 Margin="20,20,0,0" Minimum="0" Maximum="3" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"/>
                         <TextBlock x:Name="BrightnessTextBlock" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" Text="0%"/>
                     </StackPanel>
                 </StackPanel>
-                <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="Collapsed">
+
+                <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.SpeedGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -125,13 +135,12 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Margin="20,20,0,0" VerticalAlignment="Top">
-                            <Image x:Name="SlowPoint" Width="20" Height="20" Margin="0,0,65,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
+                            <Image x:Name="SlowPoint" Width="20" Height="20" Margin="0,0,65,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"/>
                             <Image x:Name="MediumPoint" Width="20" Height="20" Margin="0,0,70,0" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
                             <Image x:Name="FastPoint" Width="20" Height="20" Source="ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"/>
                         </StackPanel>
                         <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
-                                    Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch"
-                                    IsThumbToolTipEnabled="False"/>
+                                Value="{x:Bind m_Info.Speed, Mode=TwoWay}" Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch" IsThumbToolTipEnabled="False"/>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
                             <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
                             <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
@@ -140,7 +149,7 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.AngleGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Angle" Margin="20,20,0,0" Foreground="White"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -151,28 +160,32 @@
                             <Image x:Name="AngleIcImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
                                        RenderTransformOrigin="0.5,0.5">
                                 <Image.RenderTransform>
-                                    <RotateTransform x:Name="AngleIcImgRotation"/>
+                                    <RotateTransform x:Name="AngleIcImgRotation"
+                                                     Angle="{x:Bind m_Info.Angle, Mode=TwoWay}"/>
                                 </Image.RenderTransform>
                             </Image>
                             <Image x:Name="AngleBgImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_bg_n.png"
-                                       PointerPressed="AngleBgImg_PointerPressed"
-                                       PointerReleased="AngleBgImg_PointerReleased"
-                                       PointerMoved="AngleBgImg_PointerMoved"/>
+                                   PointerPressed="AngleBgImg_PointerPressed"
+                                   PointerReleased="AngleBgImg_PointerReleased"
+                                   PointerMoved="AngleBgImg_PointerMoved"/>
                         </Grid>
                         <Grid Grid.Column="1" Margin="25,0,0,0">
-                            <Rectangle Width="90" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
+                            <Rectangle Width="95" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
-                                <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="42" HorizontalAlignment="Left"
-                                         KeyDown="AngleTextBox_KeyDown" Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold"
-                                         TextChanged="AngleTextBox_TextChanged" LostFocus="AngleTextBox_LostFocus"/>
+                                <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="46" HorizontalAlignment="Left"
+                                         Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold" 
+                                         KeyDown="AngleTextBox_KeyDown" 
+                                         LostFocus="AngleTextBox_LostFocus"
+                                         TextChanging="AngleTextBox_TextChanging"
+                                         Text="{x:Bind m_Info.Angle, Converter={StaticResource doubleToInt32ToStringConverter}, Mode=TwoWay}"/>
                                 <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
                             </StackPanel>
                         </Grid>
                     </Grid>
                 </StackPanel>
 
-                <StackPanel x:Name="TemperatureGroup" Orientation="Vertical" Visibility="Collapsed">
+                <StackPanel x:Name="TemperatureGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.TemperatureGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Temperature (°C)" Margin="20,20,0,0" Foreground="White"/>
                     <StackPanel Margin="0,20,0,0">
                         <Rectangle Height="30" Width="250">

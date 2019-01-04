@@ -26,12 +26,76 @@
                 <Setter Property="AllowDrop" Value="True" />
             </Style>
             
-            <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/Background/grid.png"/>
-            
-            <BitmapImage x:Key="Save_n" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_n.png"/>
-            <BitmapImage x:Key="Save_h" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_h.png"/>
-            <BitmapImage x:Key="Save_s" UriSource="ms-appx:///Assets/Button/asus_ac_save_btn_s.png"/>
-            <Style x:Key="SaveButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+            <BitmapImage x:Key="RogStyleButton3_n_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_n_l.png"/>
+            <BitmapImage x:Key="RogStyleButton3_h_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_h_l.png"/>
+            <BitmapImage x:Key="RogStyleButton3_p_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_p_l.png"/>
+            <BitmapImage x:Key="RogStyleButton3_d_l" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_d_l.png"/>
+            <BitmapImage x:Key="RogStyleButton3_n_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_n_m.png"/>
+            <BitmapImage x:Key="RogStyleButton3_h_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_h_m.png"/>
+            <BitmapImage x:Key="RogStyleButton3_p_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_p_m.png"/>
+            <BitmapImage x:Key="RogStyleButton3_d_m" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_d_m.png"/>
+            <BitmapImage x:Key="RogStyleButton3_n_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_n_r.png"/>
+            <BitmapImage x:Key="RogStyleButton3_h_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_h_r.png"/>
+            <BitmapImage x:Key="RogStyleButton3_p_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_p_r.png"/>
+            <BitmapImage x:Key="RogStyleButton3_d_r" UriSource="ms-appx:///Assets/Button/asus_ac_btn1_d_r.png"/>
+            <Style x:Key="RogButtonStyle3"  TargetType="Button">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="25"/>
+                                </Grid.ColumnDefinitions>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_n_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_n_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_n_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_h_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_h_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_h_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_p_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_p_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_p_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_d_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_d_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_d_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                <Image Name="Image_m" Stretch="Fill" Grid.Column="1" MinWidth="80"/>
+                                <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <BitmapImage x:Key="SetAsLayer_icon" UriSource="ms-appx:///Assets/Button/asus_ac_setaslayer_ic.png"/>
+            <Style x:Key="SetAsLayerButtonStyle"  TargetType="Button">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Foreground" Value="White"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -40,24 +104,45 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_n}"/>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_n_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_n_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_n_r}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_h}"/>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_h_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_h_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_h_r}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="Image.Source" Value="{ThemeResource Save_s}"/>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_p_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_p_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_p_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_d_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_d_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_d_r}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
-                                    <Image Name="Image" Stretch="Fill"/>
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                    <Image Source="{ThemeResource SetAsLayer_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
+                                    <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                    <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Margin="8,0,0,0"/>
                                 </Grid>
                             </Border>
                         </ControlTemplate>
@@ -65,6 +150,122 @@
                 </Setter>
             </Style>
             
+            <BitmapImage x:Key="DeviceSorting_icon" UriSource="ms-appx:///Assets/Button/asus_ac_sorting_ic.png"/>
+            <Style x:Key="DeviceSortingButtonStyle"  TargetType="Button">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_n_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_n_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_n_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_h_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_h_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_h_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_p_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_p_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_p_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_d_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_d_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_d_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                    <Image Source="{ThemeResource DeviceSorting_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
+                                    <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                    <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <BitmapImage x:Key="SaveAndApply_icon" UriSource="ms-appx:///Assets/Button/asus_ac_saveandapply_ic.png"/>
+            <Style x:Key="SaveAndApplyButtonStyle"  TargetType="Button">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_n_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_n_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_n_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_h_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_h_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_h_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_p_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_p_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_p_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton3_d_l}"/>
+                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton3_d_m}"/>
+                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton3_d_r}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
+                                    <Image Source="{ThemeResource SaveAndApply_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
+                                    <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
+                                    <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
+                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <BitmapImage x:Key="More_n" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_n.png"/>
             <BitmapImage x:Key="More_h" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_h.png"/>
             <BitmapImage x:Key="More_s" UriSource="ms-appx:///Assets/Button/asus_ac_more_btn_s.png"/>
@@ -102,64 +303,6 @@
                 </Setter>
             </Style>
             
-            <BitmapImage x:Key="DeviceSorting_icon" UriSource="ms-appx:///Assets/Button/asus_ac_sorting_ic.png"/>
-            <Style x:Key="DeviceSortingButtonStyle"  TargetType="Button">
-                <Setter Property="Height" Value="32"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_n_l}"/>
-                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_n_m}"/>
-                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_n_r}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_h_l}"/>
-                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_h_m}"/>
-                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_h_r}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_p_l}"/>
-                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_p_m}"/>
-                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_p_r}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <VisualState.Setters>
-                                                <Setter Target="Image_l.Source" Value="{ThemeResource RogStyleButton2_d_l}"/>
-                                                <Setter Target="Image_m.Source" Value="{ThemeResource RogStyleButton2_d_m}"/>
-                                                <Setter Target="Image_r.Source" Value="{ThemeResource RogStyleButton2_d_r}"/>
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
-                                    <Image Source="{ThemeResource DeviceSorting_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
-                                    <Image Name="Image_m" Stretch="Fill" Grid.Column="1"/>
-                                    <Image Name="Image_r" Stretch="Fill" Grid.Column="2"/>
-                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Margin="8,0,0,0"/>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style TargetType="ListViewItem">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -220,10 +363,10 @@
         <Grid Name="MaskLayerPage" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Canvas.ZIndex="3"/>
 
         <!-- Row 0 -->
-        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle2}"
+        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle3}"
                 Width="200" Margin="20,0,0,0" Content="Connected Devices" Click="ConnectedDevicesButton_Click"/>
         <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1">
-            <Button Name="SetLayerButton" Style="{StaticResource RogButtonStyle2}" Background="{StaticResource AppBarBackgroundThemeBrush}"
+            <Button Name="SetLayerButton" Style="{StaticResource SetAsLayerButtonStyle}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
                         x:FieldModifier="Public" Content="Set as layer" Click="SetLayerButton_Click" IsEnabled="False">
                 <ToolTipService.ToolTip>
@@ -253,7 +396,7 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="SaveAndApplyButton" Style="{StaticResource RogButtonStyle2}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
+            <Button Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
                         Content="Save and Apply" Click="SaveAndApplyButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -265,22 +408,21 @@
         </RelativePanel>
         <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1" Visibility="Collapsed">
             <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
-            <Button Name="EditOKButton" Content="Save" Click="EditOKButton_Click" RelativePanel.AlignRightWithPanel="True"
-                        x:FieldModifier="Public" Margin="0,0,40,0" Style="{StaticResource RogButtonStyle2}"/>
-            <!--<Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" RelativePanel.AlignRightWithPanel="True" Width="180" Style="{StaticResource RogButtonStyle2}"/>-->
+            <Button Name="EditDoneButton" Content="Done" Click="EditDoneButton_Click" RelativePanel.LeftOf="EditCancelButton"
+                        x:FieldModifier="Public" Margin="0,0,10,0" Style="{StaticResource RogButtonStyle3}"/>
+            <Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" Margin="0,0,40,0"
+                    RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogButtonStyle3}"/>
         </RelativePanel>
         <Grid x:Name="ActionBar_Column2" Grid.Column="4">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button x:Name="FileListButton" Content="" Foreground="White"
-                    Width="200" Margin="0,0,15,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                    Width="200" Margin="0,0,5,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
-                <Button Name="MoreButton"
-                        Style="{StaticResource MoreButtonStyle}"
-                        Margin="0,0,0,0">
+                <Button Name="MoreButton" Style="{StaticResource MoreButtonStyle}" Margin="0,0,0,0">
                     <Button.Flyout>
                         <MenuFlyout Placement="Bottom">
                             <MenuFlyout.MenuFlyoutPresenterStyle>

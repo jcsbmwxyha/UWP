@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.UI.Core;
@@ -59,11 +60,26 @@ namespace AuraEditor
             coreTitleBar.IsVisibleChanged += CoreTitleBar_IsVisibleChanged;
             #endregion
 
-            WindowsGrid.Visibility = Visibility.Collapsed;
+            LoadingRing.IsActive = true;
+            LoadingFrame.Visibility = Visibility.Visible;
+            //Disable settings button until check finish
+            SettingsRadioButton.IsEnabled = false;
+            SettingsRadioButton.Opacity = 0.5;
+            // disable end
+
+            WindowsGrid.Visibility = Visibility.Visible;
             WindowsGrid1.Visibility = Visibility.Collapsed;
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
             LoadEULASettings();
 
+            await Task.Delay(4000);
+            LoadingFrame.Visibility = Visibility.Collapsed;
+            LoadingRing.IsActive = false;
+
+            WindowsGrid.Visibility = Visibility.Collapsed;
+            WindowsGrid1.Visibility = Visibility.Collapsed;
+
+            #region Show EULA page
             await (new ServiceViewModel()).Sendupdatestatus("ASUSSYS");
             if (ServiceViewModel.returnnum == 1)//ASUS SYS
             {
@@ -86,13 +102,10 @@ namespace AuraEditor
                     WindowsFrame1.Navigate(typeof(EULAPage), null, new SuppressNavigationTransitionInfo());
                 }
             }
+            #endregion
 
             #region Check for Update and show icon
-            //Disable settings button until check finish
-            SettingsRadioButton.IsEnabled = false;
-            SettingsRadioButton.Opacity = 0.5;
-            // disable end
-            await (new ServiceViewModel()).Sendupdatestatus("checkallbyservice");
+            await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
             // < 0 No checkallbyservice function
             if (ServiceViewModel.returnnum > 0)
             {
