@@ -2,6 +2,7 @@
 using AuraEditor.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -140,12 +141,12 @@ namespace AuraEditor
             // Apply after saving file
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript(true));
+            await Windows.Storage.FileIO.WriteTextAsync(sf, GetLastScript());
             Log.Debug("[SaveAndApplyButton] Save LastScript : " + sf.Path);
 
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(localsf, GetLastScript(true));
+            await Windows.Storage.FileIO.WriteTextAsync(localsf, GetLastScript());
 
             Log.Debug("[SaveAndApplyButton] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
@@ -417,12 +418,12 @@ namespace AuraEditor
 
             SpacePage.ClearTempDeviceData();
             await SaveFile(UserFilesDefaultFolderPath + CurrentUserFilename + ".xml", GetUserData());
-            await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript(true));
+            await SaveFile(UserScriptsDefaultFolderPath + CurrentUserFilename + ".xml", GetLastScript());
 
             localfile = await m_LocalUserFileFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.OpenIfExists);
             localscript = await m_LocalUserScriptFolder.CreateFileAsync(CurrentUserFilename + ".xml", CreationCollisionOption.OpenIfExists);
             await SaveFile(localfile.Path, GetUserData());
-            await SaveFile(localscript.Path, GetLastScript(true));
+            await SaveFile(localscript.Path, GetLastScript());
 
             Log.Debug("[SaveCurrentUserFile] User file : " + UserFilesDefaultFolderPath + CurrentUserFilename);
             Log.Debug("[SaveCurrentUserFile] User script : " + UserScriptsDefaultFolderPath + CurrentUserFilename);
@@ -521,11 +522,11 @@ namespace AuraEditor
                     XmlElement element2 = (XmlElement)effectNode;
                     int type = Int32.Parse(element2.SelectSingleNode("type").InnerText);
 
-                    List<ColorPoint> colorPoints = new List<ColorPoint>();
+                    List<ColorPointModel> colorPoints = new List<ColorPointModel>();
                     XmlNode colorPointListNode = element2.SelectSingleNode("colorPointList");
                     foreach (XmlNode colorpoint in colorPointListNode.ChildNodes)
                     {
-                        ColorPoint cp = new ColorPoint();
+                        ColorPointModel cp = new ColorPointModel();
                         XmlElement element3 = (XmlElement)colorpoint;
                         cp.Color = new Color
                         {
@@ -554,7 +555,7 @@ namespace AuraEditor
                         ColorModeSelection = Int32.Parse(element2.SelectSingleNode("colormodeselection").InnerText),
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
-                        ColorPointList = new List<ColorPoint>(colorPoints),
+                        ColorPointList = new List<ColorPointModel>(colorPoints),
                         ColorSegmentation = bool.Parse(element2.SelectSingleNode("colorSegmentation").InnerText),
                     };
 

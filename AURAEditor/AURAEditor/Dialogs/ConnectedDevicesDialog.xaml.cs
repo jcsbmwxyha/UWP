@@ -24,11 +24,14 @@ namespace AuraEditor.Dialogs
         static public ConnectedDevicesDialog Self;
         private ObservableCollection<SyncDevice> m_SyncDeviceList;
 
+        bool[] TemporaryCheckArray;
+
         public ConnectedDevicesDialog()
         {
             Self = this;
             this.InitializeComponent();
             m_SyncDeviceList = new ObservableCollection<SyncDevice>();
+            UpdateTemporaryCheckState();
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
@@ -52,11 +55,17 @@ namespace AuraEditor.Dialogs
                 Log.Debug(sendToLiveService);
             }
             NotifyIngroupDevicesChanged();
+            UpdateTemporaryCheckState();
             this.Hide();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            NotifyIngroupDevicesChanged();
+            int arrayCount = 0;
+            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+            {
+                sd.Sync = TemporaryCheckArray[arrayCount];
+                arrayCount++;
+            }
             this.Hide();
         }
 
@@ -91,6 +100,7 @@ namespace AuraEditor.Dialogs
                 ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
                 NotifyIngroupDevicesChanged();
                 UpdateSelectedText();
+                UpdateTemporaryCheckState();
             }
             catch
             {
@@ -129,7 +139,6 @@ namespace AuraEditor.Dialogs
         private void NotifyIngroupDevicesChanged()
         {
             SpacePage.Self.OnIngroupDevicesChanged();
-            MainPage.Self.OnIngroupDevicesChanged();
         }
         public List<SyncDevice> GetIngroupDevices()
         {
@@ -197,6 +206,17 @@ namespace AuraEditor.Dialogs
                 SelectAllButton.IsChecked = true;
             }
             SelectedNumberText.Text = "(" + selectedcount.ToString() + ")  Selected devices";
+        }
+
+        public void UpdateTemporaryCheckState()
+        {
+            int arrayCount = 0;
+            TemporaryCheckArray = new bool[ConnectedDevicesListView.Items.Count];
+            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+            {
+                TemporaryCheckArray[arrayCount] = sd.Sync;
+                arrayCount++;
+            }
         }
     }
 }

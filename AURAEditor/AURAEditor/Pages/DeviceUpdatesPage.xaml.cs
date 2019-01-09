@@ -25,6 +25,8 @@ namespace AuraEditor
     {
         private bool UpdateBtnMode;
         private bool IsCharge = false;
+
+        public ConnectedDevicesDialog ConnectedDevicesDialog;
         public DeviceUpdatesPage()
         {
             this.InitializeComponent();
@@ -111,6 +113,7 @@ namespace AuraEditor
                             InfoTextBlock.Text = "Update for the latest AURA functions and firmware";
                             InfoTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnMode = false;
+                            await ConnectedDevicesDialog.Rescan();
                             break;
                         }
                         if (ServiceViewModel.returnnum == 813)

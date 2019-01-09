@@ -204,7 +204,7 @@ namespace AuraEditor.Models
                 int originalPixelHeight = 1000;
 
                 Log.Debug("[GetDeviceModel] Model name : " + modelName + ", Type name : " + type);
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName);
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName.Split('_')[0]);
                 StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
 

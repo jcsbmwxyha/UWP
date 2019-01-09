@@ -42,6 +42,8 @@ namespace AuraEditor.Pages
             InitializeCursor();
             playerModel = new PlayerModel();
 
+            TimeTextBlockCollection = new List<TextBlock>();
+            TimelineScaleInitialize();
             LayerZoomSlider.Value = 2;
         }
 
@@ -159,6 +161,7 @@ namespace AuraEditor.Pages
             }
             return rightmostEffect;
         }
+        private List<TextBlock> TimeTextBlockCollection;
 
         #region -- Layers --
         public ObservableCollection<Layer> Layers { get; set; }
@@ -293,12 +296,12 @@ namespace AuraEditor.Pages
 
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
             StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, MainPage.Self.GetLastScript(false));
+            await Windows.Storage.FileIO.WriteTextAsync(sf, MainPage.Self.GetLastScript());
             Log.Debug("[PlayButton] Save LastScript : " + sf.Path);
 
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(localsf, MainPage.Self.GetLastScript(false));
+            await Windows.Storage.FileIO.WriteTextAsync(localsf, MainPage.Self.GetLastScript());
 
             long StartTime = (long)PositionToTime(playerModel.Position);
 
@@ -324,11 +327,22 @@ namespace AuraEditor.Pages
             await (new ServiceViewModel()).AuraEditorStopEngine();
             Log.Debug("[PauseButton] Aft AuraEditorStopEngine");
         }
-        private void CursorStoryboardCompleted(object sender, object e)
+        private async void CursorStoryboardCompleted(object sender, object e)
         {
             Log.Debug("[Player] Completed");
             playerModel.IsPlaying = false;
             playerModel.Position = 0;
+
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
+            StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            // Blank mode
+            await Windows.Storage.FileIO.WriteTextAsync(sf, "<root><header>AURA_Creator</header><version>1.0</version><effectProvider><period key=\"true\">0</period><queue /></effectProvider><viewport /><effectList /></root>");
+
+            long StartTime = (long)PositionToTime(playerModel.Position);
+
+            Log.Debug("[CursorStoryboardCompleted] Bef AuraEditorTrigger");
+            await(new ServiceViewModel()).AuraEditorTrigger(0);
+            Log.Debug("[CursorStoryboardCompleted] Aft AuraEditorTrigger");
         }
         public void ChangeCursorPosition(double rate)
         {
@@ -362,53 +376,101 @@ namespace AuraEditor.Pages
         }
         #endregion
 
-        #region -- Slider Zoom level --
+        #region -- Scale --
         private int _oldLayerZoomLevel;
-        private void LayerZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        private int _zoomLevel;
+        public int ZoomLevel
         {
-            if (Self == null)
-                return;
-
-            int newLevel = (int)LayerZoomSlider.Value;
-
-            if (_oldLayerZoomLevel != newLevel)
+            get
             {
-                int newSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(newLevel);
-                int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
-                double rate = (double)oldSecondsPerTimeUnit / newSecondsPerTimeUnit;
+                return _zoomLevel;
+            }
+            set
+            {
+                if (_zoomLevel != value)
+                {
+                    _zoomLevel = value;
 
-                SetTimeUnit(newSecondsPerTimeUnit);
+                    if (_oldLayerZoomLevel != value)
+                    {
+                        SecondsBetweenLongLines = GetSecondsPerTimeUnitByLevel(value);
+                        playerModel.MaxEditWidth = PixelsPerSecond * MaxEditTime;
 
-                ChangeCursorPosition(rate);
-                _oldLayerZoomLevel = newLevel;
+                        int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
+                        double rate = (double)oldSecondsPerTimeUnit / SecondsBetweenLongLines;
+                        SetScaleText();
+
+                        ChangeEffectsPosition(rate);
+                        ChangeCursorPosition(rate);
+                        _oldLayerZoomLevel = value;
+                    }
+                }
             }
         }
-        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        static public int SecondsBetweenLongLines; // TimeUnit : the seconds between two long lines
+        static public double PixelsPerSecond { get { return PixelsBetweenLongLines / SecondsBetweenLongLines; } }
+
+        private void TimelineScaleInitialize()
         {
-            LayerZoomSlider.Value += 1;
+            SecondsBetweenLongLines = GetSecondsPerTimeUnitByLevel(1); // Level 1
+            TimeSpan ts = new TimeSpan(0, 0, SecondsBetweenLongLines);
+            TimeSpan interval = new TimeSpan(0, 0, SecondsBetweenLongLines);
+
+            int pixelsBetweenLines = (int)(PixelsBetweenLongLines / 2);
+            int width = (int)(PixelsPerSecond * MaxEditTime);
+            int height = (int)ScaleCanvas.ActualHeight;
+            int y1_short = (int)(height / 1.5);
+            int y1_long = height / 2;
+            int y2 = height;
+            int linesBetweenLongLines = (int)(PixelsBetweenLongLines / pixelsBetweenLines);
+            int totalLines = width / pixelsBetweenLines;
+
+            ScaleCanvas.Children.Clear();
+            ScaleCanvas.Children.Add(PlayerCursor_Head);
+
+            for (int i = 1; i < totalLines; i++)
+            {
+                int x = pixelsBetweenLines * i;
+                int y1;
+
+                if (i % linesBetweenLongLines == 0)
+                {
+                    y1 = y1_long;
+
+                    CompositeTransform ct = new CompositeTransform
+                    {
+                        TranslateX = x + 10,
+                        TranslateY = 5
+                    };
+
+                    TextBlock tb = new TextBlock
+                    {
+                        Text = ts.ToString("mm\\:ss"),
+                        RenderTransform = ct,
+                        Foreground = new SolidColorBrush(Colors.White)
+                    };
+
+                    ScaleCanvas.Children.Add(tb);
+                    TimeTextBlockCollection.Add(tb);
+                    ts = ts.Add(interval);
+                }
+                else
+                    y1 = y1_short;
+
+                Line line = new Line
+                {
+                    X1 = x,
+                    Y1 = y1,
+                    X2 = x,
+                    Y2 = y2,
+                    Stroke = new SolidColorBrush(Colors.White)
+                };
+
+                ScaleCanvas.Children.Add(line);
+            }
         }
-        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        private void ChangeEffectsPosition(double rate)
         {
-            LayerZoomSlider.Value -= 1;
-        }
-        #endregion
-
-        #region -- Scale --
-        static public int SecondsPerTimeUnit; // TimeUnit : the seconds between two long lines
-        static public double PixelsPerSecond { get { return PixelsPerTimeUnit / SecondsPerTimeUnit; } }
-        static public double PositionToTime(double position)
-        {
-            return (position / PixelsPerSecond) * 1000;
-        }
-
-        public void SetTimeUnit(int newSecondsPerTimeUnit)
-        {
-            double rate = (double)SecondsPerTimeUnit / newSecondsPerTimeUnit;
-
-            SecondsPerTimeUnit = newSecondsPerTimeUnit;
-            playerModel.MaxEditWidth = PixelsPerSecond * MaxEditTime;
-            DrawTimelineScale();
-
             foreach (var layer in Layers)
             {
                 foreach (var effect in layer.TimelineEffects)
@@ -418,6 +480,38 @@ namespace AuraEditor.Pages
                 }
             }
         }
+        private void SetScaleText()
+        {
+            TimeSpan ts = new TimeSpan(0, 0, SecondsBetweenLongLines);
+            TimeSpan interval = new TimeSpan(0, 0, SecondsBetweenLongLines);
+
+            foreach (var tb in TimeTextBlockCollection)
+            {
+                tb.Text = ts.ToString("mm\\:ss");
+                ts = ts.Add(interval);
+            }
+        }
+        static public double PositionToTime(double position)
+        {
+            return (position / PixelsPerSecond) * 1000;
+        }
+
+        private void LayerZoomSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (Self == null)
+                return;
+
+            ZoomLevel = (int)LayerZoomSlider.Value;
+        }
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            LayerZoomSlider.Value += 1;
+        }
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            LayerZoomSlider.Value -= 1;
+        }
+
         public double[] GetAlignPositions(TimelineEffect eff)
         {
             Layer layer = eff.Layer;
@@ -444,62 +538,6 @@ namespace AuraEditor.Pages
             if (i < Layers.Count - 1)
                 result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
             return result.ToArray();
-        }
-        private void DrawTimelineScale()
-        {
-            TimeSpan ts = new TimeSpan(0, 0, SecondsPerTimeUnit);
-            TimeSpan interval = new TimeSpan(0, 0, SecondsPerTimeUnit);
-            int minimumScaleUnitLength = (int)(PixelsPerTimeUnit / 2);
-            int width = (int)playerModel.MaxEditWidth;
-            int height = (int)ScaleCanvas.ActualHeight;
-            int y1_short = (int)(height / 1.5);
-            int y1_long = height / 2;
-            double y2 = height;
-            int linePerTimeUnit = (int)(PixelsPerTimeUnit / minimumScaleUnitLength);
-            int totalLineCount = width / minimumScaleUnitLength;
-
-            ScaleCanvas.Children.Clear();
-            ScaleCanvas.Children.Add(PlayerCursor_Head);
-
-            for (int i = 1; i < totalLineCount; i++)
-            {
-                int x = minimumScaleUnitLength * i;
-                int y1;
-
-                if (i % linePerTimeUnit == 0)
-                {
-                    y1 = y1_long;
-
-                    CompositeTransform ct = new CompositeTransform
-                    {
-                        TranslateX = x + 10,
-                        TranslateY = 5
-                    };
-
-                    TextBlock tb = new TextBlock
-                    {
-                        Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = ct,
-                        Foreground = new SolidColorBrush(Colors.White)
-                    };
-
-                    ScaleCanvas.Children.Add(tb);
-                    ts = ts.Add(interval);
-                }
-                else
-                    y1 = y1_short;
-
-                Line line = new Line
-                {
-                    X1 = x,
-                    Y1 = y1,
-                    X2 = x,
-                    Y2 = y2,
-                    Stroke = new SolidColorBrush(Colors.White)
-                };
-
-                ScaleCanvas.Children.Add(line);
-            }
         }
         #endregion
 

@@ -11,7 +11,7 @@ namespace AuraEditor
 {
     public sealed partial class MainPage : Page
     {
-        public string GetLastScript(bool repeat)
+        public string GetLastScript()
         {
             XmlNode root = CreateXmlNode("root");
 
@@ -23,24 +23,18 @@ namespace AuraEditor
             versionNode.InnerText = "1.0";
             root.AppendChild(versionNode);
 
-            root.AppendChild(GetEffecttProviderXmlNode(repeat));
+            root.AppendChild(GetEffecttProviderXmlNode());
             root.AppendChild(GetViewportXmlNode());
             root.AppendChild(GetEffectListXmlNode());
 
             return root.OuterXml;
         }
-        private XmlNode GetEffecttProviderXmlNode(bool repeat)
+        private XmlNode GetEffecttProviderXmlNode()
         {
             XmlNode effectProviderNode = CreateXmlNode("effectProvider");
 
             XmlNode periodNode = CreateXmlNode("period");
             periodNode.InnerText = LayerPage.PlayTime.ToString();
-            XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            if (repeat)
-                attribute.Value = "true";
-            else
-                attribute.Value = "false";
-            periodNode.Attributes.Append(attribute);
 
             effectProviderNode.AppendChild(periodNode);
             effectProviderNode.AppendChild(GetQueueXmlNode());

@@ -134,9 +134,9 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
                                         <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="32"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
                                     <Image Source="{ThemeResource SetAsLayer_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
@@ -192,9 +192,9 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
                                         <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="32"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
                                     <Image Source="{ThemeResource DeviceSorting_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>
@@ -250,9 +250,9 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
                                         <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="32"/>
                                     </Grid.ColumnDefinitions>
                                     <Image Name="Image_l" Stretch="Fill" Grid.Column="0"/>
                                     <Image Source="{ThemeResource SaveAndApply_icon}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" HorizontalAlignment="Right"/>

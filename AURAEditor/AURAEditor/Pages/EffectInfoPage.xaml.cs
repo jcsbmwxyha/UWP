@@ -16,6 +16,9 @@ using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using Windows.UI.Xaml.Navigation;
+using System.Collections.ObjectModel;
+using AuraEditor.Models;
+using System.Linq;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,8 +33,6 @@ namespace AuraEditor.Pages
 
         bool _angleImgPressing;
         Point AngleImgCenter;
-        public List<ColorPoint> ColorPoints = new List<ColorPoint>();
-        public List<ColorPoint> CustomizeColorPoints = new List<ColorPoint>();
 
         public EffectInfoPage()
         {
@@ -39,106 +40,26 @@ namespace AuraEditor.Pages
 
             AngleImgCenter = new Point(40, 40);
             AngleTextBox.Text = "0";
-
-            foreach (var item in DefaultColorList)
-            {
-                SetListBorder(item);
-            }
-
-            SetDefaultPattern();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             m_Info = e.Parameter as EffectInfo;
 
             if (m_Info == null)
+            {
                 EffectInfoStackPanel.Visibility = Visibility.Collapsed;
+                return;
+            }
 
             this.DataContext = m_Info;
+
+            ColorPatternModel patternModel = new ColorPatternModel(m_Info);
+            ColorPattern.DataContext = patternModel;
             Bindings.Update();
         }
-        public void SetDefaultPattern()
-        {
-            CustomizeRainbow.Foreground = new SolidColorBrush(Colors.White);
-
-            //Button Color
-            LinearGradientBrush Pattern1 = new LinearGradientBrush();
-            Pattern1.StartPoint = new Point(0, 0.5);
-            Pattern1.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[0].Count; i++)
-            {
-                Pattern1.GradientStops.Add(new GradientStop { Color = DefaultColorList[0][i].Color, Offset = DefaultColorList[0][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow1.Foreground = Pattern1;
-
-            // Button Color  
-            LinearGradientBrush Pattern2 = new LinearGradientBrush();
-            Pattern2.StartPoint = new Point(0, 0.5);
-            Pattern2.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[1].Count; i++)
-            {
-                Pattern2.GradientStops.Add(new GradientStop { Color = DefaultColorList[1][i].Color, Offset = DefaultColorList[1][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow2.Foreground = Pattern2;
-
-            // Button Color  
-            LinearGradientBrush Pattern3 = new LinearGradientBrush();
-            Pattern3.StartPoint = new Point(0, 0.5);
-            Pattern3.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[2].Count; i++)
-            {
-                Pattern3.GradientStops.Add(new GradientStop { Color = DefaultColorList[2][i].Color, Offset = DefaultColorList[2][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow3.Foreground = Pattern3;
-
-            // Button Color  
-            LinearGradientBrush Pattern4 = new LinearGradientBrush();
-            Pattern4.StartPoint = new Point(0, 0.5);
-            Pattern4.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[3].Count; i++)
-            {
-                Pattern4.GradientStops.Add(new GradientStop { Color = DefaultColorList[3][i].Color, Offset = DefaultColorList[3][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow4.Foreground = Pattern4;
-
-            // Button Color  
-            LinearGradientBrush Pattern5 = new LinearGradientBrush();
-            Pattern5.StartPoint = new Point(0, 0.5);
-            Pattern5.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[4].Count; i++)
-            {
-                Pattern5.GradientStops.Add(new GradientStop { Color = DefaultColorList[4][i].Color, Offset = DefaultColorList[4][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow5.Foreground = Pattern5;
-
-            // Button Color  
-            LinearGradientBrush Pattern6 = new LinearGradientBrush();
-            Pattern6.StartPoint = new Point(0, 0.5);
-            Pattern6.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < Definitions.DefaultColorList[5].Count; i++)
-            {
-                Pattern6.GradientStops.Add(new GradientStop { Color = DefaultColorList[5][i].Color, Offset = DefaultColorList[5][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow6.Foreground = Pattern6;
-        }
-
         private void ShowGroups(string name)
         {
             ResetBtn.Visibility = Visibility.Visible;
-            //EffectInfoGroup.Visibility = Visibility.Visible;
-            //Title.Text = name;
 
             switch (name)
             {
@@ -229,7 +150,6 @@ namespace AuraEditor.Pages
                     PatternGroup.Visibility = Visibility.Collapsed;
                     BrightnessGroup.Visibility = Visibility.Collapsed;
                     SpeedGroup.Visibility = Visibility.Visible;
-                    //DirectionGroup.Visibility = Visibility.Collapsed;
                     AngleGroup.Visibility = Visibility.Collapsed;
                     TemperatureGroup.Visibility = Visibility.Collapsed;
                     break;
@@ -280,41 +200,6 @@ namespace AuraEditor.Pages
                     break;
             }
         }
-        //private void UpdateGroups(EffectInfo info)
-        //{
-        //    RadioButtonBg.Background = new SolidColorBrush(info.InitColor);
-        //    if (info.Random)
-        //    {
-        //        RandomCheckBox.IsChecked = true;
-        //        RadioButtonBg.Opacity = 0.5;
-        //        RadioButtonBg.IsEnabled = false;
-        //    }
-        //    else
-        //    {
-        //        RandomCheckBox.IsChecked = false;
-        //        RadioButtonBg.Opacity = 1;
-        //        RadioButtonBg.IsEnabled = true;
-        //    }
-        //    BrightnessSlider.Value = info.Brightness;
-        //    SpeedSlider.Value = info.Speed;
-        //    if (SpeedSlider.Value == 0)
-        //    {
-        //        SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-        //        MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
-        //        FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
-        //    }
-        //    AngleStoryboardStart(info.Angle);
-        //    AngleTextBox.Text = info.Angle.ToString();
-        //    PatternCanvas.Children.Clear();
-        //    ColorPoints.Clear();
-        //    foreach (var item in info.ColorPointList)
-        //    {
-        //        ColorPoints.Add(new ColorPoint(item));
-        //    }
-        //    ShowColorPointUI(ColorPoints);
-        //    ReDrawMultiPointRectangle();
-        //    SegmentationSwitch.IsOn = info.ColorSegmentation;
-        //}
 
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -325,9 +210,8 @@ namespace AuraEditor.Pages
             m_Info.Random = false;
             m_Info.High = 60;
             m_Info.Low = 30;
-            m_Info.ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
+            m_Info.ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
             m_Info.ColorSegmentation = false;
-            //UpdateGroups(m_Info);
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -547,162 +431,5 @@ namespace AuraEditor.Pages
             }
         }
         #endregion
-
-        private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
-        {
-            MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            ClearAndDraw(mf, DefaultColorList[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1]);
-        }
-
-        private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
-        {
-            MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            ClearAndDraw(mf, CustomizeColorPoints);
-        }
-
-        private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPoint> cp)
-        {
-            PatternCanvas.Children.Clear();
-            foreach (var item in ColorPoints)
-            {
-                item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-            }
-            ColorPoints.Clear();
-            if (m_Info.ColorPointList != null)
-                m_Info.ColorPointList.Clear();
-
-            foreach (var item in cp)
-            {
-                ColorPoints.Add(new ColorPoint(item));
-                m_Info.ColorPointList.Add(new ColorPoint(item));
-            }
-            ShowColorPointUI(ColorPoints);
-            MultiPointRectangle.Fill = PatternPolygon.Fill = mf.Foreground;
-        }
-
-        public void ShowColorPointUI(List<ColorPoint> cl)
-        {
-            for (int i = 0; i < cl.Count; i++)
-            {
-                if (i == 0)
-                {
-                    List<RadioButton> items = FindAllControl<RadioButton>(cl[i].UI, typeof(RadioButton));
-                    items[0].IsChecked = true;
-                }
-                cl[i].UI.OnRedraw += ReDrawMultiPointRectangle; ;
-                PatternCanvas.Children.Add(cl[i].UI);
-            }
-        }
-
-        private void PlusItemBt(object sender, RoutedEventArgs e)
-        {
-            ColorPoint newColorPointBt = new ColorPoint();
-            AddColorPoint(newColorPointBt);
-            newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
-            ReDrawMultiPointRectangle();
-        }
-        private void AddColorPoint(ColorPoint colorPoint)
-        {
-            int curIndex = 0;
-            if (ColorPoints.Count < 7)
-            {
-                foreach (var item in ColorPoints)
-                {
-                    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
-
-                    if (items[0].IsChecked == true)
-                    {
-                        curIndex = ColorPoints.IndexOf(item);
-                        if ((curIndex + 1) == ColorPoints.Count)
-                        {
-                            if ((ColorPoints[curIndex].UI.X - ColorPoints[curIndex - 1].UI.X) < 25)
-                            {
-                                ColorPoints.Add(colorPoint);
-                                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
-                                return;
-                            }
-                            else
-                            {
-                                colorPoint.UI.X = (ColorPoints[curIndex - 1].UI.X + ColorPoints[curIndex].UI.X) / 2;
-                                ColorPoints.Insert(curIndex, colorPoint);
-                            }
-                        }
-                        else
-                        {
-                            if ((ColorPoints[curIndex + 1].UI.X - ColorPoints[curIndex].UI.X) < 25)
-                            {
-                                ColorPoints.Add(colorPoint);
-                                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
-                                return;
-                            }
-                            else
-                            {
-                                colorPoint.UI.X = (ColorPoints[curIndex].UI.X + ColorPoints[curIndex + 1].UI.X) / 2;
-                                ColorPoints.Insert(curIndex + 1, colorPoint);
-                            }
-                        }
-                        colorPoint.Color = item.Color;
-                        PatternCanvas.Children.Add(colorPoint.UI);
-                        break;
-                    }
-                }
-            }
-        }
-        private void MinusItemBt(object sender, RoutedEventArgs e)
-        {
-            RemoveColorPoint();
-            ReDrawMultiPointRectangle();
-        }
-        private void RemoveColorPoint()
-        {
-            if (ColorPoints.Count > 2)
-            {
-                foreach (var item in ColorPoints)
-                {
-                    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
-
-                    if (items[0].IsChecked == true)
-                    {
-                        for (int i = 0; i < ColorPoints.Count; i++)
-                        {
-                            if (item == ColorPoints[i])
-                            {
-                                if (i != ColorPoints.Count - 1)
-                                {
-                                    List<RadioButton> items1 = FindAllControl<RadioButton>(ColorPoints[i + 1].UI, typeof(RadioButton));
-                                    items1[0].IsChecked = true;
-                                }
-                                else
-                                {
-                                    List<RadioButton> items1 = FindAllControl<RadioButton>(ColorPoints[i - 1].UI, typeof(RadioButton));
-                                    items1[0].IsChecked = true;
-                                }
-                            }
-                        }
-                        item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-                        ColorPoints.Remove(item);
-                        PatternCanvas.Children.Remove(item.UI);
-                        break;
-                    }
-                }
-            }
-        }
-
-        public void ReDrawMultiPointRectangle()
-        {
-            LinearGradientBrush Pattern = new LinearGradientBrush();
-            Pattern.StartPoint = new Point(0, 0.5);
-            Pattern.EndPoint = new Point(1, 0.5);
-
-            for (int i = 0; i < ColorPoints.Count; i++)
-            {
-                Pattern.GradientStops.Add(new GradientStop { Color = ColorPoints[i].Color, Offset = ColorPoints[i].Offset });
-            }
-
-            PatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
-            CustomizeColorPoints = new List<ColorPoint>(ColorPoints);
-            m_Info.ColorPointList = new List<ColorPoint>(ColorPoints);
-            SetListBorder(ColorPoints);
-        }
     }
 }

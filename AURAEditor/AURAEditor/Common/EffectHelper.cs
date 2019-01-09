@@ -1,7 +1,10 @@
-﻿using MoonSharp.Interpreter;
+﻿using AuraEditor.Models;
+using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace AuraEditor.Common
 {
@@ -166,7 +169,7 @@ namespace AuraEditor.Common
             return "Notebook";
         }
 
-        static public void SetListBorder(List<ColorPoint> cps)
+        static public void SetColorPointBorders(List<ColorPointModel> cps)
         {
             int width = 13;
 
@@ -174,20 +177,41 @@ namespace AuraEditor.Common
             {
                 if (i == 0)
                 {
-                    cps[i].UI.LeftBorder = 0;
-                    cps[i].UI.RightBorder = cps[i + 1].UI.X - width;
+                    cps[i].LeftBorder = 0;
+                    cps[i].RightBorder = cps[i + 1].PixelX - width;
                 }
                 else if (i == (cps.Count - 1))
                 {
-                    cps[i].UI.LeftBorder = cps[i - 1].UI.X + width;
-                    cps[i].UI.RightBorder = 180;
+                    cps[i].LeftBorder = cps[i - 1].PixelX + width;
+                    cps[i].RightBorder = 196;
                 }
                 else
                 {
-                    cps[i].UI.LeftBorder = cps[i - 1].UI.X + width;
-                    cps[i].UI.RightBorder = cps[i + 1].UI.X - width;
+                    cps[i].LeftBorder = cps[i - 1].PixelX + width;
+                    cps[i].RightBorder = cps[i + 1].PixelX - width;
                 }
             }
+        }
+        static public LinearGradientBrush ColorPointsToForeground(List<ColorPointModel> cps)
+        {
+            LinearGradientBrush pattern = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0.5),
+                EndPoint = new Point(1, 0.5)
+            };
+
+            foreach(var cp in cps)
+            {
+                pattern.GradientStops.Add(
+                    new GradientStop
+                    {
+                        Color = cp.Color,
+                        Offset = cp.Offset
+                    }
+                );
+            }
+
+            return pattern;
         }
     }
 }

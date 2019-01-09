@@ -72,7 +72,7 @@ namespace AuraEditor
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
             LoadEULASettings();
 
-            await Task.Delay(4000);
+            await Task.Delay(1000);
             LoadingFrame.Visibility = Visibility.Collapsed;
             LoadingRing.IsActive = false;
 

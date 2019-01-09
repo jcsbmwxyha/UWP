@@ -44,8 +44,8 @@ namespace AuraEditor
                     _left = value;
                     RaisePropertyChanged("Left");
 
-                    double timeUnits = _left / PixelsPerTimeUnit;
-                    double seconds = timeUnits * LayerPage.SecondsPerTimeUnit;
+                    double timeUnits = _left / PixelsBetweenLongLines;
+                    double seconds = timeUnits * LayerPage.SecondsBetweenLongLines;
                     _startTime = seconds * 1000;
                 }
             }
@@ -64,8 +64,8 @@ namespace AuraEditor
                     _width = value;
                     RaisePropertyChanged("Width");
 
-                    double timeUnits = _width / PixelsPerTimeUnit;
-                    double seconds = timeUnits * LayerPage.SecondsPerTimeUnit;
+                    double timeUnits = _width / PixelsBetweenLongLines;
+                    double seconds = timeUnits * LayerPage.SecondsBetweenLongLines;
                     _durationTime = seconds * 1000;
                 }
             }
@@ -100,9 +100,9 @@ namespace AuraEditor
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / LayerPage.SecondsPerTimeUnit;
+                double timeUnits = seconds / LayerPage.SecondsBetweenLongLines;
 
-                _left = timeUnits * PixelsPerTimeUnit;
+                _left = timeUnits * PixelsBetweenLongLines;
                 _startTime = value;
                 RaisePropertyChanged("X");
             }
@@ -117,9 +117,9 @@ namespace AuraEditor
             set
             {
                 double seconds = value / 1000;
-                double timeUnits = seconds / LayerPage.SecondsPerTimeUnit;
+                double timeUnits = seconds / LayerPage.SecondsBetweenLongLines;
 
-                _width = timeUnits * PixelsPerTimeUnit;
+                _width = timeUnits * PixelsBetweenLongLines;
                 _durationTime = value;
                 RaisePropertyChanged("Width");
             }
@@ -127,7 +127,7 @@ namespace AuraEditor
 
         public TimelineEffect(int effectType) : base(effectType)
         {
-            DurationTime = 1000; // 1s
+            DurationTime = 3000; // 3s
         }
 
         public void MoveTo(double target)

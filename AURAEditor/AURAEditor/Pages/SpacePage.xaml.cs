@@ -198,6 +198,7 @@ namespace AuraEditor.Pages
                     DeviceModelCollection.Add(dm);
                 }
                 RefreshSpaceScrollViewer();
+                MainPage.Self.OnIngroupDevicesChanged();
             });
         }
         public void RefreshSpaceScrollViewer()

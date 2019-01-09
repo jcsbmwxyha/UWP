@@ -130,7 +130,7 @@
             <RowDefinition Height="150*"/>
         </Grid.RowDefinitions>
 
-        <Image Source="ms-appx:///Assets/Background/asus_gc_dailog_bg_short.png" Grid.RowSpan="3"/>
+        <Image Source="ms-appx:///Assets/Background/asus_ac_dialog_smallest_bg.png" Grid.RowSpan="3"/>
         <Image Grid.Row="0" Source="ms-appx:///Assets/TitleBar.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100"/>
         <TextBlock Grid.Row="1" Text="Sorry, because you do not agree with the EULA, ASUS cannot authorize you to use this software. If you want to use this software, please agree to the EULA."
                    TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,0,40,0"

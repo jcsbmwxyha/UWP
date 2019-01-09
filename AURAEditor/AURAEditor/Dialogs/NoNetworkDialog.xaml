@@ -135,7 +135,7 @@
             <RowDefinition Height="76*"/>
         </Grid.RowDefinitions>
 
-        <Image Source="ms-appx:///Assets/Background/asus_gc_dailog_bg_short.png" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
+        <Image Source="ms-appx:///Assets/Background/asus_ac_dialog_smallest_bg.png" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
         <RelativePanel Grid.Row="0" Grid.ColumnSpan="3" Canvas.ZIndex="4">
             <TextBlock x:Uid="NoNetwork1" Text="Unable to Update" Foreground="White" RelativePanel.AlignLeftWithPanel="True" 
                        RelativePanel.AlignVerticalCenterWithPanel="True"

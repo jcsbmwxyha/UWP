@@ -391,7 +391,7 @@ namespace AuraEditor
 
         public void OnIngroupDevicesChanged()
         {
-            if (ConnectedDevicesDialog.Self.GetPluggedDevices().Count == 0)
+            if (SpacePage.DeviceModelCollection.Count == 0)
                 NoSupportedDeviceGrid.Visibility = Visibility.Visible;
             else
                 NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
@@ -449,6 +449,7 @@ namespace AuraEditor
                 }
             }
 
+            SpacePage.OnDeviceMoveCompleted();
             HideMask();
         }
         public void ShowReEditMask(Layer layer)

@@ -1,0 +1,64 @@
+﻿<UserControl
+    x:Class="AuraEditor.UserControls.ColorPatternView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AuraEditor.UserControls"
+    xmlns:common="using:AuraEditor.Common"
+    xmlns:models="using:AuraEditor.Models"
+    xmlns:usercontrol="using:AuraEditor.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <StackPanel x:Name="PatternGroup" Orientation="Vertical" >
+        <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+        <Grid Margin="20,20,0,16">
+            <Polygon x:Name="ButtonPolygon" Points="10,10,10,17,15,22,170,22,170,10"
+                     Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
+            <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
+                <Button.Flyout>
+                    <MenuFlyout x:Name="DefaultPatternMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
+                        <MenuFlyoutItem x:Name="DefaultPattern1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
+                        <MenuFlyoutItem x:Name="CustomizePattern" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"
+                                        Foreground="{x:Bind m_ColorPatternModel.CustomizeColorForground, Mode=OneWay}"/>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+        </Grid>
+        <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+            <ItemsControl Name="ColorPointItemsControl" Margin="-10,0,0,0" Height="20"
+                          ItemsSource="{x:Bind Path=m_ColorPatternModel.CurrentColorPoints}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="Offset"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ColorPointModel">
+                        <usercontrol:ColorPointView/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Rectangle x:Name="PatternRectangle" Width="196" Height="16" HorizontalAlignment="Left"
+                       Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
+                <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

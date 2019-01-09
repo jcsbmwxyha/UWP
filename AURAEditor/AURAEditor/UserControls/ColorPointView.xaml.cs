@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Dialogs;
+using AuraEditor.Models;
 using System;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -6,64 +7,51 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.EffectHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace AuraEditor.UserControls
 {
-    public sealed partial class ColorPointBt : UserControl
+    public sealed partial class ColorPointView : UserControl
     {
-        public delegate void ReDrawCallBack();
-        public ReDrawCallBack OnRedraw;
-        public double X
-        {
-            get
-            {
-                CompositeTransform ct = this.RenderTransform as CompositeTransform;
-                return ct.TranslateX;
-            }
-            set
-            {
-                CompositeTransform ct = this.RenderTransform as CompositeTransform;
-                ct.TranslateX = value;
-            }
-        }
-
-        public double LeftBorder { get; set; }
-        public double RightBorder { get; set; }
-
+        private ColorPointModel m_ColorPointModel { get { return this.DataContext as ColorPointModel; } }
         public bool FromTriggerDialog = false;
         public TriggerDialog m_td;
 
-        public ColorPointBt()
+        public ColorPointView()
         {
             this.InitializeComponent();
         }
 
-        public ColorPointBt(TriggerDialog td)
+        public ColorPointView(TriggerDialog td)
         {
             this.InitializeComponent();
             FromTriggerDialog = true;
             m_td = td;
         }
 
-        private void ColorPointBtn_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        private void ColorPointRadioButton_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (X + e.Delta.Translation.X < LeftBorder)
+            if (TT.X + e.Delta.Translation.X < m_ColorPointModel.LeftBorder)
             {
-                X = LeftBorder;
-                return;
+                TT.X = m_ColorPointModel.LeftBorder;
             }
-            if (X + e.Delta.Translation.X > RightBorder)
+            else if (TT.X + e.Delta.Translation.X > m_ColorPointModel.RightBorder)
             {
-                X = RightBorder;
-                return;
+                TT.X = m_ColorPointModel.RightBorder;
             }
-            X += e.Delta.Translation.X;
-            OnRedraw?.Invoke();
+            else
+            {
+                TT.X += e.Delta.Translation.X;
+                m_ColorPointModel.ParentPattern.OnManipulationDelta();
+            }
         }
-
-        private async void ColorPointBtn_DoubleTapped(object sender, RoutedEventArgs e)
+        private void ColorPointRadioButton_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            m_ColorPointModel.ParentPattern.OnManipulationCompleted();
+        }
+        private async void ColorPointtRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
         {
             if (FromTriggerDialog)
             {
@@ -72,7 +60,6 @@ namespace AuraEditor.UserControls
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)ColorPointBg.Background).Color);
 
             ColorPointBg.Background = new SolidColorBrush(newColor);
-            OnRedraw?.Invoke();
         }
 
         public async Task<Color> OpenColorPickerWindow(Color c)

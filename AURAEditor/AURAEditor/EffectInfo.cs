@@ -9,6 +9,9 @@ using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
 using AuraEditor.Pages;
 using System.ComponentModel;
+using AuraEditor.Models;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace AuraEditor
 {
@@ -140,7 +143,8 @@ namespace AuraEditor
 
         //For Trigger Dialog Ripple
         public int ColorModeSelection;
-        public List<ColorPoint> ColorPointList;
+        public List<ColorPointModel> ColorPointList;
+        public int PatternSelect;
 
         private bool _colorSegmentation;
         public bool ColorSegmentation
@@ -171,8 +175,9 @@ namespace AuraEditor
             Random = false;
             High = 60;
             Low = 30;
-            ColorPointList = new List<ColorPoint>(DefaultColorList[5]);
+            ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
             ColorSegmentation = false;
+            PatternSelect = 5;
         }
 
         private void SetGroupVisibility(string name)
@@ -558,7 +563,7 @@ namespace AuraEditor
                 waveNode1.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                 waveNode1.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                 waveNode1.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
-                waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 0));
+                waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 0));
                 waveListNode.AppendChild(waveNode1);
 
                 // wave 2 for SATURATION
@@ -581,7 +586,7 @@ namespace AuraEditor
                 waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                 waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                 waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
-                waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 1));
+                waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 1));
                 waveListNode.AppendChild(waveNode2);
 
                 // wave 3 for LIGHTNESS
@@ -604,7 +609,7 @@ namespace AuraEditor
                 waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                 waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                 waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
-                waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 2));
+                waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 2));
                 waveListNode.AppendChild(waveNode3);
             }
             else if (GetEffectName(Type) == "Strobing")
@@ -881,7 +886,7 @@ namespace AuraEditor
                     waveNode1.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                     waveNode1.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                     waveNode1.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
-                    waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 0));
+                    waveNode1.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 0));
                     waveListNode.AppendChild(waveNode1);
 
                     // wave 2 for SATURATION
@@ -904,7 +909,7 @@ namespace AuraEditor
                     waveNode2.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                     waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
-                    waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 1));
+                    waveNode2.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 1));
                     waveListNode.AppendChild(waveNode2);
 
                     // wave 3 for LIGHTNESS
@@ -927,7 +932,7 @@ namespace AuraEditor
                     waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
                     waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                     waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
-                    waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList, 2));
+                    waveNode3.AppendChild(GetCustomizedFromColorPointList(ColorPointList.ToList(), 2));
                     waveListNode.AppendChild(waveNode3);
                 }
             }
@@ -949,7 +954,7 @@ namespace AuraEditor
 
             return bindToSlotXmlNode;
         }
-        static private XmlNode GetCustomizedFromColorPointList(List<ColorPoint> ColorPointList, int hsv)
+        static private XmlNode GetCustomizedFromColorPointList(List<ColorPointModel> ColorPointList, int hsv)
         {
             XmlNode customizedNode = CreateXmlNode("customized");
             double Scaledown = (double)(ColorPointList.Count - 1) / (double)ColorPointList.Count;

@@ -1,10 +1,11 @@
 ﻿<UserControl
-    x:Class="AuraEditor.UserControls.ColorPointBt"
+    x:Class="AuraEditor.UserControls.ColorPointView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:AuraEditor.Common"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -13,7 +14,6 @@
         <ResourceDictionary>
             <BitmapImage x:Key="Part_n" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_colorpick_ic_n.png"/>
             <BitmapImage x:Key="Part_s" UriSource="ms-appx:///Assets/EffectInfoGroup/asus_ac_colorpick_ic_s.png"/>
-
             <Style x:Key="ColorPointBtStyle" TargetType="RadioButton">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -51,21 +51,21 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <common:ColorToSolidColorBrushConverter x:Key="colorToSolidColorBrushConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.RenderTransform>
-        <CompositeTransform/>
-    </UserControl.RenderTransform>
-
     <RadioButton x:Name="ColorPointBg" Width="20" Height="20" MinWidth="10" MinHeight="10" GroupName="ColorPoinrGroup"
-                 Background="Red"
-                 Style="{StaticResource ColorPointBtStyle}" 
-                 DoubleTapped="ColorPointBtn_DoubleTapped"
+                 IsChecked="{x:Bind m_ColorPointModel.IsChecked, Mode=TwoWay}"
+                 Background="{x:Bind m_ColorPointModel.Color, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"
+                 Style="{StaticResource ColorPointBtStyle}"
                  ManipulationMode="TranslateX"
-                 ManipulationDelta="ColorPointBtn_ManipulationDelta">
+                 ManipulationDelta="ColorPointRadioButton_ManipulationDelta"
+                 ManipulationCompleted="ColorPointRadioButton_ManipulationCompleted"
+                 DoubleTapped="ColorPointtRadioButton_DoubleTapped">
         <RadioButton.RenderTransform>
-            <CompositeTransform/>
+            <TranslateTransform x:Name="TT" X="{x:Bind m_ColorPointModel.PixelX, Mode=TwoWay}"/>
         </RadioButton.RenderTransform>
     </RadioButton>
 </UserControl>

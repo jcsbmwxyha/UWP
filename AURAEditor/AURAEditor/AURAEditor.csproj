@@ -111,13 +111,14 @@
     <Compile Include="Dialogs\NoNetworkDialog.xaml.cs">
       <DependentUpon>NoNetworkDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ColorPatternModel.cs" />
+    <Compile Include="Models\ColorPointModel.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ColorPoint.cs" />
     <Compile Include="Common\BindingHelper.cs" />
     <Compile Include="Common\Converter.cs" />
     <Compile Include="Common\MetroEventSource.cs" />
@@ -181,8 +182,11 @@
     <Compile Include="TimelineEffect.cs" />
     <Compile Include="TriggerEffect.cs" />
     <Compile Include="EffectInfo.cs" />
-    <Compile Include="UserControls\ColorPointBt.xaml.cs">
-      <DependentUpon>ColorPointBt.xaml</DependentUpon>
+    <Compile Include="UserControls\ColorPatternView.xaml.cs">
+      <DependentUpon>ColorPatternView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ColorPointView.xaml.cs">
+      <DependentUpon>ColorPointView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ConnectedDeviceBlock.xaml.cs">
       <DependentUpon>ConnectedDeviceBlock.xaml</DependentUpon>
@@ -228,7 +232,6 @@
     <Content Include="Assets\Background\asus_ac_dialog_smallest_bg.png" />
     <Content Include="Assets\Background\asus_ac_settings_bg.png" />
     <Content Include="Assets\Background\asus_gc_aura_updates_bg.png" />
-    <Content Include="Assets\Background\asus_gc_dailog_bg_short.png" />
     <Content Include="Assets\Button\asus_ac_btn1_d_l.png" />
     <Content Include="Assets\Button\asus_ac_btn1_d_m.png" />
     <Content Include="Assets\Button\asus_ac_btn1_d_r.png" />
@@ -656,7 +659,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\ColorPointBt.xaml">
+    <Page Include="UserControls\ColorPatternView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ColorPointView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
