@@ -14,9 +14,9 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
 
-namespace AuraEditor
+namespace AuraEditor.Models
 {
-    public class Layer : INotifyPropertyChanged
+    public class LayerModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -99,7 +99,7 @@ namespace AuraEditor
             }
         }
 
-        public Layer(string name = "")
+        public LayerModel(string name = "")
         {
             TimelineEffects = new ObservableCollection<TimelineEffect>();
             TimelineEffects.CollectionChanged += TimelineEffectsChanged;
@@ -447,7 +447,7 @@ namespace AuraEditor
                     duration = 1000;
                 else
                 {
-                    ledSpeed = EffectInfo.GetLedSpeed(eff.Type, eff.Info.Speed);
+                    ledSpeed = EffectInfoModel.GetLedSpeed(eff.Type, eff.Info.Speed);
                     duration = (length / ledSpeed) * 1000 + 100; // buffer : 100ms
                 }
 

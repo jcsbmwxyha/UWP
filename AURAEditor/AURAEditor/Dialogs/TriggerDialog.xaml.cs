@@ -1,21 +1,20 @@
-﻿using AuraEditor.UserControls;
+﻿using AuraEditor.Models;
+using AuraEditor.UserControls;
+using AuraEditor.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Windows.Foundation;
+using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.Definitions;
-using static AuraEditor.Common.EffectHelper;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
-using AuraEditor.Models;
+using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.EffectHelper;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -23,44 +22,12 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class TriggerDialog : ContentDialog
     {
-        private Layer m_Layer;
+        private LayerModel m_Layer;
         private ObservableCollection<TriggerEffect> m_EffectList;
-        private string defaultEffect;
 
-        public ObservableCollection<ColorPointModel> ColorPoints = new ObservableCollection<ColorPointModel>();
-        public List<ColorPointModel> CustomizeColorPoints = new List<ColorPointModel>();
-
-        private int _selectedIndex = -1;
-        public int SelectedIndex
-        {
-            get
-            {
-                return _selectedIndex;
-            }
-            set
-            {
-                if (_selectedIndex != value)
-                {
-                    _selectedIndex = value;
-                    if (value == -1)
-                    {
-                        EffectInfoStackPanel.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        EffectInfoStackPanel.Visibility = Visibility.Visible;
-
-                        FillOutParameterByIndex(value);
-                    }
-
-                }
-            }
-        }
-
-        public TriggerDialog(Layer layer)
+        public TriggerDialog(LayerModel layer)
         {
             this.InitializeComponent();
-            SetDefaultPattern();
 
             m_Layer = layer;
             TriggerActionButton.Content = m_Layer.TriggerAction;
@@ -85,39 +52,18 @@ namespace AuraEditor.Dialogs
                 TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
                 TriggerEffectListView.SelectedIndex = 0;
             }
-            defaultEffect = GetTriggerEffect()[0];
-
-            foreach (var effectName in GetTriggerEffect())
-            {
-                MenuFlyoutItem mfi = new MenuFlyoutItem();
-                mfi.Text = effectName;
-                mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
-                mfi.Click += EffectSelected;
-                EffectSelectionMenuFlyout.Items.Add(mfi);
-            }
         }
 
-        private void EffectSelected(object sender, RoutedEventArgs e)
+        private void ActionButton_Click(object sender, RoutedEventArgs e)
         {
             var item = sender as MenuFlyoutItem;
-            string selectedName = item.Text;
-
-            if (selectedName == EffectSelectionButton.Content as string)
-                return;
-
-            int type = GetEffectIndex(selectedName);
-            m_EffectList[SelectedIndex].ChangeType(type);
-            FillOutUIParameter(m_EffectList[SelectedIndex].Info);
-            ShowUIGroups(m_EffectList[SelectedIndex].Info);
-
-            ListViewItem lvi = TriggerEffectListView.ContainerFromIndex(SelectedIndex) as ListViewItem;
-            TriggerBlock tb = FindAllControl<TriggerBlock>(lvi, typeof(TriggerBlock))[0];
-            tb.Update();
+            string selectedAction = item.Text;
+            TriggerActionButton.Content = selectedAction;
+            m_Layer.TriggerAction = selectedAction;
         }
-
         private void AddEffectButton_Click(object sender, RoutedEventArgs e)
         {
-            TriggerEffect effect = new TriggerEffect(defaultEffect);
+            TriggerEffect effect = new TriggerEffect(GetTriggerEffect()[0]);
             effect.Layer = m_Layer;
             m_EffectList.Add(effect);
             if (m_EffectList.Count != 0)
@@ -132,119 +78,17 @@ namespace AuraEditor.Dialogs
             TriggerEffectListView.SelectedIndex = -1;
             TriggerEffectTextBlock.Visibility = Visibility.Visible;
         }
-
-        private void FillOutParameterByIndex(int index)
-        {
-            FillOutUIParameter(m_EffectList[index].Info);
-            ShowUIGroups(m_EffectList[index].Info);
-        }
-        private void FillOutUIParameter(EffectInfo effectInfo)
-        {
-            string effName = GetEffectName(effectInfo.Type);
-            EffectSelectionButton.Content = effName;
-
-            TriggerColorPickerButtonBg.Background = new SolidColorBrush(effectInfo.InitColor);
-            switch (effectInfo.ColorModeSelection)
-            {
-                case 1:
-                    Single.IsChecked = true;
-                    effectInfo.Random = false;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 1;
-                    TriggerColorPickerButtonBg.IsEnabled = true;
-                    // random
-                    RandomTextBlock.Opacity = 0.5;
-                    //pattern
-                    PatternTextBlock.Opacity = 0.5;
-                    PatternCBB.Opacity = 0.5;
-                    PatternCBB.IsEnabled = false;
-                    PatternPointRectangle.Opacity = 0.5;
-                    PatternPointRectangle.IsEnabled = false;
-                    PatternSwitch.Opacity = 0.5;
-                    PatternSwitch.IsEnabled = false;
-                    break;
-                case 2:
-                    Random.IsChecked = true;
-                    effectInfo.Random = true;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 0.5;
-                    TriggerColorPickerButtonBg.IsEnabled = false;
-                    // random
-                    RandomTextBlock.Opacity = 1;
-                    // pattern
-                    PatternTextBlock.Opacity = 0.5;
-                    PatternCBB.Opacity = 0.5;
-                    PatternCBB.IsEnabled = false;
-                    PatternPointRectangle.Opacity = 0.5;
-                    PatternPointRectangle.IsEnabled = false;
-                    PatternSwitch.Opacity = 0.5;
-                    PatternSwitch.IsEnabled = false;
-                    break;
-                case 3:
-                    Pattern.IsChecked = true;
-                    effectInfo.Random = false;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 0.5;
-                    TriggerColorPickerButtonBg.IsEnabled = false;
-                    // random
-                    RandomTextBlock.Opacity = 0.5;
-                    //pattern
-                    PatternTextBlock.Opacity = 1;
-                    PatternCBB.Opacity = 1;
-                    PatternCBB.IsEnabled = true;
-                    PatternPointRectangle.Opacity = 1;
-                    PatternPointRectangle.IsEnabled = true;
-                    PatternSwitch.Opacity = 1;
-                    PatternSwitch.IsEnabled = true;
-                    break;
-            }
-            SpeedSlider.Value = effectInfo.Speed;
-            TriggerPatternCanvas.Children.Clear();
-            ColorPoints.Clear();
-            foreach (var item in effectInfo.ColorPointList)
-            {
-                ColorPoints.Add(new ColorPointModel(item, this));
-            }
-            ShowColorPointUI(ColorPoints);
-            ReDrawMultiPointRectangle();
-            SegmentationSwitch.IsOn = effectInfo.ColorSegmentation;
-        }
-
-        private void ShowUIGroups(EffectInfo effectInfo)
-        {
-            string effName = GetEffectName(effectInfo.Type);
-            if (effName == "Ripple")
-            {
-                ColorGroup.Visibility = Visibility.Visible;
-                RandomGroup.Visibility = Visibility.Visible;
-                PatternGroup.Visibility = Visibility.Visible;
-                SpeedGroup.Visibility = Visibility.Visible;
-            }
-            else if (effName == "Reactive")
-            {
-                ColorGroup.Visibility = Visibility.Visible;
-                RandomGroup.Visibility = Visibility.Visible;
-                PatternGroup.Visibility = Visibility.Collapsed;
-                SpeedGroup.Visibility = Visibility.Visible;
-            }
-            else if (effName == "Laser")
-            {
-                ColorGroup.Visibility = Visibility.Visible;
-                RandomGroup.Visibility = Visibility.Visible;
-                PatternGroup.Visibility = Visibility.Collapsed;
-                SpeedGroup.Visibility = Visibility.Visible;
-            }
-        }
-
         private void TriggerEffectListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView lv = sender as ListView;
-            SelectedIndex = lv.SelectedIndex;
-        }
 
+            if (lv.SelectedIndex == -1)
+                TriggerEffectInfoFrame.Navigate(typeof(TriggerEffectInfoPage));
+            else
+                TriggerEffectInfoFrame.Navigate(typeof(TriggerEffectInfoPage), m_EffectList[lv.SelectedIndex]);
+        }
         public void DeleteTriggerEffect(TriggerEffect eff)
         {
-            bool listviewchange = false;
             if (m_EffectList.IndexOf(eff) == TriggerEffectListView.SelectedIndex)
             {
                 if ((TriggerEffectListView.SelectedIndex - 1) != -1)
@@ -254,7 +98,6 @@ namespace AuraEditor.Dialogs
                 else if (((TriggerEffectListView.SelectedIndex - 1) == -1) && (m_EffectList.Count > 1))
                 {
                     TriggerEffectListView.SelectedIndex = TriggerEffectListView.SelectedIndex + 1;
-                    listviewchange = true;
                 }
                 else
                 {
@@ -264,12 +107,6 @@ namespace AuraEditor.Dialogs
 
             m_EffectList.Remove(eff);
 
-            //after remove effect line return right index 
-            if (listviewchange)
-            {
-                SelectedIndex = SelectedIndex - 1;
-            }
-
             if (m_EffectList.Count == 0)
             {
                 TriggerEffectTextBlock.Visibility = Visibility.Visible;
@@ -278,359 +115,13 @@ namespace AuraEditor.Dialogs
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             m_Layer.TriggerEffects = m_EffectList.ToList();
-            this.Hide();
-        }
 
-        private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            EffectInfo Info = m_EffectList[SelectedIndex].Info;
-            this.Hide();
-            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)TriggerColorPickerButtonBg.Background).Color);
-            Info.InitColor = newColor;
-            TriggerColorPickerButtonBg.Background = new SolidColorBrush(Info.InitColor);
-
-        }
-        public async Task<Color> OpenColorPickerWindow(Color c)
-        {
-            m_Layer.TriggerEffects = m_EffectList.ToList();
-            ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c, this);
-            await colorPickerDialog.ShowAsync();
-
-            if (colorPickerDialog.ColorPickerResult)
-            {
-                return colorPickerDialog.CurrentColor;
-            }
+            if (m_Layer.TriggerEffects.Count != 0)
+                m_Layer.IsTriggering = true;
             else
-            {
-                return colorPickerDialog.PreColor;
-            }
-        }
-        private void ColorModeSelection_Click(object sender, RoutedEventArgs e)
-        {
-            EffectInfo info = m_EffectList[SelectedIndex].Info;
-            RadioButton colormodeselectionBtn = sender as RadioButton;
-            switch (colormodeselectionBtn.Name)
-            {
-                case "Single":
-                    info.ColorModeSelection = 1;
-                    info.Random = false;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 1;
-                    TriggerColorPickerButtonBg.IsEnabled = true;
-                    // random
-                    RandomTextBlock.Opacity = 0.5;
-                    //pattern
-                    PatternTextBlock.Opacity = 0.5;
-                    PatternCBB.Opacity = 0.5;
-                    PatternCBB.IsEnabled = false;
-                    PatternPointRectangle.Opacity = 0.5;
-                    PatternPointRectangle.IsEnabled = false;
-                    PatternSwitch.Opacity = 0.5;
-                    PatternSwitch.IsEnabled = false;
-                    break;
-                case "Random":
-                    info.ColorModeSelection = 2;
-                    info.Random = true;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 0.5;
-                    TriggerColorPickerButtonBg.IsEnabled = false;
-                    // random
-                    RandomTextBlock.Opacity = 1;
-                    // pattern
-                    PatternTextBlock.Opacity = 0.5;
-                    PatternCBB.Opacity = 0.5;
-                    PatternCBB.IsEnabled = false;
-                    PatternPointRectangle.Opacity = 0.5;
-                    PatternPointRectangle.IsEnabled = false;
-                    PatternSwitch.Opacity = 0.5;
-                    PatternSwitch.IsEnabled = false;
-                    break;
-                case "Pattern":
-                    info.ColorModeSelection = 3;
-                    info.Random = false;
-                    // single color
-                    TriggerColorPickerButtonBg.Opacity = 0.5;
-                    TriggerColorPickerButtonBg.IsEnabled = false;
-                    // random
-                    RandomTextBlock.Opacity = 0.5;
-                    //pattern
-                    PatternTextBlock.Opacity = 1;
-                    PatternCBB.Opacity = 1;
-                    PatternCBB.IsEnabled = true;
-                    PatternPointRectangle.Opacity = 1;
-                    PatternPointRectangle.IsEnabled = true;
-                    PatternSwitch.Opacity = 1;
-                    PatternSwitch.IsEnabled = true;
-                    break;
-            }
-        }
+                m_Layer.IsTriggering = false;
 
-        private void SpeedValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            EffectInfo info = m_EffectList[SelectedIndex].Info;
-            Slider slider = sender as Slider;
-            if (slider != null)
-            {
-                if (slider.Value == 1)
-                {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
-                }
-                else if (slider.Value == 2)
-                {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                }
-                else
-                {
-                    SlowPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_n.png"));
-                    MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
-                    FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
-                }
-                info.Speed = (int)slider.Value;
-            }
-        }
-
-        private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
-        {
-            MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            ClearAndDraw(mf, DefaultColorPointListCollection[(int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1]);
-        }
-
-        private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
-        {
-            MenuFlyoutItem mf = sender as MenuFlyoutItem;
-            ClearAndDraw(mf, CustomizeColorPoints);
-        }
-
-        private void ClearAndDraw(MenuFlyoutItem mf, List<ColorPointModel> cp)
-        {
-            //EffectInfo info = m_EffectList[SelectedIndex].Info;
-            //TriggerPatternCanvas.Children.Clear();
-            //foreach (var item in ColorPoints)
-            //{
-            //    item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-            //}
-            //ColorPoints.Clear();
-            //if (info.ColorPointList != null)
-            //    info.ColorPointList.Clear();
-
-            //foreach (var item in cp)
-            //{
-            //    ColorPoints.Add(new ColorPointModel(item, this));
-            //    info.ColorPointList.Add(new ColorPointModel(item));
-            //}
-            //ShowColorPointUI(ColorPoints);
-            //MultiPointRectangle.Fill = TriggerPatternPolygon.Fill = mf.Foreground;
-        }
-
-        public void ShowColorPointUI(ObservableCollection<ColorPointModel> cl)
-        {
-            //for (int i = 0; i < cl.Count; i++)
-            //{
-            //    cl[i].UI.OnRedraw += ReDrawMultiPointRectangle;
-            //    TriggerPatternCanvas.Children.Add(cl[i].UI);
-            //}
-        }
-
-        private void PlusItemBt(object sender, RoutedEventArgs e)
-        {
-            ColorPointModel newColorPointBt = new ColorPointModel(this);
-            AddColorPoint(newColorPointBt);
-            //newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
-            ReDrawMultiPointRectangle();
-        }
-        public void AddColorPoint(ColorPointModel colorPoint)
-        {
-            int curIndex = 0;
-            if (ColorPoints.Count < 7)
-            {
-                //foreach (var item in ColorPoints)
-                //{
-                //    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
-
-                //    if (items[0].IsChecked == true)
-                //    {
-                //        curIndex = ColorPoints.IndexOf(item);
-                //        if ((curIndex + 1) == ColorPoints.Count)
-                //        {
-                //            if ((ColorPoints[curIndex].Offset - ColorPoints[curIndex - 1].Offset) < 25)
-                //            {
-                //                ColorPoints.Add(colorPoint);
-                //                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
-                //                return;
-                //            }
-                //            else
-                //            {
-                //                colorPoint.Offset = (ColorPoints[curIndex - 1].Offset + ColorPoints[curIndex].Offset) / 2;
-                //                ColorPoints.Insert(curIndex, colorPoint);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            if ((ColorPoints[curIndex + 1].Offset - ColorPoints[curIndex].Offset) < 25)
-                //            {
-                //                ColorPoints.Add(colorPoint);
-                //                ColorPoints.Remove(ColorPoints[ColorPoints.Count - 1]);
-                //                return;
-                //            }
-                //            else
-                //            {
-                //                colorPoint.Offset = (ColorPoints[curIndex].Offset + ColorPoints[curIndex + 1].Offset) / 2;
-                //                ColorPoints.Insert(curIndex + 1, colorPoint);
-                //            }
-                //        }
-                //        colorPoint.Color = item.Color;
-                //        TriggerPatternCanvas.Children.Add(colorPoint.UI);
-                //        break;
-                //    }
-                //}
-            }
-        }
-        private void MinusItemBt(object sender, RoutedEventArgs e)
-        {
-            RemoveColorPoint();
-            ReDrawMultiPointRectangle();
-        }
-        public void RemoveColorPoint()
-        {
-            if (ColorPoints.Count > 2)
-            {
-                //foreach (var item in ColorPoints)
-                //{
-                //    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
-
-                //    if (items[0].IsChecked == true)
-                //    {
-                //        item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-                //        ColorPoints.Remove(item);
-                //        TriggerPatternCanvas.Children.Remove(item.UI);
-                //        break;
-                //    }
-                //}
-            }
-        }
-
-        private void SetDefaultPattern()
-        {
-            CustomizeRainbow.Foreground = new SolidColorBrush(Colors.White);
-
-            //Button Color
-            LinearGradientBrush Pattern1 = new LinearGradientBrush();
-            Pattern1.StartPoint = new Point(0, 0.5);
-            Pattern1.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[0].Count; i++)
-            {
-                Pattern1.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[0][i].Color, Offset = DefaultColorPointListCollection[0][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow1.Foreground = Pattern1;
-
-            // Button Color  
-            LinearGradientBrush Pattern2 = new LinearGradientBrush();
-            Pattern2.StartPoint = new Point(0, 0.5);
-            Pattern2.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[1].Count; i++)
-            {
-                Pattern2.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[1][i].Color, Offset = DefaultColorPointListCollection[1][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow2.Foreground = Pattern2;
-
-            // Button Color  
-            LinearGradientBrush Pattern3 = new LinearGradientBrush();
-            Pattern3.StartPoint = new Point(0, 0.5);
-            Pattern3.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[2].Count; i++)
-            {
-                Pattern3.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[2][i].Color, Offset = DefaultColorPointListCollection[2][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow3.Foreground = Pattern3;
-
-            // Button Color  
-            LinearGradientBrush Pattern4 = new LinearGradientBrush();
-            Pattern4.StartPoint = new Point(0, 0.5);
-            Pattern4.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[3].Count; i++)
-            {
-                Pattern4.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[3][i].Color, Offset = DefaultColorPointListCollection[3][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow4.Foreground = Pattern4;
-
-            // Button Color  
-            LinearGradientBrush Pattern5 = new LinearGradientBrush();
-            Pattern5.StartPoint = new Point(0, 0.5);
-            Pattern5.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[4].Count; i++)
-            {
-                Pattern5.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[4][i].Color, Offset = DefaultColorPointListCollection[4][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow5.Foreground = Pattern5;
-
-            // Button Color  
-            LinearGradientBrush Pattern6 = new LinearGradientBrush();
-            Pattern6.StartPoint = new Point(0, 0.5);
-            Pattern6.EndPoint = new Point(1, 0.5);
-            for (int i = 0; i < DefaultColorPointListCollection[5].Count; i++)
-            {
-                Pattern6.GradientStops.Add(new GradientStop { Color = DefaultColorPointListCollection[5][i].Color, Offset = DefaultColorPointListCollection[5][i].Offset });
-            }
-
-            // Use the brush to paint the rectangle.
-            DefaultRainbow6.Foreground = Pattern6;
-        }
-
-        public void ReDrawMultiPointRectangle()
-        {
-            EffectInfo info = m_EffectList[SelectedIndex].Info;
-            LinearGradientBrush Pattern = new LinearGradientBrush();
-            Pattern.StartPoint = new Point(0, 0.5);
-            Pattern.EndPoint = new Point(1, 0.5);
-
-            for (int i = 0; i < ColorPoints.Count; i++)
-            {
-                Pattern.GradientStops.Add(new GradientStop { Color = ColorPoints[i].Color, Offset = ColorPoints[i].Offset });
-            }
-
-            TriggerPatternPolygon.Fill = CustomizeRainbow.Foreground = MultiPointRectangle.Fill = Pattern;
-            CustomizeColorPoints = new List<ColorPointModel>(ColorPoints);
-            info.ColorPointList = new List<ColorPointModel>(ColorPoints);
-            SetColorPointBorders(ColorPoints.ToList());
-        }
-
-        private void ActionButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = sender as MenuFlyoutItem;
-            string selectedAction = item.Text;
-            TriggerActionButton.Content = selectedAction;
-            m_Layer.TriggerAction = selectedAction;
-        }
-
-        private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            EffectInfo info = m_EffectList[SelectedIndex].Info;
-            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
-            if (toggleSwitch != null)
-            {
-                if (toggleSwitch.IsOn == true)
-                {
-                    info.ColorSegmentation = true;
-                }
-                else
-                {
-                    info.ColorSegmentation = false;
-                }
-            }
+            this.Hide();
         }
     }
 }

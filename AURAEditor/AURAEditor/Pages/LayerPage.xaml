@@ -5,7 +5,7 @@
     xmlns:local="using:AuraEditor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:auraeditor="using:AuraEditor"
+    xmlns:models="using:AuraEditor.Models"
     xmlns:common="using:AuraEditor.Common"
     xmlns:usercontrol="using:AuraEditor.UserControls"
     mc:Ignorable="d">
@@ -808,7 +808,7 @@
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="auraeditor:Layer">
+                    <DataTemplate x:DataType="models:LayerModel">
                         <usercontrol:LayerBackground common:VisualStateHelper.VisualState="{Binding VisualState, Mode=OneWay}" Width="4000" Height="40"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

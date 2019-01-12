@@ -85,6 +85,7 @@
                 </StackPanel>
 
                 <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.PatternGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
                     <usercontrol:ColorPatternView x:Name="ColorPattern"/>
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                         <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
@@ -92,59 +93,7 @@
                                       Style="{StaticResource RogToggleSwitchStyle}"/>
                     </StackPanel>
                 </StackPanel>
-                <!--<StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.PatternGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
-                    <Grid Margin="20,20,0,16">
-                        <Polygon x:Name="PatternPolygon" Points="10,10,10,17,15,22,170,22,170,10"/>
-                        <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
-                            <Button.Flyout>
-                                <MenuFlyout x:Name="DefaultPatternMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
-                                    <MenuFlyoutItem x:Name="DefaultPattern1" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultPattern2" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultPattern3" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultPattern4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultPattern5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutItem x:Name="DefaultPattern6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
-                                    <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
-                                    <MenuFlyoutItem x:Name="CustomizeRainbow" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
-                        </Button>
-                    </Grid>
-                    <StackPanel Orientation="Vertical" Margin="20,0,0,0">
-                        <ItemsControl Name="ColorPointItemsControl" ItemsSource="{x:Bind Path=CurrentColorPoints}" Margin="-10,0,0,0" Height="20">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="ContentPresenter">
-                                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="Offset"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:ColorPointModel">
-                                    <usercontrol:ColorPointView/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        
-                        --><!--<Canvas x:Name="PatternCanvas" Width="196" Height="20" x:FieldModifier="public"
-                                HorizontalAlignment="Left" Margin="-10,0,0,0"/>--><!--
-                        <Rectangle x:Name="MultiPointRectangle" Width="196" Height="16" HorizontalAlignment="Left"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
-                            <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                        <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
-                        <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}" VerticalAlignment="Center" Margin="80,0,0,0"
-                                      Style="{StaticResource RogToggleSwitchStyle}"/>
-                    </StackPanel>
-                </StackPanel>-->
-
+                
                 <StackPanel x:Name="BrightnessGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.BrightnessGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                     <TextBlock Text="Brightness" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <StackPanel Orientation="Horizontal">

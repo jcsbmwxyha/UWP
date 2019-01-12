@@ -1,11 +1,10 @@
-﻿using System.Text;
-using Windows.UI.Xaml.Controls;
-using static AuraEditor.Common.XmlHelper;
-using static AuraEditor.Common.EffectHelper;
-using static AuraEditor.Common.Math2;
-using MoonSharp.Interpreter;
+﻿using AuraEditor.Models;
 using System.Collections.Generic;
 using System.Xml;
+using Windows.UI.Xaml.Controls;
+using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.Math2;
+using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor
 {
@@ -48,7 +47,7 @@ namespace AuraEditor
             int effectCount = 0;
             int layerCount = 0;
 
-            foreach (Layer layer in LayerPage.Layers)
+            foreach (LayerModel layer in LayerPage.Layers)
             {
                 if (layer.Eye == false)
                     continue;
@@ -111,7 +110,7 @@ namespace AuraEditor
         {
             XmlNode viewportNode = CreateXmlNode("viewport");
 
-            foreach (Layer layer in LayerPage.Layers)
+            foreach (LayerModel layer in LayerPage.Layers)
             {
                 viewportNode.AppendChild(layer.ToXmlNodeForScript());
             }
@@ -122,7 +121,7 @@ namespace AuraEditor
         {
             XmlNode effectListNode = CreateXmlNode("effectList");
 
-            foreach (Layer layer in LayerPage.Layers)
+            foreach (LayerModel layer in LayerPage.Layers)
             {
                 if (layer.Eye == false)
                     continue;

@@ -30,6 +30,8 @@ namespace AuraEditor
         public DeviceUpdatesPage()
         {
             this.InitializeComponent();
+
+            ConnectedDevicesDialog = new ConnectedDevicesDialog();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

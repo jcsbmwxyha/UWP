@@ -1,21 +1,19 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using AuraEditor.Pages;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Xml;
 using Windows.UI;
-using AuraEditor.Common;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
-using AuraEditor.Pages;
-using System.ComponentModel;
-using AuraEditor.Models;
-using System.Collections.ObjectModel;
-using System.Linq;
 
-namespace AuraEditor
+namespace AuraEditor.Models
 {
-    public class EffectInfo : ICloneable, INotifyPropertyChanged
+    public class EffectInfoModel : ICloneable, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -26,11 +24,44 @@ namespace AuraEditor
             }
         }
 
-        public string Name;
+        private string _name;
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (value != _name)
+                {
+                    _name = value;
+                    RaisePropertyChanged("Name");
+                }
+            }
+        }
+
         public int Type;
 
         public bool ColorGroupVisible;
-        public bool PatternGroupVisible;
+
+        private bool _patternGroupVisible;
+        public bool PatternGroupVisible
+        {
+            get
+            {
+                return _patternGroupVisible;
+            }
+            set
+            {
+                if (value != _patternGroupVisible)
+                {
+                    _patternGroupVisible = value;
+                    RaisePropertyChanged("PatternGroupVisible");
+                }
+            }
+        }
+
         public bool BrightnessGroupVisible;
         public bool SpeedGroupVisible;
         public bool AngleGroupVisible;
@@ -141,8 +172,23 @@ namespace AuraEditor
             }
         }
 
-        //For Trigger Dialog Ripple
-        public int ColorModeSelection;
+        private int _colorModeSelection; // For Trigger Dialog Ripple
+        public int ColorModeSelection
+        {
+            get
+            {
+                return _colorModeSelection;
+            }
+            set
+            {
+                if (value == 0)
+                    return;
+
+                _colorModeSelection = value;
+                RaisePropertyChanged("ColorModeSelection");
+            }
+        }
+
         public List<ColorPointModel> ColorPointList;
         public int PatternSelect;
 
@@ -160,8 +206,8 @@ namespace AuraEditor
             }
         }
 
-        public EffectInfo() { }
-        public EffectInfo(int type)
+        public EffectInfoModel() { }
+        public EffectInfoModel(int type)
         {
             Name = GetEffectName(type);
             SetGroupVisibility(Name);
@@ -320,6 +366,25 @@ namespace AuraEditor
                     TemperatureGroupVisible = false;
                     break;
             }
+        }
+
+        public void ChangeType(int type)
+        {
+            Name = GetEffectName(type);
+            SetGroupVisibility(Name);
+
+            Type = type;
+            InitColor = Colors.Red;
+            Brightness = 3;
+            Speed = 1;
+            ColorModeSelection = 1;
+            Angle = 90;
+            Random = false;
+            High = 60;
+            Low = 30;
+            ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
+            ColorSegmentation = false;
+            PatternSelect = 5;
         }
 
         #region Create script for lighting service
@@ -546,9 +611,9 @@ namespace AuraEditor
                 // wave 1 for HUE
                 XmlNode waveNode1 = CreateXmlNode("wave");
                 if (ColorSegmentation == true)
-                    waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                else // false
                     waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                else // false
+                    waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                 waveNode1.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode1.AppendChild(CreateXmlNodeByValue("min", "0"));
                 waveNode1.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -569,9 +634,9 @@ namespace AuraEditor
                 // wave 2 for SATURATION
                 XmlNode waveNode2 = CreateXmlNode("wave");
                 if (ColorSegmentation == true)
-                    waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                else // false
                     waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                else // false
+                    waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                 waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
                 waveNode2.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -592,9 +657,9 @@ namespace AuraEditor
                 // wave 3 for LIGHTNESS
                 XmlNode waveNode3 = CreateXmlNode("wave");
                 if (ColorSegmentation == true)
-                    waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                else // false
                     waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                else // false
+                    waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                 waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
                 waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
                 waveNode3.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -869,9 +934,9 @@ namespace AuraEditor
                     // wave 1 for HUE
                     XmlNode waveNode1 = CreateXmlNode("wave");
                     if (ColorSegmentation == true)
-                        waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                    else // false
                         waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    else // false
+                        waveNode1.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                     waveNode1.AppendChild(CreateXmlNodeByValue("max", "1"));
                     waveNode1.AppendChild(CreateXmlNodeByValue("min", "0"));
                     waveNode1.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -892,9 +957,9 @@ namespace AuraEditor
                     // wave 2 for SATURATION
                     XmlNode waveNode2 = CreateXmlNode("wave");
                     if (ColorSegmentation == true)
-                        waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                    else // false
                         waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    else // false
+                        waveNode2.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("max", "1"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("min", "0"));
                     waveNode2.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -915,9 +980,9 @@ namespace AuraEditor
                     // wave 3 for LIGHTNESS
                     XmlNode waveNode3 = CreateXmlNode("wave");
                     if (ColorSegmentation == true)
-                        waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
-                    else // false
                         waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomLinearWave"));
+                    else // false
+                        waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
                     waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
                     waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
                     waveNode3.AppendChild(CreateXmlNodeByValue("length", maxOperatingGridLength.ToString()));
@@ -1057,7 +1122,7 @@ namespace AuraEditor
             effectNode.AppendChild(speedNode);
 
             XmlNode angleNode = CreateXmlNode("angle");
-            angleNode.InnerText = Angle.ToString();
+            angleNode.InnerText = ((int)Angle).ToString();
             effectNode.AppendChild(angleNode);
 
             XmlNode randomNode = CreateXmlNode("random");
@@ -1075,6 +1140,10 @@ namespace AuraEditor
             XmlNode lowNode = CreateXmlNode("low");
             lowNode.InnerText = Low.ToString();
             effectNode.AppendChild(lowNode);
+
+            XmlNode patternSelection = CreateXmlNode("patternSelect");
+            patternSelection.InnerText = PatternSelect.ToString();
+            effectNode.AppendChild(patternSelection);
 
             XmlNode colorPointListNode = CreateXmlNode("colorPointList");
             foreach (var item in ColorPointList)

@@ -129,7 +129,7 @@ namespace AuraEditor.Pages
         #region -- Devices --
         public async void FillCurrentIngroupDevices()
         {
-            List<SyncDevice> syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
+            List<SyncDeviceModel> syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
             DeviceModel dm;
 
             foreach (var d in syncDevices)
@@ -151,8 +151,8 @@ namespace AuraEditor.Pages
         }
         public async void OnIngroupDevicesChanged()
         {
-            List<SyncDevice> ingroupDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
-            List<SyncDevice> newSD = new List<SyncDevice>();
+            List<SyncDeviceModel> ingroupDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
+            List<SyncDeviceModel> newSD = new List<SyncDeviceModel>();
             List<DeviceModel> tempToStage = new List<DeviceModel>();
             List<DeviceModel> stageToTemp = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
@@ -613,7 +613,7 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        public void WatchLayer(Layer layer)
+        public void WatchLayer(LayerModel layer)
         {
             SetSpaceStatus(SpaceStatus.WatchingLayer);
             UnselectAllZones();
@@ -643,7 +643,7 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        public void ReEditZones_Start(Layer layer)
+        public void ReEditZones_Start(LayerModel layer)
         {
             SetSpaceStatus(SpaceStatus.ReEditing);
             UnselectAllZones();

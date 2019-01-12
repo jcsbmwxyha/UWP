@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using AuraEditor.Dialogs;
+using AuraEditor.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -10,15 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
-using AuraEditor.Common;
-using AuraEditor.Dialogs;
-using static AuraEditor.Common.ControlHelper;
-using static AuraEditor.Common.Definitions;
-using static AuraEditor.Common.EffectHelper;
 using Windows.UI.Xaml.Navigation;
-using System.Collections.ObjectModel;
-using AuraEditor.Models;
-using System.Linq;
+using static AuraEditor.Common.Definitions;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,7 +25,7 @@ namespace AuraEditor.Pages
     /// </summary>
     public sealed partial class EffectInfoPage : Page
     {
-        private EffectInfo m_Info;
+        private EffectInfoModel m_Info;
 
         bool _angleImgPressing;
         Point AngleImgCenter;
@@ -37,13 +33,14 @@ namespace AuraEditor.Pages
         public EffectInfoPage()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
 
             AngleImgCenter = new Point(40, 40);
             AngleTextBox.Text = "0";
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            m_Info = e.Parameter as EffectInfo;
+            m_Info = e.Parameter as EffectInfoModel;
 
             if (m_Info == null)
             {
@@ -57,149 +54,6 @@ namespace AuraEditor.Pages
             ColorPattern.DataContext = patternModel;
             Bindings.Update();
         }
-        private void ShowGroups(string name)
-        {
-            ResetBtn.Visibility = Visibility.Visible;
-
-            switch (name)
-            {
-                case "Static":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Breath":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "ColorCycle":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Rainbow":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Visible;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Visible;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Strobing":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Comet":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Visible;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Visible;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Star":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Visible;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Tide":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Visible;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Raidus":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Reactive":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Visible;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Laser":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Visible;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Ripple":
-                    ColorGroup.Visibility = Visibility.Visible;
-                    RandomCheckBox.Visibility = Visibility.Visible;
-                    PatternGroup.Visibility = Visibility.Visible;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Visible;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Music":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-                case "Smart":
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Visible;
-                    break;
-                default:
-                    ColorGroup.Visibility = Visibility.Collapsed;
-                    RandomCheckBox.Visibility = Visibility.Collapsed;
-                    PatternGroup.Visibility = Visibility.Collapsed;
-                    BrightnessGroup.Visibility = Visibility.Collapsed;
-                    SpeedGroup.Visibility = Visibility.Collapsed;
-                    AngleGroup.Visibility = Visibility.Collapsed;
-                    TemperatureGroup.Visibility = Visibility.Collapsed;
-                    break;
-            }
-        }
 
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -211,7 +65,7 @@ namespace AuraEditor.Pages
             m_Info.High = 60;
             m_Info.Low = 30;
             m_Info.ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
-            m_Info.ColorSegmentation = false;
+            m_Info.ColorSegmentation = true;
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {

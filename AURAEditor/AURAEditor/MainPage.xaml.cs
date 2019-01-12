@@ -79,7 +79,7 @@ namespace AuraEditor
                 {
                     LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
-                    Layer layer = SelectedEffect.Layer;
+                    LayerModel layer = SelectedEffect.Layer;
                     layer.DeleteEffectLine(SelectedEffect);
                 }
             }
@@ -127,7 +127,7 @@ namespace AuraEditor
                 if (SelectedEffect == null)
                     return;
 
-                Layer layer = SelectedEffect.Layer;
+                LayerModel layer = SelectedEffect.Layer;
                 layer.DeleteEffectLine(SelectedEffect);
             }
         }
@@ -306,7 +306,7 @@ namespace AuraEditor
 
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
-            Layer layer = new Layer();
+            LayerModel layer = new LayerModel();
             List<int> selectedIndex;
 
             layer.Name = "Layer " + (LayerPage.GetLayerCount() + 1);
@@ -403,7 +403,7 @@ namespace AuraEditor
         {
             if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                Layer layer = LayerPage.CheckedLayer;
+                LayerModel layer = LayerPage.CheckedLayer;
                 List<int> selectedIndex;
 
                 foreach (DeviceModel dm in SpacePage.DeviceModelCollection)
@@ -435,7 +435,7 @@ namespace AuraEditor
         {
             if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
-                Layer layer = LayerPage.CheckedLayer;
+                LayerModel layer = LayerPage.CheckedLayer;
                 SpacePage.WatchLayer(layer);
             }
             else // Sorting
@@ -452,7 +452,7 @@ namespace AuraEditor
             SpacePage.OnDeviceMoveCompleted();
             HideMask();
         }
-        public void ShowReEditMask(Layer layer)
+        public void ShowReEditMask(LayerModel layer)
         {
             ShowMask("Edit layer : " + layer.Name);
         }

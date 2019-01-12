@@ -13,7 +13,6 @@
     d:DesignWidth="400">
 
     <StackPanel x:Name="PatternGroup" Orientation="Vertical" >
-        <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
         <Grid Margin="20,20,0,16">
             <Polygon x:Name="ButtonPolygon" Points="10,10,10,17,15,22,170,22,170,10"
                      Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
@@ -56,8 +55,8 @@
             <Rectangle x:Name="PatternRectangle" Width="196" Height="16" HorizontalAlignment="Left"
                        Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
             <StackPanel Orientation="Horizontal">
-                <Button Click="MinusItemBt" Style="{StaticResource MinusButtonStyle}"/>
-                <Button Click="PlusItemBt" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+                <Button Click="RemoveColorPointButton_Click" Style="{StaticResource MinusButtonStyle}"/>
+                <Button Click="AddColorPointButton_Click" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>

@@ -22,7 +22,7 @@ namespace AuraEditor.Dialogs
     public sealed partial class ConnectedDevicesDialog : ContentDialog
     {
         static public ConnectedDevicesDialog Self;
-        private ObservableCollection<SyncDevice> m_SyncDeviceList;
+        private ObservableCollection<SyncDeviceModel> m_SyncDeviceList;
 
         bool[] TemporaryCheckArray;
 
@@ -30,7 +30,7 @@ namespace AuraEditor.Dialogs
         {
             Self = this;
             this.InitializeComponent();
-            m_SyncDeviceList = new ObservableCollection<SyncDevice>();
+            m_SyncDeviceList = new ObservableCollection<SyncDeviceModel>();
             UpdateTemporaryCheckState();
         }
 
@@ -39,7 +39,7 @@ namespace AuraEditor.Dialogs
             string sendToLiveService = "[SyncStatus]";
             List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
 
-            foreach (SyncDevice sd in m_SyncDeviceList)
+            foreach (SyncDeviceModel sd in m_SyncDeviceList)
             {
                 DeviceModel find = deviceModels.Find(d => d.Name == sd.Name);
                 if (find != null)
@@ -61,7 +61,7 @@ namespace AuraEditor.Dialogs
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             int arrayCount = 0;
-            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+            foreach (SyncDeviceModel sd in ConnectedDevicesListView.Items)
             {
                 sd.Sync = TemporaryCheckArray[arrayCount];
                 arrayCount++;
@@ -84,7 +84,7 @@ namespace AuraEditor.Dialogs
 
                     string[] deviceData = deviceString.Split(',');
 
-                    SyncDevice sd = new SyncDevice
+                    SyncDeviceModel sd = new SyncDeviceModel
                     {
                         Name = deviceData[0],
                         Type = deviceData[1],
@@ -140,9 +140,9 @@ namespace AuraEditor.Dialogs
         {
             SpacePage.Self.OnIngroupDevicesChanged();
         }
-        public List<SyncDevice> GetIngroupDevices()
+        public List<SyncDeviceModel> GetIngroupDevices()
         {
-            List<SyncDevice> result = new List<SyncDevice>();
+            List<SyncDeviceModel> result = new List<SyncDeviceModel>();
             foreach (var d in m_SyncDeviceList)
             {
                 if (d.Sync == true)
@@ -150,61 +150,43 @@ namespace AuraEditor.Dialogs
             }
             return result;
         }
-        public List<SyncDevice> GetPluggedDevices()
+        public List<SyncDeviceModel> GetPluggedDevices()
         {
             return m_SyncDeviceList.ToList();
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
-            List<ConnectedDeviceBlock> cdbList = FindAllControl<ConnectedDeviceBlock>(ConnectedDevicesListView, typeof(ConnectedDeviceBlock));
-            if (cdbList == null)
-            {
+            if (m_SyncDeviceList.Count == 0)
                 return;
-            }
+
             if (SelectAllButton.IsChecked == true)
             {
-                foreach (var cdb in cdbList)
-                {
-                    cdb.Update();
-                    if (cdb != null)
-                    {
-                        List<ToggleButton> toggleButtons = FindAllControl<ToggleButton>(cdb, typeof(ToggleButton));
-                        toggleButtons[0].IsChecked = true;
-                    }
-                }
+                foreach (var sd in m_SyncDeviceList)
+                    sd.Sync = true;
             }
             else
             {
-                foreach (var cdb in cdbList)
-                {
-                    if (cdb != null)
-                    {
-                        List<ToggleButton> toggleButtons = FindAllControl<ToggleButton>(cdb, typeof(ToggleButton));
-                        toggleButtons[0].IsChecked = false;
-                    }
-                }
+                foreach (var sd in m_SyncDeviceList)
+                    sd.Sync = false;
             }
         }
 
         public void UpdateSelectedText()
         {
             int selectedcount = 0;
-            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+
+            foreach (var sd in m_SyncDeviceList)
             {
                 if (sd.Sync == true)
-                {
-                    selectedcount += 1;
-                }
+                    selectedcount++;
             }
-            if (selectedcount == 0)
-            {
-                SelectAllButton.IsChecked = false;
-            }
-            if (selectedcount == ConnectedDevicesListView.Items.Count)
-            {
+
+            if (selectedcount == m_SyncDeviceList.Count)
                 SelectAllButton.IsChecked = true;
-            }
+            else
+                SelectAllButton.IsChecked = false;
+
             SelectedNumberText.Text = "(" + selectedcount.ToString() + ")  Selected devices";
         }
 
@@ -212,7 +194,7 @@ namespace AuraEditor.Dialogs
         {
             int arrayCount = 0;
             TemporaryCheckArray = new bool[ConnectedDevicesListView.Items.Count];
-            foreach (SyncDevice sd in ConnectedDevicesListView.Items)
+            foreach (SyncDeviceModel sd in ConnectedDevicesListView.Items)
             {
                 TemporaryCheckArray[arrayCount] = sd.Sync;
                 arrayCount++;

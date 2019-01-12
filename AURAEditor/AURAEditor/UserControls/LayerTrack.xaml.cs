@@ -1,4 +1,5 @@
-﻿using AuraEditor.Pages;
+﻿using AuraEditor.Models;
+using AuraEditor.Pages;
 using System;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
@@ -14,7 +15,7 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class LayerTrack : UserControl
     {
-        private Layer m_Layer { get { return this.DataContext as Layer; } }
+        private LayerModel m_Layer { get { return this.DataContext as LayerModel; } }
         private double[] needAlignPositions;
         private double align;
 

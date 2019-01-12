@@ -19,8 +19,9 @@ namespace AuraEditor.Models
             }
         }
 
-        private EffectInfo info;
+        private EffectInfoModel info;
 
+        #region -- Property --
         public ObservableCollection<ColorPointModel> CurrentColorPoints;
         public LinearGradientBrush CurrentColorForground
         {
@@ -80,8 +81,9 @@ namespace AuraEditor.Models
                 }
             }
         }
+        #endregion
 
-        public ColorPatternModel(EffectInfo info)//(ObservableCollection<ColorPointModel> customize_cps, int select)
+        public ColorPatternModel(EffectInfoModel info)
         {
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
             this.info = info;
@@ -107,6 +109,7 @@ namespace AuraEditor.Models
                 CustomizeColorPoints.Add(cp);
 
             Selected = -1;
+            RaisePropertyChanged("CurrentColorForground");
             RaisePropertyChanged("CustomizeColorForground");
         }
     }

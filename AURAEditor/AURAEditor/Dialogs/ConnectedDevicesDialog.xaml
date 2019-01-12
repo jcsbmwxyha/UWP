@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:models="using:AuraEditor.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -123,13 +124,12 @@
                     </ListView.ItemContainerStyle>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <local:ConnectedDeviceBlock Width="472" Height="52" HorizontalAlignment="Left"/>
+                        <DataTemplate x:DataType="models:SyncDeviceModel">
+                            <local:SyncDeviceView Width="472" Height="52" HorizontalAlignment="Left"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
-
         </Grid>
 
         <Button Grid.Row="2" Content="OK" Margin="0,28,0,0" HorizontalAlignment="Center" Width="136"

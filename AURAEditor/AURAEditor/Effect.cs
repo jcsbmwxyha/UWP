@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Models;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
@@ -14,32 +15,32 @@ namespace AuraEditor
 {
     public class Effect
     {
-        public Layer Layer { get; set; }
+        public LayerModel Layer { get; set; }
         public string Name { get; private set; }
         public string ScriptName { get; set; }
         public int Type { get; private set; }
         public virtual double StartTime { get; set; }
         public virtual double DurationTime { get; set; }
         public virtual double EndTime { get { return StartTime + DurationTime; } }
-        public EffectInfo Info { get; set; }
+        public EffectInfoModel Info { get; set; }
 
         public Effect(int effectType)
         {
             Type = effectType;
             Name = GetEffectName(effectType);
-            Info = new EffectInfo(effectType);
+            Info = new EffectInfoModel(effectType);
         }
         public Effect(string effectName)
         {
             Type = GetEffectIndex(effectName);
             Name = effectName;
-            Info = new EffectInfo(Type);
+            Info = new EffectInfoModel(Type);
         }
         public void ChangeType(int effectType)
         {
             Type = effectType;
             Name = GetEffectName(effectType);
-            Info = new EffectInfo(effectType);
+            Info.ChangeType(effectType);
         }
 
         public virtual XmlNode ToXmlNodeForScript(int zoneCount)

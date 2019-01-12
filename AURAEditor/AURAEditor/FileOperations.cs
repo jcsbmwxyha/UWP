@@ -465,7 +465,7 @@ namespace AuraEditor
             List<DeviceModel> deviceModels = SpacePage.DeviceModelCollection;
             deviceModels.Clear();
 
-            List<SyncDevice> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
+            List<SyncDeviceModel> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
@@ -503,14 +503,14 @@ namespace AuraEditor
         }
         private void ParsingLayers(XmlNodeList layerNodes)
         {
-            List<Layer> layers = new List<Layer>();
+            List<LayerModel> layers = new List<LayerModel>();
 
             foreach (XmlNode node in layerNodes)
             {
                 XmlElement element = (XmlElement)node;
                 string layerName = element.GetAttribute("name");
                 string eye = element.GetAttribute("Eye");
-                Layer layer = new Layer(layerName);
+                LayerModel layer = new LayerModel(layerName);
                 layer.Eye = bool.Parse(eye);
 
                 layer.TriggerAction = element.GetAttribute("trigger");
@@ -539,7 +539,7 @@ namespace AuraEditor
                         colorPoints.Add(cp);
                     }
 
-                    EffectInfo info = new EffectInfo()
+                    EffectInfoModel info = new EffectInfoModel(type)
                     {
                         InitColor = new Color
                         {
@@ -555,6 +555,7 @@ namespace AuraEditor
                         ColorModeSelection = Int32.Parse(element2.SelectSingleNode("colormodeselection").InnerText),
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
+                        PatternSelect = Int32.Parse(element2.SelectSingleNode("patternSelect").InnerText),
                         ColorPointList = new List<ColorPointModel>(colorPoints),
                         ColorSegmentation = bool.Parse(element2.SelectSingleNode("colorSegmentation").InnerText),
                     };

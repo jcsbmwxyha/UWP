@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
+    d:DesignHeight="50"
     d:DesignWidth="400">
 
     <UserControl.Resources>
@@ -50,7 +50,7 @@
         <Image Name="ReorderIcon"
                Stretch="Fill" Margin="10,0,0,0"
                Source="ms-appx:///Assets/TriggerDialog/asus_ac_rearrange_ic_n.png"/>
-        <TextBlock Text="{x:Bind MyEffect.Name}" Grid.Column="1" VerticalAlignment="Center"
+        <TextBlock Text="{x:Bind MyEffect.Info.Name, Mode=OneWay}" Grid.Column="1" VerticalAlignment="Center"
                    Margin="20,0,0,3" FontSize="20" Foreground="White"/>
         <Button Name="DeleteButton" Grid.Column="2" Style="{StaticResource RogDialogCloseButton}"
                 Click="DeleteButton_Click" Margin="0,0,0,0"/>

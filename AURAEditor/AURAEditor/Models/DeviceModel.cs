@@ -176,7 +176,7 @@ namespace AuraEditor.Models
         {
         }
 
-        static public async Task<DeviceModel> ToDeviceModelAsync(SyncDevice syncDevice)
+        static public async Task<DeviceModel> ToDeviceModelAsync(SyncDeviceModel syncDevice)
         {
             string modelName = syncDevice.Name;
             string type = syncDevice.Type;

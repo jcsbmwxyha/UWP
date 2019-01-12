@@ -1,8 +1,9 @@
-﻿using System;
+﻿using AuraEditor.Dialogs;
+using AuraEditor.Models;
+using AuraEditor.Pages;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using AuraEditor.Dialogs;
-using AuraEditor.Pages;
 using static AuraEditor.Common.StorageHelper;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
@@ -11,7 +12,7 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class LayerTitle : UserControl
     {
-        private Layer m_Layer { get { return this.DataContext as Layer; } }
+        private LayerModel m_Layer { get { return this.DataContext as LayerModel; } }
 
         public LayerTitle()
         {
@@ -35,11 +36,6 @@ namespace AuraEditor.UserControls
 
             ContentDialog triggerDialog = new TriggerDialog(m_Layer);
             await triggerDialog.ShowAsync();
-
-            if (m_Layer.TriggerEffects.Count != 0)
-                m_Layer.IsTriggering = true;
-            else
-                m_Layer.IsTriggering = false;
 
             NeedSave = true;
         }

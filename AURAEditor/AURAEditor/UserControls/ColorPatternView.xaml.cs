@@ -30,6 +30,7 @@ namespace AuraEditor.UserControls
         public ColorPatternView()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
             SetDefaultPatterns();
         }
         public void SetDefaultPatterns()
@@ -43,7 +44,8 @@ namespace AuraEditor.UserControls
                 for (int num = 0; num < Definitions.DefaultColorPointListCollection[i].Count; num++)
                 {
                     pattern.GradientStops.Add(
-                        new GradientStop {
+                        new GradientStop
+                        {
                             Color = DefaultColorPointListCollection[i][num].Color,
                             Offset = DefaultColorPointListCollection[i][num].Offset
                         }
@@ -54,6 +56,7 @@ namespace AuraEditor.UserControls
                 SetColorPointBorders(DefaultColorPointListCollection[i]);
             }
         }
+
         private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
         {
             MenuFlyoutItem mf = sender as MenuFlyoutItem;
@@ -64,120 +67,61 @@ namespace AuraEditor.UserControls
             m_ColorPatternModel.Selected = -1;
         }
 
-        private void PlusItemBt(object sender, RoutedEventArgs e)
+        private void AddColorPointButton_Click(object sender, RoutedEventArgs e)
         {
-            ColorPointModel newColorPointBt = new ColorPointModel();
-            AddColorPoint(newColorPointBt);
-            //newColorPointBt.UI.OnRedraw += ReDrawMultiPointRectangle;
-            ReDrawMultiPointRectangle();
-        }
-        private void AddColorPoint(ColorPointModel colorPoint)
-        {
-            int curIndex = 0;
-            if (CurrentColorPoints.Count < 7)
-            {
-                //foreach (var item in CurrentColorPoints)
-                //{
-                //    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
+            ColorPointModel checkedCp = CurrentColorPoints.FirstOrDefault(p => p.IsChecked == true);
 
-                //    if (items[0].IsChecked == true)
-                //    {
-                //        curIndex = CurrentColorPoints.IndexOf(item);
-                //        if ((curIndex + 1) == CurrentColorPoints.Count)
-                //        {
-                //            if ((CurrentColorPoints[curIndex].Offset - CurrentColorPoints[curIndex - 1].Offset) < 25)
-                //            {
-                //                CurrentColorPoints.Add(colorPoint);
-                //                CurrentColorPoints.Remove(CurrentColorPoints[CurrentColorPoints.Count - 1]);
-                //                return;
-                //            }
-                //            else
-                //            {
-                //                colorPoint.Offset = (CurrentColorPoints[curIndex - 1].Offset + CurrentColorPoints[curIndex].Offset) / 2;
-                //                CurrentColorPoints.Insert(curIndex, colorPoint);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            if ((CurrentColorPoints[curIndex + 1].Offset - CurrentColorPoints[curIndex].Offset) < 25)
-                //            {
-                //                CurrentColorPoints.Add(colorPoint);
-                //                CurrentColorPoints.Remove(CurrentColorPoints[CurrentColorPoints.Count - 1]);
-                //                return;
-                //            }
-                //            else
-                //            {
-                //                colorPoint.Offset = (CurrentColorPoints[curIndex].Offset + CurrentColorPoints[curIndex + 1].Offset) / 2;
-                //                CurrentColorPoints.Insert(curIndex + 1, colorPoint);
-                //            }
-                //        }
-                //        colorPoint.Color = item.Color;
-                //        //PatternCanvas.Children.Add(colorPoint.UI);
-                //        break;
-                //    }
-                //}
-            }
-        }
-        private void MinusItemBt(object sender, RoutedEventArgs e)
-        {
-            RemoveColorPoint();
-            ReDrawMultiPointRectangle();
-        }
-        private void RemoveColorPoint()
-        {
-            if (CurrentColorPoints.Count > 2)
+            if (checkedCp != null && CurrentColorPoints.Count < 7)
             {
-                //foreach (var item in CurrentColorPoints)
-                //{
-                //    List<RadioButton> items = FindAllControl<RadioButton>(item.UI, typeof(RadioButton));
+                ColorPointModel newCp = new ColorPointModel();
+                newCp.ParentPattern = m_ColorPatternModel;
+                int curIndex = CurrentColorPoints.IndexOf(checkedCp);
 
-                //    if (items[0].IsChecked == true)
-                //    {
-                //        for (int i = 0; i < CurrentColorPoints.Count; i++)
-                //        {
-                //            if (item == CurrentColorPoints[i])
-                //            {
-                //                if (i != CurrentColorPoints.Count - 1)
-                //                {
-                //                    List<RadioButton> items1 = FindAllControl<RadioButton>(CurrentColorPoints[i + 1].UI, typeof(RadioButton));
-                //                    items1[0].IsChecked = true;
-                //                }
-                //                else
-                //                {
-                //                    List<RadioButton> items1 = FindAllControl<RadioButton>(CurrentColorPoints[i - 1].UI, typeof(RadioButton));
-                //                    items1[0].IsChecked = true;
-                //                }
-                //            }
-                //        }
-                //        item.UI.OnRedraw -= ReDrawMultiPointRectangle;
-                //        CurrentColorPoints.Remove(item);
-                //        //PatternCanvas.Children.Remove(item.UI);
-                //        break;
-                //    }
-                //}
-            }
-        }
-        public void ReDrawMultiPointRectangle()
-        {
-            LinearGradientBrush Pattern = new LinearGradientBrush();
-            Pattern.StartPoint = new Point(0, 0.5);
-            Pattern.EndPoint = new Point(1, 0.5);
-
-            for (int i = 0; i < CurrentColorPoints.Count; i++)
-            {
-                Pattern.GradientStops.Add(
-                    new GradientStop
+                if (curIndex == CurrentColorPoints.Count - 1) // last
+                {
+                    if ((CurrentColorPoints[curIndex].PixelX - CurrentColorPoints[curIndex - 1].PixelX) >= 25)
                     {
-                        Color = CurrentColorPoints[i].Color,
-                        Offset = CurrentColorPoints[i].Offset
+                        newCp.PixelX = (CurrentColorPoints[curIndex - 1].PixelX + CurrentColorPoints[curIndex].PixelX) / 2;
+                        CurrentColorPoints.Insert(curIndex, newCp);
                     }
-                );
+                }
+                else
+                {
+                    if ((CurrentColorPoints[curIndex + 1].PixelX - CurrentColorPoints[curIndex].PixelX) >= 25)
+                    {
+                        newCp.PixelX = (CurrentColorPoints[curIndex].PixelX + CurrentColorPoints[curIndex + 1].PixelX) / 2;
+                        CurrentColorPoints.Insert(curIndex + 1, newCp);
+                    }
+                }
+
+                newCp.Color = checkedCp.Color;
             }
 
-            ButtonPolygon.Fill = CustomizePattern.Foreground = PatternRectangle.Fill = Pattern;
-            //CustomizeColorPoints = new List<ColorPointModel>(CurrentColorPoints);
-            //m_Info.ColorPointList = new List<ColorPointModel>(m_ColorPoints);
-            SetColorPointBorders(CurrentColorPoints.ToList());
+            m_ColorPatternModel.OnManipulationCompleted();
+        }
+        private void RemoveColorPointButton_Click(object sender, RoutedEventArgs e)
+        {
+            ColorPointModel checkedCp = CurrentColorPoints.FirstOrDefault(p => p.IsChecked == true);
+
+            if (checkedCp != null && CurrentColorPoints.Count > 2)
+            {
+                ColorPointModel newCp = new ColorPointModel();
+                newCp.ParentPattern = m_ColorPatternModel;
+                int curIndex = CurrentColorPoints.IndexOf(checkedCp);
+
+                if (curIndex == CurrentColorPoints.Count - 1) // last
+                {
+                    CurrentColorPoints[curIndex - 1].IsChecked = true;
+                }
+                else
+                {
+                    CurrentColorPoints[curIndex + 1].IsChecked = true;
+                }
+
+                CurrentColorPoints.Remove(checkedCp);
+            }
+
+            m_ColorPatternModel.OnManipulationCompleted();
         }
     }
 }

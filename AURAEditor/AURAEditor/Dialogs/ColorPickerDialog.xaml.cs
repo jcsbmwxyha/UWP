@@ -78,39 +78,15 @@ namespace AuraEditor.Dialogs
         public Color PreColor { get; set; }
         public Boolean ColorPickerResult;
 
-        public int ComeFrom = 1;
-
         public ColorPickerDialog(Color c)
         {
             this.InitializeComponent();
             InitRecentColor();
-            ComeFrom = 1;
             RecentCount = 0;
             _preAngle = 0;
             _preCirclePoint = new Point(0, 0);
             PreColor = c;
             _currentColor = PreColor;
-            Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
-            Task curtask = Task.Run(async () => await CreateColorRingImage());
-            curtask.Wait();
-            Task curtask1 = Task.Run(async () => await SelectColorAreaImage());
-            curtask1.Wait();
-            Task curtask2 = Task.Run(async () => await CreateSquareImage());
-            curtask2.Wait();
-        }
-
-        private TriggerDialog g_TD;
-        public ColorPickerDialog(Color c, TriggerDialog TD)
-        {
-            this.InitializeComponent();
-            InitRecentColor();
-            ComeFrom = 2;
-            RecentCount = 0;
-            _preAngle = 0;
-            _preCirclePoint = new Point(0, 0);
-            PreColor = c;
-            _currentColor = PreColor;
-            g_TD = TD;
             Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
             Task curtask = Task.Run(async () => await CreateColorRingImage());
             curtask.Wait();
@@ -156,46 +132,20 @@ namespace AuraEditor.Dialogs
             ChangeSquareColor(Hue);
         }
 
-        private async void CancelBtn_Click(object sender, RoutedEventArgs e)
+        private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.SizeChanged -= CurrentWindow_SizeChanged;
             ColorPickerResult = false;
-            if (ComeFrom == 1)
-            {
-                //From Main Page
-                this.Hide();
-            }
-            else if (ComeFrom == 2)
-            {
-                //From Trigger Dialog
-                this.Hide();
-                await g_TD.ShowAsync();
-            }
-            else
-            {
-                this.Hide();
-            }
+
+            this.Hide();
         }
-        
-        private async void OKBtn_Click(object sender, RoutedEventArgs e)
+
+        private void OKBtn_Click(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.SizeChanged -= CurrentWindow_SizeChanged;
             ColorPickerResult = true;
-            if (ComeFrom == 1)
-            {
-                //From Main Page
-                this.Hide();
-            }
-            else if (ComeFrom == 2)
-            {
-                //From Trigger Dialog
-                this.Hide();
-                await g_TD.ShowAsync();
-            }
-            else
-            {
-                this.Hide();
-            }
+
+            this.Hide();
         }
 
         private void RBtnDefault_Click(object sender, RoutedEventArgs e)
@@ -480,7 +430,7 @@ namespace AuraEditor.Dialogs
                                 dataInBytes[pixelIndex + 0] = (byte)color.B;
                                 dataInBytes[pixelIndex + 1] = (byte)color.G;
                                 dataInBytes[pixelIndex + 2] = (byte)color.R;
-                                
+
                             }
                         }
                     }
@@ -575,7 +525,7 @@ namespace AuraEditor.Dialogs
 
             storyboard.Begin();
         }
-        
+
         private void HiddenSquare_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             Point currentLocation = e.GetCurrentPoint(RingGrid).Position;
@@ -616,28 +566,13 @@ namespace AuraEditor.Dialogs
             _squarePressing = false;
         }
 
-        private async void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             TextBox textBoxContent = sender as TextBox;
             //Press ESC to exit window
             if (e.Key == Windows.System.VirtualKey.Escape)
             {
-                ColorPickerResult = false;
-                if (ComeFrom == 1)
-                {
-                    //From Main Page
-                    this.Hide();
-                }
-                else if (ComeFrom == 2)
-                {
-                    //From Trigger Dialog
-                    this.Hide();
-                    await g_TD.ShowAsync();
-                }
-                else
-                {
-                    this.Hide();
-                }
+                this.Hide();
             }
 
             if (!e.Key.ToString().Contains("Number"))
@@ -683,7 +618,7 @@ namespace AuraEditor.Dialogs
         }
         private void ColorTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            
+
         }
         private void ColorTextBox_LostFocus(object sender, RoutedEventArgs e)
         {

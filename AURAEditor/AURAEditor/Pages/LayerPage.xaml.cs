@@ -35,7 +35,7 @@ namespace AuraEditor.Pages
             Self = this;
             m_EffectInfoFrame = MainPage.Self.EffectInfoFrame;
 
-            Layers = new ObservableCollection<Layer>();
+            Layers = new ObservableCollection<LayerModel>();
             LayerListView.ItemsSource = Layers;
             LayerBackgroundItemsControl.ItemsSource = Layers;
             Layers.CollectionChanged += LayersChanged;
@@ -49,8 +49,8 @@ namespace AuraEditor.Pages
 
         private Frame m_EffectInfoFrame;
 
-        private Layer _checkedLayer;
-        public Layer CheckedLayer
+        private LayerModel _checkedLayer;
+        public LayerModel CheckedLayer
         {
             get
             {
@@ -146,7 +146,7 @@ namespace AuraEditor.Pages
             double rightmostPosition = 0;
             TimelineEffect rightmostEffect = null;
 
-            foreach (Layer layer in Layers)
+            foreach (LayerModel layer in Layers)
             {
                 foreach (var effect in layer.TimelineEffects)
                 {
@@ -164,13 +164,13 @@ namespace AuraEditor.Pages
         private List<TextBlock> TimeTextBlockCollection;
 
         #region -- Layers --
-        public ObservableCollection<Layer> Layers { get; set; }
+        public ObservableCollection<LayerModel> Layers { get; set; }
 
-        public void AddLayer(Layer layer)
+        public void AddLayer(LayerModel layer)
         {
             Layers.Add(layer);
         }
-        public void RemoveLayer(Layer layer)
+        public void RemoveLayer(LayerModel layer)
         {
             Layers.Remove(layer);
         }
@@ -178,16 +178,16 @@ namespace AuraEditor.Pages
         {
             CheckedLayer = null;
 
-            Layer layer;
+            LayerModel layer;
             int layerIndex;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    layer = e.OldItems[0] as Layer;
+                    layer = e.OldItems[0] as LayerModel;
                     TrackStackPanel.Children.Remove(layer.UI_Track);
                     break;
                 case NotifyCollectionChangedAction.Add:
-                    layer = e.NewItems[0] as Layer;
+                    layer = e.NewItems[0] as LayerModel;
                     layerIndex = e.NewStartingIndex;
                     TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
                     break;
@@ -514,7 +514,7 @@ namespace AuraEditor.Pages
 
         public double[] GetAlignPositions(TimelineEffect eff)
         {
-            Layer layer = eff.Layer;
+            LayerModel layer = eff.Layer;
             List<double> result = new List<double>();
             int i = Layers.IndexOf(layer);
 
@@ -526,7 +526,7 @@ namespace AuraEditor.Pages
                 result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
             return result.ToArray();
         }
-        public double[] GetAlignPositions(Layer layer)
+        public double[] GetAlignPositions(LayerModel layer)
         {
             List<double> result = new List<double>();
             int i = Layers.IndexOf(layer);
@@ -602,7 +602,7 @@ namespace AuraEditor.Pages
         #region -- Trash Can --
         private void LayerListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
-            Layer layer = e.Items[0] as Layer;
+            LayerModel layer = e.Items[0] as LayerModel;
             e.Data.Properties.Add("layer", layer);
         }
         private void TrashCanButton_DragOver(object sender, DragEventArgs e)
@@ -614,14 +614,14 @@ namespace AuraEditor.Pages
             e.DragUIOverride.IsGlyphVisible = false;
 
             var pair = e.Data.Properties.FirstOrDefault();
-            Layer layer = pair.Value as Layer;
+            LayerModel layer = pair.Value as LayerModel;
             if (layer != null)
                 e.AcceptedOperation = DataPackageOperation.Copy;
         }
         private void TrashCanButton_Drop(object sender, DragEventArgs e)
         {
             var pair = e.Data.Properties.FirstOrDefault();
-            Layer layer = pair.Value as Layer;
+            LayerModel layer = pair.Value as LayerModel;
             RemoveLayer(layer);
             SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
             MainPage.Self.SelectedEffect = null;
@@ -629,7 +629,7 @@ namespace AuraEditor.Pages
         }
         private void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            Layer layer = CheckedLayer;
+            LayerModel layer = CheckedLayer;
             if (layer != null)
             {
                 RemoveLayer(layer);

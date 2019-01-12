@@ -1,9 +1,10 @@
-﻿using AuraEditor.UserControls;
+﻿using AuraEditor.Models;
+using AuraEditor.Pages;
+using AuraEditor.UserControls;
+using System.ComponentModel;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
-using System.ComponentModel;
-using AuraEditor.Pages;
 
 namespace AuraEditor
 {
@@ -139,7 +140,7 @@ namespace AuraEditor
         {
             TimelineEffect target = new TimelineEffect(copy.Type);
 
-            target.Info = copy.Info.Clone() as EffectInfo;
+            target.Info = copy.Info.Clone() as EffectInfoModel;
             target.DurationTime = copy.DurationTime;
 
             return target;

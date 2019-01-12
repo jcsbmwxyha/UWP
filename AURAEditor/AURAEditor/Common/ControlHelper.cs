@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
@@ -103,6 +105,20 @@ namespace AuraEditor.Common
             }
 
             return result;
+        }
+        public static ContentDialog GetCurrentContentDialog()
+        {
+            Frame frame = Window.Current.Content as Frame;
+            var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
+
+            if (popups.Count == 0)
+                return null;
+
+            Popup popup = VisualTreeHelper.GetOpenPopups(Window.Current)[0];
+            if (popup.Child is ContentDialog dialog)
+                return dialog;
+            else
+                return null;
         }
         public static async void ShowMess(string res)
         {
