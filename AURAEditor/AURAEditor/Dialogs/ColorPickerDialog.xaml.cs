@@ -32,7 +32,6 @@ namespace AuraEditor.Dialogs
 
         // Color Ring
         SoftwareBitmap colorRingSoftwareBitmap;
-        SoftwareBitmap selectColorAreaSoftwareBitmap;
         SoftwareBitmap squareSoftwareBitmap;
         Point colorRingCenter;
         public Point _preCirclePoint;
@@ -44,6 +43,7 @@ namespace AuraEditor.Dialogs
         public ColorChangeCallBack OnColorChange;
         public double _preAngle;
         bool _squarePressing;
+        bool _circlePressing;
 
         private double _hue;
         public double Hue
@@ -90,8 +90,6 @@ namespace AuraEditor.Dialogs
             Window.Current.CoreWindow.SizeChanged += CurrentWindow_SizeChanged;
             Task curtask = Task.Run(async () => await CreateColorRingImage());
             curtask.Wait();
-            Task curtask1 = Task.Run(async () => await SelectColorAreaImage());
-            curtask1.Wait();
             Task curtask2 = Task.Run(async () => await CreateSquareImage());
             curtask2.Wait();
         }
@@ -106,7 +104,6 @@ namespace AuraEditor.Dialogs
             TextBox_R.Text = _currentColor.R.ToString();
             TextBox_G.Text = _currentColor.G.ToString();
             TextBox_B.Text = _currentColor.B.ToString();
-            //SelectedPolygonColor.Fill = new SolidColorBrush(_currentColor);
 
             HSVColor hsv = Math2.RGBToHSV(_currentColor);
             Hue = hsv.H;
@@ -117,8 +114,6 @@ namespace AuraEditor.Dialogs
 
             // Compute SeletcedColorEllipse position
             Point targetPoint = Math2.SVToPoint(Saturation, Value, squareSideLength);
-            //targetPoint.X -= seletcedColorEllipse_r;
-            //targetPoint.Y -= seletcedColorEllipse_r;
 
             CompositeTransform ct = SeletcedColorEllipseCompositeTransform;
             ct.TranslateX = targetPoint.X;
@@ -128,7 +123,7 @@ namespace AuraEditor.Dialogs
 
 
             ChangeColorRingColor();
-            ChangeSelectAreaColor(Hue, Saturation, Value);
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
             ChangeSquareColor(Hue);
         }
 
@@ -152,12 +147,18 @@ namespace AuraEditor.Dialogs
         {
             RadioButton Rbtn = sender as RadioButton;
             EnterColor(((SolidColorBrush)Rbtn.Background).Color);
+
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
+            ChangeSquareColor(Hue);
         }
 
         private void RBtnRecent_Click(object sender, RoutedEventArgs e)
         {
             RadioButton Rbtn = sender as RadioButton;
             EnterColor(((SolidColorBrush)Rbtn.Background).Color);
+
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
+            ChangeSquareColor(Hue);
         }
 
         private void CurrentWindow_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
@@ -174,6 +175,13 @@ namespace AuraEditor.Dialogs
                 SelectGrid.Margin = new Thickness(56, 0, 72, 0);
                 Grid_Selected.Width = 172;
                 Grid_Selected.Height = 32;
+                var points = new PointCollection();
+                points.Add(new Point(4, 4));
+                points.Add(new Point(4, 18));
+                points.Add(new Point(14, 28));
+                points.Add(new Point(168, 28));
+                points.Add(new Point(168, 4));
+                SelectedColorShowArea.Points = points;
                 TextBox_R.Width = 123;
                 TextBox_G.Width = 123;
                 TextBox_B.Width = 123;
@@ -212,6 +220,13 @@ namespace AuraEditor.Dialogs
                 SelectGrid.Margin = new Thickness(12, 0, 24, 0);
                 Grid_Selected.Width = 136;
                 Grid_Selected.Height = 32;
+                var points = new PointCollection();
+                points.Add(new Point(4, 4));
+                points.Add(new Point(4, 18));
+                points.Add(new Point(12, 28));
+                points.Add(new Point(132, 28));
+                points.Add(new Point(132, 4));
+                SelectedColorShowArea.Points = points;
                 TextBox_R.Width = 108;
                 TextBox_G.Width = 108;
                 TextBox_B.Width = 108;
@@ -256,22 +271,6 @@ namespace AuraEditor.Dialogs
             colorRingSoftwareBitmap = softwareBitmap;
         }
 
-        private async Task SelectColorAreaImage()
-        {
-            string selectColorAreaImage = @"Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_colormask_btn.png";
-
-            SoftwareBitmap softwareBitmap;
-            StorageFolder InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            StorageFile selectColorAreaImgFile = await InstallationFolder.GetFileAsync(selectColorAreaImage);
-
-            using (IRandomAccessStream printingFileStream = await selectColorAreaImgFile.OpenAsync(FileAccessMode.Read))
-            {
-                BitmapDecoder printingDecoder = await BitmapDecoder.CreateAsync(printingFileStream);
-                softwareBitmap = await printingDecoder.GetSoftwareBitmapAsync();
-            }
-            selectColorAreaSoftwareBitmap = softwareBitmap;
-        }
-
         private async Task CreateSquareImage()
         {
             string aquareImage = @"Assets\ColorPicker\asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png";
@@ -297,17 +296,6 @@ namespace AuraEditor.Dialogs
             var source = new SoftwareBitmapSource();
             await source.SetBitmapAsync(colorRingSoftwareBitmap);
             ColorRingImg.Source = source;
-        }
-
-        private async void ChangeSelectAreaColor(double hue, double saturation, double value)
-        {
-            selectColorAreaSoftwareBitmap = SoftwareBitmap.Convert(selectColorAreaSoftwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
-            ChangeSelectAteaColorPixel(hue, saturation, value);
-            selectColorAreaSoftwareBitmap = SoftwareBitmap.Convert(selectColorAreaSoftwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(selectColorAreaSoftwareBitmap);
-            SelectedColorShowArea.Source = source;
         }
 
         private async void ChangeSquareColor(double hue)
@@ -348,40 +336,6 @@ namespace AuraEditor.Dialogs
                             HSVColor hsv = new HSVColor(hue, 1.0, 1.0);
                             Color color = hsv.GetRGB();
 
-                            int pixelIndex = bufferLayout.Stride * row + 4 * col;
-                            if (dataInBytes[pixelIndex + 3] != 0)
-                            {
-                                dataInBytes[pixelIndex + 0] = (byte)color.B;
-                                dataInBytes[pixelIndex + 1] = (byte)color.G;
-                                dataInBytes[pixelIndex + 2] = (byte)color.R;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private unsafe void ChangeSelectAteaColorPixel(double hue, double saturation, double value)
-        {
-            using (BitmapBuffer buffer = selectColorAreaSoftwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
-            {
-                using (var reference = buffer.CreateReference())
-                {
-                    byte* dataInBytes;
-                    uint capacity;
-                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
-
-                    // Fill-in the BGRA plane
-                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-                    double imgWidth = bufferLayout.Width;
-                    double imgHeight = bufferLayout.Height;
-                    HSVColor hsv = new HSVColor(hue, saturation, value);
-                    Color color = hsv.GetRGB();
-
-                    for (int row = 0; row < imgHeight; row++)
-                    {
-                        for (int col = 0; col < imgWidth; col++)
-                        {
                             int pixelIndex = bufferLayout.Stride * row + 4 * col;
                             if (dataInBytes[pixelIndex + 3] != 0)
                             {
@@ -440,12 +394,27 @@ namespace AuraEditor.Dialogs
 
         private void Circle_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
+            if (_circlePressing)
+            {
+                Point currentLocation = e.GetCurrentPoint(RingGrid).Position;
+                double dx = currentLocation.X - colorRingCenter.X;
+                double dy = currentLocation.Y - colorRingCenter.Y;
+                //---
+                double hue = Math2.ComputeH(dx, dy);
+                //---
+                Hue = Math2.ComputeH(dx, dy);
+                CurrentColor = Math2.HSVToRGB(Hue, Saturation, Value);
 
+                CompositeTransform ct = SeletcedColorEllipseCompositeTransform;
+                Point targetPoint = new Point(ct.TranslateX, ct.TranslateY);
+                ColorPickerStoryboardStart(Hue, targetPoint);
+            }
         }
 
         private void Circle_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             Point currentLocation = e.GetCurrentPoint(RingGrid).Position;
+            _circlePressing = true;
             double dx = currentLocation.X - colorRingCenter.X;
             double dy = currentLocation.Y - colorRingCenter.Y;
             //---
@@ -461,7 +430,9 @@ namespace AuraEditor.Dialogs
 
         private void Circle_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-
+            ChangeSquareColor(Hue);
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
+            _circlePressing = false;
         }
 
         private void ColorPickerStoryboardStart(double selectRingTargetAngle, Point circleTargetPoint)
@@ -496,9 +467,7 @@ namespace AuraEditor.Dialogs
                 storyboard.Children.Add(selesctedRingAnimation);
 
                 _preAngle = selectRingTargetAngle;
-                ChangeSquareColor(selectRingTargetAngle);
             }
-            ChangeSelectAreaColor(selectRingTargetAngle, Saturation, Value);
 
             if (_preCirclePoint.X != circleTargetPoint.X || _preCirclePoint.Y != circleTargetPoint.Y)
             {
@@ -540,7 +509,7 @@ namespace AuraEditor.Dialogs
             Saturation = (currentLocation.X - 72) / squareSideLength;
             Value = (squareSideLength - (currentLocation.Y - 72)) / squareSideLength;
             CurrentColor = Math2.HSVToRGB(Hue, Saturation, Value);
-            ChangeSelectAreaColor(Hue, Saturation, Value);
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
         }
 
         private void HiddenSquare_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -557,7 +526,7 @@ namespace AuraEditor.Dialogs
                 Saturation = (currentLocation.X - 72) / squareSideLength;
                 Value = (squareSideLength - (currentLocation.Y - 72)) / squareSideLength;
                 CurrentColor = Math2.HSVToRGB(Hue, Saturation, Value);
-                ChangeSelectAreaColor(Hue, Saturation, Value);
+                SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
             }
         }
 
@@ -659,6 +628,8 @@ namespace AuraEditor.Dialogs
             ct.TranslateY = targetPoint.Y;
 
             ColorPickerStoryboardStart(Hue, targetPoint);
+            ChangeSquareColor(Hue);
+            SelectedColorShowArea.Fill = new SolidColorBrush(CurrentColor);
         }
 
         private void AddRecentBtn_Click(object sender, RoutedEventArgs e)

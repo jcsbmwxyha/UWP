@@ -1,18 +1,13 @@
 ﻿using AuraEditor.Models;
 using AuraEditor.Pages;
-using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
-using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using static AuraEditor.Common.ControlHelper;
+using AuraEditor.Common;
 using static AuraEditor.Common.MetroEventSource;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
@@ -37,7 +32,7 @@ namespace AuraEditor.Dialogs
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             string sendToLiveService = "[SyncStatus]";
-            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            ObservableCollection<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
 
             foreach (SyncDeviceModel sd in m_SyncDeviceList)
             {

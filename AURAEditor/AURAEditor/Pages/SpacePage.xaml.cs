@@ -17,6 +17,8 @@ using AuraEditor.UserControls;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -39,7 +41,7 @@ namespace AuraEditor.Pages
             _mouseDirection = 0;
             _spaceZoomFactor = 1;
 
-            DeviceModelCollection = new List<DeviceModel>();
+            DeviceModelCollection = new ObservableCollection<DeviceModel>();
             SetSpaceStatus(SpaceStatus.Clean);
         }
 
@@ -71,7 +73,7 @@ namespace AuraEditor.Pages
         private DispatcherTimer m_ScrollTimerClock;
         private Rect m_CurrentScreenRect;
 
-        public List<DeviceModel> DeviceModelCollection;
+        public ObservableCollection<DeviceModel> DeviceModelCollection;
         public int OperatingGridWidth
         {
             get
@@ -154,7 +156,7 @@ namespace AuraEditor.Pages
             List<SyncDeviceModel> ingroupDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
             List<SyncDeviceModel> newSD = new List<SyncDeviceModel>();
             List<DeviceModel> tempToStage = new List<DeviceModel>();
-            List<DeviceModel> stageToTemp = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            ObservableCollection<DeviceModel> stageToTemp = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
             foreach (var sd in ingroupDevices)
             {
@@ -205,13 +207,13 @@ namespace AuraEditor.Pages
         {
             List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
 
-            SpaceCanvas.Children.Clear();
-            SpaceCanvas.Children.Add(GridImage);
-            SpaceCanvas.Children.Add(RestrictLineLeft);
-            SpaceCanvas.Children.Add(RestrictLineRight);
-            SpaceCanvas.Children.Add(RestrictLineTop);
-            SpaceCanvas.Children.Add(RestrictLineBottom);
-            SpaceCanvas.Children.Add(MouseRectangle);
+            //SpaceCanvas.Children.Clear();
+            //SpaceCanvas.Children.Add(GridImage);
+            //SpaceCanvas.Children.Add(RestrictLineLeft);
+            //SpaceCanvas.Children.Add(RestrictLineRight);
+            //SpaceCanvas.Children.Add(RestrictLineTop);
+            //SpaceCanvas.Children.Add(RestrictLineBottom);
+            //SpaceCanvas.Children.Add(MouseRectangle);
 
             var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
@@ -239,12 +241,9 @@ namespace AuraEditor.Pages
 
                     regions.Add(r);
                 }
-
-                DeviceView view = new DeviceView();
-                view.DataContext = dm;
-                SpaceCanvas.Children.Add(view);
             }
-
+            DevicesControl.ItemsSource = DeviceModelCollection;
+            Bindings.Update();
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
             UnselectAllZones();
             OnDeviceMoveCompleted();
@@ -477,7 +476,7 @@ namespace AuraEditor.Pages
         }
         public void DeleteOverlappingTempDevice(DeviceModel testDev)
         {
-            List<DeviceModel> tempDevices = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.Temp);
+            ObservableCollection<DeviceModel> tempDevices = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.Temp);
             foreach (var dm in tempDevices)
             {
                 if (testDev.Equals(dm))
@@ -498,7 +497,7 @@ namespace AuraEditor.Pages
         }
         public void OnDeviceMoved(DeviceModel movedDev)
         {
-            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            ObservableCollection<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
             foreach (var dm in dms)
             {
@@ -550,7 +549,7 @@ namespace AuraEditor.Pages
         }
         public bool IsPiling(DeviceModel testDev)
         {
-            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            ObservableCollection<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
             foreach (var dm in dms)
             {

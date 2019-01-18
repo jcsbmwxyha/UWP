@@ -98,13 +98,14 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\Extensions.cs" />
     <Compile Include="Dialogs\EULADisagreeDialog.xaml.cs">
       <DependentUpon>EULADisagreeDialog.xaml</DependentUpon>
     </Compile>
@@ -722,6 +723,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.9</Version>
+    </PackageReference>
+    <PackageReference Include="MoonSharp">
+      <Version>2.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

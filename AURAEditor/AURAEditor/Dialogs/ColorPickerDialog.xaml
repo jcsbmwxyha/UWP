@@ -469,7 +469,7 @@
                     <TextBlock x:Name="TextBlock_Selected" Text="Selected" Foreground="White" FontSize="16" Margin="0,41,0,0"/>
                     <Grid x:Name="Grid_Selected" RelativePanel.Below="TextBlock_Selected" Margin="0,14,0,0" Height="32" Width="172">
                         <Image Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_btn.png" Stretch="Fill"/>
-                        <Image x:Name="SelectedColorShowArea" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_colormask_btn.png" Stretch="Fill"/>
+                        <Polygon x:Name="SelectedColorShowArea" Points="4,4,4,18,14,28,168,28,168,4" Fill="White"/>
                     </Grid>
 
                     <RelativePanel x:Name="Grid_R" RelativePanel.Below="Grid_Selected" Margin="25,26,0,0">

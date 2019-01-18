@@ -459,7 +459,7 @@ namespace AuraEditor.Models
 
         public XmlNode ToXmlNodeForScript()
         {
-            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            ObservableCollection<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
             XmlNode groupoNode = CreateXmlNode("group");
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
             attribute.Value = Name;
@@ -515,7 +515,7 @@ namespace AuraEditor.Models
 
             // devices
             XmlNode devicesNode = CreateXmlNode("devices");
-            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            ObservableCollection<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
             foreach (var d in deviceModels)
             {
                 XmlNode deviceNode = GetDeviceUsageXmlNode(d);

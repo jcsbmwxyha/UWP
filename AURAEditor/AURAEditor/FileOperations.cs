@@ -462,7 +462,7 @@ namespace AuraEditor
         }
         private async Task ParsingDevices(XmlNodeList deviceNodes)
         {
-            List<DeviceModel> deviceModels = SpacePage.DeviceModelCollection;
+            ObservableCollection<DeviceModel> deviceModels = SpacePage.DeviceModelCollection;
             deviceModels.Clear();
 
             List<SyncDeviceModel> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();

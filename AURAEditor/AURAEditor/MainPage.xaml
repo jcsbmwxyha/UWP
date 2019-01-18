@@ -400,8 +400,7 @@
                         Content="Save and Apply" Click="SaveAndApplyButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Click to switch to devices arrange mode"
-                                       TextWrapping="Wrap" Width="144"/>
+                        <TextBlock Foreground="White" Text="Save and Apply"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
