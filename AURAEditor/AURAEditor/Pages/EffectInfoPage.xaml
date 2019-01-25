@@ -127,40 +127,53 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.AngleGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Angle" Margin="20,20,0,0" Foreground="White"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
-                            <Image x:Name="AngleIcImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
+                <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.AngleGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Margin="20,0,0,0">
+                    <TextBlock Text="Angle" Margin="0,20,0,0" Foreground="White"/>
+                    <ContentControl x:Name="AngleGridCC" Margin="0,10,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
+                                <Image x:Name="AngleIcImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_ic_n.png"
                                        RenderTransformOrigin="0.5,0.5">
-                                <Image.RenderTransform>
-                                    <RotateTransform x:Name="AngleIcImgRotation"
+                                    <Image.RenderTransform>
+                                        <RotateTransform x:Name="AngleIcImgRotation"
                                                      Angle="{x:Bind m_Info.Angle, Mode=TwoWay}"/>
-                                </Image.RenderTransform>
-                            </Image>
-                            <Image x:Name="AngleBgImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_bg_n.png"
+                                    </Image.RenderTransform>
+                                </Image>
+                                <Image x:Name="AngleBgImg" Source="ms-appx:///Assets/EffectInfoGroup/asus_ac_angle_bg_n.png"
                                    PointerPressed="AngleBgImg_PointerPressed"
                                    PointerReleased="AngleBgImg_PointerReleased"
                                    PointerMoved="AngleBgImg_PointerMoved"/>
-                        </Grid>
-                        <Grid Grid.Column="1" Margin="25,0,0,0">
-                            <Rectangle Width="95" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
-                                <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="46" HorizontalAlignment="Left"
+                            </Grid>
+                            <Grid Grid.Column="1" Margin="25,0,0,0">
+                                <Rectangle Width="95" Height="28" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}"/>
+                                    <TextBox x:Name="AngleTextBox" MinHeight="20" MinWidth="20" Height="24" Width="46" HorizontalAlignment="Left"
                                          Background="Transparent" FontSize="12" Foreground="White" FontWeight="Bold" 
                                          KeyDown="AngleTextBox_KeyDown" 
                                          LostFocus="AngleTextBox_LostFocus"
                                          TextChanging="AngleTextBox_TextChanging"
                                          Text="{x:Bind m_Info.Angle, Converter={StaticResource doubleToInt32ToStringConverter}, Mode=TwoWay}"/>
-                                <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
+                                    <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ContentControl>
+                    <StackPanel x:Name="RotationStackPanel" Orientation="Vertical" Margin="0,20,0,0"  Visibility="{x:Bind m_Info.RainbowRotationVisible, Converter={StaticResource booleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Rainbow Roatation" VerticalAlignment="Center" FontSize="15"/>
+                            <ToggleSwitch x:Name="RainbowRoatationSwitch" MinWidth="20" VerticalAlignment="Center" Margin="30,0,0,0"
+                                          Style="{StaticResource RogToggleSwitchStyle}" Toggled="RainbowRoatationSwitch_Toggled"
+                                          IsOn="{x:Bind m_Info.RainbowRotation, Mode=TwoWay}"/>
+                        </StackPanel>
+                        <ContentControl x:Name="ClockwiseRbtCC" IsEnabled="False" Opacity="0.5">
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,20">
+                                <RadioButton x:Name="ClockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonClockwiseStyle}" GroupName="Clockwise" Click="RotationRbt_Click"/>
+                                <RadioButton x:Name="CountclockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonCountclockwiseStyle}" GroupName="Clockwise" Click="RotationRbt_Click"/>
                             </StackPanel>
-                        </Grid>
-                    </Grid>
+                        </ContentControl>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel x:Name="TemperatureGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.TemperatureGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">

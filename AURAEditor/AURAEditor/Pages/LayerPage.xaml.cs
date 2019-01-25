@@ -21,6 +21,8 @@ using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Pages.SpacePage;
+using AuraEditor.Common;
+using AuraEditor.ViewModels;
 
 namespace AuraEditor.Pages
 {
@@ -90,8 +92,8 @@ namespace AuraEditor.Pages
             }
         }
 
-        private TimelineEffect _checkedEffect;
-        public TimelineEffect CheckedEffect
+        private EffectLineViewModel _checkedEffect;
+        public EffectLineViewModel CheckedEffect
         {
             get
             {
@@ -115,18 +117,19 @@ namespace AuraEditor.Pages
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Info);
+                    CheckedLayer = value.Layer;
+                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Model.Info);
                     NeedSave = true;
                 }
             }
         }
-        public TimelineEffect CopiedEffect;
+        public EffectLineViewModel CopiedEffect;
 
         public double PlayTime
         {
             get
             {
-                TimelineEffect effect = GetRightmostEffect();
+                EffectLineViewModel effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.StartTime + effect.DurationTime : 0;
             }
@@ -135,20 +138,20 @@ namespace AuraEditor.Pages
         {
             get
             {
-                TimelineEffect effect = GetRightmostEffect();
+                EffectLineViewModel effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.Right : 0;
             }
         }
-        private TimelineEffect GetRightmostEffect()
+        private EffectLineViewModel GetRightmostEffect()
         {
             double position = 0;
             double rightmostPosition = 0;
-            TimelineEffect rightmostEffect = null;
+            EffectLineViewModel rightmostEffect = null;
 
             foreach (LayerModel layer in Layers)
             {
-                foreach (var effect in layer.TimelineEffects)
+                foreach (var effect in layer.EffectLineViewModels)
                 {
                     position = effect.Left + effect.Width;
 
@@ -165,31 +168,39 @@ namespace AuraEditor.Pages
 
         #region -- Layers --
         public ObservableCollection<LayerModel> Layers { get; set; }
+        private LayerModel _oldRemovedLayer;
+        private int _oldRemovedIndex;
 
         public void AddLayer(LayerModel layer)
         {
+            int index = Layers.IndexOf(layer);
             Layers.Add(layer);
+            ReUndoManager.GetInstance().Store(new AddLayerCommand(layer, index));
         }
         public void RemoveLayer(LayerModel layer)
         {
+            int index = Layers.IndexOf(layer);
             Layers.Remove(layer);
+            ReUndoManager.GetInstance().Store(new DeleteLayerCommand(layer, index));
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CheckedLayer = null;
-
             LayerModel layer;
             int layerIndex;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     layer = e.OldItems[0] as LayerModel;
-                    TrackStackPanel.Children.Remove(layer.UI_Track);
+                    _oldRemovedLayer = layer;
+                    _oldRemovedIndex = e.OldStartingIndex;
                     break;
                 case NotifyCollectionChangedAction.Add:
                     layer = e.NewItems[0] as LayerModel;
                     layerIndex = e.NewStartingIndex;
-                    TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
+                    if (layer.Equals(_oldRemovedLayer))
+                    {
+                        ReUndoManager.GetInstance().Store(new SwapLayerCommand(_oldRemovedIndex, layerIndex));
+                    }
                     break;
             }
 
@@ -202,6 +213,70 @@ namespace AuraEditor.Pages
             SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
             TrackCanvas.Height = Layers.Count * 52;
         }
+        public class AddLayerCommand : IReUndoCommand
+        {
+            private LayerModel _layer;
+            private int _index;
+
+            public AddLayerCommand(LayerModel layer, int index)
+            {
+                _layer = layer;
+                _index = index;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.AddLayer(_layer);
+            }
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.RemoveLayer(_layer);
+            }
+        }
+        public class SwapLayerCommand : IReUndoCommand
+        {
+            private int _old;
+            private int _new;
+
+            public SwapLayerCommand(int oldIndex, int newIndex)
+            {
+                _old = oldIndex;
+                _new = newIndex;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerModel layer = LayerPage.Self.Layers[_old];
+                LayerPage.Self.Layers.RemoveAt(_old);
+                LayerPage.Self.Layers.Insert(_new, layer);
+            }
+            public void ExecuteUndo()
+            {
+                LayerModel layer = LayerPage.Self.Layers[_new];
+                LayerPage.Self.Layers.RemoveAt(_new);
+                LayerPage.Self.Layers.Insert(_old, layer);
+            }
+        }
+        public class DeleteLayerCommand : IReUndoCommand
+        {
+            private LayerModel _layer;
+            private int _index;
+
+            public DeleteLayerCommand(LayerModel layer, int index)
+            {
+                _layer = layer;
+                _index = index;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.Layers.RemoveAt(_index);
+            }
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.Layers.Insert(_index, _layer);
+            }
+        }
         public int GetLayerCount()
         {
             return Layers.Count;
@@ -209,7 +284,6 @@ namespace AuraEditor.Pages
         public void Clean()
         {
             CheckedLayer = null;
-            TrackStackPanel.Children.Clear();
             Layers.Clear();
         }
         public void ClearTypeData(int deviceType)
@@ -294,18 +368,16 @@ namespace AuraEditor.Pages
             if (playerModel.Position >= RightmostPosition)
                 return;
 
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
-            StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(sf, MainPage.Self.GetLastScript());
-            Log.Debug("[PlayButton] Save LastScript : " + sf.Path);
-
+            Log.Debug("[PlayButton] Clicked");
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(localsf, MainPage.Self.GetLastScript());
+            Log.Debug("[PlayButton] Save LastScript successfully : " + localsf.Path);
 
             long StartTime = (long)PositionToTime(playerModel.Position);
 
             Log.Debug("[PlayButton] Bef AuraEditorTrigger");
+            Log.Debug("[PlayButton] StartTime : " + StartTime.ToString());
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[PlayButton] Aft AuraEditorTrigger");
 
@@ -333,11 +405,11 @@ namespace AuraEditor.Pages
             playerModel.IsPlaying = false;
             playerModel.Position = 0;
 
-            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync("C:\\ProgramData\\ASUS\\AURA Creator");
-            StorageFile sf = await folder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             // Blank mode
-            await Windows.Storage.FileIO.WriteTextAsync(sf, "<root><header>AURA_Creator</header><version>1.0</version><effectProvider><period key=\"true\">0</period><queue /></effectProvider><viewport /><effectList /></root>");
-
+            StorageFolder localfolder = ApplicationData.Current.LocalFolder;
+            StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(localsf, "<root><header>AURA_Creator</header><version>1.0</version><effectProvider><period key=\"true\">0</period><queue /></effectProvider><viewport /><effectList /></root>");
+            
             long StartTime = (long)PositionToTime(playerModel.Position);
 
             Log.Debug("[CursorStoryboardCompleted] Bef AuraEditorTrigger");
@@ -437,16 +509,16 @@ namespace AuraEditor.Pages
                 {
                     y1 = y1_long;
 
-                    CompositeTransform ct = new CompositeTransform
+                    TranslateTransform tt = new TranslateTransform
                     {
-                        TranslateX = x + 10,
-                        TranslateY = 5
+                        X = x + 10,
+                        Y = 5
                     };
 
                     TextBlock tb = new TextBlock
                     {
                         Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = ct,
+                        RenderTransform = tt,
                         Foreground = new SolidColorBrush(Colors.White)
                     };
 
@@ -473,10 +545,10 @@ namespace AuraEditor.Pages
         {
             foreach (var layer in Layers)
             {
-                foreach (var effect in layer.TimelineEffects)
+                foreach (var effect in layer.EffectLineViewModels)
                 {
-                    effect.Left = effect.Left * rate;
-                    effect.Width = effect.Width * rate;
+                    effect.Left = effect.Left;
+                    effect.Width = effect.Width;
                 }
             }
         }
@@ -512,7 +584,7 @@ namespace AuraEditor.Pages
             LayerZoomSlider.Value -= 1;
         }
 
-        public double[] GetAlignPositions(TimelineEffect eff)
+        public double[] GetAlignPositions(EffectLineViewModel eff)
         {
             LayerModel layer = eff.Layer;
             List<double> result = new List<double>();

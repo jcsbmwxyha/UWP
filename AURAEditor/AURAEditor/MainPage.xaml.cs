@@ -22,6 +22,8 @@ using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
 using Windows.Foundation;
+using AuraEditor.Common;
+using AuraEditor.ViewModels;
 
 namespace AuraEditor
 {
@@ -39,7 +41,7 @@ namespace AuraEditor
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
 
-        public TimelineEffect SelectedEffect
+        public EffectLineViewModel SelectedEffect
         {
             get
             {
@@ -77,7 +79,7 @@ namespace AuraEditor
 
                 if (g_PressCtrl == true)
                 {
-                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
 
                     LayerModel layer = SelectedEffect.Layer;
                     layer.DeleteEffectLine(SelectedEffect);
@@ -89,7 +91,7 @@ namespace AuraEditor
                     return;
 
                 if (g_PressCtrl == true)
-                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
@@ -98,7 +100,7 @@ namespace AuraEditor
 
                 g_CanPaste = false;
 
-                var copy = TimelineEffect.CloneEffect(LayerPage.CopiedEffect);
+                var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
 
                 if (SelectedEffect != null)
                 {
@@ -107,7 +109,7 @@ namespace AuraEditor
                 }
                 else
                 {
-                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
+                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
                 }
 
                 TimeSpan delay = TimeSpan.FromMilliseconds(400);
@@ -328,6 +330,7 @@ namespace AuraEditor
             }
 
             LayerPage.AddLayer(layer);
+            Log.Debug("[SetLayerButton] Add the layer : " + layer.Name);
             LayerPage.CheckedLayer = layer;
             NeedSave = true;
         }
@@ -338,7 +341,7 @@ namespace AuraEditor
             SpacePage.SetSpaceStatus(SpaceStatus.DraggingDevice);
 
             oldSortingPositions.Clear();
-            foreach(var dm in SpacePage.DeviceModelCollection)
+            foreach (var dm in SpacePage.DeviceModelCollection)
             {
                 oldSortingPositions.Add(dm, new Point(dm.PixelLeft, dm.PixelTop));
             }
@@ -395,6 +398,15 @@ namespace AuraEditor
                 NoSupportedDeviceGrid.Visibility = Visibility.Visible;
             else
                 NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void UndoButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReUndoManager.GetInstance().Undo();
+        }
+        private void RedoButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReUndoManager.GetInstance().Redo();
         }
         #endregion
 
@@ -570,17 +582,15 @@ namespace AuraEditor
         }
         #endregion
 
-
         #region -- UI initial get device from service --
 
 
         #endregion
 
-
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             //ConnectedDevicesDialog.Rescan();
-            LayerPage.GetLayerCount();
+            SpacePage.DeviceModelCollection[0].PixelLeft = 100;
         }
     }
 }

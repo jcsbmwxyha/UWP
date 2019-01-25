@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AuraEditor.Common.ReUndoManager">
+    <Position X="3.5" Y="3.25" Width="2" />
+    <Members>
+      <Field Name="_self" Hidden="true" />
+      <Method Name="GetInstance" Hidden="true" />
+      <Method Name="ReUndoManager" Hidden="true" />
+    </Members>
+    <AssociationLine Name="RedoStack" Type="AuraEditor.Common.IReUndoCommand">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.155" Y="0.513" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="UndoStack" Type="AuraEditor.Common.IReUndoCommand">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.122" Y="0.495" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAABBAAAAgAAIAAAAQAAAAQ=</HashCode>
+      <FileName>Common\ReUndoCommand.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="RedoStack" />
+      <Field Name="UndoStack" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AuraEditor.Pages.LayerPage">
+    <Position X="6.75" Y="1" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="AuraEditor.Pages.LayerPage.AddLayerCommand" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Pages\LayerPage.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="AuraEditor.Pages.LayerPage.DeleteLayerCommand" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Pages\LayerPage.xaml.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAgEAA0jAhUmAAliHghDgEUQDCUEBEBEhAAARoagQAg=</HashCode>
+      <FileName>Pages\LayerPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="AuraEditor.Common.IReUndoCommand">
+    <Position X="3.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Common\ReUndoCommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

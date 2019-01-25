@@ -96,8 +96,6 @@ namespace AuraEditor.Common
         public const int GridPixels = 24;
         public const double PixelsBetweenLongLines = 200;
         public const double MaxEditTime = 600; // second
-        public const string UserScriptsDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserScripts\\";
-        public const string UserFilesDefaultFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\UserFiles\\";
         public const string LocalUserScriptsFolderName = "UserScripts";
         public const string LocalUserFilesFolderName = "UserFiles";
         public const float SpaceZoomDefaultPercent = 50;

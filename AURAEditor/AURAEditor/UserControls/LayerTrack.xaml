@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:usercontrol="using:AuraEditor.UserControls"
+    xmlns:common="using:AuraEditor.Common"
+    xmlns:viewmodels="using:AuraEditor.ViewModels"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -26,5 +28,24 @@
                 <MenuFlyoutItem Text="Delete" IsEnabled="False"/>
             </MenuFlyout>
         </Canvas.ContextFlyout>
+        <ItemsControl Name="Lines" Margin="0,8,0,0" Height="20"
+                          ItemsSource="{x:Bind Path=m_Layer.EffectLineViewModels}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="Left"/>
+                    <Setter Property="common:BindingHelper.WidthBindingPath" Value="Width"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:EffectLineViewModel">
+                    <usercontrol:EffectLine/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Canvas>
 </UserControl>

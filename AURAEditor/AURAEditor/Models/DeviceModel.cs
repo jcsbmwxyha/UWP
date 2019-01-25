@@ -197,7 +197,7 @@ namespace AuraEditor.Models
                 ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
                 ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
 
-                string auraCreatorFolderPath = "C:\\ProgramData\\ASUS\\AURA Creator\\Devices\\";
+                string auraCreatorFolderPath = ApplicationData.Current.LocalFolder.Path + "\\Devices\\";
                 double rateW = 0;
                 double rateH = 0;
                 int originalPixelWidth = 1000;

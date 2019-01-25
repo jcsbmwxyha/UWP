@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using AuraEditor.Common;
 using static AuraEditor.Common.MetroEventSource;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
@@ -32,7 +31,7 @@ namespace AuraEditor.Dialogs
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             string sendToLiveService = "[SyncStatus]";
-            ObservableCollection<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
+            List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
 
             foreach (SyncDeviceModel sd in m_SyncDeviceList)
             {
@@ -68,6 +67,7 @@ namespace AuraEditor.Dialogs
         {
             try
             {
+                Log.Debug("[Rescan] Start !");
                 m_SyncDeviceList.Clear();
                 string deviceList = await GetPluggedDevicesFromService();
                 string[] deviceArray = deviceList.Split(':');

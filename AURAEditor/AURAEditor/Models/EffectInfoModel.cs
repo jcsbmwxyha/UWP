@@ -65,6 +65,7 @@ namespace AuraEditor.Models
         public bool BrightnessGroupVisible;
         public bool SpeedGroupVisible;
         public bool AngleGroupVisible;
+        public bool RainbowRotationVisible;
         public bool TemperatureGroupVisible;
         public bool RandomVisible;
 
@@ -206,6 +207,22 @@ namespace AuraEditor.Models
             }
         }
 
+        private bool _rainbowRotation;
+        public bool RainbowRotation
+        {
+            get
+            {
+                return _rainbowRotation;
+            }
+            set
+            {
+                _rainbowRotation = value;
+                RaisePropertyChanged("RainbowRotation");
+            }
+        }
+
+        public int RotationMode;
+
         public EffectInfoModel() { }
         public EffectInfoModel(int type)
         {
@@ -222,7 +239,9 @@ namespace AuraEditor.Models
             High = 60;
             Low = 30;
             ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
-            ColorSegmentation = false;
+            ColorSegmentation = true;
+            RainbowRotation = false;
+            RotationMode = 1;
             PatternSelect = 5;
         }
 
@@ -237,6 +256,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = false;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Breath":
@@ -246,6 +266,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "ColorCycle":
@@ -255,6 +276,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Rainbow":
@@ -264,6 +286,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = true;
+                    RainbowRotationVisible = true;
                     TemperatureGroupVisible = false;
                     break;
                 case "Strobing":
@@ -273,6 +296,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Comet":
@@ -282,6 +306,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = true;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Star":
@@ -291,6 +316,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Tide":
@@ -300,6 +326,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = true;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Raidus":
@@ -309,6 +336,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = false;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Reactive":
@@ -318,6 +346,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Laser":
@@ -327,6 +356,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Ripple":
@@ -336,6 +366,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = true;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Music":
@@ -345,6 +376,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = false;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
                 case "Smart":
@@ -354,6 +386,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = false;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = true;
                     break;
                 default:
@@ -363,6 +396,7 @@ namespace AuraEditor.Models
                     BrightnessGroupVisible = false;
                     SpeedGroupVisible = false;
                     AngleGroupVisible = false;
+                    RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
             }
@@ -383,7 +417,9 @@ namespace AuraEditor.Models
             High = 60;
             Low = 30;
             ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
-            ColorSegmentation = false;
+            ColorSegmentation = true;
+            RainbowRotation = false;
+            RotationMode = 1;
             PatternSelect = 5;
         }
 
@@ -1177,6 +1213,14 @@ namespace AuraEditor.Models
             XmlNode colorSegmentationNode = CreateXmlNode("colorSegmentation");
             colorSegmentationNode.InnerText = ColorSegmentation.ToString();
             effectNode.AppendChild(colorSegmentationNode);
+
+            XmlNode rainbowRotationNode = CreateXmlNode("rainbowRotation");
+            rainbowRotationNode.InnerText = RainbowRotation.ToString();
+            effectNode.AppendChild(rainbowRotationNode);
+
+            XmlNode rotationModeNode = CreateXmlNode("rotationMode");
+            rotationModeNode.InnerText = RotationMode.ToString();
+            effectNode.AppendChild(rotationModeNode);
 
             return effectNode;
         }

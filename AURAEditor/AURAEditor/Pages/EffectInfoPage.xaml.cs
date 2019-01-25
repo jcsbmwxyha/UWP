@@ -52,6 +52,14 @@ namespace AuraEditor.Pages
 
             ColorPatternModel patternModel = new ColorPatternModel(m_Info);
             ColorPattern.DataContext = patternModel;
+            if (m_Info.RotationMode == 1)
+            {
+                ClockwiseRbt.IsChecked = true;
+            }
+            else if (m_Info.RotationMode == 2)
+            {
+                CountclockwiseRbt.IsChecked = true;
+            }
             Bindings.Update();
         }
 
@@ -66,6 +74,8 @@ namespace AuraEditor.Pages
             m_Info.Low = 30;
             m_Info.ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
             m_Info.ColorSegmentation = true;
+            m_Info.RainbowRotation = false;
+            m_Info.RotationMode = 1;
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -282,6 +292,43 @@ namespace AuraEditor.Pages
                 textdecrease -= 5;
                 textdecrease %= 360;
                 AngleStoryboardStart(textdecrease);
+            }
+        }
+
+        private void RainbowRoatationSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if(RainbowRoatationSwitch.IsOn == true)
+            {
+                m_Info.RainbowRotation = true;
+                AngleGridCC.IsEnabled = false;
+                AngleGridCC.Opacity = 0.5;
+                ClockwiseRbtCC.IsEnabled = true;
+                ClockwiseRbtCC.Opacity = 1;
+            }
+            else
+            {
+                m_Info.RainbowRotation = false;
+                AngleGridCC.IsEnabled = true;
+                AngleGridCC.Opacity = 1;
+                ClockwiseRbtCC.IsEnabled = false;
+                ClockwiseRbtCC.Opacity = 0.5;
+            }
+        }
+
+        private void RotationRbt_Click(object sender, RoutedEventArgs e)
+        {
+            RadioButton rotationmodeBtn = sender as RadioButton;
+            switch (rotationmodeBtn.Name)
+            {
+                case "ClockwiseRbt":
+                    m_Info.RotationMode = 1;
+                    break;
+                case "CountclockwiseRbt":
+                    m_Info.RotationMode = 2;
+                    break;
+                default:
+                    m_Info.RotationMode = 1;
+                    break;
             }
         }
         #endregion

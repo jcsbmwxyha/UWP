@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.ApplicationModel;
+using Windows.Storage;
 using Windows.System;
 using Windows.System.Threading;
 
@@ -52,7 +53,7 @@ namespace AuraEditor
         long retCode = 0L;
         long error = 0L;
         //private bool DEBUG = true;
-        string cmd = @"C:\ProgramData\Asus\AURA Creator\lastscript.xml";
+        string cmd = ApplicationData.Current.LocalFolder.Path + "\\lastscript.xml";
         int num = 0;
         public static int returnnum = 0;
         public static string devicename = "None";
