@@ -41,6 +41,7 @@ namespace AuraEditor.Dialogs
 
         public void CloseApp()
         {
+            WindowsPage.Self.SaveEULASettings();
             Application.Current.Exit();
         }
     }

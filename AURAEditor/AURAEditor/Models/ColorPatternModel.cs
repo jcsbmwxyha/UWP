@@ -88,10 +88,10 @@ namespace AuraEditor.Models
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
             this.info = info;
 
-            foreach (var cp in info.ColorPointList)
+            foreach (var cp in info.CustomizedPattern)
                 cp.ParentPattern = this;
 
-            CustomizeColorPoints = info.ColorPointList;
+            CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
         }
 

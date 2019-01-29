@@ -197,7 +197,7 @@ namespace AuraEditor
             SaveEULASettings();
         }
 
-        private void SaveEULASettings()
+        public void SaveEULASettings()
         {
             g_EULASettings.Values["EULAAgree"] = EulaAgreeOrNot.ToString();
         }

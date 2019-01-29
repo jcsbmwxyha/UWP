@@ -1,4 +1,5 @@
-﻿using AuraEditor.Pages;
+﻿using AuraEditor.Common;
+using AuraEditor.Pages;
 using AuraEditor.ViewModels;
 using System;
 using System.ComponentModel;
@@ -26,6 +27,7 @@ namespace AuraEditor.UserControls
         private DispatcherTimer m_ScrollTimerClock;
         private double _tempSizeAllPosition;
         private bool _isPressed;
+        private double _oldLeft;
         private double ViewModelLeft
         {
             get
@@ -152,8 +154,9 @@ namespace AuraEditor.UserControls
             if (_isPressed)
             {
                 // Getting ScrollViewer is speculative, but it do the trick.
-                m_ScrollViewer = FindParentControl<ScrollViewer>(this, typeof(ScrollViewer));
-                Point position2 = e.GetCurrentPoint(this).Position;
+                m_ScrollViewer = FindParentControl<ScrollViewer>(elvm.Layer.UI_Track, typeof(ScrollViewer));
+                Point position2 = e.GetCurrentPoint(elvm.Layer.UI_Track).Position;
+
 
                 Rect screenRect = new Rect(
                     m_ScrollViewer.HorizontalOffset,
@@ -225,7 +228,7 @@ namespace AuraEditor.UserControls
         {
             m_ScrollTimerClock.Start();
             _isPressed = true;
-
+            _oldLeft = ViewModelLeft;
             if (mouseState == CursorState.SizeAll)
                 _tempSizeAllPosition = e.Position.X;
 
@@ -315,10 +318,13 @@ namespace AuraEditor.UserControls
 
             LayerPage.Self.UpdateSupportLine(0);
             elvm.Layer.MoveToFitPosition(elvm);
+
             mouseState = CursorState.None;
             NeedSave = true;
             this.Opacity = 1;
             this.SetValue(Canvas.ZIndexProperty, 0);
+
+            ReUndoManager.GetInstance().Store(new MoveEffectCommand(elvm, _oldLeft, ViewModelLeft));
         }
         private bool GetAlignPosition(double p, ref double result)
         {
@@ -387,6 +393,29 @@ namespace AuraEditor.UserControls
         static private void ScrollTimeLinePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as EffectLine).ViewModelLeft = (double)e.NewValue;
+        }
+
+        public class MoveEffectCommand : IReUndoCommand
+        {
+            private EffectLineViewModel _elvm;
+            private double _oldLeft;
+            private double _newLeft;
+
+            public MoveEffectCommand(EffectLineViewModel elvm, double oldLeft, double newLeft)
+            {
+                _elvm = elvm;
+                _oldLeft = oldLeft;
+                _newLeft = newLeft;
+            }
+
+            public void ExecuteRedo()
+            {
+                _elvm.Left = _newLeft;
+            }
+            public void ExecuteUndo()
+            {
+                _elvm.Left = _oldLeft;
+            }
         }
     }
 }

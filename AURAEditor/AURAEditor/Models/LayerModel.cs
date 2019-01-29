@@ -98,7 +98,7 @@ namespace AuraEditor.Models
                 }
             }
         }
-
+        public LayerTrack UI_Track;
         public LayerModel(string name = "")
         {
             EffectLineViewModels = new ObservableCollection<EffectLineViewModel>();
@@ -108,21 +108,51 @@ namespace AuraEditor.Models
             Name = name;
             Eye = true;
 
+            UI_Track = new LayerTrack
+            {
+                DataContext = this,
+            };
+            UI_Track.Height = 52;
+
+
             m_ZoneDictionary = new Dictionary<int, int[]>();
             TriggerAction = "One Click";
         }
 
         private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            EffectLineViewModel elvm;
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     break;
                 case NotifyCollectionChangedAction.Add:
+                    elvm = e.NewItems[0] as EffectLineViewModel;
+                    ReUndoManager.GetInstance().Store(new AddEffectCommand(elvm));
                     break;
             }
         }
+        public class AddEffectCommand : IReUndoCommand
+        {
+            EffectLineViewModel _elvm;
 
+            public AddEffectCommand(EffectLineViewModel elvm)
+            {
+                _elvm = elvm;
+            }
+
+            public void ExecuteRedo()
+            {
+                var layer = _elvm.Layer;
+                layer.AddTimelineEffect(_elvm);
+            }
+            public void ExecuteUndo()
+            {
+                var layer = _elvm.Layer;
+                layer.DeleteEffectLine(_elvm);
+            }
+        }
         #region -- Zones --
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()

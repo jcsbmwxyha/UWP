@@ -556,13 +556,15 @@ namespace AuraEditor
                     Stream inputStream = socket.InputStream.AsStreamForRead();
                     StreamReader streamReader = new StreamReader(inputStream);
                     response = await streamReader.ReadLineAsync();
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                    {
-                        //from Service message
-                        StatusTextBlock.Text = "Service : " + response;
-                        Log.Debug("[ReceiveData] Rescan ...");
-                        await ConnectedDevicesDialog.Rescan();
-                    });
+
+                    if (response.Contains("[SYNCSTATUS_CHANGE]"))
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            //from Service message
+                            StatusTextBlock.Text = "Service : " + response;
+                            Log.Debug("[ReceiveData] Rescan ...");
+                            await ConnectedDevicesDialog.Rescan();
+                        });
                 }
                 catch (Exception ex)
                 {

@@ -38,12 +38,15 @@
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="RandomGroup" Orientation="Vertical" HorizontalAlignment="Left"
+                <StackPanel x:Name="RandomGroup" Orientation="Vertical" HorizontalAlignment="Left" Margin="20,0,0,0"
                             Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
-                    <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0" Click="ColorModeSelection_Click"
+                    <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                  GroupName="ColorModeSelection" IsChecked="{x:Bind m_Info.Random, Mode=TwoWay}">
                         <TextBlock x:Name="RandomTextBlock" Text="Random" Foreground="White"/>
                     </RadioButton>
+                    <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
+                                                 RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
+                                                 Margin="0,20,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
                 </StackPanel>
 
                 <StackPanel x:Name="PatternGroup" Orientation="Vertical"

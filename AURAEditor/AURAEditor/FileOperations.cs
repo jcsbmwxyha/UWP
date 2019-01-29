@@ -506,14 +506,16 @@ namespace AuraEditor
                         Speed = Int32.Parse(element2.SelectSingleNode("speed").InnerText),
                         Angle = Int32.Parse(element2.SelectSingleNode("angle").InnerText),
                         Random = bool.Parse(element2.SelectSingleNode("random").InnerText),
+                        RandomRangeMax = Int32.Parse(element2.SelectSingleNode("randomRangeMax").InnerText),
+                        RandomRangeMin = Int32.Parse(element2.SelectSingleNode("randomRangeMin").InnerText),
                         ColorModeSelection = Int32.Parse(element2.SelectSingleNode("colormodeselection").InnerText),
                         High = Int32.Parse(element2.SelectSingleNode("high").InnerText),
                         Low = Int32.Parse(element2.SelectSingleNode("low").InnerText),
                         PatternSelect = Int32.Parse(element2.SelectSingleNode("patternSelect").InnerText),
-                        ColorPointList = new List<ColorPointModel>(colorPoints),
+                        CustomizedPattern = new List<ColorPointModel>(colorPoints),
                         ColorSegmentation = bool.Parse(element2.SelectSingleNode("colorSegmentation").InnerText),
-                        RainbowRotation = bool.Parse(element2.SelectSingleNode("rainbowRotation").InnerText),
-                        RotationMode = Int32.Parse(element2.SelectSingleNode("rotationMode").InnerText),
+                        RainbowSpecialEffects = bool.Parse(element2.SelectSingleNode("rainbowRotation").InnerText),
+                        RainbowSpecialMode = Int32.Parse(element2.SelectSingleNode("rotationMode").InnerText),
                     };
 
                     if (!IsTriggerEffect(type))

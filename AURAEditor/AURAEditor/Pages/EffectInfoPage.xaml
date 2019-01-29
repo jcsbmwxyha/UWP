@@ -70,17 +70,21 @@
                 </Button>
             </RelativePanel>
             <StackPanel>
-                <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Margin="20,20,0,20" Tapped="ColorRadioBtn_Tapped"
+                <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Margin="20,0,0,0">
+                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="0,20,0,0"/>
+                    <StackPanel Orientation="Vertical">
+                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Margin="0,20,0,20" Tapped="ColorRadioBtn_Tapped"
                                       Background="{x:Bind m_Info.InitColor, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
-                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="20,0,0,0"
+                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="0,0,0,0"
                                   Click="RandomCheckBox_Click" Style="{StaticResource RogCheckBoxStyle}" 
                                   Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"
                                   IsChecked="{x:Bind m_Info.Random, Mode=TwoWay}">
                             <TextBlock Text="Random" Foreground="White"/>
                         </CheckBox>
+                        <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
+                                                 RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
+                                                 Margin="0,20,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -162,15 +166,18 @@
                     </ContentControl>
                     <StackPanel x:Name="RotationStackPanel" Orientation="Vertical" Margin="0,20,0,0"  Visibility="{x:Bind m_Info.RainbowRotationVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Rainbow Roatation" VerticalAlignment="Center" FontSize="15"/>
+                            <TextBlock Text="Special effects" VerticalAlignment="Center" FontSize="15"/>
                             <ToggleSwitch x:Name="RainbowRoatationSwitch" MinWidth="20" VerticalAlignment="Center" Margin="30,0,0,0"
                                           Style="{StaticResource RogToggleSwitchStyle}" Toggled="RainbowRoatationSwitch_Toggled"
-                                          IsOn="{x:Bind m_Info.RainbowRotation, Mode=TwoWay}"/>
+                                          IsOn="{x:Bind m_Info.RainbowSpecialEffects, Mode=TwoWay}"/>
                         </StackPanel>
                         <ContentControl x:Name="ClockwiseRbtCC" IsEnabled="False" Opacity="0.5">
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,20">
-                                <RadioButton x:Name="ClockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonClockwiseStyle}" GroupName="Clockwise" Click="RotationRbt_Click"/>
-                                <RadioButton x:Name="CountclockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonCountclockwiseStyle}" GroupName="Clockwise" Click="RotationRbt_Click"/>
+                                <RadioButton x:Name="ClockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonClockwiseStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click"/>
+                                <RadioButton x:Name="CountclockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonCountclockwiseStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0"/>
+                                <RadioButton x:Name="OutwardRbt" Width="40" Style="{StaticResource RogRadioButtonOutwardStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0"/>
+                                <RadioButton x:Name="InwardRbt" Width="40" Style="{StaticResource RogRadioButtonInwardStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0"/>
+                                
                             </StackPanel>
                         </ContentControl>
                     </StackPanel>

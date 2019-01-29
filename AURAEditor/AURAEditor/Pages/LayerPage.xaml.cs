@@ -193,10 +193,12 @@ namespace AuraEditor.Pages
                     layer = e.OldItems[0] as LayerModel;
                     _oldRemovedLayer = layer;
                     _oldRemovedIndex = e.OldStartingIndex;
+                    TrackStackPanel.Children.Remove(layer.UI_Track);
                     break;
                 case NotifyCollectionChangedAction.Add:
                     layer = e.NewItems[0] as LayerModel;
                     layerIndex = e.NewStartingIndex;
+                    TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
                     if (layer.Equals(_oldRemovedLayer))
                     {
                         ReUndoManager.GetInstance().Store(new SwapLayerCommand(_oldRemovedIndex, layerIndex));
@@ -284,6 +286,7 @@ namespace AuraEditor.Pages
         public void Clean()
         {
             CheckedLayer = null;
+            TrackStackPanel.Children.Clear();
             Layers.Clear();
         }
         public void ClearTypeData(int deviceType)

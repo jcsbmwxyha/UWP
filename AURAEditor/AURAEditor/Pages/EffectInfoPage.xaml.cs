@@ -52,13 +52,35 @@ namespace AuraEditor.Pages
 
             ColorPatternModel patternModel = new ColorPatternModel(m_Info);
             ColorPattern.DataContext = patternModel;
-            if (m_Info.RotationMode == 1)
+            if (m_Info.RainbowSpecialMode == 1)
             {
                 ClockwiseRbt.IsChecked = true;
             }
-            else if (m_Info.RotationMode == 2)
+            else if (m_Info.RainbowSpecialMode == 2)
             {
                 CountclockwiseRbt.IsChecked = true;
+            }
+            else if (m_Info.RainbowSpecialMode == 3)
+            {
+                OutwardRbt.IsChecked = true;
+            }
+            else if (m_Info.RainbowSpecialMode == 4)
+            {
+                InwardRbt.IsChecked = true;
+            }
+            if (m_Info.Random == true)
+            {
+                RadioButtonBg.Opacity = 0.5;
+                RadioButtonBg.IsEnabled = false;
+                RandomRangeSlider.Opacity = 1;
+                RandomRangeSlider.IsEnabled = true;
+            }
+            else
+            {
+                RadioButtonBg.Opacity = 1;
+                RadioButtonBg.IsEnabled = true;
+                RandomRangeSlider.Opacity = 0.5;
+                RandomRangeSlider.IsEnabled = false;
             }
             Bindings.Update();
         }
@@ -70,12 +92,14 @@ namespace AuraEditor.Pages
             m_Info.Speed = 1;
             m_Info.Angle = 90;
             m_Info.Random = false;
+            m_Info.RandomRangeMax = 12;
+            m_Info.RandomRangeMin = 0;
             m_Info.High = 60;
             m_Info.Low = 30;
-            m_Info.ColorPointList = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
+            m_Info.CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
             m_Info.ColorSegmentation = true;
-            m_Info.RainbowRotation = false;
-            m_Info.RotationMode = 1;
+            m_Info.RainbowSpecialEffects = false;
+            m_Info.RainbowSpecialMode = 1;
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -102,11 +126,15 @@ namespace AuraEditor.Pages
             {
                 RadioButtonBg.Opacity = 0.5;
                 RadioButtonBg.IsEnabled = false;
+                RandomRangeSlider.Opacity = 1;
+                RandomRangeSlider.IsEnabled = true;
             }
             else
             {
                 RadioButtonBg.Opacity = 1;
                 RadioButtonBg.IsEnabled = true;
+                RandomRangeSlider.Opacity = 0.5;
+                RandomRangeSlider.IsEnabled = false;
             }
         }
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -299,7 +327,7 @@ namespace AuraEditor.Pages
         {
             if(RainbowRoatationSwitch.IsOn == true)
             {
-                m_Info.RainbowRotation = true;
+                m_Info.RainbowSpecialEffects = true;
                 AngleGridCC.IsEnabled = false;
                 AngleGridCC.Opacity = 0.5;
                 ClockwiseRbtCC.IsEnabled = true;
@@ -307,7 +335,7 @@ namespace AuraEditor.Pages
             }
             else
             {
-                m_Info.RainbowRotation = false;
+                m_Info.RainbowSpecialEffects = false;
                 AngleGridCC.IsEnabled = true;
                 AngleGridCC.Opacity = 1;
                 ClockwiseRbtCC.IsEnabled = false;
@@ -321,13 +349,19 @@ namespace AuraEditor.Pages
             switch (rotationmodeBtn.Name)
             {
                 case "ClockwiseRbt":
-                    m_Info.RotationMode = 1;
+                    m_Info.RainbowSpecialMode = 1;
                     break;
                 case "CountclockwiseRbt":
-                    m_Info.RotationMode = 2;
+                    m_Info.RainbowSpecialMode = 2;
+                    break;
+                case "OutwardRbt":
+                    m_Info.RainbowSpecialMode = 3;
+                    break;
+                case "InwardRbt":
+                    m_Info.RainbowSpecialMode = 4;
                     break;
                 default:
-                    m_Info.RotationMode = 1;
+                    m_Info.RainbowSpecialMode = 1;
                     break;
             }
         }

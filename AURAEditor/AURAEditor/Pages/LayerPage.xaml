@@ -790,24 +790,7 @@
                         <TranslateTransform X="{x:Bind playerModel.Position, Mode=OneWay}"/>
                     </Line.RenderTransform>
                 </Line>
-                <ItemsControl Name="LayerTracks" ItemsSource="{x:Bind Path=Layers}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="Height" Value="52"/>
-                            <Setter Property="Width" Value="5000"/>
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:LayerModel">
-                            <usercontrol:LayerTrack Width="5000" Height="52"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <StackPanel Name="TrackStackPanel"/>
             </Canvas>
         </ScrollViewer>
         <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="1" Grid.ColumnSpan="5" Canvas.ZIndex="-1" HorizontalAlignment="Left"

@@ -193,6 +193,9 @@
     <Compile Include="UserControls\ColorPointView.xaml.cs">
       <DependentUpon>ColorPointView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\RangeSlider.xaml.cs">
+      <DependentUpon>RangeSlider.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SyncDeviceView.xaml.cs">
       <DependentUpon>SyncDeviceView.xaml</DependentUpon>
     </Compile>
@@ -368,6 +371,10 @@
     <Content Include="Assets\EffectInfoGroup\clockwise_p.png" />
     <Content Include="Assets\EffectInfoGroup\countclockwise_n.png" />
     <Content Include="Assets\EffectInfoGroup\countclockwise_p.png" />
+    <Content Include="Assets\EffectInfoGroup\Inward_n.png" />
+    <Content Include="Assets\EffectInfoGroup\Inward_p.png" />
+    <Content Include="Assets\EffectInfoGroup\Outward_n.png" />
+    <Content Include="Assets\EffectInfoGroup\Outward_p.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_n.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_nh.png" />
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_l_s.png" />
@@ -501,6 +508,9 @@
     <Content Include="Assets\NoticeImage\asus_ac_error_ic.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_h.png" />
     <Content Include="Assets\NoticeImage\asus_ac_notice_ic_n.png" />
+    <Content Include="Assets\RandomSlider\asus_ac_temperature_hint_d.png" />
+    <Content Include="Assets\RandomSlider\asus_ac_temperature_hint_n.png" />
+    <Content Include="Assets\RandomSlider\rainbow_bg.png" />
     <Content Include="Assets\Tab\asus_ac_tab_select.png" />
     <Content Include="Assets\TitleBar.png" />
     <Content Include="Assets\ToggleButton\asus_ac_reset_select_d.png" />
@@ -687,6 +697,10 @@
     <Page Include="UserControls\ColorPointView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RangeSlider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\SyncDeviceView.xaml">
       <SubType>Designer</SubType>

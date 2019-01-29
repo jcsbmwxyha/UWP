@@ -307,8 +307,7 @@ namespace AuraEditor.Models
                                     else
                                         szm.Zindex = 1;
 
-                                    string pngPath = auraCreatorFolderPath + modelName + "\\" + row[png_Column];
-                                    StorageFile ledPngFile = await StorageFile.GetFileFromPathAsync(pngPath);
+                                    StorageFile ledPngFile = await folder.GetFileAsync(row[png_Column]);
                                     Log.Debug("[GetDeviceModel] Parse led png : " + ledPngFile.Name);
 
                                     using (IRandomAccessStream stream = await ledPngFile.OpenAsync(FileAccessMode.Read))
@@ -351,7 +350,7 @@ namespace AuraEditor.Models
 
                 return dm;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Debug("[DeviceContent] Model load failed : " + modelName + ", " + ex.ToString());
                 return null;
