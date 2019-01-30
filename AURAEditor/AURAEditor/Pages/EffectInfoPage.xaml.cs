@@ -68,19 +68,47 @@ namespace AuraEditor.Pages
             {
                 InwardRbt.IsChecked = true;
             }
-            if (m_Info.Random == true)
+            switch (m_Info.ColorModeSelection)
             {
-                RadioButtonBg.Opacity = 0.5;
-                RadioButtonBg.IsEnabled = false;
-                RandomRangeSlider.Opacity = 1;
-                RandomRangeSlider.IsEnabled = true;
-            }
-            else
-            {
-                RadioButtonBg.Opacity = 1;
-                RadioButtonBg.IsEnabled = true;
-                RandomRangeSlider.Opacity = 0.5;
-                RandomRangeSlider.IsEnabled = false;
+                case 1:
+                    Single.IsChecked = true;
+
+                    RadioButtonBg.Opacity = 1;
+                    RadioButtonBg.IsEnabled = true;
+
+                    DoubleColor.Opacity = 0.5;
+                    DoubleColor.IsEnabled = false;
+
+                    RandomRangeSlider.Opacity = 0.5;
+                    RandomRangeSlider.IsEnabled = false;
+                    RandomTextBlock.Opacity = 0.5;
+                    break;
+                case 2:
+                    Random.IsChecked = true;
+
+                    RadioButtonBg.Opacity = 0.5;
+                    RadioButtonBg.IsEnabled = false;
+
+                    DoubleColor.Opacity = 0.5;
+                    DoubleColor.IsEnabled = false;
+
+                    RandomRangeSlider.Opacity = 1;
+                    RandomRangeSlider.IsEnabled = true;
+                    RandomTextBlock.Opacity = 1;
+                    break;
+                case 4:
+                    DoubleRb.IsChecked = true;
+
+                    RadioButtonBg.Opacity = 0.5;
+                    RadioButtonBg.IsEnabled = false;
+
+                    DoubleColor.Opacity = 1;
+                    DoubleColor.IsEnabled = true;
+
+                    RandomRangeSlider.Opacity = 0.5;
+                    RandomRangeSlider.IsEnabled = false;
+                    RandomTextBlock.Opacity = 0.5;
+                    break;
             }
             Bindings.Update();
         }
@@ -88,10 +116,11 @@ namespace AuraEditor.Pages
         private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             m_Info.InitColor = Colors.Red;
+            m_Info.DoubleColor1 = Colors.Red;
+            m_Info.DoubleColor2 = Colors.Blue;
             m_Info.Brightness = 3;
             m_Info.Speed = 1;
             m_Info.Angle = 90;
-            m_Info.Random = false;
             m_Info.RandomRangeMax = 12;
             m_Info.RandomRangeMin = 0;
             m_Info.High = 60;
@@ -103,8 +132,9 @@ namespace AuraEditor.Pages
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)RadioButtonBg.Background).Color);
-            RadioButtonBg.Background = new SolidColorBrush(newColor);
+            RadioButton rb = sender as RadioButton;
+            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)rb.Background).Color);
+            rb.Background = new SolidColorBrush(newColor);
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
         {
@@ -120,21 +150,50 @@ namespace AuraEditor.Pages
                 return colorPickerDialog.PreColor;
             }
         }
-        private void RandomCheckBox_Click(object sender, RoutedEventArgs e)
+        private void ColorModeSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (RandomCheckBox.IsChecked == true)
+            RadioButton rb = sender as RadioButton;
+            switch (rb.Name)
             {
-                RadioButtonBg.Opacity = 0.5;
-                RadioButtonBg.IsEnabled = false;
-                RandomRangeSlider.Opacity = 1;
-                RandomRangeSlider.IsEnabled = true;
-            }
-            else
-            {
-                RadioButtonBg.Opacity = 1;
-                RadioButtonBg.IsEnabled = true;
-                RandomRangeSlider.Opacity = 0.5;
-                RandomRangeSlider.IsEnabled = false;
+                case "Single":
+                    m_Info.ColorModeSelection = 1;
+
+                    RadioButtonBg.Opacity = 1;
+                    RadioButtonBg.IsEnabled = true;
+
+                    DoubleColor.Opacity = 0.5;
+                    DoubleColor.IsEnabled = false;
+
+                    RandomRangeSlider.Opacity = 0.5;
+                    RandomRangeSlider.IsEnabled = false;
+                    RandomTextBlock.Opacity = 0.5;
+                    break;
+                case "Random":
+                    m_Info.ColorModeSelection = 2;
+
+                    RadioButtonBg.Opacity = 0.5;
+                    RadioButtonBg.IsEnabled = false;
+
+                    DoubleColor.Opacity = 0.5;
+                    DoubleColor.IsEnabled = false;
+
+                    RandomRangeSlider.Opacity = 1;
+                    RandomRangeSlider.IsEnabled = true;
+                    RandomTextBlock.Opacity = 1;
+                    break;
+                case "DoubleRb":
+                    m_Info.ColorModeSelection = 4;
+
+                    RadioButtonBg.Opacity = 0.5;
+                    RadioButtonBg.IsEnabled = false;
+
+                    DoubleColor.Opacity = 1;
+                    DoubleColor.IsEnabled = true;
+
+                    RandomRangeSlider.Opacity = 0.5;
+                    RandomRangeSlider.IsEnabled = false;
+                    RandomTextBlock.Opacity = 0.5;
+                    break;
             }
         }
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)

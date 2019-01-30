@@ -73,19 +73,41 @@
                 <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
                             Margin="20,0,0,0">
                     <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="0,20,0,0"/>
-                    <StackPanel Orientation="Vertical">
-                        <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Margin="0,20,0,20" Tapped="ColorRadioBtn_Tapped"
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Name="Single" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
+                                     GroupName="ColorModeSelection" Margin="0,10,0,0">
+                            <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
                                       Background="{x:Bind m_Info.InitColor, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
-                        <CheckBox Name="RandomCheckBox" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Margin="0,0,0,0"
-                                  Click="RandomCheckBox_Click" Style="{StaticResource RogCheckBoxStyle}" 
-                                  Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"
-                                  IsChecked="{x:Bind m_Info.Random, Mode=TwoWay}">
-                            <TextBlock Text="Random" Foreground="White"/>
-                        </CheckBox>
-                        <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
-                                                 RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
-                                                 Margin="0,20,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                        </RadioButton>
                     </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="DoubleColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.DoubleColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
+                            Margin="20,10,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Name="DoubleRb" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
+                                     GroupName="ColorModeSelection">
+                            <ContentControl x:Name="DoubleColor">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton x:Name="RadioButtonBg_1" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
+                                      Background="{x:Bind m_Info.DoubleColor1, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
+                                    <RadioButton x:Name="RadioButtonBg_2" Style="{StaticResource RogRadioColorBtn}" Margin="12,0,0,0" Tapped="ColorRadioBtn_Tapped"
+                                      Background="{x:Bind m_Info.DoubleColor2, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </ContentControl>
+                        </RadioButton>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="RandomGroup" Orientation="Vertical" Margin="20,10,0,0"
+                            Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
+                    <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" RequestedTheme="Dark" Click="ColorModeSelection_Click"
+                                     GroupName="ColorModeSelection">
+                        <TextBlock x:Name="RandomTextBlock" Text="Random" Foreground="White" VerticalAlignment="Center"/>
+                    </RadioButton>
+                    <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
+                                                 RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
+                                                 Margin="0,10,0,0"/>
                 </StackPanel>
 
                 <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.PatternGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">

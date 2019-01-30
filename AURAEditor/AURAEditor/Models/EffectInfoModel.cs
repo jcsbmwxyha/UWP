@@ -45,6 +45,8 @@ namespace AuraEditor.Models
 
         public bool ColorGroupVisible;
 
+        public bool DoubleColorGroupVisible;
+
         private bool _patternGroupVisible;
         public bool PatternGroupVisible
         {
@@ -86,6 +88,40 @@ namespace AuraEditor.Models
             }
         }
 
+        private Color _doubleColor1;
+        public Color DoubleColor1
+        {
+            get
+            {
+                return _doubleColor1;
+            }
+            set
+            {
+                if (value == _doubleColor1)
+                    return;
+
+                _doubleColor1 = value;
+                RaisePropertyChanged("DoubleColor1");
+            }
+        }
+
+        private Color _doubleColor2;
+        public Color DoubleColor2
+        {
+            get
+            {
+                return _doubleColor2;
+            }
+            set
+            {
+                if (value == _doubleColor2)
+                    return;
+
+                _doubleColor2 = value;
+                RaisePropertyChanged("DoubleColor2");
+            }
+        }
+
         private int _brightness;
         public int Brightness
         {
@@ -111,20 +147,6 @@ namespace AuraEditor.Models
             {
                 _speed = value;
                 RaisePropertyChanged("Speed");
-            }
-        }
-
-        private bool _random;
-        public bool Random
-        {
-            get
-            {
-                return _random;
-            }
-            set
-            {
-                _random = value;
-                RaisePropertyChanged("Random");
             }
         }
 
@@ -201,6 +223,7 @@ namespace AuraEditor.Models
             }
         }
 
+        //ColorModeSelection : 1 = single color, 2 = random color, 3 = pattern color, 4 = double color
         private int _colorModeSelection; // For Trigger Dialog Ripple
         public int ColorModeSelection
         {
@@ -248,7 +271,7 @@ namespace AuraEditor.Models
                 RaisePropertyChanged("RainbowSpecialEffects");
             }
         }
-
+        //RainbowSpecialMode : 1 = clockwise, 2 = countclockwise, 3 = outward, 4 = inward
         public int RainbowSpecialMode;
 
         public EffectInfoModel() { }
@@ -259,11 +282,12 @@ namespace AuraEditor.Models
 
             Type = type;
             InitColor = Colors.Red;
+            DoubleColor1 = Colors.Red;
+            DoubleColor2 = Colors.Blue;
             Brightness = 3;
             Speed = 1;
             ColorModeSelection = 1;
             Angle = 90;
-            Random = false;
             RandomRangeMax = 12;
             RandomRangeMin = 0;
             High = 60;
@@ -281,6 +305,7 @@ namespace AuraEditor.Models
             {
                 case "Static":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -291,6 +316,7 @@ namespace AuraEditor.Models
                     break;
                 case "Breath":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = true;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -301,6 +327,7 @@ namespace AuraEditor.Models
                     break;
                 case "ColorCycle":
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -311,6 +338,7 @@ namespace AuraEditor.Models
                     break;
                 case "Rainbow":
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = true;
                     BrightnessGroupVisible = false;
@@ -321,6 +349,7 @@ namespace AuraEditor.Models
                     break;
                 case "Strobing":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = true;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -331,6 +360,7 @@ namespace AuraEditor.Models
                     break;
                 case "Comet":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -341,6 +371,7 @@ namespace AuraEditor.Models
                     break;
                 case "Star":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -351,6 +382,7 @@ namespace AuraEditor.Models
                     break;
                 case "Tide":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -361,6 +393,7 @@ namespace AuraEditor.Models
                     break;
                 case "Raidus":
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -371,6 +404,7 @@ namespace AuraEditor.Models
                     break;
                 case "Reactive":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -381,6 +415,7 @@ namespace AuraEditor.Models
                     break;
                 case "Laser":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = true;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -391,6 +426,7 @@ namespace AuraEditor.Models
                     break;
                 case "Ripple":
                     ColorGroupVisible = true;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = true;
                     PatternGroupVisible = true;
                     BrightnessGroupVisible = false;
@@ -401,6 +437,7 @@ namespace AuraEditor.Models
                     break;
                 case "Music":
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -411,6 +448,7 @@ namespace AuraEditor.Models
                     break;
                 case "Smart":
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -421,6 +459,7 @@ namespace AuraEditor.Models
                     break;
                 default:
                     ColorGroupVisible = false;
+                    DoubleColorGroupVisible = false;
                     RandomVisible = false;
                     PatternGroupVisible = false;
                     BrightnessGroupVisible = false;
@@ -439,11 +478,12 @@ namespace AuraEditor.Models
 
             Type = type;
             InitColor = Colors.Red;
+            DoubleColor1 = Colors.Red;
+            DoubleColor2 = Colors.Blue;
             Brightness = 3;
             Speed = 1;
             ColorModeSelection = 1;
             Angle = 90;
-            Random = false;
             RandomRangeMax = 12;
             RandomRangeMin = 0;
             High = 60;
@@ -486,7 +526,7 @@ namespace AuraEditor.Models
 
             effectNode.AppendChild(GetViewportTransformXmlNode());
             effectNode.AppendChild(GetWaveListXmlNode(zoneCount));
-            effectNode.AppendChild(GetInitColorXmlNode(InitColor, Random));
+            effectNode.AppendChild(GetInitColorXmlNode(InitColor));
 
             return effectNode;
         }
@@ -679,7 +719,7 @@ namespace AuraEditor.Models
                 waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "LIGHTNESS" }));
                 waveListNode.AppendChild(waveNode2);
 
-                if (Random)
+                if (ColorModeSelection == 2)
                 {
                     XmlNode waveNode3 = CreateXmlNode("wave");
                     waveNode3.AppendChild(CreateXmlNodeByValue("type", "RandomWave"));
@@ -698,6 +738,46 @@ namespace AuraEditor.Models
                     waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                     waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
                     waveListNode.AppendChild(waveNode3);
+                }
+                else if(ColorModeSelection == 4)
+                {
+                    XmlNode waveNode3 = CreateXmlNode("wave");
+                    waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("length", "23"));
+                    if (Speed == 0)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                    else if (Speed == 1)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                    else // 2
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                    waveNode3.AppendChild(GetCustomizedNodeFromDoubleColor(0));
+                    waveListNode.AppendChild(waveNode3);
+
+                    XmlNode waveNode4 = CreateXmlNode("wave");
+                    waveNode4.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("length", "23"));
+                    if (Speed == 0)
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.05"));
+                    else if (Speed == 1)
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.1"));
+                    else // 2
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.2"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode4.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
+                    waveNode4.AppendChild(GetCustomizedNodeFromDoubleColor(1));
+                    waveListNode.AppendChild(waveNode4);
                 }
             }
             else if (GetEffectName(Type) == "ColorCycle")
@@ -874,7 +954,7 @@ namespace AuraEditor.Models
                 waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode2);
 
-                if (Random)
+                if (ColorModeSelection == 2)
                 {
                     XmlNode waveNode3 = CreateXmlNode("wave");
                     waveNode3.AppendChild(CreateXmlNodeByValue("type", "RandomWave"));
@@ -893,6 +973,46 @@ namespace AuraEditor.Models
                     waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
                     waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
                     waveListNode.AppendChild(waveNode3);
+                }
+                else if (ColorModeSelection == 4)
+                {
+                    XmlNode waveNode3 = CreateXmlNode("wave");
+                    waveNode3.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("length", "23"));
+                    if (Speed == 0)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.4"));
+                    else if (Speed == 1)
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.6"));
+                    else // 2
+                        waveNode3.AppendChild(CreateXmlNodeByValue("freq", "0.8"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode3.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode3.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
+                    waveNode3.AppendChild(GetCustomizedNodeFromDoubleColor(0));
+                    waveListNode.AppendChild(waveNode3);
+
+                    XmlNode waveNode4 = CreateXmlNode("wave");
+                    waveNode4.AppendChild(CreateXmlNodeByValue("type", "CustomStepWave"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("max", "1"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("min", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("length", "23"));
+                    if (Speed == 0)
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.4"));
+                    else if (Speed == 1)
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.6"));
+                    else // 2
+                        waveNode4.AppendChild(CreateXmlNodeByValue("freq", "0.8"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("phase", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("start", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("velocity", "0"));
+                    waveNode4.AppendChild(CreateXmlNodeByValue("isCycle", "0"));
+                    waveNode4.AppendChild(GetBindToSlotXmlNode(new List<string> { "SATURATION" }));
+                    waveNode4.AppendChild(GetCustomizedNodeFromDoubleColor(1));
+                    waveListNode.AppendChild(waveNode4);
                 }
             }
             else if (GetEffectName(Type) == "Comet")
@@ -923,7 +1043,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
 
-                if (Random == true)
+                if (ColorModeSelection == 2)
                 {
                     // wave 2
                     XmlNode waveNode2 = CreateXmlNode("wave");
@@ -1023,7 +1143,7 @@ namespace AuraEditor.Models
                 waveNode2.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode2);
 
-                if (Random)
+                if (ColorModeSelection == 2)
                 {
                     XmlNode waveNode3 = CreateXmlNode("wave");
                     waveNode3.AppendChild(CreateXmlNodeByValue("type", "RandomWave"));
@@ -1059,7 +1179,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
 
-                if (Random)
+                if (ColorModeSelection == 2)
                 {
                     XmlNode waveNode2 = CreateXmlNode("wave");
                     waveNode2.AppendChild(CreateXmlNodeByValue("type", "RandomWave"));
@@ -1095,7 +1215,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
 
-                if (Random)
+                if (ColorModeSelection == 2)
                 {
                     XmlNode waveNode2 = CreateXmlNode("wave");
                     waveNode2.AppendChild(CreateXmlNodeByValue("type", "RandomWave"));
@@ -1276,6 +1396,19 @@ namespace AuraEditor.Models
             }
             return customizedNode;
         }
+
+        private XmlNode GetCustomizedNodeFromDoubleColor(int hsv)
+        {
+            XmlNode customizedNode = CreateXmlNode("customized");
+            //Main Double Color
+            customizedNode.AppendChild(SetNodeInfoXmlNode(0, 0, DoubleColor1, hsv));
+            customizedNode.AppendChild(SetNodeInfoXmlNode(1, 0.5, DoubleColor2, hsv));
+
+            //The last point is not used, just use the color to execute the script.
+            customizedNode.AppendChild(SetNodeInfoXmlNode(2, 1, DoubleColor1, hsv));
+            return customizedNode;
+        }
+
         static private XmlNode SetNodeInfoXmlNode(int key, double offset, Color c, int hsv)
         {
             XmlNode nodeXmlNode = CreateXmlNode("node");
@@ -1294,20 +1427,13 @@ namespace AuraEditor.Models
             return nodeXmlNode;
         }
 
-        static private XmlNode GetInitColorXmlNode(Color c, bool random)
+        static private XmlNode GetInitColorXmlNode(Color c)
         {
             XmlNode initColorNode = CreateXmlNode("initColor");
             double[] hsl = AuraEditorColorHelper.RgbTOHsl(c);
 
             XmlNode hueNode = CreateXmlNode("hue");
-            if (random == true)
-            {
-                hueNode.InnerText = "Random";
-            }
-            else
-            {
-                hueNode.InnerText = hsl[0].ToString();
-            }
+            hueNode.InnerText = hsl[0].ToString();
             initColorNode.AppendChild(hueNode);
 
             XmlNode saturationNode = CreateXmlNode("saturation");
@@ -1350,6 +1476,38 @@ namespace AuraEditor.Models
             bNode.InnerText = InitColor.B.ToString();
             effectNode.AppendChild(bNode);
 
+            XmlNode d1aNode = CreateXmlNode("d1a");
+            d1aNode.InnerText = DoubleColor1.A.ToString();
+            effectNode.AppendChild(d1aNode);
+
+            XmlNode d1rNode = CreateXmlNode("d1r");
+            d1rNode.InnerText = DoubleColor1.R.ToString();
+            effectNode.AppendChild(d1rNode);
+
+            XmlNode d1gNode = CreateXmlNode("d1g");
+            d1gNode.InnerText = DoubleColor1.G.ToString();
+            effectNode.AppendChild(d1gNode);
+
+            XmlNode d1bNode = CreateXmlNode("d1b");
+            d1bNode.InnerText = DoubleColor1.B.ToString();
+            effectNode.AppendChild(d1bNode);
+
+            XmlNode d2aNode = CreateXmlNode("d2a");
+            d2aNode.InnerText = DoubleColor2.A.ToString();
+            effectNode.AppendChild(d2aNode);
+
+            XmlNode d2rNode = CreateXmlNode("d2r");
+            d2rNode.InnerText = DoubleColor2.R.ToString();
+            effectNode.AppendChild(d2rNode);
+
+            XmlNode d2gNode = CreateXmlNode("d2g");
+            d2gNode.InnerText = DoubleColor2.G.ToString();
+            effectNode.AppendChild(d2gNode);
+
+            XmlNode d2bNode = CreateXmlNode("d2b");
+            d2bNode.InnerText = DoubleColor2.B.ToString();
+            effectNode.AppendChild(d2bNode);
+
             XmlNode brightnessNode = CreateXmlNode("brightness");
             brightnessNode.InnerText = Brightness.ToString();
             effectNode.AppendChild(brightnessNode);
@@ -1361,10 +1519,6 @@ namespace AuraEditor.Models
             XmlNode angleNode = CreateXmlNode("angle");
             angleNode.InnerText = ((int)Angle).ToString();
             effectNode.AppendChild(angleNode);
-
-            XmlNode randomNode = CreateXmlNode("random");
-            randomNode.InnerText = Random.ToString();
-            effectNode.AppendChild(randomNode);
 
             XmlNode randomRangeMaxNode = CreateXmlNode("randomRangeMax");
             randomRangeMaxNode.InnerText = RandomRangeMax.ToString();

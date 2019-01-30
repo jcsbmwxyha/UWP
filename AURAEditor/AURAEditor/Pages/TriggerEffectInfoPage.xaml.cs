@@ -84,12 +84,10 @@ namespace AuraEditor.Pages
             {
                 case 1:
                     Single.IsChecked = true;
-                    effectInfo.Random = false;
 
                     ColorGroup.Opacity = 1;
                     TriggerColorPickerButtonBg.IsEnabled = true;
-
-                    m_Info.Random = false;
+                    
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 0.5;
@@ -98,12 +96,10 @@ namespace AuraEditor.Pages
                     break;
                 case 2:
                     Random.IsChecked = true;
-                    effectInfo.Random = true;
 
                     ColorGroup.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-
-                    m_Info.Random = true;
+                    
                     RandomGroup.Opacity = 1;
 
                     PatternGroup.Opacity = 0.5;
@@ -112,12 +108,10 @@ namespace AuraEditor.Pages
                     break;
                 case 3:
                     Pattern.IsChecked = true;
-                    effectInfo.Random = false;
 
                     ColorGroup.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-
-                    m_Info.Random = false;
+                    
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 1;
@@ -164,8 +158,7 @@ namespace AuraEditor.Pages
 
                     ColorGroup.Opacity = 1;
                     TriggerColorPickerButtonBg.IsEnabled = true;
-
-                    m_Info.Random = false;
+                    
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 0.5;
@@ -177,8 +170,7 @@ namespace AuraEditor.Pages
 
                     ColorGroup.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-
-                    m_Info.Random = true;
+                    
                     RandomGroup.Opacity = 1;
 
                     PatternGroup.Opacity = 0.5;
@@ -190,8 +182,7 @@ namespace AuraEditor.Pages
 
                     ColorGroup.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-
-                    m_Info.Random = false;
+                    
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 1;

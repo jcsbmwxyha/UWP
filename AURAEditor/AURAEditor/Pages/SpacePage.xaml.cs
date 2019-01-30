@@ -846,10 +846,10 @@ namespace AuraEditor.Pages
 
             // Draw mouse rectangle
             Rect r = m_MouseEventCtrl.MouseRect;
-            TranslateTransform tt = MouseRectangle.RenderTransform as TranslateTransform;
+            CompositeTransform ct = MouseRectangle.RenderTransform as CompositeTransform;
 
-            tt.X = r.X;
-            tt.Y = r.Y;
+            ct.TranslateX = r.X;
+            ct.TranslateY = r.Y;
             MouseRectangle.Width = r.Width;
             MouseRectangle.Height = r.Height;
         }

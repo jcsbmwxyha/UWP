@@ -22,7 +22,6 @@ using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Pages.SpacePage;
 using AuraEditor.Common;
-using AuraEditor.ViewModels;
 
 namespace AuraEditor.Pages
 {
@@ -92,8 +91,8 @@ namespace AuraEditor.Pages
             }
         }
 
-        private EffectLineViewModel _checkedEffect;
-        public EffectLineViewModel CheckedEffect
+        private TimelineEffect _checkedEffect;
+        public TimelineEffect CheckedEffect
         {
             get
             {
@@ -117,19 +116,18 @@ namespace AuraEditor.Pages
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    CheckedLayer = value.Layer;
-                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Model.Info);
+                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Info);
                     NeedSave = true;
                 }
             }
         }
-        public EffectLineViewModel CopiedEffect;
+        public TimelineEffect CopiedEffect;
 
         public double PlayTime
         {
             get
             {
-                EffectLineViewModel effect = GetRightmostEffect();
+                TimelineEffect effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.StartTime + effect.DurationTime : 0;
             }
@@ -138,20 +136,20 @@ namespace AuraEditor.Pages
         {
             get
             {
-                EffectLineViewModel effect = GetRightmostEffect();
+                TimelineEffect effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.Right : 0;
             }
         }
-        private EffectLineViewModel GetRightmostEffect()
+        private TimelineEffect GetRightmostEffect()
         {
             double position = 0;
             double rightmostPosition = 0;
-            EffectLineViewModel rightmostEffect = null;
+            TimelineEffect rightmostEffect = null;
 
             foreach (LayerModel layer in Layers)
             {
-                foreach (var effect in layer.EffectLineViewModels)
+                foreach (var effect in layer.TimelineEffects)
                 {
                     position = effect.Left + effect.Width;
 
@@ -185,6 +183,8 @@ namespace AuraEditor.Pages
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            CheckedLayer = null;
+
             LayerModel layer;
             int layerIndex;
             switch (e.Action)
@@ -512,16 +512,16 @@ namespace AuraEditor.Pages
                 {
                     y1 = y1_long;
 
-                    TranslateTransform tt = new TranslateTransform
+                    CompositeTransform ct = new CompositeTransform
                     {
-                        X = x + 10,
-                        Y = 5
+                        TranslateX = x + 10,
+                        TranslateY = 5
                     };
 
                     TextBlock tb = new TextBlock
                     {
                         Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = tt,
+                        RenderTransform = ct,
                         Foreground = new SolidColorBrush(Colors.White)
                     };
 
@@ -548,10 +548,10 @@ namespace AuraEditor.Pages
         {
             foreach (var layer in Layers)
             {
-                foreach (var effect in layer.EffectLineViewModels)
+                foreach (var effect in layer.TimelineEffects)
                 {
-                    effect.Left = effect.Left;
-                    effect.Width = effect.Width;
+                    effect.Left = effect.Left * rate;
+                    effect.Width = effect.Width * rate;
                 }
             }
         }
@@ -587,7 +587,7 @@ namespace AuraEditor.Pages
             LayerZoomSlider.Value -= 1;
         }
 
-        public double[] GetAlignPositions(EffectLineViewModel eff)
+        public double[] GetAlignPositions(TimelineEffect eff)
         {
             LayerModel layer = eff.Layer;
             List<double> result = new List<double>();

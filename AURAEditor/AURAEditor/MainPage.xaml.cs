@@ -23,7 +23,6 @@ using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
 using Windows.Foundation;
 using AuraEditor.Common;
-using AuraEditor.ViewModels;
 
 namespace AuraEditor
 {
@@ -41,7 +40,7 @@ namespace AuraEditor
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
 
-        public EffectLineViewModel SelectedEffect
+        public TimelineEffect SelectedEffect
         {
             get
             {
@@ -79,7 +78,7 @@ namespace AuraEditor
 
                 if (g_PressCtrl == true)
                 {
-                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
 
                     LayerModel layer = SelectedEffect.Layer;
                     layer.DeleteEffectLine(SelectedEffect);
@@ -91,7 +90,7 @@ namespace AuraEditor
                     return;
 
                 if (g_PressCtrl == true)
-                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
@@ -100,7 +99,7 @@ namespace AuraEditor
 
                 g_CanPaste = false;
 
-                var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
+                var copy = TimelineEffect.CloneEffect(LayerPage.CopiedEffect);
 
                 if (SelectedEffect != null)
                 {
@@ -109,7 +108,7 @@ namespace AuraEditor
                 }
                 else
                 {
-                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
+                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
                 }
 
                 TimeSpan delay = TimeSpan.FromMilliseconds(400);

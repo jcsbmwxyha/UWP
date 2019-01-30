@@ -53,8 +53,7 @@ namespace AuraEditor
                     continue;
 
                 List<Effect> effCollection = new List<Effect>();
-                foreach (var vm in layer.EffectLineViewModels)
-                    effCollection.Add(vm.Model);
+                effCollection.AddRange(layer.TimelineEffects);
                 layer.ComputeTriggerEffStartAndDuration();
                 effCollection.AddRange(layer.TriggerEffects);
 
@@ -128,8 +127,7 @@ namespace AuraEditor
                     continue;
 
                 List<Effect> effCollection = new List<Effect>();
-                foreach (var vm in layer.EffectLineViewModels)
-                    effCollection.Add(vm.Model);
+                effCollection.AddRange(layer.TimelineEffects);
                 effCollection.AddRange(layer.TriggerEffects);
 
                 foreach (Effect eff in effCollection)

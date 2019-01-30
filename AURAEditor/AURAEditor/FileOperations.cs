@@ -1,7 +1,6 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.Dialogs;
 using AuraEditor.Models;
-using AuraEditor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -502,10 +501,23 @@ namespace AuraEditor
                             G = Byte.Parse(element2.SelectSingleNode("g").InnerText),
                             B = Byte.Parse(element2.SelectSingleNode("b").InnerText),
                         },
+                        DoubleColor1 = new Color
+                        {
+                            A = Byte.Parse(element2.SelectSingleNode("d1a").InnerText),
+                            R = Byte.Parse(element2.SelectSingleNode("d1r").InnerText),
+                            G = Byte.Parse(element2.SelectSingleNode("d1g").InnerText),
+                            B = Byte.Parse(element2.SelectSingleNode("d1b").InnerText),
+                        },
+                        DoubleColor2 = new Color
+                        {
+                            A = Byte.Parse(element2.SelectSingleNode("d2a").InnerText),
+                            R = Byte.Parse(element2.SelectSingleNode("d2r").InnerText),
+                            G = Byte.Parse(element2.SelectSingleNode("d2g").InnerText),
+                            B = Byte.Parse(element2.SelectSingleNode("d2b").InnerText),
+                        },
                         Type = type,
                         Speed = Int32.Parse(element2.SelectSingleNode("speed").InnerText),
                         Angle = Int32.Parse(element2.SelectSingleNode("angle").InnerText),
-                        Random = bool.Parse(element2.SelectSingleNode("random").InnerText),
                         RandomRangeMax = Int32.Parse(element2.SelectSingleNode("randomRangeMax").InnerText),
                         RandomRangeMin = Int32.Parse(element2.SelectSingleNode("randomRangeMin").InnerText),
                         ColorModeSelection = Int32.Parse(element2.SelectSingleNode("colormodeselection").InnerText),
@@ -524,7 +536,7 @@ namespace AuraEditor
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
                         eff.Info = info;
-                        layer.AddTimelineEffect(new EffectLineViewModel(eff));
+                        layer.AddTimelineEffect(eff);
                     }
                     else
                     {

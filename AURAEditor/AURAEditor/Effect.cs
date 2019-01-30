@@ -1,5 +1,13 @@
-﻿using AuraEditor.Models;
+﻿using AuraEditor.Common;
+using AuraEditor.Models;
+using MoonSharp.Interpreter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
+using Windows.UI;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 
@@ -8,7 +16,7 @@ namespace AuraEditor
     public class Effect
     {
         public LayerModel Layer { get; set; }
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public string ScriptName { get; set; }
         public int Type { get; private set; }
         public virtual double StartTime { get; set; }
