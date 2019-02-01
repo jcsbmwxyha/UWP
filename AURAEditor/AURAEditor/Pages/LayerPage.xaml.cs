@@ -22,6 +22,7 @@ using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Pages.SpacePage;
 using AuraEditor.Common;
+using AuraEditor.ViewModels;
 
 namespace AuraEditor.Pages
 {
@@ -91,8 +92,8 @@ namespace AuraEditor.Pages
             }
         }
 
-        private TimelineEffect _checkedEffect;
-        public TimelineEffect CheckedEffect
+        private EffectLineViewModel _checkedEffect;
+        public EffectLineViewModel CheckedEffect
         {
             get
             {
@@ -116,18 +117,19 @@ namespace AuraEditor.Pages
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Info);
+                    CheckedLayer = value.Layer;
+                    m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Model.Info);
                     NeedSave = true;
                 }
             }
         }
-        public TimelineEffect CopiedEffect;
+        public EffectLineViewModel CopiedEffect;
 
         public double PlayTime
         {
             get
             {
-                TimelineEffect effect = GetRightmostEffect();
+                EffectLineViewModel effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.StartTime + effect.DurationTime : 0;
             }
@@ -136,20 +138,20 @@ namespace AuraEditor.Pages
         {
             get
             {
-                TimelineEffect effect = GetRightmostEffect();
+                EffectLineViewModel effect = GetRightmostEffect();
 
                 return (effect != null) ? effect.Right : 0;
             }
         }
-        private TimelineEffect GetRightmostEffect()
+        private EffectLineViewModel GetRightmostEffect()
         {
             double position = 0;
             double rightmostPosition = 0;
-            TimelineEffect rightmostEffect = null;
+            EffectLineViewModel rightmostEffect = null;
 
             foreach (LayerModel layer in Layers)
             {
-                foreach (var effect in layer.TimelineEffects)
+                foreach (var effect in layer.EffectLineViewModels)
                 {
                     position = effect.Left + effect.Width;
 
@@ -183,8 +185,6 @@ namespace AuraEditor.Pages
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CheckedLayer = null;
-
             LayerModel layer;
             int layerIndex;
             switch (e.Action)
@@ -468,11 +468,11 @@ namespace AuraEditor.Pages
 
                     if (_oldLayerZoomLevel != value)
                     {
-                        SecondsBetweenLongLines = GetSecondsPerTimeUnitByLevel(value);
+                        MSecondsBetweenLongLines = GetMSecondsPerTimeUnitByLevel(value);
                         playerModel.MaxEditWidth = PixelsPerSecond * MaxEditTime;
 
-                        int oldSecondsPerTimeUnit = GetSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
-                        double rate = (double)oldSecondsPerTimeUnit / SecondsBetweenLongLines;
+                        int oldSecondsPerTimeUnit = GetMSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
+                        double rate = (double)oldSecondsPerTimeUnit / MSecondsBetweenLongLines;
                         SetScaleText();
 
                         ChangeEffectsPosition(rate);
@@ -482,14 +482,14 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        static public int SecondsBetweenLongLines; // TimeUnit : the seconds between two long lines
-        static public double PixelsPerSecond { get { return PixelsBetweenLongLines / SecondsBetweenLongLines; } }
+        static public int MSecondsBetweenLongLines; // TimeUnit : the seconds between two long lines
+        static public double PixelsPerSecond { get { return (PixelsBetweenLongLines / MSecondsBetweenLongLines) * 1000; } }
 
         private void TimelineScaleInitialize()
         {
-            SecondsBetweenLongLines = GetSecondsPerTimeUnitByLevel(1); // Level 1
-            TimeSpan ts = new TimeSpan(0, 0, SecondsBetweenLongLines);
-            TimeSpan interval = new TimeSpan(0, 0, SecondsBetweenLongLines);
+            MSecondsBetweenLongLines = GetMSecondsPerTimeUnitByLevel(1); // Level 1
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
+            TimeSpan interval = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
 
             int pixelsBetweenLines = (int)(PixelsBetweenLongLines / 2);
             int width = (int)(PixelsPerSecond * MaxEditTime);
@@ -512,16 +512,16 @@ namespace AuraEditor.Pages
                 {
                     y1 = y1_long;
 
-                    CompositeTransform ct = new CompositeTransform
+                    TranslateTransform tt = new TranslateTransform
                     {
-                        TranslateX = x + 10,
-                        TranslateY = 5
+                        X = x + 10,
+                        Y = 5
                     };
 
                     TextBlock tb = new TextBlock
                     {
                         Text = ts.ToString("mm\\:ss"),
-                        RenderTransform = ct,
+                        RenderTransform = tt,
                         Foreground = new SolidColorBrush(Colors.White)
                     };
 
@@ -548,22 +548,33 @@ namespace AuraEditor.Pages
         {
             foreach (var layer in Layers)
             {
-                foreach (var effect in layer.TimelineEffects)
+                foreach (var effect in layer.EffectLineViewModels)
                 {
-                    effect.Left = effect.Left * rate;
-                    effect.Width = effect.Width * rate;
+                    effect.Left = effect.Left;
+                    effect.Width = effect.Width;
                 }
             }
         }
         private void SetScaleText()
         {
-            TimeSpan ts = new TimeSpan(0, 0, SecondsBetweenLongLines);
-            TimeSpan interval = new TimeSpan(0, 0, SecondsBetweenLongLines);
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
+            TimeSpan interval = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
 
-            foreach (var tb in TimeTextBlockCollection)
+            if (MSecondsBetweenLongLines < 1000)
             {
-                tb.Text = ts.ToString("mm\\:ss");
-                ts = ts.Add(interval);
+                foreach (var tb in TimeTextBlockCollection)
+                {
+                    tb.Text = ts.ToString("mm\\:ss\\.ff");
+                    ts = ts.Add(interval);
+                }
+            }
+            else
+            {
+                foreach (var tb in TimeTextBlockCollection)
+                {
+                    tb.Text = ts.ToString("mm\\:ss");
+                    ts = ts.Add(interval);
+                }
             }
         }
         static public double PositionToTime(double position)
@@ -587,7 +598,7 @@ namespace AuraEditor.Pages
             LayerZoomSlider.Value -= 1;
         }
 
-        public double[] GetAlignPositions(TimelineEffect eff)
+        public double[] GetAlignPositions(EffectLineViewModel eff)
         {
             LayerModel layer = eff.Layer;
             List<double> result = new List<double>();

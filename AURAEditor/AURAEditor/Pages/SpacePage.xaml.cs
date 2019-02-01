@@ -17,6 +17,7 @@ using AuraEditor.UserControls;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
+using static AuraEditor.Common.MetroEventSource;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -178,14 +179,20 @@ namespace AuraEditor.Pages
                 foreach (var dm in stageToTemp)
                 {
                     dm.Status = DeviceStatus.Temp;
+                    Log.Debug("[OnIngroupDevicesChanged] Stage To Temp Device : " + dm.Name);
                 }
+
                 foreach (var dm in tempToStage)
                 {
                     dm.Status = DeviceStatus.OnStage;
+                    Log.Debug("[OnIngroupDevicesChanged] Temp To Stage Device : " + dm.Name);
                 }
+                
+
                 foreach (var sd in newSD)
                 {
                     DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
+                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + dm.Name);
 
                     if (dm == null)
                         continue;
@@ -293,6 +300,10 @@ namespace AuraEditor.Pages
             SpaceCanvas.PointerMoved -= SpaceGrid_PointerMovedForDraggingWindow;
             SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
             SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+            RestrictLineLeft.Visibility = Visibility.Collapsed;
+            RestrictLineRight.Visibility = Visibility.Collapsed;
+            RestrictLineTop.Visibility = Visibility.Collapsed;
+            RestrictLineBottom.Visibility = Visibility.Collapsed;
 
             if (value == SpaceStatus.Clean)
             {
@@ -338,6 +349,11 @@ namespace AuraEditor.Pages
                 EnableAllDevicesOperation();
                 m_SetLayerButton.IsEnabled = true;
                 m_SetLayerRectangle.Visibility = Visibility.Collapsed;
+
+                RestrictLineLeft.Visibility = Visibility.Visible;
+                RestrictLineRight.Visibility = Visibility.Visible;
+                RestrictLineTop.Visibility = Visibility.Visible;
+                RestrictLineBottom.Visibility = Visibility.Visible;
             }
             else if (value == SpaceStatus.DraggingWindow)
             {
@@ -471,7 +487,7 @@ namespace AuraEditor.Pages
         #endregion
 
         #region -- Device Sorting --
-        public void MoveDeviceMousePosition(DeviceModel device, double offsetX, double offsetY)
+        public void MoveMousePosition(DeviceModel device, double offsetX, double offsetY)
         {
             m_MouseEventCtrl.MoveGroupRects(device.Type, offsetX, offsetY);
         }
@@ -515,37 +531,9 @@ namespace AuraEditor.Pages
                     dm.VisualState = "Normal";
                 }
             }
-
-            int offset = 24;
-
-            if (movedDev.PixelLeft < offset)
-                RestrictLineLeft.Visibility = Visibility.Visible;
-            else
-                RestrictLineLeft.Visibility = Visibility.Collapsed;
-
-            if (movedDev.PixelTop < offset)
-                RestrictLineTop.Visibility = Visibility.Visible;
-            else
-                RestrictLineTop.Visibility = Visibility.Collapsed;
-
-            Point rb_point = GetCanvasRightBottomPoint();
-
-            if (movedDev.PixelRight > rb_point.X - offset)
-                RestrictLineRight.Visibility = Visibility.Visible;
-            else
-                RestrictLineRight.Visibility = Visibility.Collapsed;
-
-            if (movedDev.PixelBottom > rb_point.Y - offset)
-                RestrictLineBottom.Visibility = Visibility.Visible;
-            else
-                RestrictLineBottom.Visibility = Visibility.Collapsed;
         }
         public void OnDeviceMoveCompleted()
         {
-            RestrictLineLeft.Visibility = Visibility.Collapsed;
-            RestrictLineRight.Visibility = Visibility.Collapsed;
-            RestrictLineTop.Visibility = Visibility.Collapsed;
-            RestrictLineBottom.Visibility = Visibility.Collapsed;
             m_ScrollTimerClock.Stop();
         }
         public bool IsPiling(DeviceModel testDev)
@@ -846,10 +834,10 @@ namespace AuraEditor.Pages
 
             // Draw mouse rectangle
             Rect r = m_MouseEventCtrl.MouseRect;
-            CompositeTransform ct = MouseRectangle.RenderTransform as CompositeTransform;
+            TranslateTransform tt = MouseRectangle.RenderTransform as TranslateTransform;
 
-            ct.TranslateX = r.X;
-            ct.TranslateY = r.Y;
+            tt.X = r.X;
+            tt.Y = r.Y;
             MouseRectangle.Width = r.Width;
             MouseRectangle.Height = r.Height;
         }

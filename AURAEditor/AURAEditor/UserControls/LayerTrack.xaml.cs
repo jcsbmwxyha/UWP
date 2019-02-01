@@ -1,5 +1,6 @@
 ﻿using AuraEditor.Models;
 using AuraEditor.Pages;
+using AuraEditor.ViewModels;
 using System;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
@@ -58,16 +59,16 @@ namespace AuraEditor.UserControls
             var pair = e.Data.Properties.FirstOrDefault();
             string effName = pair.Value as string;
             int type = GetEffectIndex(effName);
-
             var dropPosition = e.GetPosition(this);
             var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
-
-            TimelineEffect effect = new TimelineEffect(type);
+            EffectLineViewModel effect = new EffectLineViewModel(type);
             effect.View = new EffectLine();
+
             if (align > 0)
                 effect.Left = align;
             else
                 effect.Left = actualDropX >= 0 ? actualDropX : 0;
+
             m_Layer.InsertTimelineEffectFitly(effect);
             LayerPage.Self.CheckedEffect = effect;
             LayerPage.Self.UpdateSupportLine(0);
@@ -126,7 +127,7 @@ namespace AuraEditor.UserControls
             if (copy == null)
                 return;
 
-            m_Layer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
+            m_Layer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
         }
     }
 }

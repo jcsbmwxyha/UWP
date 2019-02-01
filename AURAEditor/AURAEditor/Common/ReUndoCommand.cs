@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static AuraEditor.UserControls.EffectLine;
 
 namespace AuraEditor.Common
 {
@@ -54,6 +55,12 @@ namespace AuraEditor.Common
             command.ExecuteRedo();
             UndoStack.Push(command);
             _mutex = false;
+
+            if(command is MoveEffectCommand c)
+            {
+                if (c.Conflict())
+                    Redo();
+            }
         }
         public void Undo()
         {
@@ -65,6 +72,12 @@ namespace AuraEditor.Common
             command.ExecuteUndo();
             RedoStack.Push(command);
             _mutex = false;
+
+            if (command is MoveEffectCommand c)
+            {
+                if (c.Conflict())
+                    Undo();
+            }
         }
         public void Clear()
         {

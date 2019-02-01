@@ -80,22 +80,22 @@ namespace AuraEditor.Common
             DefaultColorPointListCollection.Add(DefaultColorPoints6);
         }
 
-        static public int GetSecondsPerTimeUnitByLevel(int level)
+        static public int GetMSecondsPerTimeUnitByLevel(int level)
         {
             int seconds;
 
-            if (level == 1) seconds = 1;
-            else if (level == 2) seconds = 2;
-            else if (level == 3) seconds = 5;
-            else if (level == 4) seconds = 15;
-            else if (level == 5) seconds = 30;
-            else seconds = 60;
+            if (level == 1) seconds = 200;
+            else if (level == 2) seconds = 1000;
+            else if (level == 3) seconds = 2000;
+            else if (level == 4) seconds = 5000;
+            else if (level == 5) seconds = 15000;
+            else seconds = 30000;
 
             return seconds;
         }
         public const int GridPixels = 24;
         public const double PixelsBetweenLongLines = 200;
-        public const double MaxEditTime = 600; // second
+        public const double MaxEditTime = 360; // second
         public const string LocalUserScriptsFolderName = "UserScripts";
         public const string LocalUserFilesFolderName = "UserFiles";
         public const float SpaceZoomDefaultPercent = 50;

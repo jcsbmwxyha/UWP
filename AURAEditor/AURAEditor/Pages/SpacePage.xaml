@@ -180,7 +180,7 @@
                            Fill="#66FF0029" Stroke="Red" StrokeThickness="2" StrokeDashArray="5,2"
                            HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="8">
                     <Rectangle.RenderTransform>
-                        <CompositeTransform/>
+                        <TranslateTransform/>
                     </Rectangle.RenderTransform>
                 </Rectangle>
                 <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"/>

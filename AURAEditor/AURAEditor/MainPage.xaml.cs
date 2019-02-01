@@ -23,6 +23,7 @@ using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
 using Windows.Foundation;
 using AuraEditor.Common;
+using AuraEditor.ViewModels;
 
 namespace AuraEditor
 {
@@ -40,7 +41,7 @@ namespace AuraEditor
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
 
-        public TimelineEffect SelectedEffect
+        public EffectLineViewModel SelectedEffect
         {
             get
             {
@@ -78,7 +79,7 @@ namespace AuraEditor
 
                 if (g_PressCtrl == true)
                 {
-                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
 
                     LayerModel layer = SelectedEffect.Layer;
                     layer.DeleteEffectLine(SelectedEffect);
@@ -90,7 +91,7 @@ namespace AuraEditor
                     return;
 
                 if (g_PressCtrl == true)
-                    LayerPage.CopiedEffect = TimelineEffect.CloneEffect(SelectedEffect);
+                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.V)
             {
@@ -99,7 +100,7 @@ namespace AuraEditor
 
                 g_CanPaste = false;
 
-                var copy = TimelineEffect.CloneEffect(LayerPage.CopiedEffect);
+                var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
 
                 if (SelectedEffect != null)
                 {
@@ -108,7 +109,7 @@ namespace AuraEditor
                 }
                 else
                 {
-                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(TimelineEffect.CloneEffect(copy));
+                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
                 }
 
                 TimeSpan delay = TimeSpan.FromMilliseconds(400);
@@ -556,14 +557,13 @@ namespace AuraEditor
                     StreamReader streamReader = new StreamReader(inputStream);
                     response = await streamReader.ReadLineAsync();
 
-                    if (response.Contains("[SYNCSTATUS_CHANGE]"))
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                        {
-                            //from Service message
-                            StatusTextBlock.Text = "Service : " + response;
-                            Log.Debug("[ReceiveData] Rescan ...");
-                            await ConnectedDevicesDialog.Rescan();
-                        });
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    {
+                        //from Service message
+                        StatusTextBlock.Text = "Service : " + response;
+                        Log.Debug("[ReceiveData] Rescan ...");
+                        await ConnectedDevicesDialog.Rescan();
+                    });
                 }
                 catch (Exception ex)
                 {

@@ -1,6 +1,7 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.Dialogs;
 using AuraEditor.Models;
+using AuraEditor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -536,7 +537,7 @@ namespace AuraEditor
                         eff.StartTime = Int32.Parse(element2.SelectSingleNode("start").InnerText);
                         eff.DurationTime = Int32.Parse(element2.SelectSingleNode("duration").InnerText);
                         eff.Info = info;
-                        layer.AddTimelineEffect(eff);
+                        layer.AddTimelineEffect(new EffectLineViewModel(eff));
                     }
                     else
                     {
