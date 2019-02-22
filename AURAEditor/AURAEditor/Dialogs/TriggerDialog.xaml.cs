@@ -1,19 +1,10 @@
 ﻿using AuraEditor.Models;
-using AuraEditor.UserControls;
 using AuraEditor.Pages;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
@@ -122,6 +113,9 @@ namespace AuraEditor.Dialogs
                 m_Layer.IsTriggering = false;
 
             this.Hide();
+
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
     }
 }

@@ -108,7 +108,6 @@ namespace AuraEditor.Common
         }
         public static ContentDialog GetCurrentContentDialog()
         {
-            Frame frame = Window.Current.Content as Frame;
             var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
 
             if (popups.Count == 0)

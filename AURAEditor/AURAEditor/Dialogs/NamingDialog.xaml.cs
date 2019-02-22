@@ -34,11 +34,15 @@ namespace AuraEditor.Dialogs
             }
             Result = true;
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
         private void CancelButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             Result = false;
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
 
         private void NamingTextBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)

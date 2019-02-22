@@ -203,6 +203,7 @@ namespace AuraEditor.Pages
                     {
                         ReUndoManager.GetInstance().Store(new SwapLayerCommand(_oldRemovedIndex, layerIndex));
                     }
+                    CheckedLayer = layer;
                     break;
             }
 
@@ -229,6 +230,7 @@ namespace AuraEditor.Pages
             public void ExecuteRedo()
             {
                 LayerPage.Self.AddLayer(_layer);
+                LayerPage.Self.CheckedLayer = _layer;
             }
             public void ExecuteUndo()
             {
@@ -277,6 +279,7 @@ namespace AuraEditor.Pages
             public void ExecuteUndo()
             {
                 LayerPage.Self.Layers.Insert(_index, _layer);
+                LayerPage.Self.CheckedLayer = _layer;
             }
         }
         public int GetLayerCount()

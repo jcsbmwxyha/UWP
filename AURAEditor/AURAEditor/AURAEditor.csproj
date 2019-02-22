@@ -25,6 +25,7 @@
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <PackageCertificateThumbprint>57D0791331C85A43CE6BE11760D296B9FA48C9ED</PackageCertificateThumbprint>
+    <Win32Resource>CursorResource.res</Win32Resource>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -107,6 +108,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\ReUndoCommand.cs" />
+    <Compile Include="Dialogs\DeviceUpdatePromptDialog.xaml.cs">
+      <DependentUpon>DeviceUpdatePromptDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\EULADialog.xaml.cs">
+      <DependentUpon>EULADialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EULADisagreeDialog.xaml.cs">
       <DependentUpon>EULADisagreeDialog.xaml</DependentUpon>
     </Compile>
@@ -386,6 +393,8 @@
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
     <Content Include="Assets\EffectBlock\drag_effect_ic.png" />
     <Content Include="Assets\Background\grid.png" />
+    <Content Include="Assets\EULA\asus_ac_eula_card_bg.png" />
+    <Content Include="Assets\EULA\asus_ac_eula_ic.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
@@ -603,6 +612,9 @@
     <Content Include="AURAEditor.sccd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="CursorResource.res">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="RpcClient.dll" />
     <None Include="AuraEditor_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
@@ -626,6 +638,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\DeviceUpdatePromptDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\EULADialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\EULADisagreeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

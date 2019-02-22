@@ -35,10 +35,6 @@ namespace AuraEditor.Dialogs
 
             foreach (SyncDeviceModel sd in m_SyncDeviceList)
             {
-                DeviceModel find = deviceModels.Find(d => d.Name == sd.Name);
-                if (find != null)
-                    find.Status = DeviceStatus.OnStage;
-
                 sendToLiveService += sd.Name + ",";
                 sendToLiveService += sd.Sync == true ? "1," : "0,";
             }
@@ -51,6 +47,8 @@ namespace AuraEditor.Dialogs
             NotifyIngroupDevicesChanged();
             UpdateTemporaryCheckState();
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -61,6 +59,8 @@ namespace AuraEditor.Dialogs
                 arrayCount++;
             }
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
 
         public async Task Rescan()
@@ -129,6 +129,7 @@ namespace AuraEditor.Dialogs
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
                 return null;
+
             }
         }
         private void NotifyIngroupDevicesChanged()

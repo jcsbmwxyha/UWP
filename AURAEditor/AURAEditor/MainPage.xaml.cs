@@ -1,8 +1,16 @@
-﻿using System;
+﻿using AuraEditor.Common;
+using AuraEditor.Dialogs;
+using AuraEditor.Models;
+using AuraEditor.Pages;
+using AuraEditor.UserControls;
+using AuraEditor.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
 using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage;
@@ -11,19 +19,15 @@ using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using AuraEditor.Dialogs;
-using AuraEditor.Models;
-using AuraEditor.Pages;
-using AuraEditor.UserControls;
-using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.AuraEditorColorHelper;
+using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
-using Windows.Foundation;
-using AuraEditor.Common;
-using AuraEditor.ViewModels;
+using DevicZonesPair = System.Tuple<int, int[]>;
+using DeviceZonesPairList = System.Collections.Generic.List<System.Tuple<int, int[]>>;
 
 namespace AuraEditor
 {
@@ -37,6 +41,10 @@ namespace AuraEditor
         public SpacePage SpacePage;
         public LayerPage LayerPage;
         public ConnectedDevicesDialog ConnectedDevicesDialog;
+        public ContentDialog g_ContentDialog;
+        static private DeviceUpdatePromptDialog dupd;
+        public string g_NewPlugInDeviceName;
+        public bool CanShowDeviceUpdateDialog = true;
         ApplicationDataContainer g_LocalSettings;
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
@@ -57,11 +65,18 @@ namespace AuraEditor
         public bool g_PressShift;
         public bool g_PressCtrl;
         public bool g_CanPaste = true;
+        public bool g_PressZ = true;
+
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
+                if (g_PressZ)
+                {
+                    Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
+                    g_PressZ = false;
+                }
                 SpacePage.OnZKeyPressed();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
@@ -138,6 +153,8 @@ namespace AuraEditor
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Z)
             {
+                Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+                g_PressZ = true;
                 SpacePage.OnZKeyRelease();
             }
             else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
@@ -164,7 +181,7 @@ namespace AuraEditor
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
             g_LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
-            EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
+            //EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
             oldSortingPositions = new Dictionary<DeviceModel, Point>();
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -416,28 +433,46 @@ namespace AuraEditor
             if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
             {
                 LayerModel layer = LayerPage.CheckedLayer;
-                List<int> selectedIndex;
+                DeviceZonesPairList oldpairs = new DeviceZonesPairList();
+                DeviceZonesPairList newpairs = new DeviceZonesPairList();
 
                 foreach (DeviceModel dm in SpacePage.DeviceModelCollection)
                 {
-                    selectedIndex = new List<int>();
+                    var oldzones = layer.GetDeviceZones(dm.Type);
+                    oldpairs.Add(new DevicZonesPair(dm.Type, oldzones));
+
+                    List<int> selectedIndex = new List<int>();
 
                     foreach (var zone in dm.AllZones)
                     {
                         if (zone.Selected == true)
-                        {
                             selectedIndex.Add(zone.Index);
-                        }
                     }
 
                     layer.SetDeviceZones(dm.Type, selectedIndex.ToArray());
+                    newpairs.Add(new DevicZonesPair(dm.Type, selectedIndex.ToArray()));
                 }
 
                 NeedSave = true;
+                ReUndoManager.GetInstance().Store(new EditZonesCommand(layer, oldpairs, newpairs));
                 SpacePage.WatchLayer(layer);
             }
             else // Sorting
             {
+                var dmPositions = new Dictionary<DeviceModel, Tuple<double, double>>();
+
+                foreach (var pair in oldSortingPositions)
+                {
+                    DeviceModel dm = pair.Key;
+                    double moveX = dm.PixelLeft - pair.Value.X;
+                    double moveY = dm.PixelTop - pair.Value.Y;
+
+                    SpacePage.Self.DeleteOverlappingTempDevice(dm);
+                    SpacePage.Self.MoveMousePosition(dm, RoundToGrid(moveX), RoundToGrid(moveY));
+                    dmPositions.Add(dm, new Tuple<double, double>(moveX, moveY));
+                }
+
+                ReUndoManager.GetInstance().Store(new MoveDevicesCommand(dmPositions));
                 SpacePage.SetSpaceStatus(SpaceStatus.Clean);
             }
 
@@ -564,6 +599,38 @@ namespace AuraEditor
                         Log.Debug("[ReceiveData] Rescan ...");
                         await ConnectedDevicesDialog.Rescan();
                     });
+                    string[] infoArray = response.Split(new char[3] { '[', ']', ',' });
+                    if ((infoArray[1] == "PlugIn") && (infoArray[2] != " "))
+                    {
+                        g_NewPlugInDeviceName = infoArray[2];
+
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            var dialog = GetCurrentContentDialog();
+
+                            if (dialog != null)
+                            {
+                                if (!(dialog is DeviceUpdatePromptDialog))
+                                {
+                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
+                                    g_ContentDialog = dupd;
+                                }
+                            }
+                            else
+                            {
+                                if (CanShowDeviceUpdateDialog)
+                                {
+                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
+                                    await dupd.ShowAsync();
+                                }
+                                else
+                                {
+                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
+                                    g_ContentDialog = dupd;
+                                }
+                            }
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -588,10 +655,94 @@ namespace AuraEditor
 
         #endregion
 
+        public async void ShowDeviceUpdateDialogOrNot()
+        {
+            if (g_ContentDialog != null && CanShowDeviceUpdateDialog)
+            {
+                g_ContentDialog = new DeviceUpdatePromptDialog(g_NewPlugInDeviceName);
+                await g_ContentDialog.ShowAsync();
+            }
+        }
+
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             //ConnectedDevicesDialog.Rescan();
             SpacePage.DeviceModelCollection[0].PixelLeft = 100;
+        }
+
+        public class MoveDevicesCommand : IReUndoCommand
+        {
+            private Dictionary<DeviceModel, Tuple<double, double>> _dmMoveOffset;
+
+            public MoveDevicesCommand(Dictionary<DeviceModel, Tuple<double, double>> dmMoveOffset)
+            {
+                _dmMoveOffset = dmMoveOffset;
+            }
+
+            public void ExecuteRedo()
+            {
+                foreach (var pair in _dmMoveOffset)
+                {
+                    DeviceModel dm = pair.Key;
+                    double moveX = pair.Value.Item1;
+                    double moveY = pair.Value.Item2;
+
+                    dm.PixelLeft += moveX;
+                    dm.PixelTop += moveY;
+                    SpacePage.Self.DeleteOverlappingTempDevice(dm);
+                    SpacePage.Self.MoveMousePosition(dm, RoundToGrid(moveX), RoundToGrid(moveY));
+                }
+            }
+            public void ExecuteUndo()
+            {
+                foreach (var pair in _dmMoveOffset)
+                {
+                    DeviceModel dm = pair.Key;
+                    double moveX = pair.Value.Item1;
+                    double moveY = pair.Value.Item2;
+
+                    dm.PixelLeft -= moveX;
+                    dm.PixelTop -= moveY;
+                    SpacePage.Self.DeleteOverlappingTempDevice(dm);
+                    SpacePage.Self.MoveMousePosition(dm, RoundToGrid(-moveX), RoundToGrid(-moveY));
+                }
+            }
+        }
+        public class EditZonesCommand : IReUndoCommand
+        {
+            LayerModel _layer;
+            private DeviceZonesPairList _old_zoneIDs;
+            private DeviceZonesPairList _new_zoneIDs;
+
+            public EditZonesCommand(LayerModel layer, DeviceZonesPairList old_zoneIDs, DeviceZonesPairList new_zoneIDs)
+            {
+                _layer = layer;
+                _old_zoneIDs = old_zoneIDs;
+                _new_zoneIDs = new_zoneIDs;
+            }
+
+            public void ExecuteRedo()
+            {
+                foreach (var deviceZones in _new_zoneIDs)
+                {
+                    int type = deviceZones.Item1;
+                    int[] zones = deviceZones.Item2;
+                    _layer.SetDeviceZones(type, zones);
+                }
+                SpacePage.Self.WatchLayer(_layer);
+                LayerPage.Self.CheckedLayer = _layer;
+            }
+            public void ExecuteUndo()
+            {
+                foreach (var deviceZones in _old_zoneIDs)
+                {
+                    int type = deviceZones.Item1;
+                    int[] zones = deviceZones.Item2;
+                    _layer.SetDeviceZones(type, zones);
+                }
+                SpacePage.Self.WatchLayer(_layer);
+                LayerPage.Self.CheckedLayer = _layer;
+            }
         }
     }
 }

@@ -30,13 +30,11 @@ namespace AuraEditor.Dialogs
             CloseApp();
         }
 
-        private void BackEULABtn_Click(object sender, RoutedEventArgs e)
+        private async void BackEULABtn_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            WindowsPage.Self.SettingRelativePanel.Visibility = Visibility.Collapsed;
-            WindowsPage.Self.WindowsGrid.Visibility = Visibility.Collapsed;
-            WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Visible;
-            WindowsPage.Self.WindowsFrame1.Navigate(typeof(EULAPage), null, new SuppressNavigationTransitionInfo());
+            EULADialog ed = new EULADialog();
+            await ed.ShowAsync();
         }
 
         public void CloseApp()

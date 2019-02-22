@@ -135,6 +135,9 @@ namespace AuraEditor.Pages
             RadioButton rb = sender as RadioButton;
             Color newColor = await OpenColorPickerWindow(((SolidColorBrush)rb.Background).Color);
             rb.Background = new SolidColorBrush(newColor);
+
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
         public async Task<Color> OpenColorPickerWindow(Color c)
         {

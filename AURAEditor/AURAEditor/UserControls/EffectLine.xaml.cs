@@ -427,10 +427,12 @@ namespace AuraEditor.UserControls
             public void ExecuteRedo()
             {
                 _elvm.Left = _newV;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
             public void ExecuteUndo()
             {
                 _elvm.Left = _oldV;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
             public bool Conflict()
             {
@@ -457,10 +459,12 @@ namespace AuraEditor.UserControls
             public void ExecuteRedo()
             {
                 _elvm.Width = _newV;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
             public void ExecuteUndo()
             {
                 _elvm.Width = _oldV;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
         }
 
@@ -482,12 +486,14 @@ namespace AuraEditor.UserControls
                 double diff = _oldV - _newV;
                 _elvm.Left = _newV;
                 _elvm.Width += diff;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
             public void ExecuteUndo()
             {
                 double diff = _oldV - _newV;
                 _elvm.Left = _oldV;
                 _elvm.Width -= diff;
+                LayerPage.Self.CheckedEffect = _elvm;
             }
         }
     }

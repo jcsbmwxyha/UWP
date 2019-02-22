@@ -18,7 +18,7 @@
 
             <StackPanel Orientation="Vertical" Grid.Row="1" Margin="108,52,108,0">
                 <TextBlock Text="End User License Agreement" FontSize="20" FontWeight="Bold" Foreground="Red"/>
-                <ScrollViewer Height="780" Margin="0,12,0,0">
+                <ScrollViewer Height="750" Margin="0,12,0,100">
                     <RichTextBlock TextIndent="12" Foreground="White" FontFamily="Segoe UI">
                         <Paragraph>
                             This End User License Agreement (“EULA”) constitutes a valid and binding agreement between ASUSTeK Computer Inc. (“ASUS“) and You, as a user, for the use of the ASUS Software (“Software”) defined as set forth below. By installing and continuing to use the software YOU EXPRESSLY ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND AND AGREE TO BE BOUND BY THE TERMS OF THIS EULA AND ANY NEW VERSIONS HEREOF.
@@ -74,10 +74,6 @@ By sending any information, material, ideas, concepts or techniques except for p
                         </Paragraph>
                     </RichTextBlock>
                 </ScrollViewer>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
-                    <Button x:Name="AgreeBtn" Content="I Agree" Style="{StaticResource RogButtonStyle2}" Margin="0,0,20,0" Click="AgreeBtn_Click"/>
-                    <Button x:Name="DisagreeBtn" Content="I Do Not Agree" Style="{StaticResource RogButtonStyle2}" Click="DisagreeBtn_Click"/>
-                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>

@@ -44,15 +44,20 @@ namespace AuraEditor.Dialogs
         {
             Result = ContentDialogResult.Primary;
             this.Hide();
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
         private void NoButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             Result = ContentDialogResult.Secondary;
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
     }
 }

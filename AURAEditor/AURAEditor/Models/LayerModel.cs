@@ -141,6 +141,7 @@ namespace AuraEditor.Models
                     model.View = view;
                     UI_Track.Track.Children.Add(model.View);
                     ReUndoManager.GetInstance().Store(new AddEffectCommand(model));
+                    LayerPage.Self.CheckedEffect = model;
                     break;
             }
         }
@@ -216,6 +217,10 @@ namespace AuraEditor.Models
         public void AddDeviceZones(int type, int[] indexes)
         {
             m_ZoneDictionary.Add(type, indexes);
+        }
+        public int[] GetDeviceZones(int type)
+        {
+            return m_ZoneDictionary[type];
         }
         public void SetDeviceZones(int type, int[] indexes)
         {

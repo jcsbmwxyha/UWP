@@ -32,10 +32,12 @@ namespace AuraEditor.Models
         public async Task SetSoftwareBitmapAsync(SoftwareBitmap sb)
         {
             _sb = sb;
-            //InitialFrameColor();
+            _sb = SoftwareBitmap.Convert(_sb, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
+            InitialFrameColor();
+            _sb = SoftwareBitmap.Convert(_sb, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
 
             _imagesource = new SoftwareBitmapSource();
-            await _imagesource.SetBitmapAsync(sb);
+            await _imagesource.SetBitmapAsync(_sb);
             RaisePropertyChanged("Image");
         }
 
@@ -82,11 +84,11 @@ namespace AuraEditor.Models
                             if (dataInBytes[pixelIndex + 1] == 255) // inner
                             {
                                 dataInBytes[pixelIndex + 0] = (byte)0;
-                                dataInBytes[pixelIndex + 1] = (byte)255;
-                                dataInBytes[pixelIndex + 2] = (byte)0;
-                                dataInBytes[pixelIndex + 3] = (byte)1;
+                                dataInBytes[pixelIndex + 1] = (byte)41;
+                                dataInBytes[pixelIndex + 2] = (byte)255;
+                                dataInBytes[pixelIndex + 3] = (byte)2;
                             }
-                            else if (dataInBytes[pixelIndex + 3] != 0) // outer
+                            else
                             {
                                 dataInBytes[pixelIndex + 0] = (byte)255;
                                 dataInBytes[pixelIndex + 1] = (byte)255;
@@ -102,35 +104,43 @@ namespace AuraEditor.Models
             Color outer;
             Color inner;
 
-            if (status == RegionStatus.Normal)
+            if (_myStatus == status)
+                return;
+
+            _myStatus = status;
+
+            switch (_myStatus)
             {
-                outer = Colors.White;
-                inner = new Color { A = 1, R = 0, G = 255, B = 0 };
-                Selected = false;
-            }
-            else if (status == RegionStatus.NormalHover)
-            {
-                outer = new Color { A = 255, R = 255, G = 0, B = 41 };
-                inner = new Color { A = 254, R = 0, G = 255, B = 0 };
-                Selected = false;
-            }
-            else if (status == RegionStatus.Selected)
-            {
-                outer = new Color { A = 255, R = 255, G = 0, B = 41 };
-                inner = new Color { A = 1, R = 0, G = 255, B = 0 };
-                Selected = true;
-            }
-            else if (status == RegionStatus.Watching)
-            {
-                outer = new Color { A = 255, R = 4, G = 61, B = 246 };
-                inner = new Color { A = 1, R = 0, G = 255, B = 0 };
-                Selected = true;
-            }
-            else
-            {
-                outer = Colors.Red;
-                inner = Colors.Red;
-                Selected = true;
+                case RegionStatus.Normal:
+                    outer = Colors.White;
+                    inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    Selected = false;
+                    break;
+                case RegionStatus.NormalHover:
+                    outer = Colors.White;
+                    inner = new Color { A = 99, R = 255, G = 0, B = 41 };
+                    Selected = false;
+                    break;
+                case RegionStatus.Selected:
+                    outer = new Color { A = 255, R = 255, G = 0, B = 41 };
+                    inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    Selected = true;
+                    break;
+                case RegionStatus.SelectedHover:
+                    outer = new Color { A = 255, R = 255, G = 0, B = 41 };
+                    inner = new Color { A = 99, R = 255, G = 0, B = 41 };
+                    Selected = true;
+                    break;
+                case RegionStatus.Watching:
+                    outer = new Color { A = 255, R = 4, G = 61, B = 246 };
+                    inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    Selected = true;
+                    break;
+                default:
+                    outer = Colors.Red;
+                    inner = Colors.Red;
+                    Selected = true;
+                    break;
             }
 
             _sb = SoftwareBitmap.Convert(_sb, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight);
@@ -164,16 +174,22 @@ namespace AuraEditor.Models
                         for (int col = 0; col < imgWidth; col++)
                         {
                             int pixelIndex = bufferLayout.Stride * row + 4 * col;
-                            if (dataInBytes[pixelIndex + 3] != 0) // outer
+                            if (dataInBytes[pixelIndex + 3] != 0)
                             {
-                                dataInBytes[pixelIndex + 0] = (byte)outer.B;
-                                dataInBytes[pixelIndex + 1] = (byte)outer.G;
-                                dataInBytes[pixelIndex + 2] = (byte)outer.R;
+                                if (dataInBytes[pixelIndex + 3] == 2 || dataInBytes[pixelIndex + 3] == 99) // inner
+                                {
+                                    dataInBytes[pixelIndex + 0] = (byte)inner.B;
+                                    dataInBytes[pixelIndex + 1] = (byte)inner.G;
+                                    dataInBytes[pixelIndex + 2] = (byte)inner.R;
+                                    dataInBytes[pixelIndex + 3] = (byte)inner.A;
+                                }
+                                else // outer
+                                {
+                                    dataInBytes[pixelIndex + 0] = (byte)outer.B;
+                                    dataInBytes[pixelIndex + 1] = (byte)outer.G;
+                                    dataInBytes[pixelIndex + 2] = (byte)outer.R;
+                                }
                             }
-                            //else if (dataInBytes[pixelIndex + 3] != 0) // inner
-                            //{
-                            //    dataInBytes[pixelIndex + 3] = (byte)inner.A;
-                            //}
                         }
                     }
                 }

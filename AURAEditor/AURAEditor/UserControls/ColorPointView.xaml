@@ -63,7 +63,7 @@
                  ManipulationMode="TranslateX"
                  ManipulationDelta="ColorPointRadioButton_ManipulationDelta"
                  ManipulationCompleted="ColorPointRadioButton_ManipulationCompleted"
-                 DoubleTapped="ColorPointtRadioButton_DoubleTapped">
+                 DoubleTapped="ColorPointRadioButton_DoubleTapped">
         <RadioButton.RenderTransform>
             <TranslateTransform x:Name="TT" X="{x:Bind m_ColorPointModel.PixelX, Mode=TwoWay}"/>
         </RadioButton.RenderTransform>

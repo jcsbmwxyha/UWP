@@ -47,7 +47,7 @@ namespace AuraEditor.UserControls
         {
             m_ColorPointModel.ParentPattern.OnManipulationCompleted();
         }
-        private async void ColorPointtRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
+        private async void ColorPointRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
         {
             ContentDialog dialog = GetCurrentContentDialog();
 
@@ -66,6 +66,8 @@ namespace AuraEditor.UserControls
 
             if (dialog != null)
                 await dialog.ShowAsync();
+            else
+                MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
     }
 }

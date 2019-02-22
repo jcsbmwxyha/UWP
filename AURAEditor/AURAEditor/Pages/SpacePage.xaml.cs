@@ -164,7 +164,7 @@ namespace AuraEditor.Pages
                 {
                     newSD.Add(sd);
 
-                    // delete temp data because new device is plugging
+                    // delete temp data as same type as new, because new device is plugging
                     LayerPage.Self.ClearTypeData(sd.Type);
                     DeviceModelCollection.RemoveAll(d => d.Type == GetTypeByTypeName(sd.Type));
                 }
@@ -187,15 +187,17 @@ namespace AuraEditor.Pages
                     dm.Status = DeviceStatus.OnStage;
                     Log.Debug("[OnIngroupDevicesChanged] Temp To Stage Device : " + dm.Name);
                 }
-                
 
                 foreach (var sd in newSD)
                 {
                     DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
-                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + dm.Name);
+                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + sd.Name);
 
                     if (dm == null)
+                    {
+                        Log.Debug("[OnIngroupDevicesChanged] New Device create failed!");
                         continue;
+                    }
 
                     Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
                     Point p = GetFreeRoomPositionForRect(r);
@@ -300,6 +302,7 @@ namespace AuraEditor.Pages
             SpaceCanvas.PointerMoved -= SpaceGrid_PointerMovedForDraggingWindow;
             SpaceCanvas.PointerMoved -= SpaceGrid_PointerMoved;
             SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleased;
+            SpaceCanvas.PointerReleased -= SpaceGrid_PointerReleasedForCursor;
             RestrictLineLeft.Visibility = Visibility.Collapsed;
             RestrictLineRight.Visibility = Visibility.Collapsed;
             RestrictLineTop.Visibility = Visibility.Collapsed;
@@ -360,7 +363,7 @@ namespace AuraEditor.Pages
                 DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressedForDraggingWindow;
                 SpaceCanvas.PointerMoved += SpaceGrid_PointerMovedForDraggingWindow;
-
+                SpaceCanvas.PointerReleased += SpaceGrid_PointerReleasedForCursor;
                 _beforeDragWindowStatus = spaceStatus;
             }
 
@@ -514,6 +517,8 @@ namespace AuraEditor.Pages
         }
         public void OnDeviceMoved(DeviceModel movedDev)
         {
+            if (GetSpaceStatus() != SpaceStatus.DraggingDevice) return;
+
             List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
             foreach (var dm in dms)
@@ -869,9 +874,9 @@ namespace AuraEditor.Pages
         private Point m_DragWindowPoint;
         private void SpaceGrid_PointerPressedForDraggingWindow(object sender, PointerRoutedEventArgs e)
         {
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 102);   //101 release  102 hold
             var fe = sender as FrameworkElement;
             Point position = e.GetCurrentPoint(fe).Position;
-
             m_DragWindowPoint = position;
         }
         private void SpaceGrid_PointerMovedForDraggingWindow(object sender, PointerRoutedEventArgs e)
@@ -898,7 +903,11 @@ namespace AuraEditor.Pages
         {
             SetSpaceStatus(_beforeDragWindowStatus);
         }
-        #endregion
+        private void SpaceGrid_PointerReleasedForCursor(object sender, PointerRoutedEventArgs e)
+        {
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101);
+        }
+    #endregion
 
         private void LeftSidePanelButton_Click(object sender, RoutedEventArgs e)
         {

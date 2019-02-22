@@ -126,6 +126,7 @@ namespace AuraEditor.Models
         public bool Hover;
         public bool Selected;
         public int Zindex;
+        protected RegionStatus _myStatus;
         #endregion
 
         public ZoneModel()
@@ -208,40 +209,45 @@ namespace AuraEditor.Models
         }
         virtual public void ChangeStatus(RegionStatus status)
         {
-            if (status == RegionStatus.Normal)
+            if (_myStatus == status)
+                return;
+
+            _myStatus = status;
+
+            switch (_myStatus)
             {
-                Stroke = new SolidColorBrush(Colors.White);
-                Fill = new SolidColorBrush(Colors.Transparent);
-                Selected = false;
-                Hover = false;
-            }
-            else if (status == RegionStatus.NormalHover)
-            {
-                Stroke = new SolidColorBrush(Colors.White);
-                Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
-                Selected = false;
-                Hover = true;
-            }
-            else if (status == RegionStatus.Selected)
-            {
-                Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
-                Fill = new SolidColorBrush(Colors.Transparent);
-                Selected = true;
-                Hover = false;
-            }
-            else if (status == RegionStatus.SelectedHover)
-            {
-                Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
-                Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
-                Selected = true;
-                Hover = true;
-            }
-            else if (status == RegionStatus.Watching)
-            {
-                Stroke = new SolidColorBrush(new Color { A = 255, R = 4, G = 61, B = 246 });
-                Fill = new SolidColorBrush(Colors.Transparent);
-                Selected = true;
-                Hover = false;
+                case RegionStatus.Normal:
+                    Stroke = new SolidColorBrush(Colors.White);
+                    Fill = new SolidColorBrush(Colors.Transparent);
+                    Selected = false;
+                    Hover = false;
+                    break;
+                case RegionStatus.NormalHover:
+                    Stroke = new SolidColorBrush(Colors.White);
+                    Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
+                    Selected = false;
+                    Hover = true;
+                    break;
+                case RegionStatus.Selected:
+                    Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
+                    Fill = new SolidColorBrush(Colors.Transparent);
+                    Selected = true;
+                    Hover = false;
+                    break;
+                case RegionStatus.SelectedHover:
+                    Stroke = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
+                    Fill = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
+                    Selected = true;
+                    Hover = true;
+                    break;
+                case RegionStatus.Watching:
+                    Stroke = new SolidColorBrush(new Color { A = 255, R = 4, G = 61, B = 246 });
+                    Fill = new SolidColorBrush(Colors.Transparent);
+                    Selected = true;
+                    Hover = false;
+                    break;
+                default:
+                    break;
             }
         }
     }

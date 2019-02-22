@@ -535,6 +535,16 @@
                             <usercontrol:EffectBlock/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.Items>
+                        <x:String>Static</x:String>
+                        <x:String>Breath</x:String>
+                        <x:String>ColorCycle</x:String>
+                        <x:String>Rainbow</x:String>
+                        <x:String>Strobing</x:String>
+                        <x:String>Comet</x:String>
+                        <x:String>Star</x:String>
+                        <x:String>Tide</x:String>
+                    </ListView.Items>
                 </ListView>
             </StackPanel>
         </ScrollViewer>

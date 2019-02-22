@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using AuraEditor.Dialogs;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -88,18 +90,12 @@ namespace AuraEditor
             }
             else//Other SYS show EULA page
             {
-                if (EulaAgreeOrNot)
+                WindowsGrid.Visibility = Visibility.Visible;
+                WindowsGrid1.Visibility = Visibility.Collapsed;
+                if (!EulaAgreeOrNot)
                 {
-                    WindowsGrid.Visibility = Visibility.Visible;
-                    WindowsGrid1.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    //Hide Setting Button
-                    SettingRelativePanel.Visibility = Visibility.Collapsed;
-                    WindowsGrid.Visibility = Visibility.Collapsed;
-                    WindowsGrid1.Visibility = Visibility.Visible;
-                    WindowsFrame1.Navigate(typeof(EULAPage), null, new SuppressNavigationTransitionInfo());
+                    EULADialog ed = new EULADialog();
+                    await ed.ShowAsync();
                 }
             }
             #endregion

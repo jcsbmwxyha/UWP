@@ -122,6 +122,8 @@ namespace AuraEditor
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
+            CanShowDeviceUpdateDialog = false;
+
             Log.Debug("[NewFile] New File");
             ContentDialogResult result = ContentDialogResult.Secondary;
 
@@ -222,8 +224,10 @@ namespace AuraEditor
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            var inputFile = await ShowFileOpenPickerAsync();
+            CanShowDeviceUpdateDialog = false;
 
+            var inputFile = await ShowFileOpenPickerAsync();
+            
             if (inputFile == null)
             {
                 return;
@@ -274,6 +278,8 @@ namespace AuraEditor
 
         private async void FileItem_Click(object sender, RoutedEventArgs e)
         {
+            CanShowDeviceUpdateDialog = false;
+
             var item = sender as MenuFlyoutItem;
             string selectedName = item.Text;
 
@@ -310,6 +316,8 @@ namespace AuraEditor
         }
         private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
         {
+            CanShowDeviceUpdateDialog = false;
+
             e.Handled = true;
             ContentDialogResult result = ContentDialogResult.Secondary;
 
@@ -359,6 +367,8 @@ namespace AuraEditor
             StorageFile localfile;
             StorageFile localscript;
 
+            
+
             if (CurrentUserFilename == "")
             {
                 NamingDialog dialog = new NamingDialog(GetUserFilenames());
@@ -370,6 +380,11 @@ namespace AuraEditor
                 }
 
                 CurrentUserFilename = dialog.TheName;
+            }
+            else
+            {
+                CanShowDeviceUpdateDialog = true;
+                ShowDeviceUpdateDialogOrNot();
             }
 
             Log.Debug("[SaveCurrentUserFile] Save file name : " + CurrentUserFilename);

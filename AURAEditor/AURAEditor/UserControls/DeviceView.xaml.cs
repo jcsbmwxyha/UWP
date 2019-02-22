@@ -121,18 +121,7 @@ namespace AuraEditor.UserControls
 
             SpacePage.Self.OnDeviceMoveCompleted();
 
-            if (!SpacePage.Self.IsPiling(m_DeviceModel))
-            {
-                double moveX = TT.X - _oldPixelPosition.X;
-                double moveY = TT.Y - _oldPixelPosition.Y;
-
-                SpacePage.Self.DeleteOverlappingTempDevice(m_DeviceModel);
-                SpacePage.Self.MoveMousePosition(m_DeviceModel,
-                    RoundToGrid(moveX), RoundToGrid(moveY));
-
-                ReUndoManager.GetInstance().Store(new MoveDeviceCommand(m_DeviceModel, moveX, moveY));
-            }
-            else
+            if (SpacePage.Self.IsPiling(m_DeviceModel))
             {
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
@@ -185,33 +174,6 @@ namespace AuraEditor.UserControls
         private void MovedCompleted(object sender, object e)
         {
             SpacePage.Self.OnDeviceMoveCompleted();
-        }
-
-        public class MoveDeviceCommand : IReUndoCommand
-        {
-            private DeviceModel _deviceModel;
-            private double _moveX;
-            private double _moveY;
-
-            public MoveDeviceCommand(DeviceModel deviceModel, double moveX, double moveY)
-            {
-                _deviceModel = deviceModel;
-                _moveX = moveX;
-                _moveY = moveY;
-            }
-
-            public void ExecuteRedo()
-            {
-                _deviceModel.PixelLeft += _moveX;
-                _deviceModel.PixelTop += _moveY;
-                SpacePage.Self.MoveMousePosition(_deviceModel, RoundToGrid(_moveX), RoundToGrid(_moveY));
-            }
-            public void ExecuteUndo()
-            {
-                _deviceModel.PixelLeft -= _moveX;
-                _deviceModel.PixelTop -= _moveY;
-                SpacePage.Self.MoveMousePosition(_deviceModel, RoundToGrid(-_moveX), RoundToGrid(-_moveY));
-            }
         }
     }
 }
