@@ -290,7 +290,6 @@ namespace AuraEditor.Models
 
                                 if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
                                 {
-                                    SoftwareBitmap specialFrameSB;
                                     SpecialZoneModel szm = new SpecialZoneModel()
                                     {
                                         Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
@@ -310,14 +309,8 @@ namespace AuraEditor.Models
                                     StorageFile ledPngFile = await folder.GetFileAsync(row[png_Column]);
                                     Log.Debug("[GetDeviceModel] Parse led png : " + ledPngFile.Name);
 
-                                    using (IRandomAccessStream stream = await ledPngFile.OpenAsync(FileAccessMode.Read))
-                                    {
-                                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
-                                        specialFrameSB = await decoder.GetSoftwareBitmapAsync();
-                                    }
-
-                                    specialFrameSB = SoftwareBitmap.Convert(specialFrameSB, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                                    await szm.SetSoftwareBitmapAsync(specialFrameSB);
+                                    string uri = @"ms-appdata:///local/Devices/" + modelName + "/" + row[png_Column];
+                                    szm.ImageSource = uri;
                                     specialzones.Add(szm);
                                 }
                                 else

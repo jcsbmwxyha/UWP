@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using AuraEditor.UserControls;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
@@ -39,6 +42,8 @@ namespace AuraEditor.Models
                 return ColorPointsToForeground(CustomizeColorPoints.ToList());
             }
         }
+
+        public Canvas PatternCPsCanvas;
 
         private int _selected = -2;
         public int Selected
@@ -83,9 +88,11 @@ namespace AuraEditor.Models
         }
         #endregion
 
-        public ColorPatternModel(EffectInfoModel info)
+        public ColorPatternModel(EffectInfoModel info, Canvas canvas)
         {
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
+            CurrentColorPoints.CollectionChanged += CurrentCPsChanged;
+            PatternCPsCanvas = canvas;
             this.info = info;
 
             foreach (var cp in info.CustomizedPattern)
@@ -93,6 +100,30 @@ namespace AuraEditor.Models
 
             CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
+        }
+
+        private void CurrentCPsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ColorPointModel model;
+            ColorPointView view;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Reset:
+                    PatternCPsCanvas.Children.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    model = e.OldItems[0] as ColorPointModel;
+                    PatternCPsCanvas.Children.Remove(model.View);
+                    break;
+                case NotifyCollectionChangedAction.Add:
+                    model = e.NewItems[0] as ColorPointModel;
+                    view = new ColorPointView();
+                    view.DataContext = model;
+                    model.View = view;
+                    PatternCPsCanvas.Children.Add(model.View);
+                    break;
+            }
         }
 
         public void OnManipulationDelta()

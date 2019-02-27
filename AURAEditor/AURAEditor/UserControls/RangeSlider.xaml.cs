@@ -1,4 +1,7 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Models;
+using AuraEditor.Pages;
+using AuraEditor.ViewModels;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -64,16 +67,26 @@ namespace AuraEditor.UserControls
         public static readonly DependencyProperty RangeMaxProperty = DependencyProperty.Register("RangeMax", typeof(double), typeof(RangeSlider), new PropertyMetadata(1.0, OnRangeMaxPropertyChanged));
 
         SoftwareBitmap randomBgSoftwareBitmap;
+
+        public static EffectLineViewModel m_ForSliderCheckEffected;
+        private double oldRangeMax;
+        private double oldRangeMin;
+        
         public RangeSlider()
         {
             this.InitializeComponent();
-
+            m_ForSliderCheckEffected = LayerPage.Self.CheckedEffect;
             Task curtask = Task.Run(async () => await CreateRandomBgImage());
             curtask.Wait();
         }
 
         private void RangeSlider_Loaded(object sender, RoutedEventArgs e)
         {
+            if (m_ForSliderCheckEffected != null)
+            {
+                oldRangeMax = m_ForSliderCheckEffected.Model.Info.RandomRangeMax;
+                oldRangeMin = m_ForSliderCheckEffected.Model.Info.RandomRangeMin;
+            }
             ChangeRandomBgColor();
         }
         private static void OnRangeMinPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -198,6 +211,11 @@ namespace AuraEditor.UserControls
             UpdateMinThumb(RangeMin);
             Canvas.SetZIndex(MinThumb, 10);
             Canvas.SetZIndex(MaxThumb, 0);
+            if (RangeMin != oldRangeMin)
+            {
+                ReUndoManager.GetInstance().Store(new RangeMinChangeCommand(m_ForSliderCheckEffected, oldRangeMin, RangeMin));
+                oldRangeMin = RangeMin;
+            }
         }
 
         private void MaxThumb_DragCompleted(object sender, DragCompletedEventArgs e)
@@ -205,6 +223,11 @@ namespace AuraEditor.UserControls
             UpdateMaxThumb(RangeMax);
             Canvas.SetZIndex(MinThumb, 0);
             Canvas.SetZIndex(MaxThumb, 10);
+            if (RangeMax != oldRangeMax)
+            {
+                ReUndoManager.GetInstance().Store(new RangeMaxChangeCommand(m_ForSliderCheckEffected, oldRangeMax, RangeMax));
+                oldRangeMax = RangeMax;
+            }
         }
 
         private async Task CreateRandomBgImage()
@@ -269,5 +292,60 @@ namespace AuraEditor.UserControls
                 }
             }
         }
+
+        #region ReUndo
+
+        public class RangeMaxChangeCommand : IReUndoCommand
+        {
+            private double _oldRangeMaxValue;
+            private double _currentRangeMaxValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public RangeMaxChangeCommand(EffectLineViewModel checkedEffect, double oldRangeMaxValue, double currentRangeMaxValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldRangeMaxValue = oldRangeMaxValue;
+                _currentRangeMaxValue = currentRangeMaxValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RandomRangeMax = _currentRangeMaxValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RandomRangeMax = _oldRangeMaxValue;
+            }
+        }
+
+        public class RangeMinChangeCommand : IReUndoCommand
+        {
+            private double _oldRangeMinValue;
+            private double _currentRangeMinValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public RangeMinChangeCommand(EffectLineViewModel checkedEffect, double oldRangeMinValue, double currentRangeMinValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldRangeMinValue = oldRangeMinValue;
+                _currentRangeMinValue = currentRangeMinValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RandomRangeMin = _currentRangeMinValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RandomRangeMin = _oldRangeMinValue;
+            }
+        }
+        #endregion
     }
 }

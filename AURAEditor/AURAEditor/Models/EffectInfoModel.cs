@@ -150,8 +150,8 @@ namespace AuraEditor.Models
             }
         }
 
-        private int _randomRangeMax;
-        public int RandomRangeMax
+        private double _randomRangeMax;
+        public double RandomRangeMax
         {
             get
             {
@@ -164,8 +164,8 @@ namespace AuraEditor.Models
             }
         }
 
-        private int _randomRangeMin;
-        public int RandomRangeMin
+        private double _randomRangeMin;
+        public double RandomRangeMin
         {
             get
             {

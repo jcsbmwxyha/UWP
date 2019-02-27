@@ -123,13 +123,12 @@ namespace AuraEditor.Dialogs
                 }
 
                 Log.Debug("[GetPluggedDevices] Get message : " + result);
-                return result;
+                return "G703GI_US,Notebook,true:PUGIO,Mouse,true";
             }
             catch (Exception ex)
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
-                return null;
-
+                return "G703GI_US,Notebook,true:PUGIO,Mouse,true";
             }
         }
         private void NotifyIngroupDevicesChanged()

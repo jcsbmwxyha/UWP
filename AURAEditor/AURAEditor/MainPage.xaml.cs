@@ -28,6 +28,7 @@ using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Pages.SpacePage;
 using DevicZonesPair = System.Tuple<int, int[]>;
 using DeviceZonesPairList = System.Collections.Generic.List<System.Tuple<int, int[]>>;
+using Windows.UI.Input;
 
 namespace AuraEditor
 {
@@ -424,6 +425,46 @@ namespace AuraEditor
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
             ReUndoManager.GetInstance().Redo();
+        }
+
+        bool _isPressed = false;
+        private void WindowSliderGrid_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            bool _hasCapture = fe.CapturePointer(e.Pointer);
+            _isPressed = true;
+        }
+        private void WindowSliderGrid_PointerMoved(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            PointerPoint ptrPt = e.GetCurrentPoint(fe);
+            PointerPoint ptrPt2 = e.GetCurrentPoint(MainGrid);
+            Point position = ptrPt.Position;
+
+            if (_isPressed)
+            {
+                double value = MainGrid.ActualHeight - ptrPt2.Position.Y;
+
+                if (value <= 100 || value >= 500)
+                    return;
+
+                MainGrid.RowDefinitions[3].Height =
+                    new GridLength(MainGrid.ActualHeight - ptrPt2.Position.Y, GridUnitType.Pixel);
+            }
+        }
+        private void WindowSliderGrid_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            _isPressed = false;
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+        }
+        private void WindowSliderGrid_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.SizeNorthSouth, 0);
+        }
+        private void WindowSliderGrid_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (!_isPressed)
+                Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
         }
         #endregion
 

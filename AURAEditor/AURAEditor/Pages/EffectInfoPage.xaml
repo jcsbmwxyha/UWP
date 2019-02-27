@@ -76,7 +76,7 @@
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Name="Single" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                      GroupName="ColorModeSelection" Margin="0,10,0,0">
-                            <RadioButton x:Name="RadioButtonBg" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
+                            <RadioButton x:Name="SingleColorBg" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
                                       Background="{x:Bind m_Info.InitColor, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
                         </RadioButton>
                     </StackPanel>
@@ -89,9 +89,9 @@
                                      GroupName="ColorModeSelection">
                             <ContentControl x:Name="DoubleColor">
                                 <StackPanel Orientation="Horizontal">
-                                    <RadioButton x:Name="RadioButtonBg_1" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
+                                    <RadioButton x:Name="DoubleColorBg_1" Style="{StaticResource RogRadioColorBtn}" Tapped="ColorRadioBtn_Tapped"
                                       Background="{x:Bind m_Info.DoubleColor1, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
-                                    <RadioButton x:Name="RadioButtonBg_2" Style="{StaticResource RogRadioColorBtn}" Margin="12,0,0,0" Tapped="ColorRadioBtn_Tapped"
+                                    <RadioButton x:Name="DoubleColorBg_2" Style="{StaticResource RogRadioColorBtn}" Margin="12,0,0,0" Tapped="ColorRadioBtn_Tapped"
                                       Background="{x:Bind m_Info.DoubleColor2, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"/>
                                 </StackPanel>
                             </ContentControl>
@@ -116,7 +116,7 @@
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                         <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
                         <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}" VerticalAlignment="Center" Margin="80,0,0,0"
-                                      Style="{StaticResource RogToggleSwitchStyle}"/>
+                                      Style="{StaticResource RogToggleSwitchStyle}" Toggled="SegmentationSwitch_Toggled"/>
                     </StackPanel>
                 </StackPanel>
                 

@@ -1,6 +1,7 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.Dialogs;
 using AuraEditor.Models;
+using AuraEditor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,12 +28,24 @@ namespace AuraEditor.Pages
     {
         private EffectInfoModel m_Info;
 
+        static public EffectInfoPage Self;
+
         bool _angleImgPressing;
         Point AngleImgCenter;
+
+        private double _oldSpeedValue;
+        private double _currentSpeedValue = 1;
+
+        private int _oldRainbowSpecialModeValue;
+        private int _currentRainbowSpecialModeValue = 1;
+
+        private int _oldColorModeSelectionValue;
+        private int _currentColorModeSelectionValue = 1;
 
         public EffectInfoPage()
         {
             this.InitializeComponent();
+            Self = this;
             this.DataContextChanged += (s, e) => Bindings.Update();
 
             AngleImgCenter = new Point(40, 40);
@@ -50,7 +63,7 @@ namespace AuraEditor.Pages
 
             this.DataContext = m_Info;
 
-            ColorPatternModel patternModel = new ColorPatternModel(m_Info);
+            ColorPatternModel patternModel = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
             ColorPattern.DataContext = patternModel;
             if (m_Info.RainbowSpecialMode == 1)
             {
@@ -73,8 +86,8 @@ namespace AuraEditor.Pages
                 case 1:
                     Single.IsChecked = true;
 
-                    RadioButtonBg.Opacity = 1;
-                    RadioButtonBg.IsEnabled = true;
+                    SingleColorBg.Opacity = 1;
+                    SingleColorBg.IsEnabled = true;
 
                     DoubleColor.Opacity = 0.5;
                     DoubleColor.IsEnabled = false;
@@ -86,8 +99,8 @@ namespace AuraEditor.Pages
                 case 2:
                     Random.IsChecked = true;
 
-                    RadioButtonBg.Opacity = 0.5;
-                    RadioButtonBg.IsEnabled = false;
+                    SingleColorBg.Opacity = 0.5;
+                    SingleColorBg.IsEnabled = false;
 
                     DoubleColor.Opacity = 0.5;
                     DoubleColor.IsEnabled = false;
@@ -99,8 +112,8 @@ namespace AuraEditor.Pages
                 case 4:
                     DoubleRb.IsChecked = true;
 
-                    RadioButtonBg.Opacity = 0.5;
-                    RadioButtonBg.IsEnabled = false;
+                    SingleColorBg.Opacity = 0.5;
+                    SingleColorBg.IsEnabled = false;
 
                     DoubleColor.Opacity = 1;
                     DoubleColor.IsEnabled = true;
@@ -133,19 +146,20 @@ namespace AuraEditor.Pages
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             RadioButton rb = sender as RadioButton;
-            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)rb.Background).Color);
+            Color newColor = await OpenColorPickerWindow(((SolidColorBrush)rb.Background).Color, rb.Name);
             rb.Background = new SolidColorBrush(newColor);
 
             MainPage.Self.CanShowDeviceUpdateDialog = true;
             MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
-        public async Task<Color> OpenColorPickerWindow(Color c)
+        public async Task<Color> OpenColorPickerWindow(Color c, string ColorBgName)
         {
             ColorPickerDialog colorPickerDialog = new ColorPickerDialog(c);
             await colorPickerDialog.ShowAsync();
 
             if (colorPickerDialog.ColorPickerResult)
             {
+                ReUndoManager.GetInstance().Store(new ColorChangeCommand(LayerPage.Self.CheckedEffect, ColorBgName, colorPickerDialog.PreColor, colorPickerDialog.CurrentColor));
                 return colorPickerDialog.CurrentColor;
             }
             else
@@ -161,8 +175,8 @@ namespace AuraEditor.Pages
                 case "Single":
                     m_Info.ColorModeSelection = 1;
 
-                    RadioButtonBg.Opacity = 1;
-                    RadioButtonBg.IsEnabled = true;
+                    SingleColorBg.Opacity = 1;
+                    SingleColorBg.IsEnabled = true;
 
                     DoubleColor.Opacity = 0.5;
                     DoubleColor.IsEnabled = false;
@@ -174,8 +188,8 @@ namespace AuraEditor.Pages
                 case "Random":
                     m_Info.ColorModeSelection = 2;
 
-                    RadioButtonBg.Opacity = 0.5;
-                    RadioButtonBg.IsEnabled = false;
+                    SingleColorBg.Opacity = 0.5;
+                    SingleColorBg.IsEnabled = false;
 
                     DoubleColor.Opacity = 0.5;
                     DoubleColor.IsEnabled = false;
@@ -187,8 +201,8 @@ namespace AuraEditor.Pages
                 case "DoubleRb":
                     m_Info.ColorModeSelection = 4;
 
-                    RadioButtonBg.Opacity = 0.5;
-                    RadioButtonBg.IsEnabled = false;
+                    SingleColorBg.Opacity = 0.5;
+                    SingleColorBg.IsEnabled = false;
 
                     DoubleColor.Opacity = 1;
                     DoubleColor.IsEnabled = true;
@@ -198,7 +212,23 @@ namespace AuraEditor.Pages
                     RandomTextBlock.Opacity = 0.5;
                     break;
             }
+
+            if (m_Info.ColorModeSelection != _currentColorModeSelectionValue)
+            {
+                _oldColorModeSelectionValue = _currentColorModeSelectionValue;
+                _currentColorModeSelectionValue = m_Info.ColorModeSelection;
+                ReUndoManager.GetInstance().Store(new ColorModeSelectionChangeCommand(LayerPage.Self.CheckedEffect, _oldColorModeSelectionValue, _currentColorModeSelectionValue));
+            }
         }
+
+        private void SegmentationSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (m_Info.ColorSegmentation != SegmentationSwitch.IsOn)
+            {
+                ReUndoManager.GetInstance().Store(new PatternModeChangeCommand(LayerPage.Self.CheckedEffect, SegmentationSwitch.IsOn));
+            }
+        }
+
         private void BrightnessValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             Slider slider = sender as Slider;
@@ -251,6 +281,12 @@ namespace AuraEditor.Pages
                     MediumPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                     FastPoint.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/EffectInfoGroup/asus_gc_slider2 control_d.png"));
                 }
+            }
+            if (m_Info.Speed != slider.Value)
+            {
+                _oldSpeedValue = _currentSpeedValue;
+                _currentSpeedValue = slider.Value;
+                ReUndoManager.GetInstance().Store(new MoveSpeedCommand(LayerPage.Self.CheckedEffect, _oldSpeedValue, _currentSpeedValue));
             }
         }
 
@@ -362,6 +398,10 @@ namespace AuraEditor.Pages
                 Storyboard.SetTarget(angleIcAnimation, AngleIcImgRotation);
                 storyboard.Children.Add(angleIcAnimation);
                 storyboard.Begin();
+                if(m_Info.Angle != targetAngle)
+                {
+                    ReUndoManager.GetInstance().Store(new AngleChangeCommand(LayerPage.Self.CheckedEffect, sourceAngle, targetAngle));
+                }
             }
         }
         private void IncreaseBtn_Click(object sender, RoutedEventArgs e)
@@ -387,7 +427,12 @@ namespace AuraEditor.Pages
 
         private void RainbowRoatationSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            if(RainbowRoatationSwitch.IsOn == true)
+            if (m_Info.RainbowSpecialEffects != RainbowRoatationSwitch.IsOn)
+            {
+                ReUndoManager.GetInstance().Store(new RainbowSpecialEffectOnOffCommand(LayerPage.Self.CheckedEffect, RainbowRoatationSwitch.IsOn));
+            }
+
+            if (RainbowRoatationSwitch.IsOn == true)
             {
                 m_Info.RainbowSpecialEffects = true;
                 AngleGridCC.IsEnabled = false;
@@ -425,6 +470,286 @@ namespace AuraEditor.Pages
                 default:
                     m_Info.RainbowSpecialMode = 1;
                     break;
+            }
+            if (m_Info.RainbowSpecialMode != _currentRainbowSpecialModeValue)
+            {
+                _oldRainbowSpecialModeValue = _currentRainbowSpecialModeValue;
+                _currentRainbowSpecialModeValue = m_Info.RainbowSpecialMode;
+                ReUndoManager.GetInstance().Store(new RainbowSpecialModeChangeCommand(LayerPage.Self.CheckedEffect, _oldRainbowSpecialModeValue, _currentRainbowSpecialModeValue));
+            }
+        }
+        #endregion
+
+        #region ReUndo
+
+        public class ColorChangeCommand : IReUndoCommand
+        {
+            private Color _oldColorValue;
+            private Color _currentColorValue;
+            private string _colorBgName;
+            private EffectLineViewModel _checkedEffect;
+
+            public ColorChangeCommand(EffectLineViewModel checkedEffect, string ColorBgName, Color oldColorValue, Color currentColorValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldColorValue = oldColorValue;
+                _currentColorValue = currentColorValue;
+                _colorBgName = ColorBgName;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                switch (_colorBgName)
+                {
+                    case "SingleColorBg":
+                        _checkedEffect.Model.Info.InitColor = _currentColorValue;
+                        break;
+                    case "DoubleColorBg_1":
+                        _checkedEffect.Model.Info.DoubleColor1 = _currentColorValue;
+                        break;
+                    case "DoubleColorBg_2":
+                        _checkedEffect.Model.Info.DoubleColor2 = _currentColorValue;
+                        break;
+                }
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                switch (_colorBgName)
+                {
+                    case "SingleColorBg":
+                        _checkedEffect.Model.Info.InitColor = _oldColorValue;
+                        break;
+                    case "DoubleColorBg_1":
+                        _checkedEffect.Model.Info.DoubleColor1 = _oldColorValue;
+                        break;
+                    case "DoubleColorBg_2":
+                        _checkedEffect.Model.Info.DoubleColor2 = _oldColorValue;
+                        break;
+                }
+            }
+        }
+
+        public class ColorModeSelectionChangeCommand : IReUndoCommand
+        {
+            private int _oldColorModeValue;
+            private int _currentColorModeValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public ColorModeSelectionChangeCommand(EffectLineViewModel checkedEffect, int oldColorModeValue, int currentColorModeValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldColorModeValue = oldColorModeValue;
+                _currentColorModeValue = currentColorModeValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.ColorModeSelection = _currentColorModeValue;
+                SelectionMode(_currentColorModeValue);
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.ColorModeSelection = _oldColorModeValue;
+                SelectionMode(_oldColorModeValue);
+            }
+
+            public void SelectionMode(int mode)
+            {
+                switch (mode)
+                {
+                    case 1:
+                        EffectInfoPage.Self.Single.IsChecked = true;
+
+                        EffectInfoPage.Self.SingleColorBg.Opacity = 1;
+                        EffectInfoPage.Self.SingleColorBg.IsEnabled = true;
+
+                        EffectInfoPage.Self.DoubleColor.Opacity = 0.5;
+                        EffectInfoPage.Self.DoubleColor.IsEnabled = false;
+
+                        EffectInfoPage.Self.RandomRangeSlider.Opacity = 0.5;
+                        EffectInfoPage.Self.RandomRangeSlider.IsEnabled = false;
+                        EffectInfoPage.Self.RandomTextBlock.Opacity = 0.5;
+                        break;
+                    case 2:
+                        EffectInfoPage.Self.Random.IsChecked = true;
+
+                        EffectInfoPage.Self.SingleColorBg.Opacity = 0.5;
+                        EffectInfoPage.Self.SingleColorBg.IsEnabled = false;
+
+                        EffectInfoPage.Self.DoubleColor.Opacity = 0.5;
+                        EffectInfoPage.Self.DoubleColor.IsEnabled = false;
+
+                        EffectInfoPage.Self.RandomRangeSlider.Opacity = 1;
+                        EffectInfoPage.Self.RandomRangeSlider.IsEnabled = true;
+                        EffectInfoPage.Self.RandomTextBlock.Opacity = 1;
+                        break;
+                    case 4:
+                        EffectInfoPage.Self.DoubleRb.IsChecked = true;
+
+                        EffectInfoPage.Self.SingleColorBg.Opacity = 0.5;
+                        EffectInfoPage.Self.SingleColorBg.IsEnabled = false;
+
+                        EffectInfoPage.Self.DoubleColor.Opacity = 1;
+                        EffectInfoPage.Self.DoubleColor.IsEnabled = true;
+
+                        EffectInfoPage.Self.RandomRangeSlider.Opacity = 0.5;
+                        EffectInfoPage.Self.RandomRangeSlider.IsEnabled = false;
+                        EffectInfoPage.Self.RandomTextBlock.Opacity = 0.5;
+                        break;
+                }
+            }
+        }
+
+        public class PatternModeChangeCommand : IReUndoCommand
+        {
+            private bool _patternModeChangeValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public PatternModeChangeCommand(EffectLineViewModel checkedEffect, bool patternModeChangeValue)
+            {
+                _checkedEffect = checkedEffect;
+                _patternModeChangeValue = patternModeChangeValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.ColorSegmentation = _patternModeChangeValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.ColorSegmentation = !_patternModeChangeValue;
+            }
+        }
+
+        public class MoveSpeedCommand : IReUndoCommand
+        {
+            private double _oldSppedSliderValue;
+            private double _currentSppedSliderValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public MoveSpeedCommand(EffectLineViewModel checkedEffect, double oldSppedSliderValue, double currentSppedSliderValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldSppedSliderValue = oldSppedSliderValue;
+                _currentSppedSliderValue = currentSppedSliderValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Speed = (int)_currentSppedSliderValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Speed = (int)_oldSppedSliderValue;
+            }
+        }
+
+        public class AngleChangeCommand : IReUndoCommand
+        {
+            private double _oldAngleValue;
+            private double _currentAngleValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public AngleChangeCommand(EffectLineViewModel checkedEffect, double oldAngleValue, double currentAngleValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldAngleValue = oldAngleValue;
+                _currentAngleValue = currentAngleValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Angle = (int)_currentAngleValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Angle = (int)_oldAngleValue;
+            }
+        }
+
+        public class RainbowSpecialEffectOnOffCommand : IReUndoCommand
+        {
+            private bool _rainbowSpecialEffectsValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public RainbowSpecialEffectOnOffCommand(EffectLineViewModel checkedEffect, bool rainbowSpecialEffectsValue)
+            {
+                _checkedEffect = checkedEffect;
+                _rainbowSpecialEffectsValue = rainbowSpecialEffectsValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RainbowSpecialEffects = _rainbowSpecialEffectsValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RainbowSpecialEffects = !_rainbowSpecialEffectsValue;
+            }
+        }
+
+        public class RainbowSpecialModeChangeCommand : IReUndoCommand
+        {
+            private int _oldSpecialModeValue;
+            private int _currentSpecialModeValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public RainbowSpecialModeChangeCommand(EffectLineViewModel checkedEffect, int oldSpecialModeValue, int currentSpecialModeValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldSpecialModeValue = oldSpecialModeValue;
+                _currentSpecialModeValue = currentSpecialModeValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RainbowSpecialMode = _currentSpecialModeValue;
+                SelectionMode(_currentSpecialModeValue);
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.RainbowSpecialMode = _oldSpecialModeValue;
+                SelectionMode(_oldSpecialModeValue);
+            }
+
+            public void SelectionMode(int mode)
+            {
+                switch (mode)
+                {
+                    case 1:
+                        EffectInfoPage.Self.ClockwiseRbt.IsChecked = true;
+                        break;
+                    case 2:
+                        EffectInfoPage.Self.CountclockwiseRbt.IsChecked = true;
+                        break;
+                    case 3:
+                        EffectInfoPage.Self.OutwardRbt.IsChecked = true;
+                        break;
+                    case 4:
+                        EffectInfoPage.Self.InwardRbt.IsChecked = true;
+                        break;
+                }
             }
         }
         #endregion

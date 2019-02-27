@@ -1,5 +1,7 @@
 ﻿using AuraEditor.Common;
 using AuraEditor.Models;
+using AuraEditor.Pages;
+using AuraEditor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,7 +20,10 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class ColorPatternView : UserControl
     {
+        static public ColorPatternView Self;
         private ColorPatternModel m_ColorPatternModel { get { return this.DataContext as ColorPatternModel; } }
+
+        private ColorPointModel oldColorPointModel;
         private ObservableCollection<ColorPointModel> CurrentColorPoints
         {
             get
@@ -30,6 +35,7 @@ namespace AuraEditor.UserControls
         public ColorPatternView()
         {
             this.InitializeComponent();
+            Self = this;
             this.DataContextChanged += (s, e) => Bindings.Update();
             SetDefaultPatterns();
         }
@@ -117,11 +123,67 @@ namespace AuraEditor.UserControls
                 {
                     CurrentColorPoints[curIndex + 1].IsChecked = true;
                 }
-
+                oldColorPointModel = checkedCp;
+                ReUndoManager.GetInstance().Store(new RemoveColorPointCommand(LayerPage.Self.CheckedEffect, oldColorPointModel, curIndex));
                 CurrentColorPoints.Remove(checkedCp);
             }
 
             m_ColorPatternModel.OnManipulationCompleted();
+        }
+
+        public class RemoveColorPointCommand : IReUndoCommand
+        {
+            private ColorPointModel _oldColorPointValue;
+            private int _checkIndex;
+            private EffectLineViewModel _checkedEffect;
+
+            public RemoveColorPointCommand(EffectLineViewModel checkedEffect, ColorPointModel oldColorPointValue, int checkIndex)
+            {
+                _checkedEffect = checkedEffect;
+                _checkIndex = checkIndex;
+                _oldColorPointValue = oldColorPointValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                //Self.CurrentColorPoints[_checkIndex + 1].IsChecked = true;
+                Self.CurrentColorPoints.Remove(_oldColorPointValue);
+                Self.m_ColorPatternModel.OnManipulationCompleted();
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                Self.CurrentColorPoints.Insert(_checkIndex, _oldColorPointValue);
+                Self.m_ColorPatternModel.OnManipulationCompleted();
+            }
+        }
+
+        public class AddColorPointCommand : IReUndoCommand
+        {
+            private double _oldSppedSliderValue;
+            private double _currentSppedSliderValue;
+            private EffectLineViewModel _checkedEffect;
+
+            public AddColorPointCommand(EffectLineViewModel checkedEffect, double oldSppedSliderValue, double currentSppedSliderValue)
+            {
+                _checkedEffect = checkedEffect;
+                _oldSppedSliderValue = oldSppedSliderValue;
+                _currentSppedSliderValue = currentSppedSliderValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Speed = (int)_currentSppedSliderValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.CheckedEffect = _checkedEffect;
+                _checkedEffect.Model.Info.Speed = (int)_oldSppedSliderValue;
+            }
         }
     }
 }

@@ -23,6 +23,8 @@ using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Pages.SpacePage;
 using AuraEditor.Common;
 using AuraEditor.ViewModels;
+using Windows.UI.Input;
+using Windows.Foundation;
 
 namespace AuraEditor.Pages
 {
@@ -117,8 +119,8 @@ namespace AuraEditor.Pages
                 {
                     _checkedEffect = value;
                     value.IsChecked = true;
-                    CheckedLayer = value.Layer;
                     m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Model.Info);
+                    CheckedLayer = value.Layer;
                     NeedSave = true;
                 }
             }
@@ -415,11 +417,11 @@ namespace AuraEditor.Pages
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
             StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(localsf, "<root><header>AURA_Creator</header><version>1.0</version><effectProvider><period key=\"true\">0</period><queue /></effectProvider><viewport /><effectList /></root>");
-            
+
             long StartTime = (long)PositionToTime(playerModel.Position);
 
             Log.Debug("[CursorStoryboardCompleted] Bef AuraEditorTrigger");
-            await(new ServiceViewModel()).AuraEditorTrigger(0);
+            await (new ServiceViewModel()).AuraEditorTrigger(0);
             Log.Debug("[CursorStoryboardCompleted] Aft AuraEditorTrigger");
         }
         public void ChangeCursorPosition(double rate)
@@ -608,11 +610,12 @@ namespace AuraEditor.Pages
             int i = Layers.IndexOf(layer);
 
             result.Add(playerModel.Position);
-            result.AddRange(Layers[i].GetAllEffHeadAndTailPositions(eff));
-            if (i > 0)
-                result.AddRange(Layers[i - 1].GetAllEffHeadAndTailPositions(null));
-            if (i < Layers.Count - 1)
-                result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
+            foreach (var l in Layers)
+            {
+                if (l.Equals(layer))
+                    result.AddRange(l.GetAllEffHeadAndTailPositions(eff));
+                result.AddRange(l.GetAllEffHeadAndTailPositions(null));
+            }
             return result.ToArray();
         }
         public double[] GetAlignPositions(LayerModel layer)
@@ -627,6 +630,13 @@ namespace AuraEditor.Pages
             if (i < Layers.Count - 1)
                 result.AddRange(Layers[i + 1].GetAllEffHeadAndTailPositions(null));
             return result.ToArray();
+        }
+
+        private void ScaleScrollViewer_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            PointerPoint ptrPt = e.GetCurrentPoint(fe);
+            playerModel.Position = ptrPt.Position.X;
         }
         #endregion
 

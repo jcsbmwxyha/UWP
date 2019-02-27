@@ -58,7 +58,7 @@ namespace AuraEditor.Pages
             }
 
             this.DataContext = m_Info;
-            ColorPattern.DataContext = new ColorPatternModel(m_Info);
+            ColorPattern.DataContext = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
             SetColorMode(m_TriggerEffect.Info);
             Bindings.Update();
         }
@@ -73,7 +73,7 @@ namespace AuraEditor.Pages
 
             int type = GetEffectIndex(selectedName);
             m_TriggerEffect.ChangeType(type);
-            ColorPattern.DataContext = new ColorPatternModel(m_Info);
+            ColorPattern.DataContext = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
             SetColorMode(m_TriggerEffect.Info);
         }
 

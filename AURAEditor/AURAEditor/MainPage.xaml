@@ -405,8 +405,9 @@
     <Grid Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
-            <RowDefinition Height="12*"/>
-            <RowDefinition Height="232"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="250"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -554,7 +555,13 @@
         <Frame Name="SpaceFrame" Grid.Row="1" Grid.Column="1"/>
         <Frame Name="EffectInfoFrame" Grid.Row="1" Grid.Column="4" x:FieldModifier="public"/>
 
+        <Grid Name="WindowSliderGrid"  Grid.Row="2" Grid.ColumnSpan="3" Background="#18FFFFFF"
+              PointerPressed="WindowSliderGrid_PointerPressed"
+              PointerMoved="WindowSliderGrid_PointerMoved"
+              PointerReleased="WindowSliderGrid_PointerReleased"
+              PointerEntered="WindowSliderGrid_PointerEntered"
+              PointerExited="WindowSliderGrid_PointerExited"/>
         <!-- Row 2 -->
-        <Frame Name="LayerFrame" Grid.Row="2" Grid.ColumnSpan="3"/>
+        <Frame Name="LayerFrame" Grid.Row="3" Grid.ColumnSpan="3"/>
     </Grid>
 </Page>

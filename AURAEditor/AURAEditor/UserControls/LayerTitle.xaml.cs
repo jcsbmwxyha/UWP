@@ -1,4 +1,5 @@
-﻿using AuraEditor.Dialogs;
+﻿using AuraEditor.Common;
+using AuraEditor.Dialogs;
 using AuraEditor.Models;
 using AuraEditor.Pages;
 using System;
@@ -60,21 +61,21 @@ namespace AuraEditor.UserControls
         }
 
         #region -- Layer Name --
-        private void EditNameButton_Click(object sender, RoutedEventArgs e)
+        private void NameTextBlock_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             NameTextBox.Text = "";
-            EditNameButton.Visibility = Visibility.Collapsed;
             NameTextBlock.Visibility = Visibility.Collapsed;
             NameTextBox.Visibility = Visibility.Visible;
-
             NameTextBox.Focus(FocusState.Programmatic);
         }
         private void NameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (NameTextBox.Text.Replace(" ","") != "")
+            if (NameTextBox.Text.Replace(" ", "") != "")
+            {
+                ReUndoManager.GetInstance().Store(new RenameCommand(m_Layer, NameTextBlock.Text, NameTextBox.Text));
                 NameTextBlock.Text = NameTextBox.Text;
-
-            EditNameButton.Visibility = Visibility.Visible;
+            }
+            
             NameTextBlock.Visibility = Visibility.Visible;
             NameTextBox.Visibility = Visibility.Collapsed;
         }
@@ -83,6 +84,31 @@ namespace AuraEditor.UserControls
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 SpacePage.Self.SpaceScrollViewer.Focus(FocusState.Programmatic);
+            }
+        }
+
+        public class RenameCommand : IReUndoCommand
+        {
+            private LayerModel _layer;
+            private string _oldName;
+            private string _newName;
+
+            public RenameCommand(LayerModel layer, string oldName, string newName)
+            {
+                _layer = layer;
+                _oldName = oldName;
+                _newName = newName;
+            }
+
+            public void ExecuteRedo()
+            {
+                _layer.Name = _newName;
+                LayerPage.Self.CheckedLayer = _layer;
+            }
+            public void ExecuteUndo()
+            {
+                _layer.Name = _oldName;
+                LayerPage.Self.CheckedLayer = _layer;
             }
         }
         #endregion

@@ -89,10 +89,10 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:SpecialZoneModel">
-                    <Image Stretch="Fill"
-                           Width="{x:Bind PixelWidth}"
-                           Height="{x:Bind PixelHeight}"
-                           Source="{x:Bind ImageSource, Mode=OneWay}"/>
+                    <BitmapIcon Foreground="{x:Bind MyColor, Mode=TwoWay}"
+                                Width="{x:Bind PixelWidth}"
+                                Height="{x:Bind PixelHeight}"
+                                UriSource="{x:Bind ImageSource}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
