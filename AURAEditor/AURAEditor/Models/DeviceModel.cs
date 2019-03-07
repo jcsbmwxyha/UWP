@@ -309,7 +309,7 @@ namespace AuraEditor.Models
                                     StorageFile ledPngFile = await folder.GetFileAsync(row[png_Column]);
                                     Log.Debug("[GetDeviceModel] Parse led png : " + ledPngFile.Name);
 
-                                    string uri = @"ms-appdata:///local/Devices/" + modelName + "/" + row[png_Column];
+                                    string uri = @"ms-appdata:///local/Devices/" + folder.Name + "/" + row[png_Column];
                                     szm.ImageSource = uri;
                                     specialzones.Add(szm);
                                 }

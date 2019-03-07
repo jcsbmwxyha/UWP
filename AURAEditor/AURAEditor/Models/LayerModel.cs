@@ -130,7 +130,7 @@ namespace AuraEditor.Models
                 case NotifyCollectionChangedAction.Remove:
                     model = e.OldItems[0] as EffectLineViewModel;
                     UI_Track.Track.Children.Remove(model.View);
-                    ReUndoManager.GetInstance().Store(new RemoveEffectCommand(model));
+                    ReUndoManager.Store(new RemoveEffectCommand(model));
                     break;
                 case NotifyCollectionChangedAction.Add:
                     model = e.NewItems[0] as EffectLineViewModel;
@@ -140,7 +140,7 @@ namespace AuraEditor.Models
                     Windows.UI.Xaml.Controls.Canvas.SetTop(view, 8);
                     model.View = view;
                     UI_Track.Track.Children.Add(model.View);
-                    ReUndoManager.GetInstance().Store(new AddEffectCommand(model));
+                    ReUndoManager.Store(new AddEffectCommand(model));
                     LayerPage.Self.CheckedEffect = model;
                     break;
             }
@@ -433,7 +433,7 @@ namespace AuraEditor.Models
                 {
                     double target = e.Left + move;
                     e.MovePosition(target);
-                    ReUndoManager.GetInstance().Store(new MoveEffectCommand(e, e.Left, target));
+                    ReUndoManager.Store(new MoveEffectCommand(e, e.Left, target));
                 }
             }
         }

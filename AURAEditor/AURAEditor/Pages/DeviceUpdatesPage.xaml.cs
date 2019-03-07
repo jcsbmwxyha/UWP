@@ -26,12 +26,9 @@ namespace AuraEditor
         private bool UpdateBtnMode;
         private bool IsCharge = false;
 
-        public ConnectedDevicesDialog ConnectedDevicesDialog;
         public DeviceUpdatesPage()
         {
             this.InitializeComponent();
-
-            ConnectedDevicesDialog = new ConnectedDevicesDialog();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -80,23 +77,18 @@ namespace AuraEditor
                     UpdateBtnRP.Visibility = Visibility.Collapsed;
                     UpdateStateTextBlock.Text = "Updating...";
                     UpdateStateTextBlock.Foreground = new SolidColorBrush(Colors.White);
-
-                    int old_value = 0;
+                    
                     await (new ServiceViewModel()).Sendupdatestatus("CreatorUpdate");
                     while (true)
                     {
                         await (new ServiceViewModel()).Sendupdatestatus(ServiceViewModel.returnnum.ToString());
-                        if (old_value < ServiceViewModel.returnnum)
-                        {
-                            ProgressBar.Value = ServiceViewModel.returnnum;
-                            old_value = ServiceViewModel.returnnum;
-                        }
-                        else
-                        {
-                            old_value = ServiceViewModel.returnnum;
-                        }
+                        System.Diagnostics.Debug.WriteLine("Update process : " + ServiceViewModel.returnnum.ToString());
+                        if(ProgressBar.Value < 99)
+                            ProgressBar.Value += 3;
+                        System.Diagnostics.Debug.WriteLine("ProgressBar Value : " + ProgressBar.Value);
                         if (ServiceViewModel.returnnum == 100)
                         {
+                            ProgressBar.Value = ServiceViewModel.returnnum;
                             await Task.Delay(2000);
                             ProgressBar.Visibility = Visibility.Collapsed;
                             UpdateBtnNewTab.Visibility = Visibility.Collapsed;
@@ -115,7 +107,7 @@ namespace AuraEditor
                             InfoTextBlock.Text = "Update for the latest AURA functions and firmware";
                             InfoTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnMode = false;
-                            await ConnectedDevicesDialog.Rescan();
+                            await ConnectedDevicesDialog.Self.Rescan();
                             break;
                         }
                         if (ServiceViewModel.returnnum == 813)
@@ -140,7 +132,7 @@ namespace AuraEditor
                             UpdateBtnMode = false;
                             break;
                         }
-                        await Task.Delay(4000);
+                        await Task.Delay(500);
                     }
                     ProgressBar.Value = 0;
                     ServiceViewModel.returnnum = 0;

@@ -213,7 +213,7 @@ namespace AuraEditor.UserControls
             Canvas.SetZIndex(MaxThumb, 0);
             if (RangeMin != oldRangeMin)
             {
-                ReUndoManager.GetInstance().Store(new RangeMinChangeCommand(m_ForSliderCheckEffected, oldRangeMin, RangeMin));
+                ReUndoManager.Store(new RangeMinChangeCommand(m_ForSliderCheckEffected, oldRangeMin, RangeMin));
                 oldRangeMin = RangeMin;
             }
         }
@@ -225,7 +225,7 @@ namespace AuraEditor.UserControls
             Canvas.SetZIndex(MaxThumb, 10);
             if (RangeMax != oldRangeMax)
             {
-                ReUndoManager.GetInstance().Store(new RangeMaxChangeCommand(m_ForSliderCheckEffected, oldRangeMax, RangeMax));
+                ReUndoManager.Store(new RangeMaxChangeCommand(m_ForSliderCheckEffected, oldRangeMax, RangeMax));
                 oldRangeMax = RangeMax;
             }
         }

@@ -1,13 +1,15 @@
-﻿using AuraEditor.Dialogs;
+﻿using AuraEditor.Common;
+using AuraEditor.Dialogs;
 using AuraEditor.Models;
+using AuraEditor.Pages;
+using AuraEditor.ViewModels;
 using System;
-using System.Threading.Tasks;
-using Windows.UI;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.UserControls.ColorPatternView;
 
 // 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -16,7 +18,6 @@ namespace AuraEditor.UserControls
     public sealed partial class ColorPointView : UserControl
     {
         private ColorPointModel m_ColorPointModel { get { return this.DataContext as ColorPointModel; } }
-
         public ColorPointView()
         {
             this.InitializeComponent();
@@ -45,7 +46,7 @@ namespace AuraEditor.UserControls
         }
         private void ColorPointRadioButton_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            m_ColorPointModel.ParentPattern.OnManipulationCompleted();
+            m_ColorPointModel.ParentPattern.OnCustomizeChanged();
         }
         private async void ColorPointRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
         {
@@ -58,11 +59,10 @@ namespace AuraEditor.UserControls
             await colorPickerDialog.ShowAsync();
 
             if (colorPickerDialog.ColorPickerResult)
+            {
                 m_ColorPointModel.Color = colorPickerDialog.CurrentColor;
-            else
-                m_ColorPointModel.Color = colorPickerDialog.PreColor;
-
-            m_ColorPointModel.ParentPattern.OnManipulationCompleted();
+                m_ColorPointModel.ParentPattern.OnCustomizeChanged();
+            }
 
             if (dialog != null)
                 await dialog.ShowAsync();

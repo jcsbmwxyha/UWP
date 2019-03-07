@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
 
 namespace AuraEditor.ViewModels
@@ -131,24 +134,57 @@ namespace AuraEditor.ViewModels
             }
         }
 
+        private string effectBlockContent;
+        public string EffectBlockContent
+        {
+            get { return effectBlockContent; }
+            set
+            {
+                if (effectBlockContent != value)
+                {
+                    effectBlockContent = value;
+                    RaisePropertyChanged("EffectBlockContent");
+                }
+            }
+
+        }
+        public double PixelSizeOfName { get; set; }
+
+
+
         public EffectLineViewModel(TimelineEffect eff)
         {
             Model = eff;
+            EffectBlockContent = Name;
+            PixelSizeOfName = getPixelSizeOfName(Name);
+
         }
         private EffectLineViewModel(EffectLineViewModel vm)
         {
             TimelineEffect eff = TimelineEffect.CloneEffect(vm.Model);
             Model = eff;
+            EffectBlockContent = Name;
+            PixelSizeOfName = getPixelSizeOfName(Name);
         }
         public EffectLineViewModel(int type)
         {
             TimelineEffect eff = new TimelineEffect(type);
             Model = eff;
+            EffectBlockContent = Name;
+            PixelSizeOfName = getPixelSizeOfName(Name);
         }
 
         static public EffectLineViewModel Clone(EffectLineViewModel vm)
         {
             return new EffectLineViewModel(vm);
+        }
+
+        private double getPixelSizeOfName(string text)
+        {
+            var tmp = new TextBlock { Text = text, FontSize = 20, FontFamily = new FontFamily("Segoe UI") };
+            tmp.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            Size NameSize = tmp.DesiredSize;
+            return NameSize.Width;
         }
     }
 }

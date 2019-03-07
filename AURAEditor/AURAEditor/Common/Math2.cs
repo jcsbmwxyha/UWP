@@ -209,5 +209,13 @@ namespace AuraEditor.Common
         {
             return Math.Round(number / target, 0) * target;
         }
+        static public double FloorToTarget(double number, double target)
+        {
+            return Math.Floor(number / target) * target;
+        }
+        static public double CeilingToTarget(double number, double target)
+        {
+            return Math.Ceiling(number / target) * target;
+        }
     }
 }

@@ -320,6 +320,11 @@ namespace AuraEditor.UserControls
                 }
             }
 
+            if (Width - 25 < elvm.PixelSizeOfName)
+                setNewEffectName(Width - 25);
+            else
+                elvm.EffectBlockContent = elvm.Name;
+
             LayerPage.Self.UpdateSupportLine(align);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -334,11 +339,11 @@ namespace AuraEditor.UserControls
             this.SetValue(Canvas.ZIndexProperty, 0);
 
             if (mouseState == CursorState.SizeAll)
-                ReUndoManager.GetInstance().Store(new MoveEffectCommand(elvm, _oldValue, result));
+                ReUndoManager.Store(new MoveEffectCommand(elvm, _oldValue, result));
             else if (mouseState == CursorState.SizeLeft)
-                ReUndoManager.GetInstance().Store(new WidthLeftEffectCommand(elvm, _oldValue, ViewModelLeft));
+                ReUndoManager.Store(new WidthLeftEffectCommand(elvm, _oldValue, ViewModelLeft));
             else if (mouseState == CursorState.SizeRight)
-                ReUndoManager.GetInstance().Store(new WidthRightEffectCommand(elvm, _oldValue, Width));
+                ReUndoManager.Store(new WidthRightEffectCommand(elvm, _oldValue, Width));
 
             mouseState = CursorState.None;
         }
@@ -369,6 +374,21 @@ namespace AuraEditor.UserControls
         {
             LayerPage.Self.CheckedEffect = elvm;
         }
+
+        private void setNewEffectName(double EffectLineWidth)
+        {
+            String tmp = elvm.Name;
+            int removeChar = (int)Math.Ceiling((elvm.PixelSizeOfName - EffectLineWidth) / 5);
+
+            if (removeChar > elvm.Name.Length)
+            {
+                removeChar = elvm.Name.Length;
+                elvm.EffectBlockContent = "";
+            }
+            else
+                elvm.EffectBlockContent = elvm.Name.Substring(0, elvm.Name.Length - removeChar) + "...";
+        }
+
         #endregion
 
         #region -- Right-clicked menu --

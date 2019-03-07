@@ -1,5 +1,9 @@
 ﻿using AuraEditor.Models;
+using System;
 using System.Xml;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 
@@ -15,6 +19,8 @@ namespace AuraEditor
         public virtual double DurationTime { get; set; }
         public virtual double EndTime { get { return StartTime + DurationTime; } }
         public EffectInfoModel Info { get; set; }
+
+
 
         public Effect(int effectType)
         {
@@ -59,5 +65,7 @@ namespace AuraEditor
 
             return effNode;
         }
+
+      
     }
 }

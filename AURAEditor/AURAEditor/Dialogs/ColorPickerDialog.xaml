@@ -427,7 +427,26 @@
 
             <Grid x:Name="RingGrid" Grid.Column="0" Margin="60,0,0,0">
                 <Image x:Name="ColorRingImg" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_colorring_mask.png" Width="280" Height="280"/>
-                <Image x:Name="SquareImg" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_ring_colormask_btn.png" Width="280" Height="280"/>
+                <Grid x:Name="SquareGrid" Width="160" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Red">
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0"
+                                     EndPoint="1,0">
+                                <GradientStop Offset="0" Color="White"/>
+                                <GradientStop Offset="1" Color="#00FFFFFF"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="0,1">
+                                <GradientStop Offset="0" Color="#00000000"/>
+                                <GradientStop Offset="1" Color="Black"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Grid>
                 <Image x:Name="SelectRingImg" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selescted_ring_btn.png"
                        RenderTransformOrigin="0.5,0.5">
                     <Image.RenderTransform>
@@ -441,8 +460,6 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          PointerPressed="Circle_PointerPressed"
-                         PointerMoved="Circle_PointerMoved"
-                         PointerReleased="Circle_PointerReleased"
                          StrokeThickness="25"
                          Width="280" Height="280"/>
                 <Rectangle Name="HiddenSquare"
@@ -451,9 +468,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Canvas.ZIndex="5"
-                           PointerPressed="HiddenSquare_PointerPressed"
-                           PointerMoved="HiddenSquare_PointerMoved"
-                           PointerReleased="HiddenSquare_PointerReleased"/>
+                           PointerPressed="HiddenSquare_PointerPressed"/>
                 <Ellipse Name="SeletcedColorEllipse" Height="20" Width="20" Canvas.ZIndex="4"
                          StrokeThickness="2" Stroke="white"
                          HorizontalAlignment="Left"

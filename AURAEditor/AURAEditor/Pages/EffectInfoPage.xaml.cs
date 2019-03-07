@@ -159,7 +159,7 @@ namespace AuraEditor.Pages
 
             if (colorPickerDialog.ColorPickerResult)
             {
-                ReUndoManager.GetInstance().Store(new ColorChangeCommand(LayerPage.Self.CheckedEffect, ColorBgName, colorPickerDialog.PreColor, colorPickerDialog.CurrentColor));
+                ReUndoManager.Store(new ColorChangeCommand(LayerPage.Self.CheckedEffect, ColorBgName, colorPickerDialog.PreColor, colorPickerDialog.CurrentColor));
                 return colorPickerDialog.CurrentColor;
             }
             else
@@ -217,7 +217,7 @@ namespace AuraEditor.Pages
             {
                 _oldColorModeSelectionValue = _currentColorModeSelectionValue;
                 _currentColorModeSelectionValue = m_Info.ColorModeSelection;
-                ReUndoManager.GetInstance().Store(new ColorModeSelectionChangeCommand(LayerPage.Self.CheckedEffect, _oldColorModeSelectionValue, _currentColorModeSelectionValue));
+                ReUndoManager.Store(new ColorModeSelectionChangeCommand(LayerPage.Self.CheckedEffect, _oldColorModeSelectionValue, _currentColorModeSelectionValue));
             }
         }
 
@@ -225,7 +225,7 @@ namespace AuraEditor.Pages
         {
             if (m_Info.ColorSegmentation != SegmentationSwitch.IsOn)
             {
-                ReUndoManager.GetInstance().Store(new PatternModeChangeCommand(LayerPage.Self.CheckedEffect, SegmentationSwitch.IsOn));
+                ReUndoManager.Store(new PatternModeChangeCommand(LayerPage.Self.CheckedEffect, SegmentationSwitch.IsOn));
             }
         }
 
@@ -286,7 +286,7 @@ namespace AuraEditor.Pages
             {
                 _oldSpeedValue = _currentSpeedValue;
                 _currentSpeedValue = slider.Value;
-                ReUndoManager.GetInstance().Store(new MoveSpeedCommand(LayerPage.Self.CheckedEffect, _oldSpeedValue, _currentSpeedValue));
+                ReUndoManager.Store(new MoveSpeedCommand(LayerPage.Self.CheckedEffect, _oldSpeedValue, _currentSpeedValue));
             }
         }
 
@@ -400,7 +400,7 @@ namespace AuraEditor.Pages
                 storyboard.Begin();
                 if(m_Info.Angle != targetAngle)
                 {
-                    ReUndoManager.GetInstance().Store(new AngleChangeCommand(LayerPage.Self.CheckedEffect, sourceAngle, targetAngle));
+                    ReUndoManager.Store(new AngleChangeCommand(LayerPage.Self.CheckedEffect, sourceAngle, targetAngle));
                 }
             }
         }
@@ -429,7 +429,7 @@ namespace AuraEditor.Pages
         {
             if (m_Info.RainbowSpecialEffects != RainbowRoatationSwitch.IsOn)
             {
-                ReUndoManager.GetInstance().Store(new RainbowSpecialEffectOnOffCommand(LayerPage.Self.CheckedEffect, RainbowRoatationSwitch.IsOn));
+                ReUndoManager.Store(new RainbowSpecialEffectOnOffCommand(LayerPage.Self.CheckedEffect, RainbowRoatationSwitch.IsOn));
             }
 
             if (RainbowRoatationSwitch.IsOn == true)
@@ -475,7 +475,7 @@ namespace AuraEditor.Pages
             {
                 _oldRainbowSpecialModeValue = _currentRainbowSpecialModeValue;
                 _currentRainbowSpecialModeValue = m_Info.RainbowSpecialMode;
-                ReUndoManager.GetInstance().Store(new RainbowSpecialModeChangeCommand(LayerPage.Self.CheckedEffect, _oldRainbowSpecialModeValue, _currentRainbowSpecialModeValue));
+                ReUndoManager.Store(new RainbowSpecialModeChangeCommand(LayerPage.Self.CheckedEffect, _oldRainbowSpecialModeValue, _currentRainbowSpecialModeValue));
             }
         }
         #endregion
@@ -632,27 +632,27 @@ namespace AuraEditor.Pages
 
         public class MoveSpeedCommand : IReUndoCommand
         {
-            private double _oldSppedSliderValue;
-            private double _currentSppedSliderValue;
+            private double _oldSpeedSliderValue;
+            private double _currentSpeedSliderValue;
             private EffectLineViewModel _checkedEffect;
 
-            public MoveSpeedCommand(EffectLineViewModel checkedEffect, double oldSppedSliderValue, double currentSppedSliderValue)
+            public MoveSpeedCommand(EffectLineViewModel checkedEffect, double oldSpeedSliderValue, double currentSpeedSliderValue)
             {
                 _checkedEffect = checkedEffect;
-                _oldSppedSliderValue = oldSppedSliderValue;
-                _currentSppedSliderValue = currentSppedSliderValue;
+                _oldSpeedSliderValue = oldSpeedSliderValue;
+                _currentSpeedSliderValue = currentSpeedSliderValue;
             }
 
             public void ExecuteRedo()
             {
                 LayerPage.Self.CheckedEffect = _checkedEffect;
-                _checkedEffect.Model.Info.Speed = (int)_currentSppedSliderValue;
+                _checkedEffect.Model.Info.Speed = (int)_currentSpeedSliderValue;
             }
 
             public void ExecuteUndo()
             {
                 LayerPage.Self.CheckedEffect = _checkedEffect;
-                _checkedEffect.Model.Info.Speed = (int)_oldSppedSliderValue;
+                _checkedEffect.Model.Info.Speed = (int)_oldSpeedSliderValue;
             }
         }
 

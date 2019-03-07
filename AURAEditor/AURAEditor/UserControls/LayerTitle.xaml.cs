@@ -72,7 +72,7 @@ namespace AuraEditor.UserControls
         {
             if (NameTextBox.Text.Replace(" ", "") != "")
             {
-                ReUndoManager.GetInstance().Store(new RenameCommand(m_Layer, NameTextBlock.Text, NameTextBox.Text));
+                ReUndoManager.Store(new RenameCommand(m_Layer, NameTextBlock.Text, NameTextBox.Text));
                 NameTextBlock.Text = NameTextBox.Text;
             }
             

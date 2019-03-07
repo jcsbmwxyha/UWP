@@ -78,7 +78,7 @@
                                 <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource MPart_n}" Stretch="Fill"/>
                                 <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RPart_n}" Stretch="Fill"/>
                                 <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center"
-                                           FontSize="20" Margin="20,0,0,0" Grid.ColumnSpan="3"/>
+                                           FontSize="20" Margin="20,0,0,0" Grid.ColumnSpan="3" HorizontalAlignment="Left"/>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -96,7 +96,7 @@
                  RightTapped="EffectlineRadioButton_RightTapped"
                  GroupName="Effectline"
                  Style="{StaticResource EffectLineStyle}"
-                 Content="{x:Bind elvm.Name}">
+                 Content="{x:Bind elvm.EffectBlockContent , Mode=OneWay}">
         <RadioButton.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem Text="Copy" Click="CopyItem_Click" IsEnabled="True"/>

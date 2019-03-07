@@ -593,7 +593,7 @@ namespace AuraEditor
         private void Reset()
         {
             Clean();
-            ReUndoManager.GetInstance().Clear();
+            ReUndoManager.Clear();
             SpacePage.FillCurrentIngroupDevices();
         }
         private void Clean()

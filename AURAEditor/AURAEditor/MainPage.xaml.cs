@@ -71,100 +71,164 @@ namespace AuraEditor
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
-            if (args.VirtualKey == Windows.System.VirtualKey.Z)
+            switch (args.VirtualKey)
             {
-                if (g_PressZ)
-                {
-                    Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
-                    g_PressZ = false;
-                }
-                SpacePage.OnZKeyPressed();
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
-            {
-                g_PressShift = true;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.Control)
-            {
-                g_PressCtrl = true;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.X)
-            {
-                if (SelectedEffect == null)
-                    return;
-
-                if (g_PressCtrl == true)
-                {
-                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
-
-                    LayerModel layer = SelectedEffect.Layer;
-                    layer.DeleteEffectLine(SelectedEffect);
-                }
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.C)
-            {
-                if (SelectedEffect == null)
-                    return;
-
-                if (g_PressCtrl == true)
-                    LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.V)
-            {
-                if (LayerPage.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerPage.CopiedEffect == null)
-                    return;
-
-                g_CanPaste = false;
-
-                var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
-
-                if (SelectedEffect != null)
-                {
-                    copy.Left = SelectedEffect.Right;
-                    SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
-                }
-                else
-                {
-                    LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
-                }
-
-                TimeSpan delay = TimeSpan.FromMilliseconds(400);
-                ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
-                    (source) =>
+                case Windows.System.VirtualKey.Z:
+                    if(g_PressCtrl == true)
                     {
-                        Dispatcher.RunAsync(
-                           CoreDispatcherPriority.High,
-                           () =>
-                           {
-                               g_CanPaste = true;
-                           });
-                    }, delay);
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.Delete)
-            {
-                if (SelectedEffect == null)
-                    return;
+                        if (g_PressShift == true)
+                            RedoButton_Click(null, null);
+                        else
+                            UndoButton_Click(null, null);
+                        break;
+                    }
+                    else
+                    {
+                        if (g_PressZ)
+                        {
+                            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
+                            g_PressZ = false;
+                        }
+                        SpacePage.OnZKeyPressed();
+                        break;
+                    }
+                case Windows.System.VirtualKey.Shift:
+                    g_PressShift = true;
+                    break;
+                case Windows.System.VirtualKey.Control:
+                    g_PressCtrl = true;
+                    break;
+                case Windows.System.VirtualKey.X:
+                    if (SelectedEffect == null)
+                        return;
 
-                LayerModel layer = SelectedEffect.Layer;
-                layer.DeleteEffectLine(SelectedEffect);
+                    if (g_PressCtrl == true)
+                    {
+                        LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                        SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
+                    }
+                    break;
+                case Windows.System.VirtualKey.C:
+                    if (SelectedEffect == null)
+                        return;
+
+                    if (g_PressCtrl == true)
+                        LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                    break;
+                case Windows.System.VirtualKey.V:
+                    if (LayerPage.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerPage.CopiedEffect == null)
+                        return;
+
+                    g_CanPaste = false;
+
+                    var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
+
+                    if (SelectedEffect != null)
+                    {
+                        copy.Left = SelectedEffect.Right;
+                        SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
+                    }
+                    else
+                    {
+                        LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
+                    }
+
+                    TimeSpan delay = TimeSpan.FromMilliseconds(400);
+                    ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
+                        (source) =>
+                        {
+                            Dispatcher.RunAsync(
+                               CoreDispatcherPriority.High,
+                               () =>
+                               {
+                                   g_CanPaste = true;
+                               });
+                        }, delay);
+                    break;
+                case Windows.System.VirtualKey.Delete:
+                    if(g_PressCtrl == true && g_PressShift == true)
+                    {
+                        DeleteItem_Click(null, null);
+                        break;
+                    }
+                    else
+                    {
+                        if (SelectedEffect == null)
+                            return;
+
+                        SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
+                        break;
+                    }                  
+                case Windows.System.VirtualKey.Home:
+                    if (g_PressShift == true)
+                    {
+                        LayerPage.JumpToBeginningButton_Click(null, null);
+                    }
+                    break;
+                case Windows.System.VirtualKey.End:
+                    if (g_PressShift == true)
+                    {
+                        LayerPage.JumpToEndButton_Click(null, null);
+                    }
+                    break;
+                case Windows.System.VirtualKey.S:
+                    if (g_PressCtrl == true)
+                        SaveAndApplyButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.R:
+                    if (g_PressCtrl == true)
+                        RenameItem_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.N:
+                    if (g_PressCtrl == true)
+                        NewFileButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.I:
+                    if (g_PressCtrl == true)
+                        ImportButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.E:
+                    if (g_PressCtrl == true)
+                        ExportButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.M:
+                    if (g_PressCtrl == true)
+                        SortDeviceButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.Number1:
+                    if (g_PressCtrl == true)
+                        SpacePage.DefaultViewButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.Number0:
+                    if (g_PressCtrl == true)
+                        SpacePage.FitAllButton_Click(null, null);
+                    break;
+                case Windows.System.VirtualKey.Add:
+                    if (g_PressCtrl == true)
+                        SpacePage.SpaceZoom_For_Hotkey(true);
+                    break;
+                case Windows.System.VirtualKey.Subtract:
+                    if (g_PressCtrl == true)
+                        SpacePage.SpaceZoom_For_Hotkey(false);
+                    break;
             }
         }
 
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            if (args.VirtualKey == Windows.System.VirtualKey.Z)
+            switch(args.VirtualKey)
             {
-                Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-                g_PressZ = true;
-                SpacePage.OnZKeyRelease();
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.Shift)
-            {
-                g_PressShift = false;
-            }
-            else if (args.VirtualKey == Windows.System.VirtualKey.Control)
-            {
-                g_PressCtrl = false;
+                case Windows.System.VirtualKey.Z:
+                    Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+                    g_PressZ = true;
+                    SpacePage.OnZKeyRelease();
+                    break;
+                case Windows.System.VirtualKey.Shift:
+                    g_PressShift = false;
+                    break;
+                case Windows.System.VirtualKey.Control:
+                    g_PressCtrl = false;
+                    break;
             }
         }
         #endregion
@@ -420,11 +484,11 @@ namespace AuraEditor
 
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            ReUndoManager.GetInstance().Undo();
+            ReUndoManager.Undo();
         }
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            ReUndoManager.GetInstance().Redo();
+            ReUndoManager.Redo();
         }
 
         bool _isPressed = false;
@@ -495,7 +559,7 @@ namespace AuraEditor
                 }
 
                 NeedSave = true;
-                ReUndoManager.GetInstance().Store(new EditZonesCommand(layer, oldpairs, newpairs));
+                ReUndoManager.Store(new EditZonesCommand(layer, oldpairs, newpairs));
                 SpacePage.WatchLayer(layer);
             }
             else // Sorting
@@ -513,7 +577,7 @@ namespace AuraEditor
                     dmPositions.Add(dm, new Tuple<double, double>(moveX, moveY));
                 }
 
-                ReUndoManager.GetInstance().Store(new MoveDevicesCommand(dmPositions));
+                ReUndoManager.Store(new MoveDevicesCommand(dmPositions));
                 SpacePage.SetSpaceStatus(SpaceStatus.Clean);
             }
 

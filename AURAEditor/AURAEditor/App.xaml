@@ -1532,10 +1532,12 @@
             </Setter>
         </Style>
 
-        <BitmapImage x:Key="RogRadioButton_Clockwise_n" UriSource="ms-appx:///Assets/EffectInfoGroup/clockwise_n.png"/>
-        <BitmapImage x:Key="RogRadioButton_Clockwise_c" UriSource="ms-appx:///Assets/EffectInfoGroup/clockwise_p.png"/>
-        <BitmapImage x:Key="RogRadioButton_Countclockwise_n" UriSource="ms-appx:///Assets/EffectInfoGroup/countclockwise_n.png"/>
-        <BitmapImage x:Key="RogRadioButton_Countclockwise_c" UriSource="ms-appx:///Assets/EffectInfoGroup/countclockwise_p.png"/>
+        <BitmapImage x:Key="RogRadioButton_Clockwise_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_r_ic_n.png"/>
+        <BitmapImage x:Key="RogRadioButton_Clockwise_h" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_r_ic_h.png"/>
+        <BitmapImage x:Key="RogRadioButton_Clockwise_s" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_r_ic_s.png"/>
+        <BitmapImage x:Key="RogRadioButton_Countclockwise_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_l_ic_n.png"/>
+        <BitmapImage x:Key="RogRadioButton_Countclockwise_h" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_l_ic_h.png"/>
+        <BitmapImage x:Key="RogRadioButton_Countclockwise_s" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_l_ic_s.png"/>
         <Style x:Key="RogRadioButtonClockwiseStyle" TargetType="RadioButton">
             <Setter Property="MinWidth" Value="10" />
             <Setter Property="Template">
@@ -1546,16 +1548,16 @@
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Clockwise_c}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Clockwise_s}"/>
                                             <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Clockwise_n}"/>
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <!--<VisualState x:Name="PointerOver">
+                                    <VisualState x:Name="PointerOver">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_hover}"/>
-                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_hover}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Clockwise_h}"/>
+                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Clockwise_h}"/>
                                         </VisualState.Setters>
-                                    </VisualState>-->
+                                    </VisualState>
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="CheckStates">
                                     <VisualState x:Name="Checked">
@@ -1573,7 +1575,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Grid>
-                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Clockwise_c}"/>
+                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Clockwise_s}"/>
                                 <Image Name="RadioButton_uncheck" Source="{ThemeResource RogRadioButton_Clockwise_n}"/>
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
@@ -1593,16 +1595,16 @@
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Countclockwise_c}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Countclockwise_s}"/>
                                             <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Countclockwise_n}"/>
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <!--<VisualState x:Name="PointerOver">
+                                    <VisualState x:Name="PointerOver">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_hover}"/>
-                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_hover}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Countclockwise_h}"/>
+                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Countclockwise_h}"/>
                                         </VisualState.Setters>
-                                    </VisualState>-->
+                                    </VisualState>
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="CheckStates">
                                     <VisualState x:Name="Checked">
@@ -1620,7 +1622,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Grid>
-                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Countclockwise_c}"/>
+                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Countclockwise_s}"/>
                                 <Image Name="RadioButton_uncheck" Source="{ThemeResource RogRadioButton_Countclockwise_n}"/>
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
@@ -1630,10 +1632,12 @@
             </Setter>
         </Style>
 
-        <BitmapImage x:Key="RogRadioButton_Inward_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Inward_n.png"/>
-        <BitmapImage x:Key="RogRadioButton_Inward_c" UriSource="ms-appx:///Assets/EffectInfoGroup/Inward_p.png"/>
-        <BitmapImage x:Key="RogRadioButton_Outward_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Outward_n.png"/>
-        <BitmapImage x:Key="RogRadioButton_Outward_c" UriSource="ms-appx:///Assets/EffectInfoGroup/Outward_p.png"/>
+        <BitmapImage x:Key="RogRadioButton_Inward_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_assemble_ic_n.png"/>
+        <BitmapImage x:Key="RogRadioButton_Inward_h" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_assemble_ic_h.png"/>
+        <BitmapImage x:Key="RogRadioButton_Inward_s" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_assemble_ic_s.png"/>
+        <BitmapImage x:Key="RogRadioButton_Outward_n" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_split_ic_n.png"/>
+        <BitmapImage x:Key="RogRadioButton_Outward_h" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_split_ic_h.png"/>
+        <BitmapImage x:Key="RogRadioButton_Outward_s" UriSource="ms-appx:///Assets/EffectInfoGroup/Angle/asus_ac_angle_split_ic_s.png"/>
         <Style x:Key="RogRadioButtonInwardStyle" TargetType="RadioButton">
             <Setter Property="MinWidth" Value="10" />
             <Setter Property="Template">
@@ -1644,16 +1648,16 @@
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Inward_c}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Inward_s}"/>
                                             <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Inward_n}"/>
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <!--<VisualState x:Name="PointerOver">
+                                    <VisualState x:Name="PointerOver">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_hover}"/>
-                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_hover}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Inward_h}"/>
+                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Inward_h}"/>
                                         </VisualState.Setters>
-                                    </VisualState>-->
+                                    </VisualState>
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="CheckStates">
                                     <VisualState x:Name="Checked">
@@ -1671,7 +1675,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Grid>
-                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Inward_c}"/>
+                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Inward_s}"/>
                                 <Image Name="RadioButton_uncheck" Source="{ThemeResource RogRadioButton_Inward_n}"/>
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
@@ -1691,16 +1695,16 @@
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Outward_c}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Outward_s}"/>
                                             <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Outward_n}"/>
                                         </VisualState.Setters>
                                     </VisualState>
-                                    <!--<VisualState x:Name="PointerOver">
+                                    <VisualState x:Name="PointerOver">
                                         <VisualState.Setters>
-                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_hover}"/>
-                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_hover}"/>
+                                            <Setter Target="RadioButton_check.Source" Value="{ThemeResource RogRadioButton_Outward_h}"/>
+                                            <Setter Target="RadioButton_uncheck.Source" Value="{ThemeResource RogRadioButton_Outward_h}"/>
                                         </VisualState.Setters>
-                                    </VisualState>-->
+                                    </VisualState>
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="CheckStates">
                                     <VisualState x:Name="Checked">
@@ -1718,7 +1722,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Grid>
-                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Outward_c}"/>
+                                <Image Name="RadioButton_check" Source="{ThemeResource RogRadioButton_Outward_s}"/>
                                 <Image Name="RadioButton_uncheck" Source="{ThemeResource RogRadioButton_Outward_n}"/>
                                 <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>

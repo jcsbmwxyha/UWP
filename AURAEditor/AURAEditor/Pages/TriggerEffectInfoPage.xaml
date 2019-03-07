@@ -57,11 +57,12 @@
                             <TextBlock x:Name="PatternTextBlock" Text="Pattern" Foreground="White"/>
                         </RadioButton>
                     </StackPanel>
-                    <usercontrol:ColorPatternView x:Name="ColorPattern"/>
+                    <usercontrol:ColorPatternView x:Name="ColorPattern" Margin="20,10,0,0"/>
                     <ContentControl x:Name="PatternSwitch">
                         <StackPanel Orientation="Horizontal" Margin="30,20,0,0">
                             <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
                             <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" VerticalAlignment="Center" Margin="80,0,0,0"
+                                          Toggled="SegmentationSwitch_Toggled"
                                           IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}"
                                           Style="{StaticResource RogToggleSwitchStyle}"/>
                         </StackPanel>

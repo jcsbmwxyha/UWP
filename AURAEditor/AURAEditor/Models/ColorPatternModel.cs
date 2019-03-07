@@ -1,4 +1,6 @@
-﻿using AuraEditor.UserControls;
+﻿using AuraEditor.Common;
+using AuraEditor.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
+using static AuraEditor.UserControls.ColorPatternView;
 
 namespace AuraEditor.Models
 {
@@ -22,7 +25,8 @@ namespace AuraEditor.Models
             }
         }
 
-        private EffectInfoModel info;
+        private EffectInfoModel Info;
+        static public ColorPatternModel Self;
 
         #region -- Property --
         public ObservableCollection<ColorPointModel> CurrentColorPoints;
@@ -32,6 +36,16 @@ namespace AuraEditor.Models
             {
                 return ColorPointsToForeground(CurrentColorPoints.ToList());
             }
+        }
+
+        internal List<ColorPointLightData> GetCustomizedCpData()
+        {
+            List<ColorPointLightData> res = new List<ColorPointLightData>();
+            foreach (var cp in CustomizeColorPoints)
+            {
+                res.Add(new ColorPointLightData(cp.Color, cp.PixelX));
+            }
+            return res;
         }
 
         public List<ColorPointModel> CustomizeColorPoints;
@@ -79,7 +93,7 @@ namespace AuraEditor.Models
                         }
                     }
 
-                    info.PatternSelect = value;
+                    Info.PatternSelect = value;
                     _selected = value;
                     RaisePropertyChanged("CurrentColorForground");
                     RaisePropertyChanged("CustomizeColorForground");
@@ -93,13 +107,14 @@ namespace AuraEditor.Models
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
             CurrentColorPoints.CollectionChanged += CurrentCPsChanged;
             PatternCPsCanvas = canvas;
-            this.info = info;
+            this.Info = info;
 
             foreach (var cp in info.CustomizedPattern)
                 cp.ParentPattern = this;
 
             CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
+            Self = this;
         }
 
         private void CurrentCPsChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -131,13 +146,19 @@ namespace AuraEditor.Models
             RaisePropertyChanged("CurrentColorForground");
         }
 
-        public void OnManipulationCompleted()
+        public void OnCustomizeChanged()
         {
+            var oldCPs = GetCustomizedCpData();
+
             SetColorPointBorders(CurrentColorPoints.ToList());
 
             CustomizeColorPoints.Clear();
             foreach (var cp in CurrentColorPoints)
                 CustomizeColorPoints.Add(cp);
+            
+            var newCPs = GetCustomizedCpData();
+
+            ReUndoManager.Store(new ColorPatternModifyCommand(oldCPs, newCPs, Selected, -1));
 
             Selected = -1;
             RaisePropertyChanged("CurrentColorForground");

@@ -12,31 +12,22 @@ namespace AuraEditor.Common
         void ExecuteRedo();
         void ExecuteUndo();
     }
-    
+
     /* The Invoker class */
-    public class ReUndoManager
+    static public class ReUndoManager
     {
-        static private ReUndoManager _self;
-        private readonly Stack<IReUndoCommand> RedoStack;
-        private readonly Stack<IReUndoCommand> UndoStack;
-        bool _mutex;
-        
-        private ReUndoManager()
+        static private readonly Stack<IReUndoCommand> RedoStack;
+        static private readonly Stack<IReUndoCommand> UndoStack;
+        static private bool _mutex;
+
+        static ReUndoManager()
         {
             RedoStack = new Stack<IReUndoCommand>();
             UndoStack = new Stack<IReUndoCommand>();
             _mutex = false;
         }
 
-        static public ReUndoManager GetInstance()
-        {
-            if (_self == null)
-                _self = new ReUndoManager();
-
-            return _self;
-        }
-        
-        public void Store(IReUndoCommand command)
+        static public void Store(IReUndoCommand command)
         {
             if (_mutex == true)
                 return;
@@ -44,8 +35,7 @@ namespace AuraEditor.Common
             UndoStack.Push(command);
             RedoStack.Clear();
         }
-
-        public void Redo()
+        static public void Redo()
         {
             if (RedoStack.Count == 0)
                 return;
@@ -62,7 +52,7 @@ namespace AuraEditor.Common
                     Redo();
             }
         }
-        public void Undo()
+        static public void Undo()
         {
             if (UndoStack.Count == 0)
                 return;
@@ -79,7 +69,7 @@ namespace AuraEditor.Common
                     Undo();
             }
         }
-        public void Clear()
+        static public void Clear()
         {
             RedoStack.Clear();
             UndoStack.Clear();

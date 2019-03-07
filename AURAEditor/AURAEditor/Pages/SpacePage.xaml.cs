@@ -192,7 +192,6 @@ namespace AuraEditor.Pages
                 {
                     DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
                     Log.Debug("[OnIngroupDevicesChanged] New Device : " + sd.Name);
-
                     if (dm == null)
                     {
                         Log.Debug("[OnIngroupDevicesChanged] New Device create failed!");
@@ -418,6 +417,18 @@ namespace AuraEditor.Pages
             SetSpaceZoomPercent(percent);
         }
 
+        public void SpaceZoom_For_Hotkey(bool zoom_in)
+        {
+            double percent = double.Parse(SpaceZoomButton.Content.ToString().Replace(" %", ""));
+            if(zoom_in)
+                percent = Math2.FloorToTarget(percent, 25) + 25;
+            else
+                percent = Math2.CeilingToTarget(percent, 25) - 25;
+            if (percent < 25)
+                return;
+            SetSpaceZoomPercent((float)percent);
+        }
+
         private float _spaceZoomFactor;
         public float SpaceZoomFactor
         {
@@ -451,11 +462,11 @@ namespace AuraEditor.Pages
             _spaceZoomFactor = (float)factor;
         }
 
-        private void DefaultViewButton_Click(object sender, RoutedEventArgs e)
+        public void DefaultViewButton_Click(object sender, RoutedEventArgs e)
         {
             SpaceScrollViewer.ChangeView(0, 0, 1, true);
         }
-        private void FitAllButton_Click(object sender, RoutedEventArgs e)
+        public void FitAllButton_Click(object sender, RoutedEventArgs e)
         {
             var rect = GetOperatingPixelRect();
             var rateW = rect.Width / SpaceScrollViewer.ActualWidth;

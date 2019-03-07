@@ -177,13 +177,13 @@ namespace AuraEditor.Pages
         {
             int index = Layers.IndexOf(layer);
             Layers.Add(layer);
-            ReUndoManager.GetInstance().Store(new AddLayerCommand(layer, index));
+            ReUndoManager.Store(new AddLayerCommand(layer, index));
         }
         public void RemoveLayer(LayerModel layer)
         {
             int index = Layers.IndexOf(layer);
             Layers.Remove(layer);
-            ReUndoManager.GetInstance().Store(new DeleteLayerCommand(layer, index));
+            ReUndoManager.Store(new DeleteLayerCommand(layer, index));
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -203,7 +203,7 @@ namespace AuraEditor.Pages
                     TrackStackPanel.Children.Insert(layerIndex, layer.UI_Track);
                     if (layer.Equals(_oldRemovedLayer))
                     {
-                        ReUndoManager.GetInstance().Store(new SwapLayerCommand(_oldRemovedIndex, layerIndex));
+                        ReUndoManager.Store(new SwapLayerCommand(_oldRemovedIndex, layerIndex));
                     }
                     CheckedLayer = layer;
                     break;
@@ -614,7 +614,8 @@ namespace AuraEditor.Pages
             {
                 if (l.Equals(layer))
                     result.AddRange(l.GetAllEffHeadAndTailPositions(eff));
-                result.AddRange(l.GetAllEffHeadAndTailPositions(null));
+                else
+                    result.AddRange(l.GetAllEffHeadAndTailPositions(null));
             }
             return result.ToArray();
         }
@@ -634,8 +635,7 @@ namespace AuraEditor.Pages
 
         private void ScaleScrollViewer_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            var fe = sender as FrameworkElement;
-            PointerPoint ptrPt = e.GetCurrentPoint(fe);
+            PointerPoint ptrPt = e.GetCurrentPoint(ScaleCanvas);
             playerModel.Position = ptrPt.Position.X;
         }
         #endregion
@@ -657,7 +657,7 @@ namespace AuraEditor.Pages
             (d as LayerPage).ScaleScrollViewer.ChangeView((double)e.NewValue, null, null, true);
         }
 
-        private void JumpToBeginningButton_Click(object sender, RoutedEventArgs e)
+        public void JumpToBeginningButton_Click(object sender, RoutedEventArgs e)
         {
             double source = ScaleScrollViewer.HorizontalOffset;
             double target = 0;
@@ -667,7 +667,7 @@ namespace AuraEditor.Pages
             double to = 0;
             AnimationStart(this, "TimelineCursorPosition", 200, from, to);
         }
-        private void JumpToEndButton_Click(object sender, RoutedEventArgs e)
+        public void JumpToEndButton_Click(object sender, RoutedEventArgs e)
         {
             double source = ScaleScrollViewer.HorizontalOffset;
             double target = RightmostPosition;

@@ -1,4 +1,5 @@
-﻿using AuraEditor.Models;
+﻿using AuraEditor.Common;
+using AuraEditor.Models;
 using AuraEditor.Pages;
 using System;
 using System.Collections.ObjectModel;
@@ -15,10 +16,17 @@ namespace AuraEditor.Dialogs
     {
         private LayerModel m_Layer;
         private ObservableCollection<TriggerEffect> m_EffectList;
+        private ObservableCollection<TriggerEffect> _oldTriggerEffectList;
+
+        private string _oldActionSelected;
+        private string _currentActionSelected = "One Click";
+
+        static public TriggerDialog Self;
 
         public TriggerDialog(LayerModel layer)
         {
             this.InitializeComponent();
+            Self = this;
 
             m_Layer = layer;
             TriggerActionButton.Content = m_Layer.TriggerAction;
@@ -51,6 +59,13 @@ namespace AuraEditor.Dialogs
             string selectedAction = item.Text;
             TriggerActionButton.Content = selectedAction;
             m_Layer.TriggerAction = selectedAction;
+
+            if(_currentActionSelected != selectedAction)
+            {
+                _oldActionSelected = _currentActionSelected;
+                _currentActionSelected = selectedAction;
+                ReUndoManager.Store(new ActionSelectedCommand(_oldActionSelected, _currentActionSelected));
+            }
         }
         private void AddEffectButton_Click(object sender, RoutedEventArgs e)
         {
@@ -62,9 +77,12 @@ namespace AuraEditor.Dialogs
                 TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
             }
             TriggerEffectListView.SelectedIndex = m_EffectList.Count - 1;
+            ReUndoManager.Store(new AddEffectCommand(effect));
         }
         private void RemoveAllButton_Click(object sender, RoutedEventArgs e)
         {
+            _oldTriggerEffectList = new ObservableCollection<TriggerEffect>(m_EffectList);
+            ReUndoManager.Store(new RemoveAllCommand(_oldTriggerEffectList));
             m_EffectList.Clear();
             TriggerEffectListView.SelectedIndex = -1;
             TriggerEffectTextBlock.Visibility = Visibility.Visible;
@@ -117,5 +135,113 @@ namespace AuraEditor.Dialogs
             MainPage.Self.CanShowDeviceUpdateDialog = true;
             MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
+
+        #region ReUndo
+        public class ActionSelectedCommand : IReUndoCommand
+        {
+            private string _oldActionSelectedValue;
+            private string _currentActionSelectedValue;
+
+            public ActionSelectedCommand(string oldActionSelectedValue, string currentActionSelectedValue)
+            {
+                _oldActionSelectedValue = oldActionSelectedValue;
+                _currentActionSelectedValue = currentActionSelectedValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                Self.TriggerActionButton.Content = _currentActionSelectedValue;
+                Self.m_Layer.TriggerAction = _currentActionSelectedValue;
+            }
+
+            public void ExecuteUndo()
+            {
+                Self.TriggerActionButton.Content = _oldActionSelectedValue;
+                Self.m_Layer.TriggerAction = _oldActionSelectedValue;
+            }
+        }
+        public class AddEffectCommand : IReUndoCommand
+        {
+            private TriggerEffect _oldEffectValue;
+
+            public AddEffectCommand(TriggerEffect oldEffectValue)
+            {
+                _oldEffectValue = oldEffectValue;
+            }
+
+            public void ExecuteRedo()
+            {
+                Self.m_EffectList.Add(_oldEffectValue);
+                Self.m_Layer.TriggerEffects = Self.m_EffectList.ToList();
+                if (Self.m_EffectList.Count != 0)
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+                    Self.m_Layer.IsTriggering = true;
+                }
+                Self.TriggerEffectListView.SelectedIndex = Self.m_EffectList.Count - 1;
+            }
+
+            public void ExecuteUndo()
+            {
+                Self.DeleteTriggerEffect(_oldEffectValue);
+                Self.m_Layer.TriggerEffects = Self.m_EffectList.ToList();
+                if (Self.m_EffectList.Count != 0)
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+                    Self.m_Layer.IsTriggering = true;
+                }
+                else
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Visible;
+                    Self.m_Layer.IsTriggering = false;
+                }
+                Self.TriggerEffectListView.SelectedIndex = Self.m_EffectList.Count - 1;
+            }
+        }
+
+        public class RemoveAllCommand : IReUndoCommand
+        {
+            private ObservableCollection<TriggerEffect> _oldEffectList;
+
+            public RemoveAllCommand(ObservableCollection<TriggerEffect> oldEffectList)
+            {
+                _oldEffectList = oldEffectList;
+            }
+
+            public void ExecuteRedo()
+            {
+                Self.m_EffectList.Clear();
+                Self.m_Layer.TriggerEffects = Self.m_EffectList.ToList();
+                if (Self.m_EffectList.Count != 0)
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+                    Self.m_Layer.IsTriggering = true;
+                }
+                else
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Visible;
+                    Self.m_Layer.IsTriggering = false;
+                }
+                Self.TriggerEffectListView.SelectedIndex = Self.m_EffectList.Count - 1;
+            }
+
+            public void ExecuteUndo()
+            {
+                Self.m_EffectList = new ObservableCollection<TriggerEffect>(_oldEffectList);
+                Self.m_Layer.TriggerEffects = Self.m_EffectList.ToList();
+                if (Self.m_EffectList.Count != 0)
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Collapsed;
+                    Self.m_Layer.IsTriggering = true;
+                }
+                else
+                {
+                    Self.TriggerEffectTextBlock.Visibility = Visibility.Visible;
+                    Self.m_Layer.IsTriggering = false;
+                }
+                Self.TriggerEffectListView.SelectedIndex = 0;
+            }
+        }
+        #endregion
     }
 }

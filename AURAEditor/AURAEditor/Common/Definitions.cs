@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static AuraEditor.Common.AuraEditorColorHelper;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor.Common
 {
@@ -69,7 +70,7 @@ namespace AuraEditor.Common
                 new ColorPointModel() { Color =HexToColor("#FF00FAFF"), Offset = 0.48 },
                 new ColorPointModel() { Color =HexToColor("#FF01FF00"), Offset = 0.64 },
                 new ColorPointModel() { Color =HexToColor("#FFFFF600"), Offset = 0.8 },
-                new ColorPointModel() { Color =HexToColor("#FFFFF600"), Offset = 1.0 },
+                new ColorPointModel() { Color =HexToColor("#FFFF000D"), Offset = 1.0 },
             };
 
             DefaultColorPointListCollection.Add(DefaultColorPoints1);
@@ -78,6 +79,9 @@ namespace AuraEditor.Common
             DefaultColorPointListCollection.Add(DefaultColorPoints4);
             DefaultColorPointListCollection.Add(DefaultColorPoints5);
             DefaultColorPointListCollection.Add(DefaultColorPoints6);
+
+            foreach (var list in DefaultColorPointListCollection)
+                SetColorPointBorders(list);
         }
 
         static public int GetMSecondsPerTimeUnitByLevel(int level)
@@ -102,5 +106,4 @@ namespace AuraEditor.Common
 
         static public List<List<ColorPointModel>> DefaultColorPointListCollection;
     }
-}                     
-                                                    
+}                                     

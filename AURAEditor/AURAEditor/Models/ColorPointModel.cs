@@ -9,6 +9,27 @@ using static AuraEditor.Common.ControlHelper;
 
 namespace AuraEditor.Models
 {
+    public class ColorPointLightData
+    {
+        public ColorPointLightData(Color c, double x)
+        {
+            C = c; X = x;
+        }
+
+        public Color C;
+        public double X;
+
+        public ColorPointModel ToModel()
+        {
+            var cpm = new ColorPointModel();
+
+            cpm.PixelX = X;
+            cpm.Color = C;
+
+            return cpm;
+        }
+    }
+
     public class ColorPointModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -90,10 +111,6 @@ namespace AuraEditor.Models
         public ColorPatternModel ParentPattern;
 
         public ColorPointModel()
-        {
-            Offset = 0;
-        }
-        public ColorPointModel(TriggerDialog td)
         {
             Offset = 0;
         }

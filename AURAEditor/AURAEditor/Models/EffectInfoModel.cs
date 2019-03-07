@@ -1391,7 +1391,7 @@ namespace AuraEditor.Models
                 customizedNode.AppendChild(SetNodeInfoXmlNode(i, ScaledownOffset, ColorPointList[i].Color, hsv));
                 if (i == (ColorPointList.Count - 1))
                 {
-                    customizedNode.AppendChild(SetNodeInfoXmlNode(i, 1, ColorPointList[i].Color, hsv));
+                    customizedNode.AppendChild(SetNodeInfoXmlNode(i, 1, ColorPointList[0].Color, hsv));
                 }
             }
             return customizedNode;
