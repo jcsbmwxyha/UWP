@@ -70,33 +70,9 @@ namespace AuraEditor.Models
             {
                 if (_selected != value)
                 {
-                    CurrentColorPoints.Clear();
-
-                    if (value == -1)
-                    {
-                        foreach (var cp in CustomizeColorPoints)
-                            CurrentColorPoints.Add(ColorPointModel.Copy(cp));
-                    }
-                    else
-                    {
-                        List<ColorPointModel> d_cps;
-                        if (value < DefaultColorPointListCollection.Count)
-                            d_cps = DefaultColorPointListCollection[value];
-                        else
-                            d_cps = DefaultColorPointListCollection[5];
-
-                        foreach (var d_cp in d_cps)
-                        {
-                            var cp = ColorPointModel.Copy(d_cp);
-                            cp.ParentPattern = this;
-                            CurrentColorPoints.Add(cp);
-                        }
-                    }
-
                     Info.PatternSelect = value;
                     _selected = value;
-                    RaisePropertyChanged("CurrentColorForground");
-                    RaisePropertyChanged("CustomizeColorForground");
+                    RefreshCPs();
                 }
             }
         }
@@ -108,10 +84,7 @@ namespace AuraEditor.Models
             CurrentColorPoints.CollectionChanged += CurrentCPsChanged;
             PatternCPsCanvas = canvas;
             this.Info = info;
-
-            foreach (var cp in info.CustomizedPattern)
-                cp.ParentPattern = this;
-
+            
             CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
             Self = this;
@@ -154,13 +127,41 @@ namespace AuraEditor.Models
 
             CustomizeColorPoints.Clear();
             foreach (var cp in CurrentColorPoints)
-                CustomizeColorPoints.Add(cp);
+                CustomizeColorPoints.Add(ColorPointModel.Copy(cp));
             
             var newCPs = GetCustomizedCpData();
 
             ReUndoManager.Store(new ColorPatternModifyCommand(oldCPs, newCPs, Selected, -1));
 
             Selected = -1;
+            RaisePropertyChanged("CurrentColorForground");
+            RaisePropertyChanged("CustomizeColorForground");
+        }
+
+        public void RefreshCPs()
+        {
+            CurrentColorPoints.Clear();
+
+            if (Selected == -1)
+            {
+                foreach (var cp in CustomizeColorPoints)
+                    CurrentColorPoints.Add(ColorPointModel.Copy(cp));
+            }
+            else
+            {
+                List<ColorPointModel> d_cps;
+                if (Selected < DefaultColorPointListCollection.Count)
+                    d_cps = DefaultColorPointListCollection[Selected];
+                else
+                    d_cps = DefaultColorPointListCollection[5];
+
+                foreach (var d_cp in d_cps)
+                {
+                    var cp = ColorPointModel.Copy(d_cp);
+                    CurrentColorPoints.Add(cp);
+                }
+            }
+            
             RaisePropertyChanged("CurrentColorForground");
             RaisePropertyChanged("CustomizeColorForground");
         }

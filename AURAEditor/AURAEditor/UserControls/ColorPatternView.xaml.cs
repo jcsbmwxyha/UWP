@@ -105,7 +105,6 @@ namespace AuraEditor.UserControls
                 {
                     ColorPointModel newCp = new ColorPointModel
                     {
-                        ParentPattern = m_ColorPatternModel,
                         PixelX = insertX,
                         Color = checkedCp.Color,
                     };
@@ -172,6 +171,7 @@ namespace AuraEditor.UserControls
                 LayerPage.Self.CheckedEffect = _eff;
                 var pm = ColorPatternModel.Self;
                 pm.Selected = _newSelect;
+                pm.RefreshCPs();
             }
 
             public void ExecuteUndo()
@@ -192,6 +192,7 @@ namespace AuraEditor.UserControls
                 LayerPage.Self.CheckedEffect = _eff;
                 var pm = ColorPatternModel.Self;
                 pm.Selected = _oldSelect;
+                pm.RefreshCPs();
             }
         }
     }

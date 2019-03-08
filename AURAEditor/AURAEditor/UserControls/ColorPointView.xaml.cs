@@ -41,12 +41,12 @@ namespace AuraEditor.UserControls
             else
             {
                 TT.X += e.Delta.Translation.X;
-                m_ColorPointModel.ParentPattern.OnManipulationDelta();
+                ColorPatternModel.Self.OnManipulationDelta();
             }
         }
         private void ColorPointRadioButton_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            m_ColorPointModel.ParentPattern.OnCustomizeChanged();
+            ColorPatternModel.Self.OnCustomizeChanged();
         }
         private async void ColorPointRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
         {
@@ -61,7 +61,7 @@ namespace AuraEditor.UserControls
             if (colorPickerDialog.ColorPickerResult)
             {
                 m_ColorPointModel.Color = colorPickerDialog.CurrentColor;
-                m_ColorPointModel.ParentPattern.OnCustomizeChanged();
+                ColorPatternModel.Self.OnCustomizeChanged();
             }
 
             if (dialog != null)

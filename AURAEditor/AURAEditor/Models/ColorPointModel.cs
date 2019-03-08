@@ -107,9 +107,7 @@ namespace AuraEditor.Models
         public double LeftBorder { get; set; }
         public double RightBorder { get; set; }
         public ColorPointView View { get; internal set; }
-
-        public ColorPatternModel ParentPattern;
-
+        
         public ColorPointModel()
         {
             Offset = 0;
@@ -124,7 +122,6 @@ namespace AuraEditor.Models
         {
             return new ColorPointModel
             {
-                ParentPattern = cpm.ParentPattern,
                 Offset = cpm.Offset,
                 Color = cpm.Color,
                 LeftBorder = cpm.LeftBorder,
