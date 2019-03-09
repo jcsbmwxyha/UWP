@@ -237,8 +237,8 @@
 
         <RelativePanel VerticalAlignment="Center">
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
-                          Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye, Mode=TwoWay}" Style="{StaticResource EyeToggleButtonStyle}"/>
-            <TextBlock Name="NameTextBlock" Text="{x:Bind m_Layer.Name, Mode=TwoWay}"
+                          Click="EyeToggleButton_Click" IsChecked="{Binding Eye, Mode=TwoWay}" Style="{StaticResource EyeToggleButtonStyle}"/>
+            <TextBlock Name="NameTextBlock" Text="{Binding Name, Mode=TwoWay}"
                        RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"
                        DoubleTapped="NameTextBlock_DoubleTapped"/>
             <TextBox Name="NameTextBox" Width="120" MinHeight="30" Height="30" Visibility="Collapsed"
@@ -255,7 +255,7 @@
             <Button Name="TriggerStatusOnButton" Style="{StaticResource TriggerStatusOnButtonStyle}"
                     RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
                     Width="22" Height="22" Margin="0,0,10,0" Click="TriggerDialogButton_Click"
-                    Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
+                    Visibility="{Binding IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
                         <TextBlock Foreground="White" Text="Trigger effects settings"/>
@@ -264,7 +264,7 @@
             </Button>
             <Button Name="TriggerStatusOffButton" Style="{StaticResource TriggerStatusOffButtonStyle}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
                     Width="22" Height="22" Margin="0,0,10,0" Click="TriggerDialogButton_Click"
-                    Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter},Mode=OneWay}">
+                    Visibility="{Binding IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
                         <TextBlock Foreground="White" Text="Trigger effects settings"/>
