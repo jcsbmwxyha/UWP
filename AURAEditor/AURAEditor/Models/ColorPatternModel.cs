@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.UserControls.ColorPatternView;
@@ -26,8 +27,19 @@ namespace AuraEditor.Models
         }
 
         private EffectInfoModel Info;
-        static public ColorPatternModel Self;
-        static public ColorPatternModel TriggerSelf;
+
+        static private ColorPatternModel _self;
+        static private ColorPatternModel _triggerself;
+        static public ColorPatternModel Self
+        {
+            get
+            {
+                if (GetCurrentContentDialog() == null)
+                    return _self;
+                else
+                    return _triggerself;
+            }
+        }
 
         #region -- Property --
         public ObservableCollection<ColorPointModel> CurrentColorPoints;
@@ -84,7 +96,11 @@ namespace AuraEditor.Models
 
             CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
-            Self = this;
+
+            if (!IsTriggerEffect(info.Type))
+                 _self = this;
+            else
+                 _triggerself = this;
         }
         
         public void OnManipulationDelta()

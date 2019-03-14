@@ -42,6 +42,8 @@ namespace AuraEditor.Pages
         private int _oldColorModeSelectionValue;
         private int _currentColorModeSelectionValue = 1;
 
+        private ColorPatternModel patternModel;
+
         public EffectInfoPage()
         {
             this.InitializeComponent();
@@ -63,9 +65,10 @@ namespace AuraEditor.Pages
 
             this.DataContext = m_Info;
 
-            ColorPatternModel patternModel = new ColorPatternModel(m_Info);
+            patternModel = new ColorPatternModel(m_Info);
             patternModel.CurrentColorPoints[0].IsChecked = true;
             ColorPattern.DataContext = patternModel;
+
             if (m_Info.RainbowSpecialMode == 1)
             {
                 ClockwiseRbt.IsChecked = true;

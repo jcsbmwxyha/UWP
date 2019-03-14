@@ -138,14 +138,16 @@ namespace AuraEditor.UserControls
 
         public class ColorPatternModifyCommand : IReUndoCommand
         {
+            private EffectInfoModel _info;
             List<ColorPointLightData> _newlist;
             List<ColorPointLightData> _oldlist;
             private int _oldSelect;
             private int _newSelect;
             private EffectLineViewModel _eff;
 
-            public ColorPatternModifyCommand(List<ColorPointLightData> oldlist, List<ColorPointLightData> newlist, int oldSelect, int newSelect)
+            public ColorPatternModifyCommand(EffectInfoModel info, List<ColorPointLightData> oldlist, List<ColorPointLightData> newlist, int oldSelect, int newSelect)
             {
+                _info = info;
                 _oldlist = oldlist;
                 _newlist = newlist;
                 _oldSelect = oldSelect;
@@ -168,10 +170,14 @@ namespace AuraEditor.UserControls
                     SetColorPointBorders(cusList);
                 }
 
-                LayerPage.Self.CheckedEffect = _eff;
+
+                _info.PatternSelect = _newSelect;
                 var pm = ColorPatternModel.Self;
                 pm.Selected = _newSelect;
                 pm.RefreshCPs();
+
+                if (_eff != null)
+                    LayerPage.Self.CheckedEffect = _eff;
             }
 
             public void ExecuteUndo()
