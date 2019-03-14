@@ -33,8 +33,24 @@
             </Button>
         </Grid>
         <StackPanel Orientation="Vertical" Margin="20,0,0,0">
-            <Canvas Name="ItemsCanvas" x:FieldModifier="public" Margin="-10,3,0,10" Height="10" VerticalAlignment="Top"/>
-
+            <ItemsControl Name="ColorPointItemsControl" Margin="-10,0,0,0" Height="20"
+                         ItemsSource="{x:Bind Path=m_ColorPatternModel.CurrentColorPoints}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="Offset"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ColorPointModel">
+                        <usercontrol:ColorPointView/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <Rectangle x:Name="PatternRectangle" Width="196" Height="16" HorizontalAlignment="Left"
                        Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
             <StackPanel Orientation="Horizontal">

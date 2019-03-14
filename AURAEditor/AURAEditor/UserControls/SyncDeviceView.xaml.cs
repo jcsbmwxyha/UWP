@@ -12,6 +12,7 @@ namespace AuraEditor.UserControls
         public SyncDeviceView()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
         }
     }
 }

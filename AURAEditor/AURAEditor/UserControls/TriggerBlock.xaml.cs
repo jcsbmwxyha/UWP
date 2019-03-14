@@ -27,6 +27,7 @@ namespace AuraEditor.UserControls
         public TriggerBlock()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

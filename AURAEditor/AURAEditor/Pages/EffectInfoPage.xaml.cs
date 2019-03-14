@@ -63,7 +63,8 @@ namespace AuraEditor.Pages
 
             this.DataContext = m_Info;
 
-            ColorPatternModel patternModel = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
+            ColorPatternModel patternModel = new ColorPatternModel(m_Info);
+            patternModel.CurrentColorPoints[0].IsChecked = true;
             ColorPattern.DataContext = patternModel;
             if (m_Info.RainbowSpecialMode == 1)
             {

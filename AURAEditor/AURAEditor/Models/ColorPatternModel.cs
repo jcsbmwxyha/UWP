@@ -27,6 +27,7 @@ namespace AuraEditor.Models
 
         private EffectInfoModel Info;
         static public ColorPatternModel Self;
+        static public ColorPatternModel TriggerSelf;
 
         #region -- Property --
         public ObservableCollection<ColorPointModel> CurrentColorPoints;
@@ -57,8 +58,6 @@ namespace AuraEditor.Models
             }
         }
 
-        public Canvas PatternCPsCanvas;
-
         private int _selected = -2;
         public int Selected
         {
@@ -78,42 +77,16 @@ namespace AuraEditor.Models
         }
         #endregion
 
-        public ColorPatternModel(EffectInfoModel info, Canvas canvas)
+        public ColorPatternModel(EffectInfoModel info)
         {
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
-            CurrentColorPoints.CollectionChanged += CurrentCPsChanged;
-            PatternCPsCanvas = canvas;
             this.Info = info;
-            
+
             CustomizeColorPoints = info.CustomizedPattern;
             Selected = info.PatternSelect;
             Self = this;
         }
-
-        private void CurrentCPsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            ColorPointModel model;
-            ColorPointView view;
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Reset:
-                    PatternCPsCanvas.Children.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    model = e.OldItems[0] as ColorPointModel;
-                    PatternCPsCanvas.Children.Remove(model.View);
-                    break;
-                case NotifyCollectionChangedAction.Add:
-                    model = e.NewItems[0] as ColorPointModel;
-                    view = new ColorPointView();
-                    view.DataContext = model;
-                    model.View = view;
-                    PatternCPsCanvas.Children.Add(model.View);
-                    break;
-            }
-        }
-
+        
         public void OnManipulationDelta()
         {
             RaisePropertyChanged("CurrentColorForground");
@@ -161,7 +134,7 @@ namespace AuraEditor.Models
                     CurrentColorPoints.Add(cp);
                 }
             }
-            
+
             RaisePropertyChanged("CurrentColorForground");
             RaisePropertyChanged("CustomizeColorForground");
         }

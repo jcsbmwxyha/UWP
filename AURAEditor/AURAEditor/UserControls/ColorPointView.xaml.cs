@@ -23,11 +23,6 @@ namespace AuraEditor.UserControls
             this.InitializeComponent();
         }
 
-        public ColorPointView(TriggerDialog td)
-        {
-            this.InitializeComponent();
-        }
-
         private void ColorPointRadioButton_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (TT.X + e.Delta.Translation.X < m_ColorPointModel.LeftBorder)

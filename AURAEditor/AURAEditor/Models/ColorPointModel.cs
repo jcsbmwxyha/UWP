@@ -106,7 +106,6 @@ namespace AuraEditor.Models
 
         public double LeftBorder { get; set; }
         public double RightBorder { get; set; }
-        public ColorPointView View { get; internal set; }
         
         public ColorPointModel()
         {

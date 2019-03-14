@@ -72,7 +72,7 @@ namespace AuraEditor.Pages
             }
 
             this.DataContext = m_Info;
-            ColorPattern.DataContext = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
+            ColorPattern.DataContext = new ColorPatternModel(m_Info);
             SetColorMode(m_TriggerEffect.Info);
             Bindings.Update();
         }
@@ -87,7 +87,7 @@ namespace AuraEditor.Pages
 
             int type = GetEffectIndex(selectedName);
             m_TriggerEffect.ChangeType(type);
-            ColorPattern.DataContext = new ColorPatternModel(m_Info, ColorPattern.ItemsCanvas);
+            ColorPattern.DataContext = new ColorPatternModel(m_Info);
             SetColorMode(m_TriggerEffect.Info);
 
             _oldEffectSelected = _currentEffectSelected;
@@ -271,7 +271,7 @@ namespace AuraEditor.Pages
                 Self.EffectSelectionButton.Content = _currentEffectSelectedValue;
                 int type = GetEffectIndex(_currentEffectSelectedValue);
                 Self.m_TriggerEffect.ChangeType(type);
-                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info, Self.ColorPattern.ItemsCanvas);
+                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info);
                 Self.SetColorMode(Self.m_TriggerEffect.Info);
             }
 
@@ -280,7 +280,7 @@ namespace AuraEditor.Pages
                 Self.EffectSelectionButton.Content = _oldEffectSelectedValue;
                 int type = GetEffectIndex(_oldEffectSelectedValue);
                 Self.m_TriggerEffect.ChangeType(type);
-                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info, Self.ColorPattern.ItemsCanvas);
+                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info);
                 Self.SetColorMode(Self.m_TriggerEffect.Info);
             }
         }
