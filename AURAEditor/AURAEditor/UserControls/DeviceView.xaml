@@ -89,10 +89,16 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="models:SpecialZoneModel">
-                    <BitmapIcon Foreground="{x:Bind MyColor, Mode=TwoWay}"
+                    <Grid>
+                        <BitmapIcon Foreground="{x:Bind MyColorSolid, Mode=TwoWay}"
+                                Width="{x:Bind PixelWidth}"
+                                Height="{x:Bind PixelHeight}"
+                                UriSource="{x:Bind ImageSourceSolid}"/>
+                        <BitmapIcon Foreground="{x:Bind MyColor, Mode=TwoWay}"
                                 Width="{x:Bind PixelWidth}"
                                 Height="{x:Bind PixelHeight}"
                                 UriSource="{x:Bind ImageSource}"/>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

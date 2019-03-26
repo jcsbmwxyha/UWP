@@ -2,6 +2,7 @@
 using AuraEditor.Pages;
 using AuraEditor.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -52,7 +53,6 @@ namespace AuraEditor.UserControls
         }
         private double Right { get { return ViewModelLeft + ViewModelWidth; } }
         private double[] alignPositions;
-
         #region Intelligent auto scroll
         private int _mouseDirection;
         public enum CursorState
@@ -84,6 +84,7 @@ namespace AuraEditor.UserControls
                 }
             }
         }
+       
         private void Timer_Tick(object sender, object e)
         {
             int move = 10;
@@ -221,6 +222,17 @@ namespace AuraEditor.UserControls
         private void EffectLine_Loaded(object sender, RoutedEventArgs e)
         {
             LoadedStoryboard.Begin();
+
+            //var style = (Style)this.Resources["EffectLineStyle"];
+            //Image _button1 = null;
+            //IEnumerable<Image> buttons = FindVisualChildren<Image>(style);
+            //foreach (var _button in buttons)
+            //{
+            //    if (_button.Name == "IconPart")
+            //    {
+            //        _button1 = _button;
+            //    }
+            //}
         }
 
         #region -- Event --
@@ -320,8 +332,8 @@ namespace AuraEditor.UserControls
                 }
             }
 
-            if (Width - 25 < elvm.PixelSizeOfName)
-                setNewEffectName(Width - 25);
+            if (Width - 70 < elvm.PixelSizeOfName)
+                setNewEffectName(Width - 70);
             else
                 elvm.EffectBlockContent = elvm.Name;
 
@@ -378,7 +390,7 @@ namespace AuraEditor.UserControls
         private void setNewEffectName(double EffectLineWidth)
         {
             String tmp = elvm.Name;
-            int removeChar = (int)Math.Ceiling((elvm.PixelSizeOfName - EffectLineWidth) / 5);
+            int removeChar = (int)Math.Ceiling((elvm.PixelSizeOfName - EffectLineWidth) / 10);
 
             if (removeChar > elvm.Name.Length)
             {
@@ -386,7 +398,9 @@ namespace AuraEditor.UserControls
                 elvm.EffectBlockContent = "";
             }
             else
+            {
                 elvm.EffectBlockContent = elvm.Name.Substring(0, elvm.Name.Length - removeChar) + "...";
+            }
         }
 
         #endregion
@@ -514,6 +528,26 @@ namespace AuraEditor.UserControls
                 _elvm.Left = _oldV;
                 _elvm.Width -= diff;
                 LayerPage.Self.CheckedEffect = _elvm;
+            }
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
             }
         }
     }

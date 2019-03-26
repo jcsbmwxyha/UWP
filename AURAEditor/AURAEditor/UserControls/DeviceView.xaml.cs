@@ -119,7 +119,7 @@ namespace AuraEditor.UserControls
             TT.X = RoundToGrid(TT.X);
             TT.Y = RoundToGrid(TT.Y);
 
-            SpacePage.Self.OnDeviceMoveCompleted();
+            SpacePage.Self.StopScrollTimer();
 
             if (SpacePage.Self.IsPiling(m_DeviceModel))
             {
@@ -173,7 +173,7 @@ namespace AuraEditor.UserControls
 
         private void MovedCompleted(object sender, object e)
         {
-            SpacePage.Self.OnDeviceMoveCompleted();
+            SpacePage.Self.StopScrollTimer();
         }
     }
 }

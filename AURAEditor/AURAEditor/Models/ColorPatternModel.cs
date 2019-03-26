@@ -26,7 +26,7 @@ namespace AuraEditor.Models
             }
         }
 
-        private EffectInfoModel Info;
+        public EffectInfoModel Info;
 
         static private ColorPatternModel _self;
         static private ColorPatternModel _triggerself;
@@ -98,11 +98,11 @@ namespace AuraEditor.Models
             Selected = info.PatternSelect;
 
             if (!IsTriggerEffect(info.Type))
-                 _self = this;
+                _self = this;
             else
-                 _triggerself = this;
+                _triggerself = this;
         }
-        
+
         public void OnManipulationDelta()
         {
             RaisePropertyChanged("CurrentColorForground");
@@ -117,10 +117,10 @@ namespace AuraEditor.Models
             CustomizeColorPoints.Clear();
             foreach (var cp in CurrentColorPoints)
                 CustomizeColorPoints.Add(ColorPointModel.Copy(cp));
-            
+
             var newCPs = GetCustomizedCpData();
 
-            ReUndoManager.Store(new ColorPatternModifyCommand(oldCPs, newCPs, Selected, -1));
+            ReUndoManager.Store(new ColorPatternModifyCommand(Info, oldCPs, newCPs, Selected, -1));
 
             Selected = -1;
             RaisePropertyChanged("CurrentColorForground");

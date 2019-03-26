@@ -250,5 +250,10 @@ namespace AuraEditor.Models
                     break;
             }
         }
+        //virtual public void Preview(Color c)
+        //{
+        //    Stroke = new SolidColorBrush(c);
+        //    //Fill = new SolidColorBrush(Colors.Transparent);
+        //}
     }
 }

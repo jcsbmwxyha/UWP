@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,26 +28,26 @@
             <VisualStateGroup>
                 <VisualState x:Name="Normal">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_n}"/>
+                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Normal,Mode=OneWay}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_f}"/>
+                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Pressed,Mode=OneWay}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{ThemeResource EffectBlock_s}"/>
+                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Pressed,Mode=OneWay}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
         <Image Name="FrameImage"
-               Source="{ThemeResource EffectBlock_n}"
+               Source="{x:Bind EffectBlockBackground_Normal ,Mode=OneWay}"
                Stretch="Fill"/>
-        <TextBlock Margin="10,0,0,0"
+        <TextBlock x:Name="EffectBlocktext" Margin="40,0,0,0"
                    Text="{Binding}"
                    VerticalAlignment="Center"/>
     </Grid>

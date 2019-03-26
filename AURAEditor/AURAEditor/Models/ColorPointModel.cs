@@ -106,7 +106,7 @@ namespace AuraEditor.Models
 
         public double LeftBorder { get; set; }
         public double RightBorder { get; set; }
-        
+
         public ColorPointModel()
         {
             Offset = 0;

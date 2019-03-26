@@ -18,11 +18,17 @@ namespace AuraEditor.UserControls
     public sealed partial class ColorPointView : UserControl
     {
         private ColorPointModel m_ColorPointModel { get { return this.DataContext as ColorPointModel; } }
+        private ColorPatternModel parent;
+
         public ColorPointView()
         {
             this.InitializeComponent();
         }
 
+        private void ColorPointBg_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            parent = ColorPatternModel.Self;
+        }
         private void ColorPointRadioButton_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (TT.X + e.Delta.Translation.X < m_ColorPointModel.LeftBorder)
@@ -36,12 +42,12 @@ namespace AuraEditor.UserControls
             else
             {
                 TT.X += e.Delta.Translation.X;
-                ColorPatternModel.Self.OnManipulationDelta();
+                parent.OnManipulationDelta();
             }
         }
         private void ColorPointRadioButton_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            ColorPatternModel.Self.OnCustomizeChanged();
+            parent.OnCustomizeChanged();
         }
         private async void ColorPointRadioButton_DoubleTapped(object sender, RoutedEventArgs e)
         {

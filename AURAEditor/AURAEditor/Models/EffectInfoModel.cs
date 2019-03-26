@@ -274,7 +274,29 @@ namespace AuraEditor.Models
         //RainbowSpecialMode : 1 = clockwise, 2 = countclockwise, 3 = outward, 4 = inward
         public int RainbowSpecialMode;
 
-        public EffectInfoModel() { }
+        public EffectInfoModel(EffectInfoModel eim)
+        {
+            Name = eim.Name;
+            SetGroupVisibility(Name);
+
+            Type = eim.Type;
+            InitColor = eim.InitColor;
+            DoubleColor1 = eim.DoubleColor1;
+            DoubleColor2 = eim.DoubleColor2;
+            Brightness = eim.Brightness;
+            Speed = eim.Speed;
+            ColorModeSelection = eim.ColorModeSelection;
+            Angle = eim.Angle;
+            RandomRangeMax = eim.RandomRangeMax;
+            RandomRangeMin = eim.RandomRangeMin;
+            High = eim.High;
+            Low = eim.Low;
+            CustomizedPattern = new List<ColorPointModel>(eim.CustomizedPattern); // TODO
+            ColorSegmentation = eim.ColorSegmentation;
+            RainbowSpecialEffects = eim.RainbowSpecialEffects;
+            RainbowSpecialMode = eim.RainbowSpecialMode;
+            PatternSelect = eim.PatternSelect;
+        }
         public EffectInfoModel(int type)
         {
             Name = GetEffectName(type);

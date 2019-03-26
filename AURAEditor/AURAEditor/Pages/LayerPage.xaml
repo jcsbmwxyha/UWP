@@ -589,7 +589,7 @@
         </Line>
 
         <ScrollViewer Name="ScaleScrollViewer" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" PointerPressed="ScaleScrollViewer_PointerPressed">
+                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" PointerPressed="ScaleScrollViewer_PointerPressed" HorizontalScrollMode="Disabled">
             <Canvas Name="ScaleCanvas" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" Height="36"  HorizontalAlignment="Left">
                 <usercontrol:PlayerCursor x:Name="PlayerCursor_Head" Width="10" HorizontalAlignment="Left" Canvas.ZIndex="6" Margin="-5,0,0,0">
                     <usercontrol:PlayerCursor.RenderTransform>
@@ -783,7 +783,7 @@
         </ScrollViewer>
         <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
-                      ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}">
+                      ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}" x:FieldModifier="public">
             <Canvas Name="TrackCanvas" VerticalAlignment="Top" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" HorizontalAlignment="Left">
                 <Line Name="PlayerCursor_Tail" X1="0" Y1="0" X2="0" Y2="500" Canvas.ZIndex="8" Stroke="White" StrokeThickness="0.5">
                     <Line.RenderTransform>

@@ -25,6 +25,7 @@ using AuraEditor.Common;
 using AuraEditor.ViewModels;
 using Windows.UI.Input;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 
 namespace AuraEditor.Pages
 {
@@ -215,7 +216,7 @@ namespace AuraEditor.Pages
                     Layers[i].Name = "Layer " + (i + 1).ToString();
             }
 
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
+            SpacePage.Self.GoToBlankEditing();
             TrackCanvas.Height = Layers.Count * 52;
         }
         public class AddLayerCommand : IReUndoCommand
@@ -393,6 +394,17 @@ namespace AuraEditor.Pages
 
             playerModel.IsPlaying = true;
 
+            TrackScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            TrackScrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+
+            if (playerModel.Position < TrackScrollViewer.HorizontalOffset)
+            {
+                TrackScrollViewer.ChangeView(playerModel.Position, null, null, true);
+                playerModel.playerOffset = playerModel.Position + TrackScrollViewer.ActualWidth;
+            }
+            else
+                playerModel.playerOffset = TrackScrollViewer.HorizontalOffset + TrackScrollViewer.ActualWidth;
+
             double from = playerModel.Position;
             double to = RightmostPosition;
             double duration = LayerPage.PositionToTime(to) - LayerPage.PositionToTime(from);
@@ -403,9 +415,21 @@ namespace AuraEditor.Pages
             cursorStoryboard.Stop();
             playerModel.IsPlaying = false;
 
+            TrackScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            TrackScrollViewer.HorizontalScrollMode = ScrollMode.Enabled;
+
             Log.Debug("[PauseButton] Bef AuraEditorStopEngine");
             await (new ServiceViewModel()).AuraEditorStopEngine();
             Log.Debug("[PauseButton] Aft AuraEditorStopEngine");
+        }
+
+        public void Hotkey_for_Play_and_Puase()
+        {
+            MainPage.Self.ForHotkeyFocus.Focus(FocusState.Programmatic);
+            if (playerModel.IsPlaying)
+                PauseButton_Click(null, null);
+            else
+                PlayButton_Click(null, null);
         }
         private async void CursorStoryboardCompleted(object sender, object e)
         {
@@ -419,6 +443,10 @@ namespace AuraEditor.Pages
             await Windows.Storage.FileIO.WriteTextAsync(localsf, "<root><header>AURA_Creator</header><version>1.0</version><effectProvider><period key=\"true\">0</period><queue /></effectProvider><viewport /><effectList /></root>");
 
             long StartTime = (long)PositionToTime(playerModel.Position);
+
+            TrackScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            TrackScrollViewer.HorizontalScrollMode = ScrollMode.Enabled;
+            TrackScrollViewer.ChangeView(0, null, null, true);
 
             Log.Debug("[CursorStoryboardCompleted] Bef AuraEditorTrigger");
             await (new ServiceViewModel()).AuraEditorTrigger(0);
@@ -722,18 +750,17 @@ namespace AuraEditor.Pages
             var pair = e.Data.Properties.FirstOrDefault();
             LayerModel layer = pair.Value as LayerModel;
             RemoveLayer(layer);
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
-            MainPage.Self.SelectedEffect = null;
+            SpacePage.Self.GoToBlankEditing();
+            CheckedLayer = null;
             NeedSave = true;
         }
-        private void TrashCanButton_Click(object sender, RoutedEventArgs e)
+        public void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
-            LayerModel layer = CheckedLayer;
-            if (layer != null)
+            if (CheckedLayer != null)
             {
-                RemoveLayer(layer);
-                SpacePage.Self.SetSpaceStatus(SpaceStatus.Clean);
-                MainPage.Self.SelectedEffect = null;
+                RemoveLayer(CheckedLayer);
+                SpacePage.Self.GoToBlankEditing();
+                CheckedLayer = null;
                 NeedSave = true;
             }
         }

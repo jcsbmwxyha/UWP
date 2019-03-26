@@ -61,6 +61,7 @@
                  Background="{x:Bind m_ColorPointModel.Color, Converter={StaticResource colorToSolidColorBrushConverter}, Mode=TwoWay}"
                  Style="{StaticResource ColorPointBtStyle}"
                  ManipulationMode="TranslateX"
+                 ManipulationStarted="ColorPointBg_ManipulationStarted"
                  ManipulationDelta="ColorPointRadioButton_ManipulationDelta"
                  ManipulationCompleted="ColorPointRadioButton_ManipulationCompleted"
                  DoubleTapped="ColorPointRadioButton_DoubleTapped">

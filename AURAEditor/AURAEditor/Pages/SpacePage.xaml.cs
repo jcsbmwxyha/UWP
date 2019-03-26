@@ -26,7 +26,7 @@ namespace AuraEditor.Pages
     public sealed partial class SpacePage : Page
     {
         static public SpacePage Self;
-
+        public static bool isMouseInSpacePage = false;
         public SpacePage()
         {
             this.InitializeComponent();
@@ -41,7 +41,7 @@ namespace AuraEditor.Pages
             _spaceZoomFactor = 1;
 
             DeviceModelCollection = new List<DeviceModel>();
-            SetSpaceStatus(SpaceStatus.Clean);
+            GoToBlankEditing();
         }
 
         private MouseEventCtrl IntializeMouseEventCtrl()
@@ -71,7 +71,6 @@ namespace AuraEditor.Pages
         private MouseEventCtrl m_MouseEventCtrl;
         private DispatcherTimer m_ScrollTimerClock;
         private Rect m_CurrentScreenRect;
-
         public List<DeviceModel> DeviceModelCollection;
         public int OperatingGridWidth
         {
@@ -111,8 +110,8 @@ namespace AuraEditor.Pages
             DeviceModel bottomDM = DeviceModelCollection[0];
 
             DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelLeft < leftmostDM.PixelLeft) { leftmostDM = d; } });
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage &&  d.PixelRight > rightmostDM.PixelRight) { rightmostDM = d; } });
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage &&  d.PixelTop < topDM.PixelTop) { topDM = d; } });
+            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelRight > rightmostDM.PixelRight) { rightmostDM = d; } });
+            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelTop < topDM.PixelTop) { topDM = d; } });
             DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelBottom > bottomDM.PixelBottom) { bottomDM = d; } });
 
             return new Rect(
@@ -255,7 +254,7 @@ namespace AuraEditor.Pages
 
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
             UnselectAllZones();
-            OnDeviceMoveCompleted();
+            StopScrollTimer();
         }
 
         public void ClearTempDeviceData()
@@ -268,7 +267,7 @@ namespace AuraEditor.Pages
         {
             IntializeMouseEventCtrl();
             DeviceModelCollection.Clear();
-            SetSpaceStatus(SpaceStatus.Clean);
+            GoToBlankEditing();
         }
         #endregion
 
@@ -276,16 +275,14 @@ namespace AuraEditor.Pages
         public enum SpaceStatus
         {
             None = 0,
-            Clean,
             Editing,
-            DraggingDevice,
-            WatchingLayer,
-            DraggingEffectBlock,
             ReEditing,
+            Sorting,
+            Watching,
+            DraggingEffectBlock,
             DraggingWindow,
         }
 
-        private SpaceStatus _beforeDragWindowStatus;
         private SpaceStatus spaceStatus;
         public SpaceStatus GetSpaceStatus()
         {
@@ -306,47 +303,35 @@ namespace AuraEditor.Pages
             RestrictLineRight.Visibility = Visibility.Collapsed;
             RestrictLineTop.Visibility = Visibility.Collapsed;
             RestrictLineBottom.Visibility = Visibility.Collapsed;
+            DisableAllDevicesOperation();
 
-            if (value == SpaceStatus.Clean)
+            if (value == SpaceStatus.Editing)
             {
-                DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
                 SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
-                OnCleanState();
-            }
-            else if (value == SpaceStatus.Editing)
-            {
-                DisableAllDevicesOperation();
-                SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
-                SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
-                SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
-                OnEditingState();
             }
             else if (value == SpaceStatus.ReEditing)
             {
-                DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 SpaceCanvas.PointerMoved += SpaceGrid_PointerMoved;
                 SpaceCanvas.PointerReleased += SpaceGrid_PointerReleased;
                 m_SetLayerButton.IsEnabled = true;
                 m_SetLayerRectangle.Visibility = Visibility.Collapsed;
             }
-            else if (value == SpaceStatus.WatchingLayer)
+            else if (value == SpaceStatus.Watching)
             {
-                DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 m_SetLayerButton.IsEnabled = false;
                 m_SetLayerRectangle.Visibility = Visibility.Visible;
             }
             else if (value == SpaceStatus.DraggingEffectBlock)
             {
-                DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressed;
                 m_SetLayerButton.IsEnabled = false;
                 m_SetLayerRectangle.Visibility = Visibility.Visible;
             }
-            else if (value == SpaceStatus.DraggingDevice)
+            else if (value == SpaceStatus.Sorting)
             {
                 EnableAllDevicesOperation();
                 m_SetLayerButton.IsEnabled = true;
@@ -359,17 +344,12 @@ namespace AuraEditor.Pages
             }
             else if (value == SpaceStatus.DraggingWindow)
             {
-                DisableAllDevicesOperation();
                 SpaceCanvas.PointerPressed += SpaceGrid_PointerPressedForDraggingWindow;
                 SpaceCanvas.PointerMoved += SpaceGrid_PointerMovedForDraggingWindow;
                 SpaceCanvas.PointerReleased += SpaceGrid_PointerReleasedForCursor;
-                _beforeDragWindowStatus = spaceStatus;
             }
 
-            if (value == SpaceStatus.Clean)
-                spaceStatus = SpaceStatus.Editing;
-            else
-                spaceStatus = value;
+            spaceStatus = value;
         }
         private void EnableAllDevicesOperation()
         {
@@ -385,22 +365,17 @@ namespace AuraEditor.Pages
                 dm.OperationEnabled = false;
             }
         }
-        private void OnCleanState()
+        public void GoToBlankEditing()
         {
             if (LayerPage.Self != null)
             {
                 LayerPage.Self.CheckedLayer = null;
-                UnselectAllZones();
             }
+
+            UnselectAllZones();
             m_SetLayerButton.IsEnabled = false;
             m_SetLayerRectangle.Visibility = Visibility.Visible;
-        }
-        private void OnEditingState()
-        {
-            if (LayerPage.Self != null)
-            {
-                LayerPage.Self.CheckedLayer = null;
-            }
+            SetSpaceStatus(SpaceStatus.Editing);
         }
         #endregion
 
@@ -420,7 +395,7 @@ namespace AuraEditor.Pages
         public void SpaceZoom_For_Hotkey(bool zoom_in)
         {
             double percent = double.Parse(SpaceZoomButton.Content.ToString().Replace(" %", ""));
-            if(zoom_in)
+            if (zoom_in)
                 percent = Math2.FloorToTarget(percent, 25) + 25;
             else
                 percent = Math2.CeilingToTarget(percent, 25) - 25;
@@ -528,7 +503,7 @@ namespace AuraEditor.Pages
         }
         public void OnDeviceMoved(DeviceModel movedDev)
         {
-            if (GetSpaceStatus() != SpaceStatus.DraggingDevice) return;
+            if (GetSpaceStatus() != SpaceStatus.Sorting) return;
 
             List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
 
@@ -548,7 +523,7 @@ namespace AuraEditor.Pages
                 }
             }
         }
-        public void OnDeviceMoveCompleted()
+        public void StopScrollTimer()
         {
             m_ScrollTimerClock.Stop();
         }
@@ -619,7 +594,7 @@ namespace AuraEditor.Pages
         }
         public void WatchLayer(LayerModel layer)
         {
-            SetSpaceStatus(SpaceStatus.WatchingLayer);
+            SetSpaceStatus(SpaceStatus.Watching);
             UnselectAllZones();
 
             if (layer == null)
@@ -695,6 +670,17 @@ namespace AuraEditor.Pages
                 foreach (var zone in d.AllZones)
                 {
                     zone.ChangeStatus(RegionStatus.Normal);
+                }
+            }
+        }
+
+        public void SelectAllZones()
+        {
+            foreach (var d in DeviceModelCollection)
+            {
+                foreach (var zone in d.AllZones)
+                {
+                    zone.ChangeStatus(RegionStatus.Selected);
                 }
             }
         }
@@ -819,9 +805,9 @@ namespace AuraEditor.Pages
             if (!PressShift && !PressCtrl)
                 UnselectAllZones();
 
-            if (GetSpaceStatus() == SpaceStatus.WatchingLayer)
+            if (GetSpaceStatus() == SpaceStatus.Watching)
             {
-                SetSpaceStatus(SpaceStatus.Clean);
+                GoToBlankEditing();
             }
 
             var fe = sender as FrameworkElement;
@@ -906,19 +892,32 @@ namespace AuraEditor.Pages
                     SpaceScrollViewer.VerticalOffset - move_y, _spaceZoomFactor, true);
             }
         }
+
+        private SpaceStatus _oldStatus;
         public void OnZKeyPressed()
         {
+            _oldStatus = GetSpaceStatus();
             SetSpaceStatus(SpaceStatus.DraggingWindow);
         }
         public void OnZKeyRelease()
         {
-            SetSpaceStatus(_beforeDragWindowStatus);
+            SetSpaceStatus(_oldStatus);
         }
+        public void OnDraggingEffectBlock()
+        {
+            _oldStatus = GetSpaceStatus();
+            SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
+        }
+        public void OnReleaseEffectBlock()
+        {
+            SetSpaceStatus(_oldStatus);
+        }
+
         private void SpaceGrid_PointerReleasedForCursor(object sender, PointerRoutedEventArgs e)
         {
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101);
         }
-    #endregion
+        #endregion
 
         private void LeftSidePanelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -962,5 +961,15 @@ namespace AuraEditor.Pages
 
             return spaceNode;
         }
+        private void MouseEnteredSpacePage(object sender, PointerRoutedEventArgs e)
+        {
+            isMouseInSpacePage = true;
+        }
+        private void MouseExitedSpacePage(object sender, PointerRoutedEventArgs e)
+        {
+            isMouseInSpacePage = false;
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+        }
+
     }
 }

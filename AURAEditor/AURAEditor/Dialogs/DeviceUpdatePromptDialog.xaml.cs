@@ -16,6 +16,7 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
             DeviceName = deviceName;
             InfoTextBlock.Text = "[" + DeviceName + "] Need to Update!";
+            WindowsPage.Self.needToUpdadte = true;
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
@@ -37,7 +38,6 @@ namespace AuraEditor.Dialogs
             this.Hide();
             MainPage.Self.g_ContentDialog = null;
             WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
-            WindowsPage.Self.needToUpdadte = true;
         }
     }
 }

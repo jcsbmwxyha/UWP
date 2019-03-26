@@ -25,6 +25,8 @@ namespace AuraEditor.Models
             IsPlaying = false;
         }
 
+        public double playerOffset;
+
         private string _timerText;
         public string TimerText
         {
@@ -50,6 +52,14 @@ namespace AuraEditor.Models
             set
             {
                 _position = value;
+                if(IsPlaying == true)
+                {
+                    if (value > playerOffset)
+                    {
+                        LayerPage.Self.TrackScrollViewer.ChangeView(playerOffset, LayerPage.Self.TrackScrollViewer.VerticalOffset, null, true);
+                        playerOffset = playerOffset + LayerPage.Self.TrackScrollViewer.ActualWidth;
+                    }                  
+                }               
                 RaisePropertyChanged("Position");
                 RaisePropertyChanged("TimerText");
             }

@@ -149,6 +149,8 @@ namespace AuraEditor.ViewModels
 
         }
         public double PixelSizeOfName { get; set; }
+        public string IconPath_s { set; get; }
+        public string IconPath_n { set; get; }
 
 
 
@@ -157,7 +159,8 @@ namespace AuraEditor.ViewModels
             Model = eff;
             EffectBlockContent = Name;
             PixelSizeOfName = getPixelSizeOfName(Name);
-
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
         }
         private EffectLineViewModel(EffectLineViewModel vm)
         {
@@ -165,6 +168,13 @@ namespace AuraEditor.ViewModels
             Model = eff;
             EffectBlockContent = Name;
             PixelSizeOfName = getPixelSizeOfName(Name);
+            Layer = new LayerModel();
+            Left = vm.Left;
+            StartTime = vm.StartTime;
+            DurationTime = vm.DurationTime;
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
+
         }
         public EffectLineViewModel(int type)
         {
@@ -172,6 +182,9 @@ namespace AuraEditor.ViewModels
             Model = eff;
             EffectBlockContent = Name;
             PixelSizeOfName = getPixelSizeOfName(Name);
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
+
         }
 
         static public EffectLineViewModel Clone(EffectLineViewModel vm)

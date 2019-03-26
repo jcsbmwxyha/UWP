@@ -311,6 +311,7 @@ namespace AuraEditor.Models
 
                                     string uri = @"ms-appdata:///local/Devices/" + folder.Name + "/" + row[png_Column];
                                     szm.ImageSource = uri;
+                                    szm.ImageSourceSolid = uri.Insert(uri.Length - 4, "_solid");
                                     specialzones.Add(szm);
                                 }
                                 else

@@ -16,7 +16,7 @@
             <TextBlock x:Name="InfoTextBlock" Width="680" Height="80" Margin="0,20,0,0" TextWrapping="Wrap"
                        Text="Update for the latest AURA functions and firmware" Foreground="White" FontSize="16" TextAlignment="Center"/>
             <StackPanel x:Name="InfoTextStack" Orientation="Vertical" Grid.Row="1" Visibility="Collapsed">
-                <TextBlock x:Uid="UpdatingTextBlock_1" x:Name="UpdatingTextBlock_1" Text="AURA Update in Progress" Foreground="White" Width="680" Height="20" Margin="0,20,0,0" FontSize="16" TextAlignment="Center"/>
+                <TextBlock x:Uid="UpdatingTextBlock_1" x:Name="UpdatingTextBlock_1" Text="AURA Update in Progress" Foreground="White" Width="680" Height="24" Margin="0,20,0,0" FontSize="16" TextAlignment="Center"/>
                 <TextBlock x:Uid="UpdatingTextBlock_2" x:Name="UpdatingTextBlock_2" Text="Do not turn off your computer until the update process is complete." Foreground="White" Width="680" Height="48" Margin="0,12,0,0" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
             </StackPanel>
             <ProgressBar x:Name="ProgressBar" Margin="0,26,0,0" Width="352" Height="3" Background="#3A3939" IsIndeterminate="False" Visibility="Collapsed">

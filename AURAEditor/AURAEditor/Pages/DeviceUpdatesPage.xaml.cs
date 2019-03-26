@@ -29,6 +29,8 @@ namespace AuraEditor
         public DeviceUpdatesPage()
         {
             this.InitializeComponent();
+
+            NavigationCacheMode = NavigationCacheMode.Enabled;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

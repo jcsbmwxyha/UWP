@@ -99,6 +99,9 @@ namespace AuraEditor.Models
                 }
             }
         }
+        public int copy_count = 0;
+        public string nameOfOriginalLayer = "";
+        public LayerModel originalLayer;
         public LayerTrack UI_Track;
         public LayerModel(string name = "")
         {
@@ -120,11 +123,56 @@ namespace AuraEditor.Models
             TriggerAction = "One Click";
         }
 
+        public LayerModel(LayerModel layerModel)
+        {
+            if (layerModel.nameOfOriginalLayer != "") //be copyed layer then copy again
+            {
+                originalLayer = layerModel.originalLayer; //set original layer
+                nameOfOriginalLayer = layerModel.nameOfOriginalLayer;
+            }
+            else 
+            {
+                originalLayer = layerModel; //set original layer
+                nameOfOriginalLayer = layerModel.Name;
+            }
+            originalLayer.copy_count++;
+
+            if(originalLayer.copy_count==1)
+                Name = nameOfOriginalLayer + "_copy";
+            else
+                Name = nameOfOriginalLayer + "_copy" + originalLayer.copy_count;
+
+            Eye = layerModel.Eye;
+            isTriggering = layerModel.isTriggering;
+            m_ZoneDictionary = new Dictionary<int, int[]>(layerModel.m_ZoneDictionary);
+            TriggerAction = layerModel.TriggerAction;
+
+            EffectLineViewModels = new ObservableCollection<EffectLineViewModel>();
+            EffectLineViewModels.CollectionChanged += TimelineEffectsChanged;
+            TriggerEffects = new List<TriggerEffect>();
+
+            foreach (TriggerEffect each_TriggerEffect in layerModel.TriggerEffects)
+            {
+                TriggerEffects.Add(TriggerEffect.Clone(each_TriggerEffect));
+            }
+           
+            UI_Track = new LayerTrack
+            {
+                DataContext = this,
+            };
+            UI_Track.Height = 52;
+
+            foreach(EffectLineViewModel each_effectLineViewModel in layerModel.EffectLineViewModels)
+            {
+                InsertTimelineEffectFitly(EffectLineViewModel.Clone(each_effectLineViewModel));
+            }
+
+        }
+
         private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             EffectLineViewModel model;
             EffectLine view;
-
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
@@ -188,6 +236,34 @@ namespace AuraEditor.Models
             }
         }
 
+        public class RemoveAllEffectCommand : IReUndoCommand
+        {
+            LayerModel _layerModel;
+            LayerModel tmp;
+            public RemoveAllEffectCommand(LayerModel layermodel)
+            {
+                _layerModel =  layermodel;
+                tmp = LayerModel.Clone(layermodel);
+            }
+
+            public void ExecuteRedo()
+            {
+                int i = tmp.EffectLineViewModels.Count;
+                for (int j = 0; j < i; j++)
+                {
+                    _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
+                }
+             }
+            public void ExecuteUndo()
+            {
+                int i = tmp.EffectLineViewModels.Count;
+                for (int j=0;j<i;j++)
+                {
+                    _layerModel.InsertTimelineEffectFitly(tmp.EffectLineViewModels[j]);
+                }
+            }
+        }
+
         #region -- Zones --
         private Dictionary<int, int[]> m_ZoneDictionary;
         public Dictionary<int, int[]> GetZoneDictionary()
@@ -220,7 +296,10 @@ namespace AuraEditor.Models
         }
         public int[] GetDeviceZones(int type)
         {
-            return m_ZoneDictionary[type];
+            if (m_ZoneDictionary.ContainsKey(type))
+                return m_ZoneDictionary[type];
+
+            return null;
         }
         public void SetDeviceZones(int type, int[] indexes)
         {
@@ -615,6 +694,22 @@ namespace AuraEditor.Models
             }
 
             return deviceNode;
+        }
+
+        static public LayerModel Clone(LayerModel vm)
+        {
+            return new LayerModel(vm);
+        }
+
+        public void ClearAllEffect()
+        {
+
+            foreach (EffectLineViewModel each_EffectLineViewModel in EffectLineViewModels)
+            {
+                UI_Track.Track.Children.Remove(each_EffectLineViewModel.View);
+            }
+            ReUndoManager.Store(new RemoveAllEffectCommand(this));
+            EffectLineViewModels.Clear();
         }
     }
 }

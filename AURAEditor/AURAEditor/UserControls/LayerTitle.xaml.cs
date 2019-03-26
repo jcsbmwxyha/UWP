@@ -74,6 +74,8 @@ namespace AuraEditor.UserControls
             {
                 ReUndoManager.Store(new RenameCommand(m_Layer, NameTextBlock.Text, NameTextBox.Text));
                 NameTextBlock.Text = NameTextBox.Text;
+                m_Layer.nameOfOriginalLayer = "";
+                m_Layer.copy_count = 0;
             }
             
             NameTextBlock.Visibility = Visibility.Visible;
@@ -83,7 +85,7 @@ namespace AuraEditor.UserControls
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                SpacePage.Self.SpaceScrollViewer.Focus(FocusState.Programmatic);
+                MainPage.Self.ForHotkeyFocus.Focus(FocusState.Programmatic);
             }
         }
 

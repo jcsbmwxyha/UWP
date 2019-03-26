@@ -26,11 +26,12 @@
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <PackageCertificateThumbprint>57D0791331C85A43CE6BE11760D296B9FA48C9ED</PackageCertificateThumbprint>
     <Win32Resource>CursorResource.res</Win32Resource>
+    <Use64BitCompiler>true</Use64BitCompiler>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -38,10 +39,11 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -80,7 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -92,7 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -293,6 +295,18 @@
     <Content Include="Assets\Dividers\asus_gc_list_divider_l.png" />
     <Content Include="Assets\Dividers\asus_gc_list_divider_mid.png" />
     <Content Include="Assets\Dividers\asus_gc_list_divider_r.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_blade_btn_n.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\EffectBlock\asus_ac_blade_btn_s.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\EffectBlock\asus_ac_breath_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_breath_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_colorcycle_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_colorcycle_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_comet_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_comet_btn_s.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_f.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_s.png" />
@@ -371,6 +385,34 @@
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_l.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_m.png" />
     <Content Include="Assets\ComboBox\asus_ac_control_header_text_box_type_n_r.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_flashanddash_btn_h.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_flashanddash_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_flowtech_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_flowtech_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_laser_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_laser_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_music_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_music_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_rainbow_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_rainbow_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_rain_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_rain_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_recative_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_recative_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_ripple_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_ripple_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_smart_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_smart_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_starrynight_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_starrynight_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_star_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_star_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_static_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_static_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_strobing_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_strobing_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_trigger_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_trigger_btn_s.png" />
     <Content Include="Assets\EffectInfoGroup\Angle\asus_ac_angle_assemble_ic_h.png" />
     <Content Include="Assets\EffectInfoGroup\Angle\asus_ac_angle_assemble_ic_n.png" />
     <Content Include="Assets\EffectInfoGroup\Angle\asus_ac_angle_assemble_ic_s.png" />
@@ -397,6 +439,42 @@
     <Content Include="Assets\EffectLine\asus_ac_effectblock_layer_btn_r_s.png" />
     <Content Include="Assets\EffectBlock\drag_effect_ic.png" />
     <Content Include="Assets\Background\grid.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_blade_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_blade_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_breath_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_breath_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_colorcycle_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_colorcycle_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_comet_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_comet_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_flashanddash_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_flashanddash_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_flowtech_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_flowtech_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_laser_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_laser_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_musiceffect_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_musiceffect_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_rainbow_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_rainbow_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_rain_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_rain_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_recative_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_recative_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_ripple_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_ripple_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_smart_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_smart_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_starrynight_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_starrynight_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_star_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_star_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_static_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_static_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_strobing_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_strobing_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_trigger_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_trigger_btn_s.png" />
     <Content Include="Assets\EULA\asus_ac_eula_card_bg.png" />
     <Content Include="Assets\EULA\asus_ac_eula_ic.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />

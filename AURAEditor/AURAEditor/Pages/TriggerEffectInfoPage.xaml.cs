@@ -26,10 +26,8 @@ namespace AuraEditor.Pages
     {
         private TriggerEffect m_TriggerEffect;
 
-        static public TriggerEffectInfoPage Self;
-
-        private string _oldEffectSelected;
-        private string _currentEffectSelected = "Reactive";
+        private EffectInfoModel _oldEffectInfoModel;
+        private EffectInfoModel _currentEffectInfoModel;
 
         private int _oldColorModeSelectionValue;
         private int _currentColorModeSelectionValue = 1;
@@ -50,7 +48,6 @@ namespace AuraEditor.Pages
         public TriggerEffectInfoPage()
         {
             this.InitializeComponent();
-            Self = this;
 
             foreach (var effectName in GetTriggerEffect())
             {
@@ -85,14 +82,15 @@ namespace AuraEditor.Pages
             if (selectedName == EffectSelectionButton.Content as string)
                 return;
 
+            _oldEffectInfoModel = new EffectInfoModel(m_TriggerEffect.Info);
+
             int type = GetEffectIndex(selectedName);
             m_TriggerEffect.ChangeType(type);
             ColorPattern.DataContext = new ColorPatternModel(m_Info);
             SetColorMode(m_TriggerEffect.Info);
 
-            _oldEffectSelected = _currentEffectSelected;
-            _currentEffectSelected = selectedName;
-            ReUndoManager.Store(new EffectSelectedCommand(_oldEffectSelected, _currentEffectSelected));
+            _currentEffectInfoModel = new EffectInfoModel(m_TriggerEffect.Info);
+            ReUndoManager.Store(new EffectSelectedCommand(m_TriggerEffect, _oldEffectInfoModel, _currentEffectInfoModel));
         }
 
         private void SetColorMode(EffectInfoModel effectInfo)
@@ -105,7 +103,7 @@ namespace AuraEditor.Pages
 
                     TriggerColorPickerButtonBg.Opacity = 1;
                     TriggerColorPickerButtonBg.IsEnabled = true;
-                    
+
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 0.5;
@@ -117,7 +115,7 @@ namespace AuraEditor.Pages
 
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-                    
+
                     RandomGroup.Opacity = 1;
 
                     PatternGroup.Opacity = 0.5;
@@ -129,7 +127,7 @@ namespace AuraEditor.Pages
 
                     TriggerColorPickerButtonBg.Opacity = 0.5;
                     TriggerColorPickerButtonBg.IsEnabled = false;
-                    
+
                     RandomGroup.Opacity = 0.5;
 
                     PatternGroup.Opacity = 1;
@@ -257,31 +255,25 @@ namespace AuraEditor.Pages
         #region ReUndo
         public class EffectSelectedCommand : IReUndoCommand
         {
-            private string _oldEffectSelectedValue;
-            private string _currentEffectSelectedValue;
+            private TriggerEffect _triggerEffect;
+            private EffectInfoModel _oldEffectInfoModelValue;
+            private EffectInfoModel _currentEffectInfoModelValue;
 
-            public EffectSelectedCommand(string oldEffectSelectedValue, string currentEffectSelectedValue)
+            public EffectSelectedCommand(TriggerEffect triggerEffect, EffectInfoModel oldEffectInfoModelValue, EffectInfoModel currentEffectInfoModelValue)
             {
-                _oldEffectSelectedValue = oldEffectSelectedValue;
-                _currentEffectSelectedValue = currentEffectSelectedValue;
+                _triggerEffect = triggerEffect;
+                _oldEffectInfoModelValue = oldEffectInfoModelValue;
+                _currentEffectInfoModelValue = currentEffectInfoModelValue;
             }
 
             public void ExecuteRedo()
             {
-                Self.EffectSelectionButton.Content = _currentEffectSelectedValue;
-                int type = GetEffectIndex(_currentEffectSelectedValue);
-                Self.m_TriggerEffect.ChangeType(type);
-                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info);
-                Self.SetColorMode(Self.m_TriggerEffect.Info);
+                _triggerEffect.Info = _currentEffectInfoModelValue;
             }
 
             public void ExecuteUndo()
             {
-                Self.EffectSelectionButton.Content = _oldEffectSelectedValue;
-                int type = GetEffectIndex(_oldEffectSelectedValue);
-                Self.m_TriggerEffect.ChangeType(type);
-                Self.ColorPattern.DataContext = new ColorPatternModel(Self.m_TriggerEffect.Info);
-                Self.SetColorMode(Self.m_TriggerEffect.Info);
+                _triggerEffect.Info = _oldEffectInfoModelValue;
             }
         }
 
@@ -301,56 +293,11 @@ namespace AuraEditor.Pages
             public void ExecuteRedo()
             {
                 _info.ColorModeSelection = _currentColorModeValue;
-                SelectionMode(_currentColorModeValue);
             }
 
             public void ExecuteUndo()
             {
                 _info.ColorModeSelection = _oldColorModeValue;
-                SelectionMode(_oldColorModeValue);
-            }
-
-            public void SelectionMode(int mode)
-            {
-                switch (mode)
-                {
-                    case 1:
-                        TriggerEffectInfoPage.Self.Single.IsChecked = true;
-
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.Opacity = 1;
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.IsEnabled = true;
-
-                        TriggerEffectInfoPage.Self.RandomGroup.Opacity = 0.5;
-
-                        TriggerEffectInfoPage.Self.PatternGroup.Opacity = 0.5;
-                        TriggerEffectInfoPage.Self.ColorPattern.IsEnabled = false;
-                        TriggerEffectInfoPage.Self.PatternSwitch.IsEnabled = false;
-                        break;
-                    case 2:
-                        TriggerEffectInfoPage.Self.Random.IsChecked = true;
-
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.Opacity = 0.5;
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.IsEnabled = false;
-
-                        TriggerEffectInfoPage.Self.RandomGroup.Opacity = 1;
-
-                        TriggerEffectInfoPage.Self.PatternGroup.Opacity = 0.5;
-                        TriggerEffectInfoPage.Self.ColorPattern.IsEnabled = false;
-                        TriggerEffectInfoPage.Self.PatternSwitch.IsEnabled = false;
-                        break;
-                    case 3:
-                        TriggerEffectInfoPage.Self.Pattern.IsChecked = true;
-
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.Opacity = 0.5;
-                        TriggerEffectInfoPage.Self.TriggerColorPickerButtonBg.IsEnabled = false;
-
-                        TriggerEffectInfoPage.Self.RandomGroup.Opacity = 0.5;
-
-                        TriggerEffectInfoPage.Self.PatternGroup.Opacity = 1;
-                        TriggerEffectInfoPage.Self.ColorPattern.IsEnabled = true;
-                        TriggerEffectInfoPage.Self.PatternSwitch.IsEnabled = true;
-                        break;
-                }
             }
         }
 

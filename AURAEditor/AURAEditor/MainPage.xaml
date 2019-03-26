@@ -399,6 +399,18 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="TransparentButton"  TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="Transparent" Stroke="Transparent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -415,6 +427,9 @@
             <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
+        <!-- For Hotkey Focus -->
+        <Button x:Name="ForHotkeyFocus" Style="{StaticResource TransparentButton}" x:FieldModifier="public" Visibility="Visible"/>
+        
         <!-- Backgroud image -->
         <Image Source="Assets/Background/asus_ac_bg.png" Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
         <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
@@ -473,9 +488,19 @@
             </Button>
             <Button Name="UndoButton" RelativePanel.LeftOf="RedoButton" Margin="0,3,10,0"
                     Style="{StaticResource UndoButtonStyle}" Click="UndoButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Undo"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Name="RedoButton" RelativePanel.LeftOf="SaveAndApplyButton" Margin="0,3,30,0"
                     Style="{StaticResource RedoButtonStyle}" Click="RedoButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Redo"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
                         Content="Save and Apply" Click="SaveAndApplyButton_Click">
@@ -510,8 +535,8 @@
                                     <Setter Property="MaxWidth" Value="110"/>
                                 </Style>
                             </MenuFlyout.MenuFlyoutPresenterStyle>
-                            <MenuFlyoutItem Text="Rename" Click="RenameItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                            <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                            <MenuFlyoutItem x:Name="RenameItem" Text="Rename" Click="RenameItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                            <MenuFlyoutItem x:Name="DeleteItem" Text="Delete" Click="DeleteItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                             <MenuFlyoutItem Text="Create New" Click="NewFileButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                             <MenuFlyoutItem Text="Import" Click="ImportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                             <MenuFlyoutItem Text="Export" Click="ExportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>

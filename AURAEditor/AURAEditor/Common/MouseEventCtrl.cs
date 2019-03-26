@@ -17,11 +17,11 @@ namespace AuraEditor.Common
     }
     public enum RegionStatus
     {
-        Normal = 0,
+        Watching = 0,
+        Normal,
         NormalHover,
         Selected,
         SelectedHover,
-        Watching,
     }
 
     class MouseDetectedRegion

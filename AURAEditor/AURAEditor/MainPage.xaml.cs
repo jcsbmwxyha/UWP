@@ -66,7 +66,7 @@ namespace AuraEditor
         public bool g_PressShift;
         public bool g_PressCtrl;
         public bool g_CanPaste = true;
-        public bool g_PressZ = true;
+        public bool g_isFirstTimePressZ = true;
 
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
@@ -74,7 +74,7 @@ namespace AuraEditor
             switch (args.VirtualKey)
             {
                 case Windows.System.VirtualKey.Z:
-                    if(g_PressCtrl == true)
+                    if (g_PressCtrl == true)
                     {
                         if (g_PressShift == true)
                             RedoButton_Click(null, null);
@@ -84,16 +84,18 @@ namespace AuraEditor
                     }
                     else
                     {
-                        if (g_PressZ)
+                        if (g_isFirstTimePressZ && SpacePage.isMouseInSpacePage) //just run one time when Z pressed
                         {
                             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
-                            g_PressZ = false;
+                            g_isFirstTimePressZ = false;
+                            SpacePage.OnZKeyPressed();
                         }
-                        SpacePage.OnZKeyPressed();
                         break;
                     }
                 case Windows.System.VirtualKey.Shift:
                     g_PressShift = true;
+                    SpacePage.SpaceScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+                    LayerPage.TrackScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
                     break;
                 case Windows.System.VirtualKey.Control:
                     g_PressCtrl = true;
@@ -146,9 +148,12 @@ namespace AuraEditor
                         }, delay);
                     break;
                 case Windows.System.VirtualKey.Delete:
-                    if(g_PressCtrl == true && g_PressShift == true)
+                    if (g_PressCtrl == true && g_PressShift == true)
                     {
-                        DeleteItem_Click(null, null);
+                        if (FileListButton.Content.ToString() == "")
+                            break;
+                        else
+                            DeleteItem_Click(null, null);
                         break;
                     }
                     else
@@ -158,7 +163,7 @@ namespace AuraEditor
 
                         SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
                         break;
-                    }                  
+                    }
                 case Windows.System.VirtualKey.Home:
                     if (g_PressShift == true)
                     {
@@ -176,6 +181,8 @@ namespace AuraEditor
                         SaveAndApplyButton_Click(null, null);
                     break;
                 case Windows.System.VirtualKey.R:
+                    if (FileListButton.Content.ToString() == "")
+                        break;
                     if (g_PressCtrl == true)
                         RenameItem_Click(null, null);
                     break;
@@ -188,7 +195,12 @@ namespace AuraEditor
                         ImportButton_Click(null, null);
                     break;
                 case Windows.System.VirtualKey.E:
-                    if (g_PressCtrl == true)
+                    if (g_PressCtrl == true && g_PressShift == true && LayerPage.CheckedLayer != null)
+                    {
+                        LayerPage.CheckedLayer.ClearAllEffect();
+                        LayerPage.CheckedEffect = null;
+                    }
+                    else if (g_PressCtrl == true && g_PressShift == false)
                         ExportButton_Click(null, null);
                     break;
                 case Windows.System.VirtualKey.M:
@@ -211,20 +223,58 @@ namespace AuraEditor
                     if (g_PressCtrl == true)
                         SpacePage.SpaceZoom_For_Hotkey(false);
                     break;
+                case Windows.System.VirtualKey.Enter:
+                    if (g_PressCtrl == true)
+                        LayerPage.Hotkey_for_Play_and_Puase();
+                    break;
+                case Windows.System.VirtualKey.D:
+                    if (g_PressCtrl == true && LayerPage.CheckedLayer != null)
+                    {
+                        int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
+                        LayerModel temp_layer = LayerModel.Clone(LayerPage.CheckedLayer);
+                        LayerPage.Layers.Insert(index, temp_layer);
+                        LayerPage.CheckedLayer = LayerPage.Layers[index+1];
+                    }
+                    break;
+                case Windows.System.VirtualKey.Back:
+                    if (g_PressCtrl == true)
+                    {
+                        int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
+                        LayerPage.TrashCanButton_Click(null, null);
+                        if(index>0)
+                            LayerPage.CheckedLayer = LayerPage.Layers[index-1];
+                        else if(index==0 && LayerPage.Layers.Count>0)
+                            LayerPage.CheckedLayer = LayerPage.Layers[0];
+                    }
+                    break;
+                case Windows.System.VirtualKey.A:
+                    if (g_PressCtrl == true)
+                    {
+                        if (SpacePage.GetSpaceStatus() == SpaceStatus.Editing || SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
+                        {
+                            SpacePage.SelectAllZones();
+                            SetLayerButton.IsEnabled = true;
+                            SetLayerRectangle.Visibility = Visibility.Collapsed;
+                            EditDoneButton.IsEnabled = true;
+                        }
+                    }
+                    break;
             }
         }
 
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            switch(args.VirtualKey)
+            switch (args.VirtualKey)
             {
                 case Windows.System.VirtualKey.Z:
                     Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-                    g_PressZ = true;
+                    g_isFirstTimePressZ = true;
                     SpacePage.OnZKeyRelease();
                     break;
                 case Windows.System.VirtualKey.Shift:
                     g_PressShift = false;
+                    SpacePage.SpaceScrollViewer.VerticalScrollMode = ScrollMode.Enabled;
+                    LayerPage.TrackScrollViewer.VerticalScrollMode = ScrollMode.Enabled;
                     break;
                 case Windows.System.VirtualKey.Control:
                     g_PressCtrl = false;
@@ -248,6 +298,12 @@ namespace AuraEditor
 
             //EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
             oldSortingPositions = new Dictionary<DeviceModel, Point>();
+
+            if (FileListButton.Content.ToString() == "")
+            {
+                RenameItem.IsEnabled = false;
+                DeleteItem.IsEnabled = false;
+            }
         }
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -270,88 +326,38 @@ namespace AuraEditor
         }
         private void LoadSettings()
         {
-            bool successful = float.TryParse(g_LocalSettings.Values["SpaceZooming"] as string, out float percent);
-            if (successful)
-                SpacePage.SetSpaceZoomPercent(percent);
-            else
-            {
-                SpacePage.SetSpaceZoomPercent(50);
-                //SpaceZoomButton.Content = "50 %";
-            }
+            bool successful;
+            successful = float.TryParse(g_LocalSettings.Values["SpaceZooming"] as string, out float percent);
+            SpacePage.SetSpaceZoomPercent(successful ? percent : 50);
 
             successful = int.TryParse(g_LocalSettings.Values["LayerLevel"] as string, out int level);
-            if (successful)
-                LayerPage.LayerZoomSlider.Value = level;
-            else
-            {
-                LayerPage.LayerZoomSlider.Value = 2;
-            }
+            LayerPage.LayerZoomSlider.Value = successful ? level : 2;
 
-            #region Recent Color
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor1"] as string);
-            if (successful)
-                g_RecentColor[0].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[0].HexColor = g_LocalSettings.Values["RecentColor1"] as string;
-            }
+            #region -- Recent Color --
+            string value;
+            value = g_LocalSettings.Values["RecentColor1"] as string;
+            g_RecentColor[0].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor2"] as string);
-            if (successful)
-                g_RecentColor[1].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[1].HexColor = g_LocalSettings.Values["RecentColor2"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor2"] as string;
+            g_RecentColor[1].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor3"] as string);
-            if (successful)
-                g_RecentColor[2].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[2].HexColor = g_LocalSettings.Values["RecentColor3"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor3"] as string;
+            g_RecentColor[2].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor4"] as string);
-            if (successful)
-                g_RecentColor[3].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[3].HexColor = g_LocalSettings.Values["RecentColor4"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor4"] as string;
+            g_RecentColor[3].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor5"] as string);
-            if (successful)
-                g_RecentColor[4].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[4].HexColor = g_LocalSettings.Values["RecentColor5"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor5"] as string;
+            g_RecentColor[4].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor6"] as string);
-            if (successful)
-                g_RecentColor[5].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[5].HexColor = g_LocalSettings.Values["RecentColor6"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor6"] as string;
+            g_RecentColor[5].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor7"] as string);
-            if (successful)
-                g_RecentColor[6].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[6].HexColor = g_LocalSettings.Values["RecentColor7"] as string;
-            }
+            value = g_LocalSettings.Values["RecentColor7"] as string;
+            g_RecentColor[6].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
 
-            successful = string.IsNullOrEmpty(g_LocalSettings.Values["RecentColor8"] as string);
-            if (successful)
-                g_RecentColor[7].HexColor = "#00000000";
-            else
-            {
-                g_RecentColor[7].HexColor = g_LocalSettings.Values["RecentColor8"] as string;
-            }
-
+            value = g_LocalSettings.Values["RecentColor8"] as string;
+            g_RecentColor[7].HexColor = string.IsNullOrEmpty(value) ? "#00000000" : value;
             #endregion
         }
 
@@ -366,7 +372,7 @@ namespace AuraEditor
             string effName = e.Items[0] as string;
             e.Data.Properties.Add("EffectName", effName);
 
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
+            SpacePage.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
 
             // Workaround for keeping EffectBlock in Pressed state
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
@@ -377,7 +383,7 @@ namespace AuraEditor
         }
         private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            SpacePage.Self.SetSpaceStatus(SpaceStatus.WatchingLayer);
+            SpacePage.SetSpaceStatus(SpaceStatus.Watching);
 
             // Workaround for preventing EffctBlock from keeping another status after completing
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
@@ -420,7 +426,7 @@ namespace AuraEditor
         {
             EditDoneButton.IsEnabled = true;
             ShowMask("Device Sorting");
-            SpacePage.SetSpaceStatus(SpaceStatus.DraggingDevice);
+            SpacePage.SetSpaceStatus(SpaceStatus.Sorting);
 
             oldSortingPositions.Clear();
             foreach (var dm in SpacePage.DeviceModelCollection)
@@ -428,6 +434,7 @@ namespace AuraEditor
                 oldSortingPositions.Add(dm, new Point(dm.PixelLeft, dm.PixelTop));
             }
         }
+
         public void OnLeftSidePanelButtonClick()
         {
             int columnSpans = Grid.GetColumnSpan(SpaceFrame);
@@ -530,9 +537,7 @@ namespace AuraEditor
             if (!_isPressed)
                 Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
         }
-        #endregion
 
-        #region -- Mask --
         private void EditDoneButton_Click(object sender, RoutedEventArgs e)
         {
             if (SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
@@ -578,7 +583,7 @@ namespace AuraEditor
                 }
 
                 ReUndoManager.Store(new MoveDevicesCommand(dmPositions));
-                SpacePage.SetSpaceStatus(SpaceStatus.Clean);
+                SpacePage.GoToBlankEditing();
             }
 
             HideMask();
@@ -592,7 +597,7 @@ namespace AuraEditor
             }
             else // Sorting
             {
-                SpacePage.SetSpaceStatus(SpaceStatus.Clean);
+                SpacePage.GoToBlankEditing();
 
                 foreach (var pair in oldSortingPositions)
                 {
@@ -601,7 +606,7 @@ namespace AuraEditor
                 }
             }
 
-            SpacePage.OnDeviceMoveCompleted();
+            SpacePage.StopScrollTimer();
             HideMask();
         }
         public void ShowReEditMask(LayerModel layer)
@@ -755,11 +760,6 @@ namespace AuraEditor
         }
         #endregion
 
-        #region -- UI initial get device from service --
-
-
-        #endregion
-
         public async void ShowDeviceUpdateDialogOrNot()
         {
             if (g_ContentDialog != null && CanShowDeviceUpdateDialog)
@@ -834,7 +834,7 @@ namespace AuraEditor
                     int[] zones = deviceZones.Item2;
                     _layer.SetDeviceZones(type, zones);
                 }
-                SpacePage.Self.WatchLayer(_layer);
+
                 LayerPage.Self.CheckedLayer = _layer;
             }
             public void ExecuteUndo()
@@ -845,7 +845,7 @@ namespace AuraEditor
                     int[] zones = deviceZones.Item2;
                     _layer.SetDeviceZones(type, zones);
                 }
-                SpacePage.Self.WatchLayer(_layer);
+
                 LayerPage.Self.CheckedLayer = _layer;
             }
         }

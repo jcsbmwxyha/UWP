@@ -1311,6 +1311,12 @@
                                             <Setter Target="ItemTextBlock.Foreground" Value="White"/>
                                         </VisualState.Setters>
                                     </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="BodyPart.Background" Value="{ThemeResource BodyBG_n}"/>
+                                            <Setter Target="ItemTextBlock.Foreground" Value="Gray"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <TextBlock x:Name="ItemTextBlock"

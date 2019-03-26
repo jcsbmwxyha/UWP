@@ -21,19 +21,8 @@ namespace AuraEditor.Models
             }
         }
 
-        private string _imgUri;
-        public string ImageSource
-        {
-            get
-            {
-                return _imgUri;
-            }
-            set
-            {
-                _imgUri = value;
-                RaisePropertyChanged("ImageSource");
-            }
-        }
+        public string ImageSource { get; set; }
+        public string ImageSourceSolid { get; set; }
 
         private SolidColorBrush _myColor;
         public SolidColorBrush MyColor
@@ -49,15 +38,26 @@ namespace AuraEditor.Models
             }
         }
 
+        private SolidColorBrush _myColorSolid;
+        public SolidColorBrush MyColorSolid
+        {
+            get
+            {
+                return _myColorSolid;
+            }
+            set
+            {
+                _myColorSolid = value;
+                RaisePropertyChanged("MyColorSolid");
+            }
+        }
+
         public SpecialZoneModel() : base()
         {
         }
 
         override public void ChangeStatus(RegionStatus status)
         {
-            Color outer;
-            //Color inner;
-
             if (_myStatus == status)
                 return;
 
@@ -66,38 +66,41 @@ namespace AuraEditor.Models
             switch (_myStatus)
             {
                 case RegionStatus.Normal:
-                    outer = Colors.White;
-                    //inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    MyColor = new SolidColorBrush(Colors.White);
+                    MyColorSolid = new SolidColorBrush(Colors.Transparent);
                     Selected = false;
                     break;
                 case RegionStatus.NormalHover:
-                    outer = Colors.White;
-                    //inner = new Color { A = 99, R = 255, G = 0, B = 41 };
+                    MyColor = new SolidColorBrush(Colors.White);
+                    MyColorSolid = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                     Selected = false;
                     break;
                 case RegionStatus.Selected:
-                    outer = new Color { A = 255, R = 255, G = 0, B = 41 };
-                    //inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    MyColor = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
+                    MyColorSolid = new SolidColorBrush(Colors.Transparent);
                     Selected = true;
                     break;
                 case RegionStatus.SelectedHover:
-                    outer = new Color { A = 255, R = 255, G = 0, B = 41 };
-                    ////inner = new Color { A = 99, R = 255, G = 0, B = 41 };
+                    MyColor = new SolidColorBrush(new Color { A = 255, R = 255, G = 0, B = 41 });
+                    MyColorSolid = new SolidColorBrush(new Color { A = 100, R = 255, G = 0, B = 41 });
                     Selected = true;
                     break;
                 case RegionStatus.Watching:
-                    outer = new Color { A = 255, R = 4, G = 61, B = 246 };
-                    //inner = new Color { A = 2, R = 255, G = 255, B = 255 };
+                    MyColor = new SolidColorBrush(new Color { A = 255, R = 4, G = 61, B = 246 });
+                    MyColorSolid = new SolidColorBrush(Colors.Transparent);
                     Selected = true;
                     break;
                 default:
-                    outer = Colors.Red;
-                    //inner = Colors.Red;
+                    MyColor = new SolidColorBrush(Colors.Red);
+                    MyColorSolid = new SolidColorBrush(Colors.Red);
                     Selected = true;
                     break;
             }
-
-            MyColor = new SolidColorBrush(outer);
         }
+        //override public void Preview(Color c)
+        //{
+        //    MyColorSolid = new SolidColorBrush(c);
+        //    MyColor = new SolidColorBrush(c);
+        //}
     }
 }

@@ -51,6 +51,8 @@ namespace AuraEditor
 
                     if (value == "")
                     {
+                        RenameItem.IsEnabled = false;
+                        DeleteItem.IsEnabled = false;
                         return;
                     }
 
@@ -58,6 +60,8 @@ namespace AuraEditor
                     {
                         if (filename == value)
                         {
+                            RenameItem.IsEnabled = true;
+                            DeleteItem.IsEnabled = true;
                             return;
                         }
                     }
@@ -148,7 +152,7 @@ namespace AuraEditor
                         return;
                 }
 
-                Reset();
+                ResetToDefault();
             }
         }
         private async void RenameItem_Click(object sender, RoutedEventArgs e)
@@ -216,7 +220,7 @@ namespace AuraEditor
                 };
             }
 
-            Reset();
+            ResetToDefault();
 
             //Send to Socketserver
             if (IsConnection)
@@ -590,7 +594,7 @@ namespace AuraEditor
             }
         }
 
-        private void Reset()
+        private void ResetToDefault()
         {
             Clean();
             ReUndoManager.Clear();
