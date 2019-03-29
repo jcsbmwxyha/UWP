@@ -135,8 +135,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save File",
-                    DialogContent = "Do you want to save the changes?"
+                    DialogTitle = "Save file",
+                    DialogContent = "Do you want to save changes?",
+                    DialogYesButtonContent = "Save",
+                    DialogCancelButtonContent = "Discard"
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -193,8 +195,10 @@ namespace AuraEditor
 
             YesNoCancelDialog dialog = new YesNoCancelDialog
             {
-                DialogTitle = "Delete File",
-                DialogContent = "Delete this file ?"
+                DialogTitle = "Delete now?",
+                DialogContent = "Are you sure you want to delete this file? The deleted file cannot be recovered. Continue?",
+                DialogYesButtonContent = "Delete",
+                DialogCancelButtonContent = "Cancel"
             };
 
             await dialog.ShowAsync();
@@ -243,8 +247,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save File",
-                    DialogContent = "Do you want to save the changes?"
+                    DialogTitle = "Save file",
+                    DialogContent = "Do you want to save changes?",
+                    DialogYesButtonContent = "Save",
+                    DialogCancelButtonContent = "Discard"
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -296,8 +302,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save File",
-                    DialogContent = "Do you want to save the changes?"
+                    DialogTitle = "Save file",
+                    DialogContent = "Do you want to save changes?",
+                    DialogYesButtonContent = "Save",
+                    DialogCancelButtonContent = "Discard"
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;

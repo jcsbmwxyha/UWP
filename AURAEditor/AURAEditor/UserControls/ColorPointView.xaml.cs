@@ -24,6 +24,10 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
+        private void ColorPointView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
+        }
 
         private void ColorPointBg_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {

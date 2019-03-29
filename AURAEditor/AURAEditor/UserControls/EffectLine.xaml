@@ -9,13 +9,13 @@
     d:DesignWidth="400"
     Height="36"
     Loaded="EffectLine_Loaded"
+    Unloaded="EffectLine_Unloaded"
     ManipulationMode="TranslateX"
     ManipulationStarted="EffectLine_ManipulationStarted"
     ManipulationDelta="EffectLine_ManipulationDelta"
     ManipulationCompleted="EffectLine_ManipulationCompleted"
     PointerMoved="EffectLine_PointerMoved"
-    PointerExited="EffectLine_PointerExited"
-    Width="{x:Bind elvm.Width, Mode=TwoWay}">
+    PointerExited="EffectLine_PointerExited">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -101,10 +101,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.RenderTransform>
-        <TranslateTransform X="{x:Bind elvm.Left, Mode=TwoWay}"/>
-    </UserControl.RenderTransform>
-
     <RadioButton Name="EffectlineRadioButton"
                  IsChecked="{x:Bind elvm.IsChecked, Mode=TwoWay}"
                  RightTapped="EffectlineRadioButton_RightTapped"
@@ -113,11 +109,40 @@
                  Content="{x:Bind elvm.EffectBlockContent , Mode=OneWay}">
         <RadioButton.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="Copy" Click="CopyItem_Click" IsEnabled="True"/>
-                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True"/>
-                <MenuFlyoutItem Text="Cut" Click="CutItem_Click" IsEnabled="True"/>
-                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click" IsEnabled="True"/>
+                <MenuFlyoutItem Text="Copy" Click="CopyItem_Click" IsEnabled="True">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Ctrl + C)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Ctrl + V)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Cut" Click="CutItem_Click" IsEnabled="True">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Ctrl + X)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click" IsEnabled="True">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Delete/Backsapce)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
             </MenuFlyout>
         </RadioButton.ContextFlyout>
+        <ToolTipService.ToolTip>
+            <ToolTip Background="Black" Placement="Mouse">
+                <TextBlock Foreground="White" Text="{x:Bind elvm.EffectBlockContent , Mode=OneWay}"/>
+            </ToolTip>
+        </ToolTipService.ToolTip>
     </RadioButton>
 </UserControl>

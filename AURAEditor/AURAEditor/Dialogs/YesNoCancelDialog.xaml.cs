@@ -34,6 +34,21 @@ namespace AuraEditor.Dialogs
             }
         }
 
+        public string DialogYesButtonContent
+        {
+            set
+            {
+                OKButton.Content = value;
+            }
+        }
+        public string DialogCancelButtonContent
+        {
+            set
+            {
+                CancelButton.Content = value;
+            }
+        }
+
         public YesNoCancelDialog()
         {
             Result = ContentDialogResult.None;

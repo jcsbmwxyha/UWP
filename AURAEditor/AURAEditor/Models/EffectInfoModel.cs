@@ -336,7 +336,7 @@ namespace AuraEditor.Models
                     RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
-                case "Breath":
+                case "Breathing":
                     ColorGroupVisible = true;
                     DoubleColorGroupVisible = true;
                     RandomVisible = true;
@@ -347,7 +347,7 @@ namespace AuraEditor.Models
                     RainbowRotationVisible = false;
                     TemperatureGroupVisible = false;
                     break;
-                case "ColorCycle":
+                case "Color cycle":
                     ColorGroupVisible = false;
                     DoubleColorGroupVisible = false;
                     RandomVisible = false;
@@ -585,8 +585,8 @@ namespace AuraEditor.Models
 
 
             if (GetEffectName(effType) == "Static" ||
-                GetEffectName(effType) == "Breath" ||
-                GetEffectName(effType) == "ColorCycle" ||
+                GetEffectName(effType) == "Breathing" ||
+                GetEffectName(effType) == "Color cycle" ||
                 GetEffectName(effType) == "Strobing")
             {
                 methodString = "point";
@@ -702,7 +702,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffectName(Type) == "Breath")
+            else if (GetEffectName(Type) == "Breathing")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -802,7 +802,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode4);
                 }
             }
-            else if (GetEffectName(Type) == "ColorCycle")
+            else if (GetEffectName(Type) == "Color cycle")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "QuarterSineWave"));

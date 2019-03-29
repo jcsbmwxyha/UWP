@@ -11,14 +11,11 @@
         <StackPanel Orientation="Vertical">
             <Image Source="ms-appx:///Assets/Background/asus_gc_aura_updates_bg.png" Width="856" Height="284" Margin="0,42,0,0"
                HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <TextBlock Text="Online Updates" Foreground="White" FontSize="16" FontFamily="Segoe UI" FontWeight="Bold"
+            <TextBlock Text="Device content update" Foreground="White" FontSize="16" FontFamily="Segoe UI" FontWeight="Bold"
                        HorizontalAlignment="Center" Margin="0,34,0,0"/>
             <TextBlock x:Name="InfoTextBlock" Width="680" Height="80" Margin="0,20,0,0" TextWrapping="Wrap"
-                       Text="Update for the latest AURA functions and firmware" Foreground="White" FontSize="16" TextAlignment="Center"/>
-            <StackPanel x:Name="InfoTextStack" Orientation="Vertical" Grid.Row="1" Visibility="Collapsed">
-                <TextBlock x:Uid="UpdatingTextBlock_1" x:Name="UpdatingTextBlock_1" Text="AURA Update in Progress" Foreground="White" Width="680" Height="24" Margin="0,20,0,0" FontSize="16" TextAlignment="Center"/>
-                <TextBlock x:Uid="UpdatingTextBlock_2" x:Name="UpdatingTextBlock_2" Text="Do not turn off your computer until the update process is complete." Foreground="White" Width="680" Height="48" Margin="0,12,0,0" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
-            </StackPanel>
+                       Text="Please make sure the power of your computer is up to 20% and do not shut down your computer or unplug any device when updating."
+                       Foreground="White" FontSize="16" TextAlignment="Center"/>
             <ProgressBar x:Name="ProgressBar" Margin="0,26,0,0" Width="352" Height="3" Background="#3A3939" IsIndeterminate="False" Visibility="Collapsed">
                 <ProgressBar.Foreground>
                     <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
@@ -29,14 +26,14 @@
                 </ProgressBar.Foreground>
             </ProgressBar>
             <RelativePanel x:Name="UpdateBtnRP" Margin="0,26,0,0" HorizontalAlignment="Center" Height="40" Width="300">
-                <Button x:Name="UpdateButton" Content="Check for updates" Foreground="White"
+                <Button x:Name="UpdateButton" Content="Check update" Foreground="White"
                         RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignBottomWithPanel="True"
                         Style="{StaticResource RogButtonStyle2}" Click="UpdateButton_Click"/>
                 <Image x:Name="UpdateBtnNewTab" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                        RelativePanel.AlignRightWith="UpdateButton" RelativePanel.AlignTopWith="UpdateButton" Margin="7.6,-7,-7.4,7.2"
                        Visibility="Collapsed"/>
             </RelativePanel>
-            <TextBlock x:Name="UpdateStateTextBlock" Text="Your version is up to date." Foreground="#1046FF" FontSize="16"
+            <TextBlock x:Name="UpdateStateTextBlock" Text="Your device content is up-to-date." Foreground="#1046FF" FontSize="16"
                        TextAlignment="Center" HorizontalAlignment="Center" Margin="0,12,0,0"/>
             <StackPanel x:Name="ErrorMessageStack" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0" Visibility="Collapsed">
                 <ProgressRing x:Name="ProgressRing" RelativePanel.RightOf="UpdateBtn" Margin="0,0,10,0" Foreground="#ff0029" Visibility="Collapsed"/>

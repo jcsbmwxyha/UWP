@@ -27,7 +27,7 @@ namespace AuraEditor
             DurationTime = 3000; // 3s
         }
 
-        static public TimelineEffect CloneEffect(TimelineEffect copy)
+        static public TimelineEffect Clone(TimelineEffect copy)
         {
             TimelineEffect target = new TimelineEffect(copy.Type);
 

@@ -43,7 +43,6 @@ namespace AuraEditor
                     UpdateButton.Content = "Update now";
                     UpdateBtnNewTab.Visibility = Visibility.Visible;
                     UpdateStateTextBlock.Text = "A new version is available.";
-                    InfoTextBlock.Text = "When updating , make sure your computer is plugged to a power source and do not turn it off until the update process is complete.";
 
                     PowerManager.PowerSupplyStatusChanged += PowerState_ReportUpdated;
                     Battery.AggregateBattery.ReportUpdated += AggregateBattery_ReportUpdated;
@@ -51,10 +50,9 @@ namespace AuraEditor
                 }
                 else
                 {
-                    UpdateButton.Content = "Check for updates";
+                    UpdateButton.Content = "Check update";
                     UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                    UpdateStateTextBlock.Text = "Your version is up to date.";
-                    InfoTextBlock.Text = "Update for the latest AURA functions and firmware";
+                    UpdateStateTextBlock.Text = "Your device content is up-to-date.";
                 }
             }
             else
@@ -73,8 +71,6 @@ namespace AuraEditor
                     //Update Now
                     PowerManager.PowerSupplyStatusChanged -= PowerState_ReportUpdated;
                     Battery.AggregateBattery.ReportUpdated -= AggregateBattery_ReportUpdated;
-                    InfoTextBlock.Visibility = Visibility.Collapsed;
-                    InfoTextStack.Visibility = Visibility.Visible;
                     ProgressBar.Visibility = Visibility.Visible;
                     UpdateBtnRP.Visibility = Visibility.Collapsed;
                     UpdateStateTextBlock.Text = "Updating...";
@@ -94,20 +90,14 @@ namespace AuraEditor
                             await Task.Delay(2000);
                             ProgressBar.Visibility = Visibility.Collapsed;
                             UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                            UpdateButton.Content = "Check for updates";
+                            UpdateButton.Content = "Check update";
+                            UpdateStateTextBlock.Text = "Your device content is up-to-date.";
+                            UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
+                            UpdateStateTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnRP.Visibility = Visibility.Visible;
                             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
                             WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
                             WindowsPage.Self.needToUpdadte = false;
-                            UpdateStateTextBlock.Visibility = Visibility.Collapsed;
-                            NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_correct_ic.png"));
-                            NoticeImg.Visibility = Visibility.Visible;
-                            ErrorMessageText.Text = "AURA update is completed.";
-                            ErrorMessageText.Foreground = new SolidColorBrush(Colors.White);
-                            ErrorMessageStack.Visibility = Visibility.Visible;
-                            InfoTextStack.Visibility = Visibility.Collapsed;
-                            InfoTextBlock.Text = "Update for the latest AURA functions and firmware";
-                            InfoTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnMode = false;
                             await ConnectedDevicesDialog.Self.Rescan();
                             break;
@@ -117,7 +107,8 @@ namespace AuraEditor
                             await Task.Delay(2000);
                             ProgressBar.Visibility = Visibility.Collapsed;
                             UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                            UpdateButton.Content = "Check for updates";
+                            UpdateButton.Content = "Check update";
+                            UpdateStateTextBlock.Text = "Your device content is up-to-date.";
                             UpdateBtnRP.Visibility = Visibility.Visible;
                             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
                             WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
@@ -125,12 +116,9 @@ namespace AuraEditor
                             UpdateStateTextBlock.Visibility = Visibility.Collapsed;
                             NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                             NoticeImg.Visibility = Visibility.Visible;
-                            ErrorMessageText.Text = "AURA update failed! Please try again.";
+                            ErrorMessageText.Text = "Update failed. Please try again.";
                             ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                             ErrorMessageStack.Visibility = Visibility.Visible;
-                            InfoTextStack.Visibility = Visibility.Collapsed;
-                            InfoTextBlock.Text = "Update for the latest AURA functions and firmware";
-                            InfoTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnMode = false;
                             break;
                         }
@@ -173,7 +161,6 @@ namespace AuraEditor
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
                         UpdateStateTextBlock.Text = "A new version is available.";
                         UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
-                        InfoTextBlock.Text = "When updating , make sure your computer is plugged to a power source and do not turn it off until the update process is complete.";
                         UpdateBtnMode = true;
                     }
                     else
@@ -185,7 +172,7 @@ namespace AuraEditor
                         ProgressRing.IsActive = false;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
-                        UpdateStateTextBlock.Text = "Your version is up to date.";
+                        UpdateStateTextBlock.Text = "Your device content is up-to-date.";
                         UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
                         UpdateBtnMode = false;
                     }

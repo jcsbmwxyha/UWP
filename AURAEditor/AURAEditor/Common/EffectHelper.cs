@@ -12,8 +12,8 @@ namespace AuraEditor.Common
         static string[] _commonEffects =
         {
             "Static",
-            "Breath",
-            "ColorCycle",
+            "Breathing",
+            "Color cycle",
             "Rainbow",
             "Strobing",
             "Comet",

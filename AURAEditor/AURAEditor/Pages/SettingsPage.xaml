@@ -21,8 +21,8 @@
             </PivotItem>-->
             <PivotItem>
                 <PivotItem.Header>
-                    <RelativePanel Height="48" Width="130">
-                        <TextBlock x:Name="PivotTextBlock" Text="Device Updates" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,13,0,0"/>
+                    <RelativePanel Height="48" Width="100">
+                        <TextBlock x:Name="PivotTextBlock" Text="Update" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,13,0,0"/>
                         <Image x:Name="PivotNewTab" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                                RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
                                Visibility="Visible" x:FieldModifier="Public"/>

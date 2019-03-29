@@ -32,7 +32,13 @@
          so it receives user input. -->
         <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right" x:FieldModifier="Public">
             <RadioButton x:Name="SettingsRadioButton" x:FieldModifier="Public" Width="40" Height="27"
-                      Style="{StaticResource RogRadioButtonStyle}" Click="SettingsRadioButton_Click"/>
+                      Style="{StaticResource RogRadioButtonStyle}" Click="SettingsRadioButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Settings"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </RadioButton>
             <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                    RelativePanel.AlignTopWith="SettingsRadioButton" RelativePanel.AlignRightWith="SettingsRadioButton"
                    Visibility="Collapsed"/>

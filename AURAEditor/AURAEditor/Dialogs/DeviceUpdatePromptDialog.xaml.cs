@@ -15,7 +15,7 @@ namespace AuraEditor.Dialogs
         {
             this.InitializeComponent();
             DeviceName = deviceName;
-            InfoTextBlock.Text = "[" + DeviceName + "] Need to Update!";
+            //InfoTextBlock.Text = "[" + DeviceName + "] Need to Update!";
             WindowsPage.Self.needToUpdadte = true;
         }
 

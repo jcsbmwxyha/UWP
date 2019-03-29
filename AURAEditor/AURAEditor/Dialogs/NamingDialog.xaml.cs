@@ -30,7 +30,7 @@ namespace AuraEditor.Dialogs
         {
             if (m_filenames.Contains(NamingTextBox.Text))
             {
-                StatusTextBlock.Text = "Error: File name";
+                StatusTextBlock.Text = "Filename already exists. Do you want to replace it?";
             }
             Result = true;
             this.Hide();

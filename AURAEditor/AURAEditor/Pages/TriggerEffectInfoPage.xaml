@@ -46,7 +46,13 @@
                     </RadioButton>
                     <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
                                                  RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
-                                                 Margin="0,10,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                                                 Margin="0,10,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Background="Black" Placement="Mouse">
+                                <TextBlock Foreground="White" Text="Drag to adjust the random color"/>
+                            </ToolTip>
+                        </ToolTipService.ToolTip>
+                    </usercontrol:RangeSlider>
                 </StackPanel>
 
                 <StackPanel x:Name="PatternGroup" Orientation="Vertical"

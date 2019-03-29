@@ -217,12 +217,17 @@
                         <MenuFlyoutItem Width="110" Text="150 %" Click="SpaceZoom_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                     </MenuFlyout>
                 </Button.Flyout>
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                        <TextBlock Foreground="White" Text="Zoom levels"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Name="DefaultViewButton" RelativePanel.RightOf="SpaceZoomButton" Height="32" Width="32" Margin="12,8,0,0"
                     Style="{StaticResource DefaultViewButtonStyle}" Click="DefaultViewButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Reset to default layout"/>
+                        <TextBlock Foreground="White" Text="Reset to default layout (Ctrl + 1)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -230,7 +235,7 @@
                     Style="{StaticResource FitAllViewButtonStyle}" Click="FitAllButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Fill to the entire editing area"/>
+                        <TextBlock Foreground="White" Text="Fill to the entire editing area (Ctrl + 0)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -238,15 +243,39 @@
         
         <!-- Sidepanel Button -->
         <Button Name="LeftSideOpenedButton" Grid.RowSpan="2" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Center"
-                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="LeftSidePanelButton_Click"/>
+                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="LeftSidePanelButton_Click">
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock Foreground="White" Text="Fold lighting effect panel"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
         <Button Name="LeftSideClosedButton" Grid.RowSpan="2" Grid.Column="0" Canvas.ZIndex="5" Width="10" Height="50" VerticalAlignment="Center"
-                    Style="{StaticResource RightSidePanelButtonStyle}" Click="LeftSidePanelButton_Click" Visibility="Collapsed"/>
+                    Style="{StaticResource RightSidePanelButtonStyle}" Click="LeftSidePanelButton_Click" Visibility="Collapsed">
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock Foreground="White" Text="Expand lighting effect panel"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
         <Image Grid.RowSpan="2" Grid.Column="0" Source="ms-appx:///Assets/Line/asus_ac_shortline_v_bg.png"
                    Width="1" Stretch="Fill" HorizontalAlignment="Right"/>
         <Button Name="RightSideOpenedButton" Grid.RowSpan="2" Grid.Column="2" Width="10" Height="50" VerticalAlignment="Center" HorizontalAlignment="left"
-                    Style="{StaticResource RightSidePanelButtonStyle}" Click="RightSidePanelButton_Click"/>
+                    Style="{StaticResource RightSidePanelButtonStyle}" Click="RightSidePanelButton_Click">
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock Foreground="White" Text="Fold property setting panel"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
         <Button Name="RightSideClosedButton" Grid.RowSpan="2" Grid.Column="2" Width="10" Height="50" VerticalAlignment="Center" HorizontalAlignment="Right"
-                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="RightSidePanelButton_Click" Visibility="Collapsed"/>
+                    Style="{StaticResource LeftSidePanelButtonStyle}" Click="RightSidePanelButton_Click" Visibility="Collapsed">
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock Foreground="White" Text="Expand property setting panel"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
         <Image Grid.RowSpan="2" Grid.Column="2" Source="ms-appx:///Assets/Line/asus_ac_shortline_v_bg.png"
                    Width="1" Stretch="Fill" HorizontalAlignment="Left"/>
     </Grid>

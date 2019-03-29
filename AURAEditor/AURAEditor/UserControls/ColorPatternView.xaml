@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Unloaded="ColorPatternView_Unloaded"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -47,15 +48,33 @@
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:ColorPointModel">
-                        <usercontrol:ColorPointView/>
+                        <usercontrol:ColorPointView>
+                            <ToolTipService.ToolTip>
+                                <ToolTip Background="Black" Placement="Mouse">
+                                    <TextBlock Foreground="White" Text="Double click to change color"/>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                        </usercontrol:ColorPointView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <Rectangle x:Name="PatternRectangle" Width="196" Height="16" HorizontalAlignment="Left"
                        Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
             <StackPanel Orientation="Horizontal">
-                <Button Click="RemoveColorPointButton_Click" Style="{StaticResource MinusButtonStyle}"/>
-                <Button Click="AddColorPointButton_Click" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0"/>
+                <Button Click="RemoveColorPointButton_Click" Style="{StaticResource MinusButtonStyle}">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="Delete node"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
+                <Button Click="AddColorPointButton_Click" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="Add node"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
             </StackPanel>
         </StackPanel>
     </StackPanel>

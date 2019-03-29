@@ -27,18 +27,7 @@ namespace AuraEditor.ViewModels
 
         public TimelineEffect Model;
         public LayerModel Layer { get; set; }
-        private EffectLine _view;
-        public EffectLine View
-        {
-            get
-            {
-                return _view;
-            }
-            set
-            {
-                _view = value;
-            }
-        }
+
         public string Name
         {
             get
@@ -113,6 +102,14 @@ namespace AuraEditor.ViewModels
         {
             MoveTo?.Invoke(value);
         }
+        public void ClearMoveToHandler()
+        {
+            if (MoveTo == null) return;
+
+            Delegate[] clientList = MoveTo.GetInvocationList();
+            foreach (var d in clientList)
+                MoveTo -= (d as MoveToEventHandler);
+        }
 
         private bool _isChecked;
         public bool IsChecked
@@ -162,9 +159,9 @@ namespace AuraEditor.ViewModels
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
         }
-        private EffectLineViewModel(EffectLineViewModel vm)
+        public EffectLineViewModel(EffectLineViewModel vm)
         {
-            TimelineEffect eff = TimelineEffect.CloneEffect(vm.Model);
+            TimelineEffect eff = TimelineEffect.Clone(vm.Model);
             Model = eff;
             EffectBlockContent = Name;
             PixelSizeOfName = getPixelSizeOfName(Name);
@@ -174,7 +171,6 @@ namespace AuraEditor.ViewModels
             DurationTime = vm.DurationTime;
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
-
         }
         public EffectLineViewModel(int type)
         {
@@ -186,12 +182,7 @@ namespace AuraEditor.ViewModels
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
 
         }
-
-        static public EffectLineViewModel Clone(EffectLineViewModel vm)
-        {
-            return new EffectLineViewModel(vm);
-        }
-
+        
         private double getPixelSizeOfName(string text)
         {
             var tmp = new TextBlock { Text = text, FontSize = 20, FontFamily = new FontFamily("Segoe UI") };

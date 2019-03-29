@@ -545,7 +545,7 @@
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to beginning"/>
+                        <TextBlock Foreground="White" Text="Jump to beginning (Shift + Home)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -554,7 +554,7 @@
                     Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanToVisibilityConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Play"/>
+                        <TextBlock Foreground="White" Text="Play (Shift + 0)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -563,7 +563,7 @@
                     Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Pause"/>
+                        <TextBlock Foreground="White" Text="Pause (Shift + 0)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -572,7 +572,7 @@
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to end"/>
+                        <TextBlock Foreground="White" Text="Jump to end (Shift + End)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -595,6 +595,11 @@
                     <usercontrol:PlayerCursor.RenderTransform>
                         <TranslateTransform x:Name="PlayerCursorTranslateTransform" X="{x:Bind playerModel.Position, Mode=TwoWay}"/>
                     </usercontrol:PlayerCursor.RenderTransform>
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="Time cursor"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
                 </usercontrol:PlayerCursor>
             </Canvas>
         </ScrollViewer>
@@ -790,7 +795,24 @@
                         <TranslateTransform X="{x:Bind playerModel.Position, Mode=OneWay}"/>
                     </Line.RenderTransform>
                 </Line>
-                <StackPanel Name="TrackStackPanel"/>
+                <ItemsControl Name="LayerTracks" ItemsSource="{x:Bind Path=Layers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Height" Value="52"/>
+                            <Setter Property="Width" Value="5000"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:LayerModel">
+                            <usercontrol:LayerTrack Width="5000" Height="52"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Canvas>
         </ScrollViewer>
         <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="1" Grid.ColumnSpan="5" Canvas.ZIndex="-1" HorizontalAlignment="Left"
@@ -828,13 +850,25 @@
         <Grid Name="LayerScrollGrid" Grid.Row="2" Grid.Column="1" SizeChanged="LayerScrollGrid_SizeChanged"/>
         <RelativePanel Name="LayerSliderGrid" Grid.Row="2" Grid.Column="4" Canvas.ZIndex="8">
             <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.AlignLeftWithPanel="True"
-                    Click="MinusButton_Click" Margin="3,3,0,0"/>
+                    Click="MinusButton_Click" Margin="3,3,0,0">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Timeline zoom in"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
             <Slider Name="LayerZoomSlider" Style="{StaticResource ZoomSliderStyle}" x:FieldModifier="public"
                     HorizontalAlignment="Left" VerticalAlignment="Center" RelativePanel.LeftOf="PlusButton"
                     Maximum="6" Minimum="1" Width="193" Margin="0,0,0,0"
                     ValueChanged="LayerZoomSlider_ValueChanged"/>
             <Button Name="PlusButton" Style="{StaticResource PlusButtonStyle}" RelativePanel.AlignRightWithPanel="True"
-                    Click="PlusButton_Click" Margin="0,3,3,0" VerticalAlignment="Center"/>
+                    Click="PlusButton_Click" Margin="0,3,3,0" VerticalAlignment="Center">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Timeline zoom out"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
         </RelativePanel>
     </Grid>
 </Page>

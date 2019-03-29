@@ -123,13 +123,13 @@ namespace AuraEditor.Dialogs
                 }
 
                 Log.Debug("[GetPluggedDevices] Get message : " + result);
-                //return "G703GI,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
+                return "G703GI_US,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
                 return result;
             }
             catch (Exception ex)
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
-                //return "G703GI,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
+                return "G703GI_US,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
                 return null;
             }
         }
@@ -184,7 +184,7 @@ namespace AuraEditor.Dialogs
             else
                 SelectAllButton.IsChecked = false;
 
-            SelectedNumberText.Text = "(" + selectedcount.ToString() + ")  Selected devices";
+            SelectedNumberText.Text = "(" + selectedcount.ToString() + ")  synced device(s).";
         }
 
         public void UpdateTemporaryCheckState()

@@ -92,19 +92,20 @@
                Source="ms-appx:///Assets/ConnectedDevices/asus_ac_cd_bg.png"
                Stretch="Fill"/>
         <RelativePanel Margin="21,9,17,0">
-            <TextBlock Text="Connected Devices" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
+            <TextBlock Text="Available devices" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
             <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}"
                     Click="CloseButton_Click"/>
         </RelativePanel>
 
         <Grid Grid.Row="1" Margin="24,4,24,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="72*"/>
-                <RowDefinition Height="428*"/>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="400*"/>
             </Grid.RowDefinitions>
             <StackPanel>
-                <TextBlock Text="Select connected device to sync AURA lighting" FontSize="14" Margin="0,21,0,0"/>
-                <TextBlock x:Name="SelectedNumberText" Text="() Selected devices" FontSize="11" Foreground="Gray" Margin="0,8,0,0"/>
+                <TextBlock Text="Select the device(s) for lighting profile editing. The selected devices will be added to AURA SYNC devices list automatically."
+                           FontSize="14" Margin="0,21,0,0" TextWrapping="Wrap"/>
+                <TextBlock x:Name="SelectedNumberText" Text="() synced device(s)." FontSize="11" Foreground="Gray" Margin="0,8,0,0"/>
             </StackPanel>
             
             <Image Grid.Row="1" Source="../Assets/ConnectedDevices/asus_ac_deviceslist_bg.png" Stretch="Fill"/>

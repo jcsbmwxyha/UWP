@@ -25,6 +25,10 @@ namespace AuraEditor.UserControls
         {
             this.InitializeComponent();
         }
+        private void LayerTrack_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
+        }
 
         private void Track_DragEnter(object sender, DragEventArgs e)
         {
@@ -62,7 +66,6 @@ namespace AuraEditor.UserControls
             var dropPosition = e.GetPosition(this);
             var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
             EffectLineViewModel effect = new EffectLineViewModel(type);
-            effect.View = new EffectLine();
 
             if (align > 0)
                 effect.Left = align;
@@ -127,7 +130,7 @@ namespace AuraEditor.UserControls
             if (copy == null)
                 return;
 
-            m_Layer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
+            m_Layer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
         }
     }
 }

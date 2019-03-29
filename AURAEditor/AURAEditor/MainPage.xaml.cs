@@ -106,7 +106,7 @@ namespace AuraEditor
 
                     if (g_PressCtrl == true)
                     {
-                        LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                        LayerPage.CopiedEffect = new EffectLineViewModel(SelectedEffect);
                         SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
                     }
                     break;
@@ -115,7 +115,7 @@ namespace AuraEditor
                         return;
 
                     if (g_PressCtrl == true)
-                        LayerPage.CopiedEffect = EffectLineViewModel.Clone(SelectedEffect);
+                        LayerPage.CopiedEffect = new EffectLineViewModel(SelectedEffect);
                     break;
                 case Windows.System.VirtualKey.V:
                     if (LayerPage.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerPage.CopiedEffect == null)
@@ -123,7 +123,7 @@ namespace AuraEditor
 
                     g_CanPaste = false;
 
-                    var copy = EffectLineViewModel.Clone(LayerPage.CopiedEffect);
+                    var copy = new EffectLineViewModel(LayerPage.CopiedEffect);
 
                     if (SelectedEffect != null)
                     {
@@ -132,7 +132,7 @@ namespace AuraEditor
                     }
                     else
                     {
-                        LayerPage.CheckedLayer.InsertTimelineEffectFitly(EffectLineViewModel.Clone(copy));
+                        LayerPage.CheckedLayer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
                     }
 
                     TimeSpan delay = TimeSpan.FromMilliseconds(400);
@@ -611,7 +611,7 @@ namespace AuraEditor
         }
         public void ShowReEditMask(LayerModel layer)
         {
-            ShowMask("Edit layer : " + layer.Name);
+            ShowMask("Edit " + layer.Name);
         }
         private void ShowMask(string descriptionText)
         {

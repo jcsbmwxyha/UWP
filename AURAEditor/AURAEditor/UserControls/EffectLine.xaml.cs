@@ -53,6 +53,7 @@ namespace AuraEditor.UserControls
         }
         private double Right { get { return ViewModelLeft + ViewModelWidth; } }
         private double[] alignPositions;
+
         #region Intelligent auto scroll
         private int _mouseDirection;
         public enum CursorState
@@ -84,7 +85,7 @@ namespace AuraEditor.UserControls
                 }
             }
         }
-       
+
         private void Timer_Tick(object sender, object e)
         {
             int move = 10;
@@ -156,8 +157,8 @@ namespace AuraEditor.UserControls
             {
                 // Getting ScrollViewer is speculative, but it do the trick.
                 m_ScrollViewer = FindParentControl<ScrollViewer>(this, typeof(ScrollViewer));
-                Point position2 = e.GetCurrentPoint(elvm.Layer.UI_Track).Position;
-
+                var track = FindParentControl<LayerTrack>(this, typeof(LayerTrack));
+                Point position2 = e.GetCurrentPoint(track).Position;
 
                 Rect screenRect = new Rect(
                     m_ScrollViewer.HorizontalOffset,
@@ -204,8 +205,14 @@ namespace AuraEditor.UserControls
         public EffectLine()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (s, e) => Bindings.Update();
-            this.DataContextChanged += (s, e) => elvm.MoveTo += MoveAnimation;
+            this.DataContextChanged += (s, e) =>
+            {
+                Bindings.Update();
+
+                // Do a trick to remove older handler
+                elvm.ClearMoveToHandler();
+                elvm.MoveTo += MoveAnimation;
+            };
 
             m_ScrollTimerClock = new DispatcherTimer();
             m_ScrollTimerClock.Tick += Timer_Tick;
@@ -222,17 +229,10 @@ namespace AuraEditor.UserControls
         private void EffectLine_Loaded(object sender, RoutedEventArgs e)
         {
             LoadedStoryboard.Begin();
-
-            //var style = (Style)this.Resources["EffectLineStyle"];
-            //Image _button1 = null;
-            //IEnumerable<Image> buttons = FindVisualChildren<Image>(style);
-            //foreach (var _button in buttons)
-            //{
-            //    if (_button.Name == "IconPart")
-            //    {
-            //        _button1 = _button;
-            //    }
-            //}
+        }
+        private void EffectLine_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
         }
 
         #region -- Event --
@@ -408,14 +408,14 @@ namespace AuraEditor.UserControls
         #region -- Right-clicked menu --
         private void CopyItem_Click(object sender, RoutedEventArgs e)
         {
-            LayerPage.Self.CopiedEffect = EffectLineViewModel.Clone(elvm);
+            LayerPage.Self.CopiedEffect = new EffectLineViewModel(elvm);
         }
         private void PasteItem_Click(object sender, RoutedEventArgs e)
         {
             if (LayerPage.Self.CopiedEffect == null)
                 return;
 
-            var copy = EffectLineViewModel.Clone(LayerPage.Self.CopiedEffect);
+            var copy = new EffectLineViewModel(LayerPage.Self.CopiedEffect);
             copy.Left = this.Right;
             elvm.Layer.InsertTimelineEffectFitly(copy);
         }

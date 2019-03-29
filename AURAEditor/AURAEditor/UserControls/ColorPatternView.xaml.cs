@@ -35,6 +35,11 @@ namespace AuraEditor.UserControls
             this.DataContextChanged += (s, e) => Bindings.Update();
             SetDefaultPatterns();
         }
+        private void ColorPatternView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
+        }
+
         public void SetDefaultPatterns()
         {
             for (int i = 0; i < Definitions.DefaultColorPointListCollection.Count; i++)

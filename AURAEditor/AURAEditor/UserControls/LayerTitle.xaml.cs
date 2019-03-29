@@ -20,6 +20,10 @@ namespace AuraEditor.UserControls
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
         }
+        private void LayerTitle_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
+        }
 
         private void EyeToggleButton_Click(object sender, RoutedEventArgs e)
         {

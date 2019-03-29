@@ -301,10 +301,10 @@
     <Content Include="Assets\EffectBlock\asus_ac_blade_btn_s.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\EffectBlock\asus_ac_breath_btn_n.png" />
-    <Content Include="Assets\EffectBlock\asus_ac_breath_btn_s.png" />
-    <Content Include="Assets\EffectBlock\asus_ac_colorcycle_btn_n.png" />
-    <Content Include="Assets\EffectBlock\asus_ac_colorcycle_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_breathing_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_breathing_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_color cycle_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_color cycle_btn_s.png" />
     <Content Include="Assets\EffectBlock\asus_ac_comet_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_comet_btn_s.png" />
     <Content Include="Assets\EffectBlock\asus_ac_effectblock_btn_f.png" />
@@ -441,10 +441,10 @@
     <Content Include="Assets\Background\grid.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_blade_btn_n.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_blade_btn_s.png" />
-    <Content Include="Assets\EffectLine\asus_gc_aurazone_breath_btn_n.png" />
-    <Content Include="Assets\EffectLine\asus_gc_aurazone_breath_btn_s.png" />
-    <Content Include="Assets\EffectLine\asus_gc_aurazone_colorcycle_btn_n.png" />
-    <Content Include="Assets\EffectLine\asus_gc_aurazone_colorcycle_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_breathing_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_breathing_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_color cycle_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_color cycle_btn_s.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_comet_btn_n.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_comet_btn_s.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_flashanddash_btn_n.png" />

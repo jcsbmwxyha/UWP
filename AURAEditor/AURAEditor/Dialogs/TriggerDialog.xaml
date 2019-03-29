@@ -231,20 +231,20 @@
 
         <Image Grid.RowSpan="3" Source="ms-appx:///Assets/TriggerDialog/asus_ac_triggerevent_bg.png" Stretch="Fill"/>
         <RelativePanel Margin="10,15,10,0">
-            <TextBlock Text="Set Trigger Event" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
+            <TextBlock Text="Trigger effects settings" RelativePanel.AlignLeftWithPanel="True" Foreground="White"/>
             <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}"
                     Click="OKButton_Click"/>
         </RelativePanel>
         <StackPanel Grid.Row="1" Width="420" VerticalAlignment="Top" Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Action : " VerticalAlignment="Center" Foreground="White"/>
-                <Button x:Name="TriggerActionButton" Content="One Click" Foreground="White"
+                <TextBlock Text="Action:" VerticalAlignment="Center" Foreground="White"/>
+                <Button x:Name="TriggerActionButton" Content="Click" Foreground="White"
                     Width="196" Canvas.ZIndex="6" VerticalAlignment="Bottom"
                     Margin="10,0,0,0" Style="{StaticResource RogComboBoxButtonStyle}">
                     <Button.Flyout>
                         <MenuFlyout x:Name="TriggerActionMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
-                            <MenuFlyoutItem x:Name="One_Click" Text="One Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
-                            <MenuFlyoutItem x:Name="Double_Click" Text="Double Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                            <MenuFlyoutItem x:Name="One_Click" Text="Click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
+                            <MenuFlyoutItem x:Name="Double_Click" Text="Double click" Click="ActionButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"/>
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
@@ -259,15 +259,15 @@
             </StackPanel>
             <Image Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,13,0,0"/>
             <RelativePanel Margin="0,20,0,0" HorizontalAlignment="Stretch">
-                <TextBlock  Text="Effect order :" Foreground="White" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                <TextBlock  Text="Effect sequence:" Foreground="White" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
                 <Button Name="AddEffectButton" Foreground="White" Background="DarkGray" Style="{StaticResource RogButtonStyle}"
-                        Content="Add Effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="100" RelativePanel.LeftOf="RemoveAllButton" FontSize="12"/>
+                        Content="Add effect" Click="AddEffectButton_Click" Margin="10,0,0,0" Width="100" RelativePanel.LeftOf="RemoveAllButton" FontSize="12"/>
                 <Button Name="RemoveAllButton" Foreground="White" Background="DarkGray" Style="{StaticResource RogButtonStyle}"
-                        Content="Remove All" Click="RemoveAllButton_Click" Margin="10,0,0,0" Width="100" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
+                        Content="Delete all" Click="RemoveAllButton_Click" Margin="10,0,0,0" Width="100" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
             </RelativePanel>
             <Grid Margin="0,10,0,0">
                 <Image Source="../Assets/TriggerDialog/asus_ac_effectorder_bg.png" Stretch="Fill" Height="170"/>
-                <TextBlock x:Name="TriggerEffectTextBlock" Text="No Trigger effects yet" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TriggerEffectTextBlock" Text="No trigger effect" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <ListView Name="TriggerEffectListView" CanReorderItems="True" AllowDrop="True" VerticalAlignment="Top"
                           Width="470" Height="170" SelectedIndex="{Binding SelectedIndex}"
                           SelectionChanged="TriggerEffectListView_SelectionChanged">

@@ -102,7 +102,6 @@ namespace AuraEditor.Models
         public int copy_count = 0;
         public string nameOfOriginalLayer = "";
         public LayerModel originalLayer;
-        public LayerTrack UI_Track;
         public LayerModel(string name = "")
         {
             EffectLineViewModels = new ObservableCollection<EffectLineViewModel>();
@@ -112,15 +111,8 @@ namespace AuraEditor.Models
             Name = name;
             Eye = true;
 
-            UI_Track = new LayerTrack
-            {
-                DataContext = this,
-            };
-            UI_Track.Height = 52;
-
-
             m_ZoneDictionary = new Dictionary<int, int[]>();
-            TriggerAction = "One Click";
+            TriggerAction = "Click";
         }
 
         public LayerModel(LayerModel layerModel)
@@ -130,14 +122,14 @@ namespace AuraEditor.Models
                 originalLayer = layerModel.originalLayer; //set original layer
                 nameOfOriginalLayer = layerModel.nameOfOriginalLayer;
             }
-            else 
+            else
             {
                 originalLayer = layerModel; //set original layer
                 nameOfOriginalLayer = layerModel.Name;
             }
             originalLayer.copy_count++;
 
-            if(originalLayer.copy_count==1)
+            if (originalLayer.copy_count == 1)
                 Name = nameOfOriginalLayer + "_copy";
             else
                 Name = nameOfOriginalLayer + "_copy" + originalLayer.copy_count;
@@ -155,39 +147,24 @@ namespace AuraEditor.Models
             {
                 TriggerEffects.Add(TriggerEffect.Clone(each_TriggerEffect));
             }
-           
-            UI_Track = new LayerTrack
-            {
-                DataContext = this,
-            };
-            UI_Track.Height = 52;
 
-            foreach(EffectLineViewModel each_effectLineViewModel in layerModel.EffectLineViewModels)
+            foreach (EffectLineViewModel eff in layerModel.EffectLineViewModels)
             {
-                InsertTimelineEffectFitly(EffectLineViewModel.Clone(each_effectLineViewModel));
+                InsertTimelineEffectFitly(new EffectLineViewModel(eff));
             }
-
         }
 
         private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             EffectLineViewModel model;
-            EffectLine view;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                     model = e.OldItems[0] as EffectLineViewModel;
-                    UI_Track.Track.Children.Remove(model.View);
                     ReUndoManager.Store(new RemoveEffectCommand(model));
                     break;
                 case NotifyCollectionChangedAction.Add:
                     model = e.NewItems[0] as EffectLineViewModel;
-                    view = new EffectLine();
-                    view.DataContext = model;
-                    view.Height = 36;
-                    Windows.UI.Xaml.Controls.Canvas.SetTop(view, 8);
-                    model.View = view;
-                    UI_Track.Track.Children.Add(model.View);
                     ReUndoManager.Store(new AddEffectCommand(model));
                     LayerPage.Self.CheckedEffect = model;
                     break;
@@ -242,7 +219,7 @@ namespace AuraEditor.Models
             LayerModel tmp;
             public RemoveAllEffectCommand(LayerModel layermodel)
             {
-                _layerModel =  layermodel;
+                _layerModel = layermodel;
                 tmp = LayerModel.Clone(layermodel);
             }
 
@@ -253,11 +230,11 @@ namespace AuraEditor.Models
                 {
                     _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
                 }
-             }
+            }
             public void ExecuteUndo()
             {
                 int i = tmp.EffectLineViewModels.Count;
-                for (int j=0;j<i;j++)
+                for (int j = 0; j < i; j++)
                 {
                     _layerModel.InsertTimelineEffectFitly(tmp.EffectLineViewModels[j]);
                 }
@@ -312,7 +289,6 @@ namespace AuraEditor.Models
         public void AddTimelineEffect(EffectLineViewModel eff)
         {
             eff.Layer = this;
-
             EffectLineViewModels.Add(eff);
         }
         public double InsertTimelineEffectFitly(EffectLineViewModel eff)
@@ -658,7 +634,7 @@ namespace AuraEditor.Models
             // effects
             XmlNode effectsNode = CreateXmlNode("effects");
             List<Effect> effects = new List<Effect>();
-            foreach(var vm in EffectLineViewModels)
+            foreach (var vm in EffectLineViewModels)
                 effects.Add(vm.Model);
             effects.AddRange(TriggerEffects);
             foreach (var eff in effects)
@@ -703,11 +679,6 @@ namespace AuraEditor.Models
 
         public void ClearAllEffect()
         {
-
-            foreach (EffectLineViewModel each_EffectLineViewModel in EffectLineViewModels)
-            {
-                UI_Track.Track.Children.Remove(each_EffectLineViewModel.View);
-            }
             ReUndoManager.Store(new RemoveAllEffectCommand(this));
             EffectLineViewModels.Clear();
         }

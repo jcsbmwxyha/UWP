@@ -19,7 +19,7 @@ namespace AuraEditor.Dialogs
         private ObservableCollection<TriggerEffect> _oldTriggerEffectList;
 
         private string _oldActionSelected;
-        private string _currentActionSelected = "One Click";
+        private string _currentActionSelected = "Click";
 
         static public TriggerDialog Self;
 
