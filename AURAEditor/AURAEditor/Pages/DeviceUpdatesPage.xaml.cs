@@ -96,8 +96,8 @@ namespace AuraEditor
                             UpdateStateTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnRP.Visibility = Visibility.Visible;
                             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
-                            WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                            WindowsPage.Self.needToUpdadte = false;
+                            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
+                            MainPage.Self.needToUpdadte = false;
                             UpdateBtnMode = false;
                             await ConnectedDevicesDialog.Self.Rescan();
                             break;
@@ -111,8 +111,8 @@ namespace AuraEditor
                             UpdateStateTextBlock.Text = "Your device content is up-to-date.";
                             UpdateBtnRP.Visibility = Visibility.Visible;
                             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
-                            WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                            WindowsPage.Self.needToUpdadte = false;
+                            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
+                            MainPage.Self.needToUpdadte = false;
                             UpdateStateTextBlock.Visibility = Visibility.Collapsed;
                             NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                             NoticeImg.Visibility = Visibility.Visible;
@@ -152,8 +152,8 @@ namespace AuraEditor
                         UpdateButton.Content = "Update now";
                         UpdateBtnNewTab.Visibility = Visibility.Visible;
                         SettingsPage.Self.PivotNewTab.Visibility = Visibility.Visible;
-                        WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
-                        WindowsPage.Self.needToUpdadte = true;
+                        MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
+                        MainPage.Self.needToUpdadte = true;
                         ErrorMessageStack.Visibility = Visibility.Collapsed;
                         ProgressRing.Visibility = Visibility.Collapsed;
                         ProgressRing.IsActive = false;

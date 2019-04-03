@@ -16,17 +16,17 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
             DeviceName = deviceName;
             //InfoTextBlock.Text = "[" + DeviceName + "] Need to Update!";
-            WindowsPage.Self.needToUpdadte = true;
+            MainPage.Self.needToUpdadte = true;
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
             
-            SystemNavigationManager.GetForCurrentView().BackRequested += WindowsPage.Self.OnBackRequested;
+            SystemNavigationManager.GetForCurrentView().BackRequested += MainPage.Self.OnBackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             WindowsPage.Self.WindowsGrid.Visibility = Visibility.Collapsed;
-            WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
+            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
             WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), true, new SuppressNavigationTransitionInfo());
             SettingsPage.Self.rootPivot.SelectedIndex = 0;
             WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Visible;
@@ -37,7 +37,7 @@ namespace AuraEditor.Dialogs
         {
             this.Hide();
             MainPage.Self.g_ContentDialog = null;
-            WindowsPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
+            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
         }
     }
 }

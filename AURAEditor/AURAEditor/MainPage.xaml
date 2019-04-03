@@ -303,6 +303,43 @@
                 </Setter>
             </Style>
 
+            <BitmapImage x:Key="Help_n" UriSource="ms-appx:///Assets/HotkeyList/asus_ac_help_ic_n.png"/>
+            <BitmapImage x:Key="Help_h" UriSource="ms-appx:///Assets/HotkeyList/asus_ac_help_ic_h.png"/>
+            <BitmapImage x:Key="Help_s" UriSource="ms-appx:///Assets/HotkeyList/asus_ac_help_ic_s.png"/>
+            <Style x:Key="HelpButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Help_n}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Help_h}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Help_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid>
+                                    <Image Name="Image" Stretch="Fill"/>
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <BitmapImage x:Key="Undo_n" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_n.png"/>
             <BitmapImage x:Key="Undo_h" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_h.png"/>
             <BitmapImage x:Key="Undo_s" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_s.png"/>
@@ -431,8 +468,8 @@
         <Button x:Name="ForHotkeyFocus" Style="{StaticResource TransparentButton}" x:FieldModifier="public" Visibility="Visible"/>
         
         <!-- Backgroud image -->
-        <Image Source="Assets/Background/asus_ac_bg.png" Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
-        <Image Source="Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
+        <Image Source="ms-appx:///Assets/Background/asus_ac_bg.png" Grid.Row="0" Grid.ColumnSpan="3" Stretch="Fill"/>
+        <Image Source="ms-appx:///Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
 
         <!-- Masks -->
         <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="5"
@@ -502,7 +539,7 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.AlignRightWithPanel="True" Margin="0,0,40,0"
+            <Button Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.LeftOf="HelpButton" Margin="0,0,19,0"
                         Content="Save &amp; apply" Click="SaveAndApplyButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -510,6 +547,55 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
+            <Button x:Name="HelpButton" Width="25" Height="25"
+                    Style="{StaticResource HelpButtonStyle}"
+                    RelativePanel.LeftOf="SettingRelativePanel"
+                    RelativePanel.AlignVerticalCenterWithPanel="True">
+                <Button.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource RogMenuFlyoutPresenterStyle}">
+                                <Setter Property="MaxWidth" Value="130"/>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem x:Name="TutorialItem" Text="Tutorial" Click="TutorialItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <ToolTipService.ToolTip>
+                                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                                    <TextBlock Foreground="White" Text="(F1)"/>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="ShortcutsItem" Text="Shortcuts" Click="ShortcutsItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <ToolTipService.ToolTip>
+                                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                                    <TextBlock Foreground="White" Text="(Ctrl + H)"/>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Help"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right" x:FieldModifier="Public"
+                           RelativePanel.AlignRightWithPanel="True"
+                           RelativePanel.AlignVerticalCenterWithPanel="True"
+                           Margin="0,0,40,0">
+                <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
+                      Style="{StaticResource SettingsButtonStyle}" Click="SettingsButton_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="Settings"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </Button>
+                <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
+                   RelativePanel.AlignTopWith="SettingsButton" RelativePanel.AlignRightWith="SettingsButton"
+                   Visibility="Collapsed"/>
+            </RelativePanel>
         </RelativePanel>
         <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1" Visibility="Collapsed">
             <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>

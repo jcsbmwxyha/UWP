@@ -20,8 +20,6 @@ namespace AuraEditor
     /// </summary>
     public sealed partial class WindowsPage : Page
     {
-        public bool needToUpdadte = false;
-
         ApplicationDataContainer g_EULASettings;
         public bool EulaAgreeOrNot = false;
 
@@ -64,10 +62,6 @@ namespace AuraEditor
 
             LoadingRing.IsActive = true;
             LoadingFrame.Visibility = Visibility.Visible;
-            //Disable settings button until check finish
-            SettingsRadioButton.IsEnabled = false;
-            SettingsRadioButton.Opacity = 0.5;
-            // disable end
 
             WindowsGrid.Visibility = Visibility.Visible;
             WindowsGrid1.Visibility = Visibility.Collapsed;
@@ -99,26 +93,6 @@ namespace AuraEditor
                 }
             }
             #endregion
-
-            #region Check for Update and show icon
-            await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
-            // < 0 No checkallbyservice function
-            if (ServiceViewModel.returnnum > 0)
-            {
-                //顯示需要更新
-                SettingBtnNewTab.Visibility = Visibility.Visible;
-                needToUpdadte = true;
-            }
-            else
-            {
-                SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                needToUpdadte = false;
-            }
-            //Enable settings button until check finish
-            SettingsRadioButton.IsEnabled = true;
-            SettingsRadioButton.Opacity = 1;
-            //Enable end
-            #endregion
         }
 
         private void WindowsFrame_Navigated(object sender, NavigationEventArgs e)
@@ -139,7 +113,6 @@ namespace AuraEditor
             // (returned in logical pixels), and move your content around as necessary.
             LeftPaddingColumn.Width = new GridLength(coreTitleBar.SystemOverlayLeftInset);
             RightPaddingColumn.Width = new GridLength(coreTitleBar.SystemOverlayRightInset);
-            SettingRelativePanel.Margin = new Thickness(0, 0, coreTitleBar.SystemOverlayRightInset, 0);
 
             // Update title bar control size as needed to account for system size changes.
             AppTitleBar.Height = coreTitleBar.Height;
@@ -154,37 +127,6 @@ namespace AuraEditor
             else
             {
                 AppTitleBar.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void SettingsRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Register a handler for BackRequested events and set the
-            // visibility of the Back button
-            SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            WindowsGrid.Visibility = Visibility.Collapsed;
-            WindowsGrid1.Visibility = Visibility.Visible;
-            WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
-        }
-
-        public void OnBackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if (WindowsFrame1.Content is SettingsPage)
-            {
-                WindowsGrid.Visibility = Visibility.Visible;
-                WindowsGrid1.Visibility = Visibility.Collapsed;
-                SettingsRadioButton.IsChecked = false;
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
-            }
-            else
-            {
-                if (WindowsFrame1.CanGoBack)
-                {
-                    e.Handled = true;
-                    WindowsFrame1.GoBack();
-                }
             }
         }
 

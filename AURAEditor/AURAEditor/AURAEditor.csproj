@@ -119,6 +119,9 @@
     <Compile Include="Dialogs\EULADisagreeDialog.xaml.cs">
       <DependentUpon>EULADisagreeDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\HotKeyListDialog.xaml.cs">
+      <DependentUpon>HotKeyListDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NoNetworkDialog.xaml.cs">
       <DependentUpon>NoNetworkDialog.xaml</DependentUpon>
     </Compile>
@@ -477,6 +480,11 @@
     <Content Include="Assets\EffectLine\asus_gc_aurazone_trigger_btn_s.png" />
     <Content Include="Assets\EULA\asus_ac_eula_card_bg.png" />
     <Content Include="Assets\EULA\asus_ac_eula_ic.png" />
+    <Content Include="Assets\HotkeyList\asus_ac_help_ic_h.png" />
+    <Content Include="Assets\HotkeyList\asus_ac_help_ic_n.png" />
+    <Content Include="Assets\HotkeyList\asus_ac_help_ic_s.png" />
+    <Content Include="Assets\HotkeyList\asus_ac_hotkeylist_bg.png" />
+    <Content Include="Assets\HotkeyList\asus_ac_hotkeylist_title_bg.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
@@ -728,6 +736,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\EULADisagreeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\HotKeyListDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

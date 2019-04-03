@@ -12,9 +12,8 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="EffectBlock_n" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_n.png"/>
-            <BitmapImage x:Key="EffectBlock_f" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_f.png"/>
-            <BitmapImage x:Key="EffectBlock_s" UriSource="ms-appx:///Assets/EffectBlock/asus_ac_effectblock_btn_s.png"/>
+            <BitmapImage x:Key="EffectBlock_N" UriSource="{x:Bind EffectBlockBackground_Normal , Mode=OneWay}"/>
+            <BitmapImage x:Key="EffectBlock_P" UriSource="{x:Bind EffectBlockBackground_Pressed, Mode=OneWay}"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -28,17 +27,17 @@
             <VisualStateGroup>
                 <VisualState x:Name="Normal">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Normal,Mode=OneWay}"/>
+                        <Setter Target="FrameImage.Source" Value="{StaticResource EffectBlock_N}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PointerOver">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Pressed,Mode=OneWay}"/>
+                        <Setter Target="FrameImage.Source" Value="{StaticResource EffectBlock_P}"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                     <VisualState.Setters>
-                        <Setter Target="FrameImage.Source" Value="{x:Bind EffectBlockBackground_Pressed,Mode=OneWay}"/>
+                        <Setter Target="FrameImage.Source" Value="{StaticResource EffectBlock_P}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

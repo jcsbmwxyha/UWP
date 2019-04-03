@@ -230,6 +230,8 @@ namespace AuraEditor.Models
                 {
                     _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
                 }
+                _layerModel.TriggerEffects.Clear();
+                _layerModel.IsTriggering = false;
             }
             public void ExecuteUndo()
             {
@@ -238,6 +240,8 @@ namespace AuraEditor.Models
                 {
                     _layerModel.InsertTimelineEffectFitly(tmp.EffectLineViewModels[j]);
                 }
+                _layerModel.TriggerEffects = tmp.TriggerEffects;
+                _layerModel.IsTriggering = tmp.isTriggering;
             }
         }
 
@@ -681,6 +685,9 @@ namespace AuraEditor.Models
         {
             ReUndoManager.Store(new RemoveAllEffectCommand(this));
             EffectLineViewModels.Clear();
+            TriggerEffects.Clear();
+            IsTriggering = false;
+            LayerPage.Self.CheckedLayer = this;
         }
     }
 }

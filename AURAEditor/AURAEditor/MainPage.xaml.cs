@@ -29,6 +29,7 @@ using static AuraEditor.Pages.SpacePage;
 using DevicZonesPair = System.Tuple<int, int[]>;
 using DeviceZonesPairList = System.Collections.Generic.List<System.Tuple<int, int[]>>;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace AuraEditor
 {
@@ -49,6 +50,8 @@ namespace AuraEditor
         ApplicationDataContainer g_LocalSettings;
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
+        
+        public bool needToUpdadte = false;
 
         public EffectLineViewModel SelectedEffect
         {
@@ -195,7 +198,7 @@ namespace AuraEditor
                         ImportButton_Click(null, null);
                     break;
                 case Windows.System.VirtualKey.E:
-                    if (g_PressCtrl == true && g_PressShift == true && LayerPage.CheckedLayer != null)
+                    if (g_PressShift == true && LayerPage.CheckedLayer != null)
                     {
                         LayerPage.CheckedLayer.ClearAllEffect();
                         LayerPage.CheckedEffect = null;
@@ -309,6 +312,11 @@ namespace AuraEditor
         {
             Log.Debug("[MainPage_Loaded] Intialize ...");
 
+            //Disable settings button until check finish
+            SettingsButton.IsEnabled = false;
+            SettingsButton.Opacity = 0.5;
+            // disable end
+
             await IntializeFileOperations();
             ConnectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceFrame.Navigate(typeof(SpacePage));
@@ -323,6 +331,27 @@ namespace AuraEditor
             startclient();
 
             LoadSettings();
+
+            #region Check for Update and show icon
+            await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
+            // < 0 No checkallbyservice function
+            if (ServiceViewModel.returnnum > 0)
+            {
+                //顯示需要更新
+
+                SettingBtnNewTab.Visibility = Visibility.Visible;
+                needToUpdadte = true;
+            }
+            else
+            {
+                SettingBtnNewTab.Visibility = Visibility.Collapsed;
+                needToUpdadte = false;
+            }
+            //Enable settings button until check finish
+            MainPage.Self.SettingsButton.IsEnabled = true;
+            MainPage.Self.SettingsButton.Opacity = 1;
+            //Enable end
+            #endregion
         }
         private void LoadSettings()
         {
@@ -848,6 +877,47 @@ namespace AuraEditor
 
                 LayerPage.Self.CheckedLayer = _layer;
             }
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Register a handler for BackRequested events and set the
+            // visibility of the Back button
+            SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+
+            WindowsPage.Self.WindowsGrid.Visibility = Visibility.Collapsed;
+            WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Visible;
+            WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
+        }
+        public void OnBackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (WindowsPage.Self.WindowsFrame1.Content is SettingsPage)
+            {
+                WindowsPage.Self.WindowsGrid.Visibility = Visibility.Visible;
+                WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Collapsed;
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
+            }
+            else
+            {
+                if (WindowsPage.Self.WindowsFrame1.CanGoBack)
+                {
+                    e.Handled = true;
+                    WindowsPage.Self.WindowsFrame1.GoBack();
+                }
+            }
+        }
+
+        private void TutorialItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void ShortcutsItem_Click(object sender, RoutedEventArgs e)
+        {
+            HotKeyListDialog hld = new HotKeyListDialog();
+            await hld.ShowAsync();
         }
     }
 }
