@@ -15,7 +15,10 @@ namespace AuraEditor.Models
         }
 
         #region -- Property --
-        public string Name { get; set; }
+        public string ModelName { get; set; }
+        public string FolderName { get; set; }
+        public string CsvName { get; set; }
+        public string PngName { get; set; }
 
         private string type;
         public string Type
@@ -51,18 +54,18 @@ namespace AuraEditor.Models
             }
         }
 
-        private string deviceImgPath;
-        public string DeviceImgPath {
+        private string deviceIconPath;
+        public string DeviceIconPath {
             get
             {
-                return deviceImgPath;
+                return deviceIconPath;
             }
             set
             {
-                if (deviceImgPath != value)
+                if (deviceIconPath != value)
                 {
-                    deviceImgPath = value;
-                    RaisePropertyChanged("DeviceImgPath");
+                    deviceIconPath = value;
+                    RaisePropertyChanged("DeviceIconPath");
                 }
             }
         }
@@ -78,11 +81,11 @@ namespace AuraEditor.Models
             {
                 if (Sync)
                 {
-                    DeviceImgPath = "../Assets/ConnectedDevices/icons/asus_ac_" + type.ToLower() + "_ic_s.png";
+                    DeviceIconPath = "../Assets/ConnectedDevices/icons/asus_ac_" + type.ToLower() + "_ic_s.png";
                 }
                 else
                 {
-                    DeviceImgPath = "../Assets/ConnectedDevices/icons/asus_ac_" + type.ToLower() + "_ic_n.png";
+                    DeviceIconPath = "../Assets/ConnectedDevices/icons/asus_ac_" + type.ToLower() + "_ic_n.png";
                 }
             }
         }

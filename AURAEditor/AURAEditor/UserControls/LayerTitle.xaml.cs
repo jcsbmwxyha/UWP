@@ -15,10 +15,14 @@ namespace AuraEditor.UserControls
     {
         private LayerModel m_Layer { get { return this.DataContext as LayerModel; } }
 
+        public LayerPage LayerPage;
+        public bool RenameRightTapped = false;
+
         public LayerTitle()
         {
             this.InitializeComponent();
             this.DataContextChanged += (s, e) => Bindings.Update();
+            LayerPage = LayerPage.Self;
         }
         private void LayerTitle_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -81,9 +85,17 @@ namespace AuraEditor.UserControls
                 m_Layer.nameOfOriginalLayer = "";
                 m_Layer.copy_count = 0;
             }
-            
-            NameTextBlock.Visibility = Visibility.Visible;
-            NameTextBox.Visibility = Visibility.Collapsed;
+
+            if (!RenameRightTapped)
+            {
+                NameTextBlock.Visibility = Visibility.Visible;
+                NameTextBox.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                NameTextBox.Focus(FocusState.Programmatic);
+                RenameRightTapped = false;
+            }
         }
         private void NameTextBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
@@ -118,5 +130,30 @@ namespace AuraEditor.UserControls
             }
         }
         #endregion
+
+        private void DuplicateItem_Click(object sender, RoutedEventArgs e)
+        {
+            int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
+            LayerModel temp_layer = LayerModel.Clone(LayerPage.CheckedLayer);
+            LayerPage.Layers.Insert(index, temp_layer);
+            LayerPage.CheckedLayer = LayerPage.Layers[index + 1];
+        }
+
+        private void RenameItem_Click(object sender, RoutedEventArgs e)
+        {
+            RenameRightTapped = true;
+            NameTextBlock_DoubleTapped(sender, null);
+        }
+
+        private void DeleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (LayerPage.CheckedLayer != null)
+            {
+                LayerPage.RemoveLayer(LayerPage.CheckedLayer);
+                SpacePage.Self.GoToBlankEditing();
+                LayerPage.CheckedLayer = null;
+                NeedSave = true;
+            }
+        }
     }
 }

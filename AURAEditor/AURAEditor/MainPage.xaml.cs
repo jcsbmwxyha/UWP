@@ -262,6 +262,13 @@ namespace AuraEditor
                         }
                     }
                     break;
+                case Windows.System.VirtualKey.F1:
+                    TutorialItem_Click(null,null);
+                    break;
+                case Windows.System.VirtualKey.H:
+                    if (g_PressCtrl == true)
+                        ShortcutsItem_Click(null,null);
+                    break;
             }
         }
 
@@ -798,6 +805,18 @@ namespace AuraEditor
             }
         }
 
+        public async void ShowTutorialDialogOrNot()
+        {
+            TutorialDialog td = new TutorialDialog();
+            await td.ShowAsync();
+        }
+
+        public async void ShowShortcutsDialog()
+        {
+            HotKeyListDialog hld = new HotKeyListDialog();
+            await hld.ShowAsync();
+        }
+
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             //ConnectedDevicesDialog.Rescan();
@@ -911,13 +930,12 @@ namespace AuraEditor
 
         private void TutorialItem_Click(object sender, RoutedEventArgs e)
         {
-
+            ShowTutorialDialogOrNot();
         }
 
-        private async void ShortcutsItem_Click(object sender, RoutedEventArgs e)
+        private void ShortcutsItem_Click(object sender, RoutedEventArgs e)
         {
-            HotKeyListDialog hld = new HotKeyListDialog();
-            await hld.ShowAsync();
+            ShowShortcutsDialog();
         }
     }
 }

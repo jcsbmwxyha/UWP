@@ -331,9 +331,9 @@ namespace AuraEditor.UserControls
                     ViewModelWidth -= move;
                 }
             }
-
-            if (Width - 70 < elvm.PixelSizeOfName)
-                setNewEffectName(Width - 70);
+            
+            if (ViewModelWidth - 70 < elvm.PixelSizeOfName)
+                setNewEffectName(ViewModelWidth - 70);
             else
                 elvm.EffectBlockContent = elvm.Name;
 

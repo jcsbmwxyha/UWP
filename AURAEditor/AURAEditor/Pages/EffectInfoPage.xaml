@@ -151,11 +151,11 @@
                         </StackPanel>
                         <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
                                 Value="{x:Bind m_Info.Speed, Mode=TwoWay}" Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch" IsThumbToolTipEnabled="False"/>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
-                            <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
-                            <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
-                            <TextBlock Text="Fast" FontSize="12"/>
-                        </StackPanel>
+                        <RelativePanel Grid.Row="2" VerticalAlignment="Top" Width="200" HorizontalAlignment="Left" Margin="20,0,0,0">
+                            <TextBlock Text="Slow" RelativePanel.AlignLeftWithPanel="True" FontSize="12"/>
+                            <TextBlock Text="Normal" RelativePanel.AlignHorizontalCenterWithPanel="True" FontSize="12"/>
+                            <TextBlock Text="Fast" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
+                        </RelativePanel>
                     </Grid>
                 </StackPanel>
 

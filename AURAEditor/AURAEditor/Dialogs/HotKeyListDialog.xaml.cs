@@ -27,11 +27,15 @@ namespace AuraEditor.Dialogs
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
+            MainPage.Self.CanShowDeviceUpdateDialog = true;
+            MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
     }
 }

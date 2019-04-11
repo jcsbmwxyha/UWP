@@ -158,7 +158,7 @@ namespace AuraEditor.Pages
 
             foreach (var sd in ingroupDevices)
             {
-                DeviceModel dm = DeviceModelCollection.Find(d => d.Name == sd.Name);
+                DeviceModel dm = DeviceModelCollection.Find(d => d.Name == sd.ModelName);
                 if (dm == null)
                 {
                     newSD.Add(sd);
@@ -170,7 +170,7 @@ namespace AuraEditor.Pages
                 else if (dm.Status == DeviceStatus.Temp)
                     tempToStage.Add(dm);
                 else if (dm.Status == DeviceStatus.OnStage)
-                    stageToTemp.RemoveAll(d => d.Name == sd.Name);
+                    stageToTemp.RemoveAll(d => d.Name == sd.ModelName);
             }
 
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
@@ -190,7 +190,7 @@ namespace AuraEditor.Pages
                 foreach (var sd in newSD)
                 {
                     DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
-                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + sd.Name);
+                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + sd.ModelName);
                     if (dm == null)
                     {
                         Log.Debug("[OnIngroupDevicesChanged] New Device create failed!");

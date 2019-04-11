@@ -235,6 +235,31 @@
           PointerEntered="MyGrid_PointerEntered"
           PointerExited="MyGrid_PointerExited"
           PointerPressed="MyGrid_PointerPressed">
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="Duplicate" Click="DuplicateItem_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Ctrl + D)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Rename" Click="RenameItem_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="Double click to rename"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Background="Black" Placement="Mouse">
+                            <TextBlock Foreground="White" Text="(Ctrl + Backspace)"/>
+                        </ToolTip>
+                    </ToolTipService.ToolTip>
+                </MenuFlyoutItem>
+            </MenuFlyout>
+        </Grid.ContextFlyout>
 
         <RelativePanel VerticalAlignment="Center">
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
@@ -250,7 +275,7 @@
             </TextBlock>
             <TextBox Name="NameTextBox" Width="120" MinHeight="30" Height="30" Visibility="Collapsed"
                      LostFocus="NameTextBox_LostFocus" KeyDown="NameTextBox_KeyDown"
-                    RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                     RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click">
                 <ToolTipService.ToolTip>

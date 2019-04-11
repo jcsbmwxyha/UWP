@@ -125,6 +125,9 @@
     <Compile Include="Dialogs\NoNetworkDialog.xaml.cs">
       <DependentUpon>NoNetworkDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\TutorialDialog.xaml.cs">
+      <DependentUpon>TutorialDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\ColorPatternModel.cs" />
     <Compile Include="Models\ColorPointModel.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
@@ -167,9 +170,6 @@
     <Compile Include="Common\HSVColor.cs" />
     <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
-    <Compile Include="GeneralSettingsPage.xaml.cs">
-      <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Models\LayerModel.cs" />
     <Compile Include="Dialogs\TriggerDialog.xaml.cs">
       <DependentUpon>TriggerDialog.xaml</DependentUpon>
@@ -414,6 +414,8 @@
     <Content Include="Assets\EffectBlock\asus_ac_static_btn_s.png" />
     <Content Include="Assets\EffectBlock\asus_ac_strobing_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_strobing_btn_s.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_tide_btn_n.png" />
+    <Content Include="Assets\EffectBlock\asus_ac_tide_btn_s.png" />
     <Content Include="Assets\EffectBlock\asus_ac_trigger_btn_n.png" />
     <Content Include="Assets\EffectBlock\asus_ac_trigger_btn_s.png" />
     <Content Include="Assets\EffectInfoGroup\Angle\asus_ac_angle_assemble_ic_h.png" />
@@ -476,6 +478,8 @@
     <Content Include="Assets\EffectLine\asus_gc_aurazone_static_btn_s.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_strobing_btn_n.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_strobing_btn_s.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_tide_btn_n.png" />
+    <Content Include="Assets\EffectLine\asus_gc_aurazone_tide_btn_s.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_trigger_btn_n.png" />
     <Content Include="Assets\EffectLine\asus_gc_aurazone_trigger_btn_s.png" />
     <Content Include="Assets\EULA\asus_ac_eula_card_bg.png" />
@@ -684,6 +688,12 @@
     <Content Include="Assets\TriggerDialog\asus_ac_rearrange_ic_s.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_triggerevent_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_trigger_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_addlightingeffects_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_arrangedevice_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_createlayers_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_mamageeffect_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_previeworapply_bg.png" />
+    <Content Include="Assets\Tutorial\asus_ac_tutorial_bg.png" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
@@ -747,6 +757,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\TutorialDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\AboutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -776,10 +790,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EULAPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GeneralSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

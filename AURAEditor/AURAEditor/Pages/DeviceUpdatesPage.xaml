@@ -25,6 +25,10 @@
                     </LinearGradientBrush>
                 </ProgressBar.Foreground>
             </ProgressBar>
+            <StackPanel Name="CheckStackPanel" Margin="0,26,0,0" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Collapsed">
+                <ProgressRing x:Name="CheckProgressRing" Margin="0,0,24,0" Foreground="#ff0029" Width="32" Height="32" VerticalAlignment="Center"/>
+                <TextBlock Text="Checking..." Foreground="White" VerticalAlignment="Center"/>
+            </StackPanel>
             <RelativePanel x:Name="UpdateBtnRP" Margin="0,26,0,0" HorizontalAlignment="Center" Height="40" Width="300">
                 <Button x:Name="UpdateButton" Content="Check update" Foreground="White"
                         RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignBottomWithPanel="True"
@@ -36,7 +40,6 @@
             <TextBlock x:Name="UpdateStateTextBlock" Text="Your device content is up-to-date." Foreground="#1046FF" FontSize="16"
                        TextAlignment="Center" HorizontalAlignment="Center" Margin="0,12,0,0"/>
             <StackPanel x:Name="ErrorMessageStack" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0" Visibility="Collapsed">
-                <ProgressRing x:Name="ProgressRing" RelativePanel.RightOf="UpdateBtn" Margin="0,0,10,0" Foreground="#ff0029" Visibility="Collapsed"/>
                 <Image x:Name="NoticeImg" Source="ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png" Width="28" Height="28" Margin="0,0,10,0"/>
                 <TextBlock x:Name="ErrorMessageText" Text="Ensure that your computer is plugged to a power source." Foreground="Red" FontSize="16"
                            TextAlignment="Center" VerticalAlignment="Center"/>

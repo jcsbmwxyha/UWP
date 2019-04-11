@@ -178,9 +178,7 @@ namespace AuraEditor.Models
 
         static public async Task<DeviceModel> ToDeviceModelAsync(SyncDeviceModel syncDevice)
         {
-            string modelName = syncDevice.Name;
-            string type = syncDevice.Type;
-            return await GetDeviceModel(modelName, type);
+            return await GetDeviceModel(syncDevice.ModelName, syncDevice.FolderName, syncDevice.CsvName, syncDevice.PngName, syncDevice.Type);
         }
         static public async Task<DeviceModel> ToDeviceModelAsync(XmlNode node)
         {
@@ -190,6 +188,10 @@ namespace AuraEditor.Models
             return await GetDeviceModel(modelName, type);
         }
         static private async Task<DeviceModel> GetDeviceModel(string modelName, string type)
+        {
+            return await GetDeviceModel(modelName, modelName, modelName, modelName, type);
+        }
+        static private async Task<DeviceModel> GetDeviceModel(string modelName, string folderName, string csvName, string pngName, string type)
         {
             try
             {
@@ -204,9 +206,9 @@ namespace AuraEditor.Models
                 int originalPixelHeight = 1000;
 
                 Log.Debug("[GetDeviceModel] Model name : " + modelName + ", Type name : " + type);
-                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + modelName.Split('_')[0]);
-                StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
-                StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
+                StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + folderName);
+                StorageFile csvFile = await folder.GetFileAsync(csvName + ".csv");
+                StorageFile pngFile = await folder.GetFileAsync(pngName + ".png");
 
                 dm.Name = modelName;
 

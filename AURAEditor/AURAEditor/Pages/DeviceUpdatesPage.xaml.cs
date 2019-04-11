@@ -80,10 +80,8 @@ namespace AuraEditor
                     while (true)
                     {
                         await (new ServiceViewModel()).Sendupdatestatus(ServiceViewModel.returnnum.ToString());
-                        System.Diagnostics.Debug.WriteLine("Update process : " + ServiceViewModel.returnnum.ToString());
                         if(ProgressBar.Value < 99)
                             ProgressBar.Value += 3;
-                        System.Diagnostics.Debug.WriteLine("ProgressBar Value : " + ProgressBar.Value);
                         if (ServiceViewModel.returnnum == 100)
                         {
                             ProgressBar.Value = ServiceViewModel.returnnum;
@@ -131,14 +129,10 @@ namespace AuraEditor
                 {
                     //Check For Update
                     UpdateStateTextBlock.Visibility = Visibility.Collapsed;
-                    ProgressRing.Visibility = Visibility.Visible;
-                    ProgressRing.IsActive = true;
                     NoticeImg.Visibility = Visibility.Collapsed;
-                    ErrorMessageText.Text = "Checking...";
-                    ErrorMessageText.Foreground = new SolidColorBrush(Colors.White);
-                    ErrorMessageStack.Visibility = Visibility.Visible;
-                    UpdateButton.IsEnabled = false;
-                    UpdateButton.Opacity = 0.5;
+                    UpdateBtnRP.Visibility = Visibility.Collapsed;
+                    CheckProgressRing.IsActive = true;
+                    CheckStackPanel.Visibility = Visibility.Visible;
                     // disable end
                     await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
                     // < 0 No checkallbyservice function
@@ -147,16 +141,15 @@ namespace AuraEditor
                         //顯示需要更新
                         PowerManager.PowerSupplyStatusChanged += PowerState_ReportUpdated;
                         Battery.AggregateBattery.ReportUpdated += AggregateBattery_ReportUpdated;
-                        UpdateButton.IsEnabled = true;
-                        UpdateButton.Opacity = 1;
+                        CheckProgressRing.IsActive = false;
+                        CheckStackPanel.Visibility = Visibility.Collapsed;
                         UpdateButton.Content = "Update now";
                         UpdateBtnNewTab.Visibility = Visibility.Visible;
+                        UpdateBtnRP.Visibility = Visibility.Visible;
                         SettingsPage.Self.PivotNewTab.Visibility = Visibility.Visible;
                         MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
                         MainPage.Self.needToUpdadte = true;
                         ErrorMessageStack.Visibility = Visibility.Collapsed;
-                        ProgressRing.Visibility = Visibility.Collapsed;
-                        ProgressRing.IsActive = false;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
                         UpdateStateTextBlock.Text = "A new version is available.";
@@ -165,11 +158,11 @@ namespace AuraEditor
                     }
                     else
                     {
-                        UpdateButton.IsEnabled = true;
-                        UpdateButton.Opacity = 1;
+                        CheckProgressRing.IsActive = false;
+                        CheckStackPanel.Visibility = Visibility.Collapsed;
+                        UpdateButton.Content = "Check update";
+                        UpdateBtnRP.Visibility = Visibility.Visible;
                         ErrorMessageStack.Visibility = Visibility.Collapsed;
-                        ProgressRing.Visibility = Visibility.Collapsed;
-                        ProgressRing.IsActive = false;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
                         UpdateStateTextBlock.Text = "Your device content is up-to-date.";
@@ -223,7 +216,7 @@ namespace AuraEditor
             {
                 if (PowerManager.PowerSupplyStatus == 0)
                 {
-                    ErrorMessageText.Text = "Ensure that your computer is plugged to a power source.";
+                    ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
                     ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                     NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                     NoticeImg.Visibility = Visibility.Visible;
@@ -273,7 +266,7 @@ namespace AuraEditor
             //Laptop
             if (BatteryPercentage > 20)
             {
-                ErrorMessageText.Text = "Ensure that your computer is plugged to a power source.";
+                ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
                 ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                 NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                 NoticeImg.Visibility = Visibility.Visible;
@@ -284,7 +277,7 @@ namespace AuraEditor
             }
             else
             {
-                ErrorMessageText.Text = "Remaining battery power is less than 20%.";
+                ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
                 ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                 NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                 NoticeImg.Visibility = Visibility.Visible;

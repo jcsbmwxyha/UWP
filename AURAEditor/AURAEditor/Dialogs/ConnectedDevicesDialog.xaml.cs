@@ -35,7 +35,7 @@ namespace AuraEditor.Dialogs
 
             foreach (SyncDeviceModel sd in m_SyncDeviceList)
             {
-                sendToLiveService += sd.Name + ",";
+                sendToLiveService += sd.ModelName + ",";
                 sendToLiveService += sd.Sync == true ? "1," : "0,";
             }
 
@@ -81,9 +81,12 @@ namespace AuraEditor.Dialogs
 
                     SyncDeviceModel sd = new SyncDeviceModel
                     {
-                        Name = deviceData[0],
-                        Type = deviceData[1],
-                        Sync = Boolean.Parse(deviceData[2])
+                        ModelName = deviceData[0],
+                        FolderName = deviceData[1],
+                        CsvName = deviceData[2],
+                        PngName = deviceData[3],
+                        Type = deviceData[4],
+                        Sync = Boolean.Parse(deviceData[5])
                     };
 
                     if (sd.Type == "Notebook" || sd.Type == "Desktop")
@@ -123,13 +126,13 @@ namespace AuraEditor.Dialogs
                 }
 
                 Log.Debug("[GetPluggedDevices] Get message : " + result);
-                //return "G703GI,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
+                //return "G703GI,G703GI,G703GI,G703GI,Notebook,true::PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return result;
             }
             catch (Exception ex)
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
-                //return "G703GI,Notebook,true:PUGIO,Mouse,true:NH01,MousePad,true";
+                //return "G703GI,G703GI,G703GI,G703GI,Notebook,true::PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return null;
             }
         }

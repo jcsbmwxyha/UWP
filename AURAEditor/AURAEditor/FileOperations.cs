@@ -456,10 +456,10 @@ namespace AuraEditor
                 dm.PixelLeft = x * GridPixels;
                 dm.PixelTop = y * GridPixels;
 
-                if (new_SD.Find(sd => sd.Name == dm.Name && sd.Sync == true) != null)
+                if (new_SD.Find(sd => sd.ModelName == dm.Name && sd.Sync == true) != null)
                 {
                     dm.Status = DeviceStatus.OnStage;
-                    new_SD.RemoveAll(sd => sd.Name == dm.Name && sd.Sync == true);
+                    new_SD.RemoveAll(sd => sd.ModelName == dm.Name && sd.Sync == true);
                 }
                 else
                     dm.Status = DeviceStatus.Temp;

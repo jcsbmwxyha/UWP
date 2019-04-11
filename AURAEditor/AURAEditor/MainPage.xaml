@@ -491,8 +491,9 @@
 
         <!-- Row 0 -->
         <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle3}"
-                Width="200" Margin="20,0,0,0" Content="Available devices" Click="ConnectedDevicesButton_Click"/>
-        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1">
+                Width="200" Margin="20,0,0,0" Content="Available devices" Click="ConnectedDevicesButton_Click"
+                Canvas.ZIndex="10"/>
+        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,48,0">
             <Button Name="SetLayerButton" Style="{StaticResource SetAsLayerButtonStyle}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
                         x:FieldModifier="Public" Content="Set as a layer" Click="SetLayerButton_Click" IsEnabled="False">
@@ -549,7 +550,7 @@
             </Button>
             <Button x:Name="HelpButton" Width="25" Height="25"
                     Style="{StaticResource HelpButtonStyle}"
-                    RelativePanel.LeftOf="SettingRelativePanel"
+                    RelativePanel.AlignRightWithPanel="True"
                     RelativePanel.AlignVerticalCenterWithPanel="True">
                 <Button.Flyout>
                     <MenuFlyout Placement="Bottom">
@@ -580,23 +581,23 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <RelativePanel x:Name="SettingRelativePanel" HorizontalAlignment="Right" x:FieldModifier="Public"
-                           RelativePanel.AlignRightWithPanel="True"
-                           RelativePanel.AlignVerticalCenterWithPanel="True"
-                           Margin="0,0,40,0">
-                <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
+        </RelativePanel>
+
+        <RelativePanel x:Name="SettingRelativePanel" Grid.Column="1" HorizontalAlignment="Right"
+                       VerticalAlignment="Center" x:FieldModifier="Public" Canvas.ZIndex="10">
+            <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
                       Style="{StaticResource SettingsButtonStyle}" Click="SettingsButton_Click">
-                    <ToolTipService.ToolTip>
-                        <ToolTip Background="Black" Placement="Mouse">
-                            <TextBlock Foreground="White" Text="Settings"/>
-                        </ToolTip>
-                    </ToolTipService.ToolTip>
-                </Button>
-                <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock Foreground="White" Text="Settings"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                    RelativePanel.AlignTopWith="SettingsButton" RelativePanel.AlignRightWith="SettingsButton"
                    Visibility="Collapsed"/>
-            </RelativePanel>
         </RelativePanel>
+
         <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1" Visibility="Collapsed">
             <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
             <Button Name="EditDoneButton" Content="Save" Click="EditDoneButton_Click" RelativePanel.LeftOf="EditCancelButton"

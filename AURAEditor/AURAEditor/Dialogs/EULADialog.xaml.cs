@@ -19,8 +19,15 @@ namespace AuraEditor.Dialogs
             WindowsPage.Self.EulaAgreeOrNot = true;
             this.Hide();
 
-            MainPage.Self.CanShowDeviceUpdateDialog = true;
-            MainPage.Self.ShowDeviceUpdateDialogOrNot();
+            if (!WindowsPage.Self.TutorialDoneOrNot)
+            {
+                MainPage.Self.ShowTutorialDialogOrNot();
+            }
+            else
+            {
+                MainPage.Self.CanShowDeviceUpdateDialog = true;
+                MainPage.Self.ShowDeviceUpdateDialogOrNot();
+            }
         }
 
         private async void DisagreeBtn_Click(object sender, RoutedEventArgs e)

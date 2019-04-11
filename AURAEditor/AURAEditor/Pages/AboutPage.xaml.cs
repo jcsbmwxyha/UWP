@@ -33,5 +33,15 @@ namespace AuraEditor
             return string.Format("Ver {0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
         }
+
+        private void TutorialTextBlock_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            MainPage.Self.ShowTutorialDialogOrNot();
+        }
+
+        private void HotkeyListTextBlock_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            MainPage.Self.ShowShortcutsDialog();
+        }
     }
 }

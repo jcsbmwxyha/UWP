@@ -539,7 +539,6 @@ namespace AuraEditor.Dialogs
                     if (!(Char.IsNumber(c)))
                     {
                         ColorChangeText.Text = ColorChangeText.Text.Replace(Convert.ToString(c), "");
-                        break;
                     }
                 }
             }

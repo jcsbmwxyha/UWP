@@ -20,8 +20,9 @@ namespace AuraEditor
     /// </summary>
     public sealed partial class WindowsPage : Page
     {
-        ApplicationDataContainer g_EULASettings;
+        ApplicationDataContainer g_WindowsLocalSettings;
         public bool EulaAgreeOrNot = false;
+        public bool TutorialDoneOrNot = false;
 
         static WindowsPage _instance;
         static public WindowsPage Self
@@ -37,7 +38,7 @@ namespace AuraEditor
 
             WindowsFrame.Navigated += WindowsFrame_Navigated;
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
-            g_EULASettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            g_WindowsLocalSettings = ApplicationData.Current.LocalSettings;
         }
 
         private async void WindowsPage_Loaded(object sender, RoutedEventArgs e)
@@ -67,6 +68,7 @@ namespace AuraEditor
             WindowsGrid1.Visibility = Visibility.Collapsed;
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
             LoadEULASettings();
+            LoadTutorialDone();
 
             await Task.Delay(3000);
             LoadingFrame.Visibility = Visibility.Collapsed;
@@ -81,6 +83,12 @@ namespace AuraEditor
             {
                 WindowsGrid.Visibility = Visibility.Visible;
                 WindowsGrid1.Visibility = Visibility.Collapsed;
+
+                if (!TutorialDoneOrNot)
+                {
+                    TutorialDialog td = new TutorialDialog();
+                    await td.ShowAsync();
+                }
             }
             else//Other SYS show EULA page
             {
@@ -90,6 +98,11 @@ namespace AuraEditor
                 {
                     EULADialog ed = new EULADialog();
                     await ed.ShowAsync();
+                }
+                else if (!TutorialDoneOrNot)
+                {
+                    TutorialDialog td = new TutorialDialog();
+                    await td.ShowAsync();
                 }
             }
             #endregion
@@ -133,21 +146,38 @@ namespace AuraEditor
         private void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
         {
             SaveEULASettings();
+            SaveTutorialDone();
         }
 
         public void SaveEULASettings()
         {
-            g_EULASettings.Values["EULAAgree"] = EulaAgreeOrNot.ToString();
+            g_WindowsLocalSettings.Values["EULAAgree"] = EulaAgreeOrNot.ToString();
         }
 
         private void LoadEULASettings()
         {
-            bool successful = bool.TryParse(g_EULASettings.Values["EULAAgree"] as string, out bool agree);
+            bool successful = bool.TryParse(g_WindowsLocalSettings.Values["EULAAgree"] as string, out bool agree);
             if (successful)
                 EulaAgreeOrNot = agree;
             else
             {
                 EulaAgreeOrNot = false;
+            }
+        }
+
+        public void SaveTutorialDone()
+        {
+            g_WindowsLocalSettings.Values["TutorialDone"] = TutorialDoneOrNot.ToString();
+        }
+
+        private void LoadTutorialDone()
+        {
+            bool successful = bool.TryParse(g_WindowsLocalSettings.Values["TutorialDone"] as string, out bool done);
+            if (successful)
+                TutorialDoneOrNot = done;
+            else
+            {
+                TutorialDoneOrNot = false;
             }
         }
     }
