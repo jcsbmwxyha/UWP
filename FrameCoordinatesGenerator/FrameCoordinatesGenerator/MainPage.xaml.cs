@@ -25,45 +25,62 @@ namespace FrameCoordinatesGenerator
         static public MainPage Self;
 
         private MouseEventCtrl m_MouseEventCtrl;
-        MySoftwareImage g_MySoftwareImage;
-        Image currentImage;
-        List<PreLoadFrameModel> g_PreLoadFrameModels;
-        DeviceView g_PugioView;
+        private MySoftwareImage g_MySoftwareImage;
+        private Image currentImage;
+        private List<PreLoadFrameModel> gPreLoadFrameModels;
+        private DeviceView gPugioDV;
+        private DeviceView gPreviewDV;
 
         public MainPage()
         {
             Self = this;
             this.InitializeComponent();
-            g_PreLoadFrameModels = new List<PreLoadFrameModel>();
+            gPreLoadFrameModels = new List<PreLoadFrameModel>();
             m_MouseEventCtrl = IntializeMouseEventCtrl();
         }
-        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            // ---
-            DeviceContent pugiodc = await GetPugioDeviceContent();
-            DeviceModel pugiodm = await pugiodc.ToDeviceModel(new Point(24, 24));
-
-            g_PugioView = new DeviceView();
-            g_PugioView.DataContext = pugiodm;
-            PreviewCanvas.Children.Add(g_PugioView);
-            // ---
+            gPugioDV = CreatePugioDeviceView();
+            PreviewCanvas.Children.Add(gPugioDV);
         }
+        private DeviceView CreatePugioDeviceView()
+        {
+            BitmapImage bitmapImage = new BitmapImage(new Uri(this.BaseUri, "/Assets/PUGIO.png"));
 
+            DeviceModel pugioDM = new DeviceModel
+            {
+                Name = "Pugio",
+                Type = 1,
+                Image = bitmapImage,
+                PixelLeft = 1 * GridPixels,
+                PixelTop = 1 * GridPixels,
+                PixelWidth = 8 * GridPixels,
+                PixelHeight = 10 * GridPixels
+            };
+
+            var view = new DeviceView
+            {
+                DataContext = pugioDM
+            };
+
+            return view;
+        }
+        
         public void OnLostFocus()
         {
-            for (int i = 0; i < g_PreLoadFrameModels.Count; i++)
+            for (int i = 0; i < gPreLoadFrameModels.Count; i++)
             {
-                g_PreLoadFrameModels[i].Conflict = false;
+                gPreLoadFrameModels[i].Conflict = false;
             }
 
-            for (int i = 0; i < g_PreLoadFrameModels.Count; i++)
+            for (int i = 0; i < gPreLoadFrameModels.Count; i++)
             {
-                for (int j = i + 1; j < g_PreLoadFrameModels.Count; j++)
+                for (int j = i + 1; j < gPreLoadFrameModels.Count; j++)
                 {
-                    if (g_PreLoadFrameModels[i].IntIndex == g_PreLoadFrameModels[j].IntIndex)
+                    if (gPreLoadFrameModels[i].IntIndex == gPreLoadFrameModels[j].IntIndex)
                     {
-                        g_PreLoadFrameModels[i].Conflict = true;
-                        g_PreLoadFrameModels[j].Conflict = true;
+                        gPreLoadFrameModels[i].Conflict = true;
+                        gPreLoadFrameModels[j].Conflict = true;
                     }
                 }
             }
@@ -160,7 +177,7 @@ namespace FrameCoordinatesGenerator
         }
         private void PreLoad(List<Rect> frameRects)
         {
-            g_PreLoadFrameModels.Clear();
+            gPreLoadFrameModels.Clear();
             ImageGrid.Children.Clear();
             ImageGrid.Children.Add(currentImage);
             List<int> indexex = null;
@@ -186,7 +203,7 @@ namespace FrameCoordinatesGenerator
 
                 view.DataContext = model;
                 ImageGrid.Children.Add(view);
-                g_PreLoadFrameModels.Add(model);
+                gPreLoadFrameModels.Add(model);
             }
         }
         #endregion
@@ -194,7 +211,7 @@ namespace FrameCoordinatesGenerator
         #region -- Save --
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_MySoftwareImage == null || g_PreLoadFrameModels.Count == 0)
+            if (g_MySoftwareImage == null || gPreLoadFrameModels.Count == 0)
             {
                 StatusTextBlock.Text = "No frame to save !";
                 return;
@@ -313,7 +330,7 @@ namespace FrameCoordinatesGenerator
             for (int i = inputCsvData.AppendRowStartIndex; i < rowCount; i++)
             {
                 string index = copiedRows[i][0].ToLower().Replace("led", "").Replace(" ", "");
-                PreLoadFrameModel findModel = g_PreLoadFrameModels.Find(
+                PreLoadFrameModel findModel = gPreLoadFrameModels.Find(
                         model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index);
 
                 if (findModel != null)
@@ -327,7 +344,7 @@ namespace FrameCoordinatesGenerator
         }
         #endregion
 
-        private async void PreviewButton_Click(object sender, RoutedEventArgs e)
+        private async void SelectDirectoryButton_Click(object sender, RoutedEventArgs e)
         {
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
@@ -336,14 +353,16 @@ namespace FrameCoordinatesGenerator
 
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
 
-            if (folder == null)
-                return;
-
+            if (folder != null)
+                await StartPreviewAsync(folder);
+        }
+        private async Task StartPreviewAsync(StorageFolder folder)
+        {
             try
             {
                 PreviewCanvas.Children.Clear();
                 PreviewCanvas.Children.Add(GridImage);
-                PreviewCanvas.Children.Add(g_PugioView);
+                PreviewCanvas.Children.Add(gPugioDV);
 
                 DeviceContent dc = await GetDeviceContent(folder);
                 DeviceModel dm = await dc.ToDeviceModel(folder, new Point(240, 24));
@@ -497,19 +516,6 @@ namespace FrameCoordinatesGenerator
                     }
                 }
             }
-
-            deviceContent.GridWidth = gridW;
-            deviceContent.GridHeight = gridH;
-            return deviceContent;
-        }
-        private async Task<DeviceContent> GetPugioDeviceContent()
-        {
-            DeviceContent deviceContent = new DeviceContent();
-            
-            int gridW = 8, gridH = 10;
-            BitmapImage bitmapImage = new BitmapImage(new Uri(this.BaseUri, "/Assets/PUGIO.png"));
-
-            deviceContent.Image = bitmapImage;
 
             deviceContent.GridWidth = gridW;
             deviceContent.GridHeight = gridH;

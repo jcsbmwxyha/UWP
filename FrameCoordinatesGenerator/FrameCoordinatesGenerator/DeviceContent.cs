@@ -47,18 +47,9 @@ namespace FrameCoordinatesGenerator
 
         public async Task<DeviceModel> ToDeviceModel(StorageFolder folder, Point point)
         {
-            DeviceModel model = new DeviceModel();
-            ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
-            ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
-
-            model.Name = this.DeviceName;
-            model.Type = this.DeviceType;
-            model.Image = this.Image;
-            model.PixelLeft = point.X;
-            model.PixelTop = point.Y;
-            model.PixelWidth = GridWidth * GridPixels;
-            model.PixelHeight = GridHeight * GridPixels;
-
+            var zones = new ObservableCollection<ZoneModel>();
+            var specialzones = new ObservableCollection<SpecialZoneModel>();
+            
             foreach (var led in Leds)
             {
                 if (led.PNG_Path == null)
@@ -101,22 +92,18 @@ namespace FrameCoordinatesGenerator
                 }
             }
 
-            model.Zones = zones;
-            model.SpecialZones = specialzones;
-
-            return model;
-        }
-        public async Task<DeviceModel> ToDeviceModel(Point point)
-        {
-            DeviceModel model = new DeviceModel();
-
-            model.Name = this.DeviceName;
-            model.Type = this.DeviceType;
-            model.Image = this.Image;
-            model.PixelLeft = point.X;
-            model.PixelTop = point.Y;
-            model.PixelWidth = GridWidth * GridPixels;
-            model.PixelHeight = GridHeight * GridPixels;
+            DeviceModel model = new DeviceModel
+            {
+                Name = this.DeviceName,
+                Type = this.DeviceType,
+                Image = this.Image,
+                PixelLeft = point.X,
+                PixelTop = point.Y,
+                PixelWidth = GridWidth * GridPixels,
+                PixelHeight = GridHeight * GridPixels,
+                Zones = zones,
+                SpecialZones = specialzones,
+            };
 
             return model;
         }

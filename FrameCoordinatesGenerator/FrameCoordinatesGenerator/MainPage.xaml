@@ -50,10 +50,11 @@
                 </ScrollViewer>
             </StackPanel>
         </PivotItem>
+        
         <PivotItem Header="Verify">
             <StackPanel BorderBrush="Black" BorderThickness="1">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Select Directory" Click="PreviewButton_Click" Margin="5"/>
+                    <Button Content="Select Directory" Click="SelectDirectoryButton_Click" Margin="5"/>
                     <TextBlock Name="VerifyStatus" Text="" Foreground="Red" Margin="20,0,0,0"/>
                 </StackPanel>
                 <ScrollViewer Name="PreviewScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="1"
@@ -62,7 +63,7 @@
                               MinZoomFactor="0.5" MaxZoomFactor="15" ZoomMode="Enabled">
                     <Canvas Name="PreviewCanvas" Background="Black" Width="1600" Height="1000" PointerMoved="SpaceGrid_PointerMoved">
                         <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
-                           x:FieldModifier="Public"/>
+                               x:FieldModifier="Public"/>
                     </Canvas>
                 </ScrollViewer>
             </StackPanel>
