@@ -18,55 +18,65 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Pivot>
+    <Pivot Margin="10">
         <PivotItem Header="Find Frames">
-            <StackPanel BorderBrush="Black" BorderThickness="1">
-                <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
-                    <Button Content="Load Image" Click="LoadButton_Click"/>
-                    <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
-                    <TextBlock Name="LoadPathTextBlock" VerticalAlignment="Center"/>
+            <Grid BorderBrush="Black" BorderThickness="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                        <Button Content="Load Image" Click="LoadButton_Click"/>
+                        <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Name="LoadPathTextBlock" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                        <Button Content="Load CSV (Optional)" Click="LoadCSVButton_Click"/>
+                        <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Name="LoadCSVPathTextBlock" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                        <Button Content="Start" Click="StartButton_Click"/>
+                        <TextBlock Text="Height 容錯範圍(Pixel) :" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                        <TextBox Name="DifferenceTextBox" PlaceholderText="Number" Width="50" Text="5" Margin="20,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
+                        <Button Content="Save" Click="SaveButton_Click"/>
+                        <TextBlock Text="Save Path:  " Margin="20,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Name="SavePathTextBlock" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Name="StatusTextBlock" Text="" Foreground="Red"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
-                    <Button Content="Load CSV (Optional)" Click="LoadCSVButton_Click"/>
-                    <TextBlock Text="Path:" Margin="20,0,10,0" VerticalAlignment="Center"/>
-                    <TextBlock Name="LoadCSVPathTextBlock" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
-                    <Button Content="Start" Click="StartButton_Click"/>
-                    <TextBlock Text="Height 容錯範圍(Pixel) :" VerticalAlignment="Center" Margin="20,0,0,0"/>
-                    <TextBox Name="DifferenceTextBox" PlaceholderText="Number" Width="50" Text="5" Margin="20,0,0,0"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
-                    <Button Content="Save" Click="SaveButton_Click"/>
-                    <TextBlock Text="Save Path:  " Margin="20,0,10,0" VerticalAlignment="Center"/>
-                    <TextBlock Name="SavePathTextBlock" VerticalAlignment="Center"/>
-                </StackPanel>
-                <TextBlock Name="StatusTextBlock" Text="" Foreground="Red"/>
-                <ScrollViewer Name="ImageScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="1"
-                              MaxHeight="500" MaxWidth="1400" Margin="10,10,0,0" HorizontalAlignment="Left"
-                              VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-                              MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled" x:FieldModifier="public">
-                    <Grid Name="ImageGrid"/>
+                <ScrollViewer Name="ImageScrollViewer" Grid.Row="1" Margin="10"
+                              BorderBrush="Black" BorderThickness="1"
+                              VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch"
+                              MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled" x:FieldModifier="public" HorizontalAlignment="Stretch">
+                    <Grid Name="DisplayGrid"/>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </PivotItem>
         
         <PivotItem Header="Verify">
-            <StackPanel BorderBrush="Black" BorderThickness="1">
+            <Grid BorderBrush="Black" BorderThickness="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Select Directory" Click="SelectDirectoryButton_Click" Margin="5"/>
                     <TextBlock Name="VerifyStatus" Text="" Foreground="Red" Margin="20,0,0,0"/>
                 </StackPanel>
-                <ScrollViewer Name="PreviewScrollViewer" Grid.Row="2" BorderBrush="Black" BorderThickness="1"
-                              MaxHeight="500" MaxWidth="1400" Margin="10,10,0,0" HorizontalAlignment="Left"
+                <ScrollViewer Name="PreviewScrollViewer" Grid.Row="1" BorderBrush="Black" BorderThickness="1" Margin="10"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
                               MinZoomFactor="0.5" MaxZoomFactor="15" ZoomMode="Enabled">
-                    <Canvas Name="PreviewCanvas" Background="Black" Width="1600" Height="1000" PointerMoved="SpaceGrid_PointerMoved">
+                    <Canvas Name="VerifyCanvas" Background="Black" Width="1600" Height="1000" PointerMoved="SpaceGrid_PointerMoved">
                         <Image Name="GridImage" Source="{ThemeResource grid_bg}" Stretch="None" Canvas.ZIndex="-2"
                                x:FieldModifier="Public"/>
                     </Canvas>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </PivotItem>
     </Pivot>
 </Page>

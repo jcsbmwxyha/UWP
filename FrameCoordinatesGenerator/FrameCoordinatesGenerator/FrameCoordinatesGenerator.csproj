@@ -112,7 +112,6 @@
     <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="ControlHelper.cs" />
     <Compile Include="Converter.cs" />
-    <Compile Include="DeviceContent.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\SpecialZoneModel.cs" />
     <Compile Include="Models\ZoneModel.cs" />
@@ -121,14 +120,14 @@
     </Compile>
     <Compile Include="InputCsvData.cs" />
     <Compile Include="CsvParser.cs" />
-    <Compile Include="ImagePixelStructure.cs" />
+    <Compile Include="BlueFrameImage.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PreLoadFrame.xaml.cs">
-      <DependentUpon>PreLoadFrame.xaml</DependentUpon>
+    <Compile Include="Views\IndexingFrame.xaml.cs">
+      <DependentUpon>IndexingFrame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\PreLoadFrameModel.cs" />
+    <Compile Include="Models\IndexingFrameModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +200,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PreLoadFrame.xaml">
+    <Page Include="Views\IndexingFrame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

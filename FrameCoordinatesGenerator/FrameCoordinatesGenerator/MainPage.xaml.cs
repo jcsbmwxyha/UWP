@@ -24,24 +24,34 @@ namespace FrameCoordinatesGenerator
     {
         static public MainPage Self;
 
-        private MouseEventCtrl m_MouseEventCtrl;
-        private MySoftwareImage g_MySoftwareImage;
-        private Image currentImage;
-        private List<PreLoadFrameModel> gPreLoadFrameModels;
+        private InputCsvData gInputCsvData;
+        private MouseEventCtrl gMouseEventCtrl;
+        private BlueFrameImage gBlueFrameImage;
+        private List<IndexingFrameModel> gIndexingFrameModels;
         private DeviceView gPugioDV;
-        private DeviceView gPreviewDV;
+        private DeviceView gVerifyDV;
 
         public MainPage()
         {
             Self = this;
             this.InitializeComponent();
-            gPreLoadFrameModels = new List<PreLoadFrameModel>();
-            m_MouseEventCtrl = IntializeMouseEventCtrl();
+            gIndexingFrameModels = new List<IndexingFrameModel>();
+            IntializeMouseEventCtrl();
+        }
+        private void IntializeMouseEventCtrl()
+        {
+            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
+
+            gMouseEventCtrl = new MouseEventCtrl
+            {
+                MonitorMaxRect = new Rect(new Point(0, 0), new Point(1600, 1000)),
+                DetectionRegions = regions.ToArray()
+            };
         }
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             gPugioDV = CreatePugioDeviceView();
-            PreviewCanvas.Children.Add(gPugioDV);
+            VerifyCanvas.Children.Add(gPugioDV);
         }
         private DeviceView CreatePugioDeviceView()
         {
@@ -50,7 +60,6 @@ namespace FrameCoordinatesGenerator
             DeviceModel pugioDM = new DeviceModel
             {
                 Name = "Pugio",
-                Type = 1,
                 Image = bitmapImage,
                 PixelLeft = 1 * GridPixels,
                 PixelTop = 1 * GridPixels,
@@ -66,26 +75,6 @@ namespace FrameCoordinatesGenerator
             return view;
         }
         
-        public void OnLostFocus()
-        {
-            for (int i = 0; i < gPreLoadFrameModels.Count; i++)
-            {
-                gPreLoadFrameModels[i].Conflict = false;
-            }
-
-            for (int i = 0; i < gPreLoadFrameModels.Count; i++)
-            {
-                for (int j = i + 1; j < gPreLoadFrameModels.Count; j++)
-                {
-                    if (gPreLoadFrameModels[i].IntIndex == gPreLoadFrameModels[j].IntIndex)
-                    {
-                        gPreLoadFrameModels[i].Conflict = true;
-                        gPreLoadFrameModels[j].Conflict = true;
-                    }
-                }
-            }
-        }
-
         #region -- Loading --
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -115,27 +104,9 @@ namespace FrameCoordinatesGenerator
                 softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
             }
 
-            g_MySoftwareImage = new MySoftwareImage(softwareBitmap);
-            await SetMainGridImage(softwareBitmap);
-
+            gBlueFrameImage = await BlueFrameImage.CreateInstanceAsync(softwareBitmap);
+            DisplayGrid.Children.Add(gBlueFrameImage.GetImage());
             LoadPathTextBlock.Text = inputFile.Path;
-        }
-        private async Task SetMainGridImage(SoftwareBitmap softwareBitmap)
-        {
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(softwareBitmap);
-            Image image = new Image
-            {
-                Stretch = 0,
-                HorizontalAlignment = 0,
-                VerticalAlignment = 0,
-                Source = source
-            };
-
-            ImageGrid.Children.Clear();
-            ImageGrid.Children.Add(image);
-
-            currentImage = image;
         }
 
         private async void LoadCSVButton_Click(object sender, RoutedEventArgs e)
@@ -150,46 +121,41 @@ namespace FrameCoordinatesGenerator
             if (csvFile == null)
                 return;
 
-            new InputCsvData(csvFile);
+            gInputCsvData = new InputCsvData(csvFile);
             LoadCSVPathTextBlock.Text = csvFile.Path;
         }
         #endregion
 
         #region -- Start --
-        List<Rect> g_LedRects;
+        List<Rect> gLedRects;
 
         private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_MySoftwareImage == null)
+            if (gBlueFrameImage == null)
                 return;
 
-            if (InputCsvData.Self != null)
-                await InputCsvData.Self.StartParsingAsync();
+            if (gInputCsvData != null)
+                await gInputCsvData.StartParsingAsync();
 
             bool tryParse = int.TryParse(DifferenceTextBox.Text, out int offset);
-
-            if (tryParse == false)
-                g_LedRects = g_MySoftwareImage.GetSortedRects(ParsingMode.Frame);
-            else
-                g_LedRects = g_MySoftwareImage.GetSortedRects(ParsingMode.Frame, offset);
-
-            PreLoad(g_LedRects);
+            gLedRects = gBlueFrameImage.GetSortedRects(ParsingMode.Frame, tryParse ? offset : 0);
+            CreateIndexingFrames(gLedRects);
         }
-        private void PreLoad(List<Rect> frameRects)
+        private void CreateIndexingFrames(List<Rect> frameRects)
         {
-            gPreLoadFrameModels.Clear();
-            ImageGrid.Children.Clear();
-            ImageGrid.Children.Add(currentImage);
-            List<int> indexex = null;
+            gIndexingFrameModels.Clear();
+            DisplayGrid.Children.Clear();
+            DisplayGrid.Children.Add(gBlueFrameImage.GetImage());
+            List<int> indexes = null;
 
-            if (InputCsvData.Self != null)
-                indexex = new List<int>(InputCsvData.Self.GetIndexOrder());
+            if (gInputCsvData != null)
+                indexes = new List<int>(gInputCsvData.GetIndexOrder());
 
             for (int i = 0; i < frameRects.Count; i++)
             {
-                PreLoadFrame view = new PreLoadFrame();
+                IndexingFrame view = new IndexingFrame();
 
-                PreLoadFrameModel model = new PreLoadFrameModel()
+                IndexingFrameModel model = new IndexingFrameModel()
                 {
                     Left = frameRects[i].X,
                     Top = frameRects[i].Y,
@@ -198,12 +164,12 @@ namespace FrameCoordinatesGenerator
                     LedIndex = i.ToString(),
                 };
 
-                if (indexex != null)
-                    model.LedIndex = indexex[i].ToString();
+                if (indexes != null)
+                    model.LedIndex = indexes[i].ToString();
 
                 view.DataContext = model;
-                ImageGrid.Children.Add(view);
-                gPreLoadFrameModels.Add(model);
+                DisplayGrid.Children.Add(view);
+                gIndexingFrameModels.Add(model);
             }
         }
         #endregion
@@ -211,7 +177,7 @@ namespace FrameCoordinatesGenerator
         #region -- Save --
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (g_MySoftwareImage == null || gPreLoadFrameModels.Count == 0)
+            if (gBlueFrameImage == null || gIndexingFrameModels.Count == 0)
             {
                 StatusTextBlock.Text = "No frame to save !";
                 return;
@@ -237,16 +203,11 @@ namespace FrameCoordinatesGenerator
                 {
                     // For overwrite file
                     await FileIO.WriteBytesAsync(csvFile, new byte[0]);
-                    InputCsvData inputCsvData = InputCsvData.Self;
 
-                    if (inputCsvData == null)
-                    {
+                    if (gInputCsvData == null)
                         SaveCsv(csvFile);
-                    }
                     else
-                    {
-                        SaveCsvBasingOnInputCsv(csvFile, inputCsvData);
-                    }
+                        SaveCsvBasingOnInputCsv(csvFile, gInputCsvData);
 
                     SavePathTextBlock.Text = csvFile.Path;
                 }
@@ -282,16 +243,16 @@ namespace FrameCoordinatesGenerator
                     };
                 csvWriter.WriteRow(secondRow);
 
-                for (int i = 0; i < g_LedRects.Count; i++)
+                for (int i = 0; i < gLedRects.Count; i++)
                 {
                     CsvRow row = new CsvRow
                         {
                             "LED " + i.ToString(),
                             1.ToString(), // exist
-                            g_LedRects[i].X.ToString(),
-                            g_LedRects[i].Y.ToString(),
-                            (g_LedRects[i].Right + 1).ToString(),
-                            (g_LedRects[i].Bottom + 1).ToString(),
+                            gLedRects[i].X.ToString(),
+                            gLedRects[i].Y.ToString(),
+                            (gLedRects[i].Right + 1).ToString(),
+                            (gLedRects[i].Bottom + 1).ToString(),
                             "", // PNG
                             1.ToString(), // Z index
                         };
@@ -319,18 +280,17 @@ namespace FrameCoordinatesGenerator
         }
         private void FillCoordinate(List<CsvRow> copiedRows)
         {
-            InputCsvData inputCsvData = InputCsvData.Self;
             int rowCount = copiedRows.Count;
 
-            int column_LeftTopX = inputCsvData.Column_LeftTopX;
-            int column_LeftTopY = inputCsvData.Column_LeftTopY;
-            int column_RightBottomX = inputCsvData.Column_RightBottomX;
-            int column_RightBottomY = inputCsvData.Column_RightBottomY;
+            int column_LeftTopX = gInputCsvData.Column_LeftTopX;
+            int column_LeftTopY = gInputCsvData.Column_LeftTopY;
+            int column_RightBottomX = gInputCsvData.Column_RightBottomX;
+            int column_RightBottomY = gInputCsvData.Column_RightBottomY;
 
-            for (int i = inputCsvData.AppendRowStartIndex; i < rowCount; i++)
+            for (int i = gInputCsvData.AppendRowStartIndex; i < rowCount; i++)
             {
                 string index = copiedRows[i][0].ToLower().Replace("led", "").Replace(" ", "");
-                PreLoadFrameModel findModel = gPreLoadFrameModels.Find(
+                IndexingFrameModel findModel = gIndexingFrameModels.Find(
                         model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index);
 
                 if (findModel != null)
@@ -344,6 +304,7 @@ namespace FrameCoordinatesGenerator
         }
         #endregion
 
+        #region -- Preview --
         private async void SelectDirectoryButton_Click(object sender, RoutedEventArgs e)
         {
             FolderPicker folderPicker = new FolderPicker();
@@ -360,41 +321,18 @@ namespace FrameCoordinatesGenerator
         {
             try
             {
-                PreviewCanvas.Children.Clear();
-                PreviewCanvas.Children.Add(GridImage);
-                PreviewCanvas.Children.Add(gPugioDV);
+                VerifyCanvas.Children.Remove(gVerifyDV);
+                
+                DeviceModel dm = await DeviceModel.GetDeviceModel(folder);
+                
+                gVerifyDV = new DeviceView();
+                gVerifyDV.DataContext = dm;
+                VerifyCanvas.Children.Add(gVerifyDV);
 
-                DeviceContent dc = await GetDeviceContent(folder);
-                DeviceModel dm = await dc.ToDeviceModel(folder, new Point(240, 24));
-
-                DeviceView view = new DeviceView();
-                view.DataContext = dm;
-                PreviewCanvas.Children.Add(view);
-
-                List<ZoneModel> allzones = dm.AllZones;
+                var allzones = dm.AllZones;
                 SortByZIndex(allzones);
-                List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
-
-                foreach (var zone in allzones)
-                {
-                    Rect relative = zone.GetRect();
-                    Rect absolute = new Rect(
-                        new Point(relative.Left + dm.PixelLeft, relative.Top + dm.PixelTop),
-                        new Point(relative.Right + dm.PixelLeft, relative.Bottom + dm.PixelTop)
-                        );
-
-                    MouseDetectedRegion r = new MouseDetectedRegion()
-                    {
-                        RegionIndex = -1,
-                        DetectionRect = absolute,
-                        GroupIndex = dm.Type
-                    };
-
-                    r.Callback = zone.OnReceiveMouseEvent;
-
-                    regions.Add(r);
-                }
-                m_MouseEventCtrl.DetectionRegions = regions.ToArray();
+                SetMouseDectectedRegion(new Point(dm.PixelLeft, dm.PixelTop), allzones);
+                
                 VerifyStatus.Text = "";
             }
             catch
@@ -420,107 +358,32 @@ namespace FrameCoordinatesGenerator
                 }
             }
         }
-
-        private async Task<DeviceContent> GetDeviceContent(StorageFolder folder)
+        private void SetMouseDectectedRegion(Point basePt, List<ZoneModel> allzones)
         {
-            string modelName = folder.Name;
+            var regions = new List<MouseDetectedRegion>();
 
-            DeviceContent deviceContent = new DeviceContent();
-            
-            StorageFile csvFile = await folder.GetFileAsync(modelName + ".csv");
-            StorageFile pngFile = await folder.GetFileAsync(modelName + ".png");
-            double rateW = 0;
-            double rateH = 0;
-
-            deviceContent.DeviceName = modelName;
-
-            int exist_Column = -1;
-            int leftTopX_Column = -1;
-            int leftTopY_Column = -1;
-            int rightBottomX_Column = -1;
-            int rightBottomY_Column = -1;
-            int z_Column = -1;
-            int png_Column = -1;
-
-            int gridW = 5, gridH = 5;
-            int originalPixelWidth = 1000;
-            int originalPixelHeight = 1000;
-
-            if (pngFile != null)
+            foreach (var zone in allzones)
             {
-                using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
-                {
-                    BitmapImage bitmapImage = new BitmapImage();
+                Rect relative = zone.GetRect();
+                Rect absolute = new Rect(
+                    new Point(relative.Left + basePt.X, relative.Top + basePt.Y),
+                    new Point(relative.Right + basePt.X, relative.Bottom + basePt.Y)
+                    );
 
-                    bitmapImage.SetSource(fileStream);
-                    deviceContent.Image = bitmapImage;
-                    originalPixelWidth = bitmapImage.PixelWidth;
-                    originalPixelHeight = bitmapImage.PixelHeight;
-                }
+                MouseDetectedRegion r = new MouseDetectedRegion()
+                {
+                    RegionIndex = -1,
+                    DetectionRect = absolute,
+                };
+
+                r.Callback = zone.OnReceiveMouseEvent;
+                regions.Add(r);
             }
 
-            if (csvFile != null)
-            {
-                using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
-                {
-                    CsvRow row = new CsvRow();
-                    while (csvReader.ReadRow(row))
-                    {
-                        if (row[0].ToLower() == "gridwidth")
-                        {
-                            gridW = Int32.Parse(row[1]);
-                            rateW = (double)(gridW * GridPixels) / originalPixelWidth;
-                        }
-                        else if (row[0].ToLower() == "gridheight")
-                        {
-                            gridH = Int32.Parse(row[1]);
-                            rateH = (double)(gridH * GridPixels) / originalPixelHeight;
-                        }
-                        else if (row[0].ToLower() == "parameters")
-                        {
-                            for (int i = 0; i < row.Count; i++)
-                            {
-                                if (row[i].ToLower() == "exist") { exist_Column = i; }
-                                else if (row[i].ToLower() == "lefttop_x") { leftTopX_Column = i; }
-                                else if (row[i].ToLower() == "lefttop_y") { leftTopY_Column = i; }
-                                else if (row[i].ToLower() == "rightbottom_x") { rightBottomX_Column = i; }
-                                else if (row[i].ToLower() == "rightbottom_y") { rightBottomY_Column = i; }
-                                else if (row[i].ToLower() == "z_index") { z_Column = i; }
-                                else if (row[i].ToLower() == "png") { png_Column = i; }
-                            }
-                        }
-                        else if (row[0].ToLower().Contains("led "))
-                        {
-                            if (row[exist_Column] != "1")
-                                continue;
-
-                            LedUI ledui = new LedUI()
-                            {
-                                Index = Int32.Parse(row[0].ToLower().Substring("led ".Length)),
-                                Left = (int)Math.Round(Double.Parse(row[leftTopX_Column]) * rateW, 0),
-                                Top = (int)Math.Round(Double.Parse(row[leftTopY_Column]) * rateH, 0),
-                                Right = (int)Math.Round(Double.Parse(row[rightBottomX_Column]) * rateW, 0),
-                                Bottom = (int)Math.Round(Double.Parse(row[rightBottomY_Column]) * rateH, 0),
-                            };
-
-                            if (png_Column != -1 && png_Column < row.Count && row[png_Column] != "")
-                                ledui.PNG_Path = row[png_Column];
-
-                            if (z_Column != -1 && z_Column < row.Count && row[z_Column] != "")
-                                ledui.ZIndex = Int32.Parse(row[z_Column]);
-                            else
-                                ledui.ZIndex = 1;
-
-                            deviceContent.Leds.Add(ledui);
-                        }
-                    }
-                }
-            }
-
-            deviceContent.GridWidth = gridW;
-            deviceContent.GridHeight = gridH;
-            return deviceContent;
+            gMouseEventCtrl.DetectionRegions = regions.ToArray();
         }
+        #endregion
+
         private void SpaceGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             var fe = sender as FrameworkElement;
@@ -529,27 +392,33 @@ namespace FrameCoordinatesGenerator
 
             if (ptrPt.Properties.IsLeftButtonPressed)
             {
-                m_MouseEventCtrl.OnMouseMoved(Position, true);
+                gMouseEventCtrl.OnMouseMoved(Position, true);
                 bool _hasCapture = fe.CapturePointer(e.Pointer);
             }
             else
             {
-                m_MouseEventCtrl.OnMouseMoved(Position, false);
+                gMouseEventCtrl.OnMouseMoved(Position, false);
             }
         }
 
-        private MouseEventCtrl IntializeMouseEventCtrl()
+        public void DectectConflict()
         {
-            List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
-
-            MouseEventCtrl mec = new MouseEventCtrl
+            for (int i = 0; i < gIndexingFrameModels.Count; i++)
             {
-                MonitorMaxRect = new Rect(new Point(0, 0), new Point(1600, 1000)),
-                DetectionRegions = regions.ToArray()
-            };
+                gIndexingFrameModels[i].Conflict = false;
+            }
 
-            return mec;
+            for (int i = 0; i < gIndexingFrameModels.Count; i++)
+            {
+                for (int j = i + 1; j < gIndexingFrameModels.Count; j++)
+                {
+                    if (gIndexingFrameModels[i].LedIndex == gIndexingFrameModels[j].LedIndex)
+                    {
+                        gIndexingFrameModels[i].Conflict = true;
+                        gIndexingFrameModels[j].Conflict = true;
+                    }
+                }
+            }
         }
-
     }
 }

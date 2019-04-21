@@ -109,48 +109,5 @@ namespace FrameCoordinatesGenerator
             var messDialog = new MessageDialog(res);
             await messDialog.ShowAsync();
         }
-        public static bool IsPiling(double x1, double w1, double x2, double w2)
-        {
-            if ((x2 + w2 > x1) && (x1 + w1 > x2))
-                return true;
-            else
-                return false;
-        }
-
-        static public void AnimationStart(DependencyObject o, string target, double runTime, double from, double to)
-        {
-            var storyboard = new Storyboard();
-            var animation = new DoubleAnimation();
-
-            animation.Duration = TimeSpan.FromMilliseconds(runTime);
-            animation.EnableDependentAnimation = true;
-            animation.From = from;
-            animation.To = to;
-
-            Storyboard.SetTargetProperty(animation, target);
-            Storyboard.SetTarget(animation, o);
-            storyboard.Children.Add(animation);
-            storyboard.Begin();
-        }
-        static public async Task AnimationStartAsync(DependencyObject o, string target, double runTime, double from, double to)
-        {
-            var storyboard = new Storyboard();
-            var animation = new DoubleAnimation();
-
-            animation.Duration = TimeSpan.FromMilliseconds(runTime);
-            animation.EnableDependentAnimation = true;
-            animation.From = from;
-            animation.To = to;
-
-            Storyboard.SetTargetProperty(animation, target);
-            Storyboard.SetTarget(animation, o);
-            storyboard.Children.Add(animation);
-            storyboard.Begin();
-
-            while (storyboard.GetCurrentState() == ClockState.Active)
-            {
-                await Task.Delay(50);
-            }
-        }
     }
 }

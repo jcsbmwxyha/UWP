@@ -29,7 +29,6 @@ namespace FrameCoordinatesGenerator.Common
         public MouseEventCtrl.MouseEventCallBack Callback { get; set; }
         public Rect DetectionRect { get; set; }
         public int RegionIndex { get; set; }
-        public int GroupIndex { get; set; }
 
         public void MoveRect(double moveXOffset, double moveYOffset)
         {
@@ -204,17 +203,6 @@ namespace FrameCoordinatesGenerator.Common
         }
         public void OnRightTapped()
         {
-        }
-
-        public void MoveGroupRects(int groupIndex, double moveXOffset, double moveYOffset)
-        {
-            foreach (var reg in DetectionRegions)
-            {
-                if (reg.GroupIndex == groupIndex)
-                {
-                    reg.MoveRect(moveXOffset, moveYOffset);
-                }
-            }
         }
     }
 }

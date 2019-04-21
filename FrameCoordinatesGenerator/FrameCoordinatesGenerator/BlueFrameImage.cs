@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace FrameCoordinatesGenerator
 {
@@ -22,33 +24,51 @@ namespace FrameCoordinatesGenerator
         Frame = 0,
         Key = 1,
     }
-    class MySoftwareImage
+    class BlueFrameImage
     {
         private SoftwareBitmap m_SoftwareBitmap;
-        public bool[,] m_PixelBoolArray;
-
-        public MySoftwareImage(SoftwareBitmap softwareBitmap)
-        {
-            m_SoftwareBitmap = softwareBitmap;
-            m_PixelBoolArray = GetBoolPixelArray(softwareBitmap);
-        }
-
+        public bool[,] m_BluePixelArray;
+        private Image image;
+        public Image GetImage() { return image; }
         public int PixelWidth
         {
             get
             {
-                return m_PixelBoolArray.GetLength(1);
+                return m_BluePixelArray.GetLength(1);
             }
         }
         public int PixelHeight
         {
             get
             {
-                return m_PixelBoolArray.GetLength(0);
+                return m_BluePixelArray.GetLength(0);
             }
         }
 
-        private unsafe bool[,] GetBoolPixelArray(SoftwareBitmap softwareBitmap)
+        private BlueFrameImage(SoftwareBitmap softwareBitmap)
+        {
+            m_SoftwareBitmap = softwareBitmap;
+            m_BluePixelArray = GetBluePixelArray(softwareBitmap);
+        }
+        static public async Task<BlueFrameImage> CreateInstanceAsync(SoftwareBitmap softwareBitmap)
+        {
+            BlueFrameImage bfi = new BlueFrameImage(softwareBitmap);
+
+            var source = new SoftwareBitmapSource();
+            await source.SetBitmapAsync(softwareBitmap);
+            bfi.image = new Image
+            {
+                Stretch = 0,
+                HorizontalAlignment = 0,
+                VerticalAlignment = 0,
+                Source = source
+            };
+
+            return bfi;
+        }
+
+
+        private unsafe bool[,] GetBluePixelArray(SoftwareBitmap softwareBitmap)
         {
             int widthPixels;
             int heightPixels;
@@ -92,18 +112,17 @@ namespace FrameCoordinatesGenerator
 
             return pixelBoolArray;
         }
-
         private List<Rect> GetFrames()
         {
             List<Rect> frames = new List<Rect>();
-            int widthPixels = m_PixelBoolArray.GetLength(1);
-            int heightPixels = m_PixelBoolArray.GetLength(0);
+            int width = m_BluePixelArray.GetLength(1);
+            int height = m_BluePixelArray.GetLength(0);
 
-            for (int y = 0; y < heightPixels; y++)
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < widthPixels; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    if ((m_PixelBoolArray[y, x] == true))
+                    if ((m_BluePixelArray[y, x] == true))
                     {
                         Point pixel = new Point(x, y);
 
@@ -140,17 +159,16 @@ namespace FrameCoordinatesGenerator
 
             return new Rect(
                 new Point(left, top),
-                new Point(right, bottom)
-                );
+                new Point(right, bottom));
         }
         private Point FindLeftTopPoint(Point pixel)
         {
             int x = (int)pixel.X;
             int y = (int)pixel.Y;
 
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y, x - 1] == true)
+                if (m_BluePixelArray[y, x - 1] == true)
                     x--;
                 else
                     y--;
@@ -163,9 +181,9 @@ namespace FrameCoordinatesGenerator
             int x = (int)firstPixel.X;
             int y = (int)firstPixel.Y;
 
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y, x + 1] == true)
+                if (m_BluePixelArray[y, x + 1] == true)
                     x++;
                 else
                     break;
@@ -178,9 +196,9 @@ namespace FrameCoordinatesGenerator
             int x = (int)firstPixel.X;
             int y = (int)firstPixel.Y;
 
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y + 1, x] == true)
+                if (m_BluePixelArray[y + 1, x] == true)
                     y++;
                 else
                     break;
@@ -192,14 +210,14 @@ namespace FrameCoordinatesGenerator
         private List<Rect> GetKeys()
         {
             List<Rect> result = new List<Rect>();
-            int widthPixels = m_PixelBoolArray.GetLength(1);
-            int heightPixels = m_PixelBoolArray.GetLength(0);
+            int widthPixels = m_BluePixelArray.GetLength(1);
+            int heightPixels = m_BluePixelArray.GetLength(0);
 
             for (int y = 0; y < heightPixels; y++)
             {
                 for (int x = 0; x < widthPixels; x++)
                 {
-                    if ((m_PixelBoolArray[y, x] == true))
+                    if ((m_BluePixelArray[y, x] == true))
                     {
                         Point pixel = new Point(x, y);
 
@@ -244,9 +262,9 @@ namespace FrameCoordinatesGenerator
             int x = (int)firstPixel.X;
             int y = (int)firstPixel.Y;
 
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y, x - 1] == true)
+                if (m_BluePixelArray[y, x - 1] == true)
                     x--;
                 else
                     y++;
@@ -263,9 +281,9 @@ namespace FrameCoordinatesGenerator
             int x = (int)firstPixel.X;
             int y = (int)firstPixel.Y;
 
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y, x + 1] == true)
+                if (m_BluePixelArray[y, x + 1] == true)
                     x++;
                 else
                     y++;
@@ -279,9 +297,9 @@ namespace FrameCoordinatesGenerator
             int y = (int)rightmostPixel.Y;
 
             // Start from rightmost point
-            while (m_PixelBoolArray[y, x] == true)
+            while (m_BluePixelArray[y, x] == true)
             {
-                if (m_PixelBoolArray[y + 1, x] == true)
+                if (m_BluePixelArray[y + 1, x] == true)
                     y++;
                 else
                     x--;
@@ -290,7 +308,7 @@ namespace FrameCoordinatesGenerator
             return new Point(x + 1, y);
         }
 
-        public List<Rect> GetSortedRects(ParsingMode mode, int difference = 5)
+        public List<Rect> GetSortedRects(ParsingMode mode, int difference)
         {
             List<Rect> result;
             if (mode == ParsingMode.Frame)

@@ -9,7 +9,6 @@ namespace FrameCoordinatesGenerator
 {
     public class InputCsvData
     {
-        static public InputCsvData Self;
         public List<CsvRow> DataRows;
 
         private StorageFile csvFile;
@@ -28,7 +27,6 @@ namespace FrameCoordinatesGenerator
         
         public InputCsvData(StorageFile inputFile)
         {
-            Self = this;
             csvFile = inputFile;
             DataRows = new List<CsvRow>();
             unsortedLedIndexes = new List<int>();

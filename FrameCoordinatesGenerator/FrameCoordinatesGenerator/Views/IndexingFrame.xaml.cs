@@ -18,11 +18,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace FrameCoordinatesGenerator
 {
-    public sealed partial class PreLoadFrame : UserControl
+    public sealed partial class IndexingFrame : UserControl
     {
-        private PreLoadFrameModel m_Model { get { return this.DataContext as PreLoadFrameModel; } }
+        private IndexingFrameModel m_Model { get { return this.DataContext as IndexingFrameModel; } }
 
-        public PreLoadFrame()
+        public IndexingFrame()
         {
             this.InitializeComponent();
         }
@@ -37,7 +37,7 @@ namespace FrameCoordinatesGenerator
         {
             m_Model.LedIndex = MyTextBox.Text;
             m_Model.Editing = false;
-            MainPage.Self.OnLostFocus();
+            MainPage.Self.DectectConflict();
         }
 
         private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)

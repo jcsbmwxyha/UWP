@@ -120,6 +120,7 @@ namespace FrameCoordinatesGenerator.Models
         public bool Hover;
         public bool Selected;
         public int Zindex;
+        protected RegionStatus _myStatus;
         #endregion
 
         public ZoneModel()

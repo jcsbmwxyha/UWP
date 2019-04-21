@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FrameCoordinatesGenerator.Models
 {
-    class PreLoadFrameModel : INotifyPropertyChanged
+    class IndexingFrameModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -31,17 +31,7 @@ namespace FrameCoordinatesGenerator.Models
                 RaisePropertyChanged("LedIndex");
             }
         }
-        public int IntIndex
-        {
-            get
-            {
-                string s = _ledindex.ToLower().Replace("led", "").Replace(" ", "");
-                return Int32.Parse(s);
-            }
-        }
     
-        public bool Exist;
-
         private double _left;
         public double Left
         {
@@ -97,10 +87,7 @@ namespace FrameCoordinatesGenerator.Models
                 RaisePropertyChanged("Bottom");
             }
         }
-
-        public string PNG;
-        public int Z_Index;
-
+        
         public double Width { get { return Right - Left; } }
         public double Height { get { return Bottom - Top; } }
 
