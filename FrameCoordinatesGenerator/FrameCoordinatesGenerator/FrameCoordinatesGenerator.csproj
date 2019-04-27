@@ -110,7 +110,7 @@
     <Compile Include="Common\Math2.cs" />
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="Common\VisualStateHelper.cs" />
-    <Compile Include="ControlHelper.cs" />
+    <Compile Include="Common\ControlHelper.cs" />
     <Compile Include="Common\Converter.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\SpecialZoneModel.cs" />
@@ -119,7 +119,7 @@
       <DependentUpon>DeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputCsvData.cs" />
-    <Compile Include="CsvParser.cs" />
+    <Compile Include="Common\CsvParser.cs" />
     <Compile Include="BlueFrameImage.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

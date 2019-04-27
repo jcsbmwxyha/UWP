@@ -1,5 +1,4 @@
-﻿using CsvParse;
-using FrameCoordinatesGenerator.Common;
+﻿using FrameCoordinatesGenerator.Common;
 using FrameCoordinatesGenerator.Models;
 using FrameCoordinatesGenerator.Views;
 using System;
@@ -32,7 +31,6 @@ namespace FrameCoordinatesGenerator
         private ObservableCollection<IndexingFrameModel> gIndexingFrameModels;
         private DeviceView gPugioDV;
         private DeviceView gVerifyDV;
-        //private List<Rect> gLedRects;
 
         public MainPage()
         {
@@ -124,7 +122,7 @@ namespace FrameCoordinatesGenerator
             if (csvFile == null)
                 return;
 
-            gInputCsvData = new InputCsvData(csvFile);
+            gInputCsvData = await InputCsvData.CreateInstanceAsync(csvFile);
             LoadCSVPathTextBlock.Text = csvFile.Path;
         }
         #endregion
@@ -134,9 +132,6 @@ namespace FrameCoordinatesGenerator
         {
             if (gBlueFrameImage == null)
                 return;
-
-            if (gInputCsvData != null)
-                await gInputCsvData.StartParsingAsync();
 
             CreateIndexingFrames();
         }
@@ -149,7 +144,7 @@ namespace FrameCoordinatesGenerator
             gIndexingFrameModels.Clear();
 
             if (gInputCsvData != null)
-                inputCsvIndexes = new List<int>(gInputCsvData.GetIndexOrder());
+                inputCsvIndexes = new List<int>(gInputCsvData.GetOriginOrderedIndexes());
 
             for (int i = 0; i < sortedFrameRects.Count; i++)
             {
@@ -191,9 +186,7 @@ namespace FrameCoordinatesGenerator
             savePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".csv" });
             savePicker.SuggestedFileName = "MyCsv";
 
-            StorageFile csvFile;
-
-            csvFile = await savePicker.PickSaveFileAsync();
+            StorageFile csvFile = await savePicker.PickSaveFileAsync();
 
             if (csvFile != null)
             {
@@ -265,18 +258,15 @@ namespace FrameCoordinatesGenerator
             using (CsvFileWriter csvWriter = new CsvFileWriter(await csvFile.OpenStreamForWriteAsync()))
             {
                 List<CsvRow> copiedRows = inputCsvData.GetCopiedDataRows();
-                FillCoordinate(copiedRows);
-                int rowCount = copiedRows.Count;
+                SetCoordinate(copiedRows);
 
-                for (int i = 0; i < rowCount; i++)
-                {
-                    csvWriter.WriteRow(copiedRows[i]);
-                }
+                foreach (var row in copiedRows)
+                    csvWriter.WriteRow(row);
 
                 csvWriter.Close();
             }
         }
-        private void FillCoordinate(List<CsvRow> copiedRows)
+        private void SetCoordinate(List<CsvRow> copiedRows)
         {
             int rowCount = copiedRows.Count;
 
@@ -288,8 +278,7 @@ namespace FrameCoordinatesGenerator
             for (int i = gInputCsvData.AppendRowStartIndex; i < rowCount; i++)
             {
                 string index = copiedRows[i][0].ToLower().Replace("led", "").Replace(" ", "");
-                IndexingFrameModel findModel = gIndexingFrameModels.FirstOrDefault(
-                        model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index);
+                IndexingFrameModel findModel = gIndexingFrameModels.FirstOrDefault(model => model.LedIndex == index);
 
                 if (findModel != null)
                 {

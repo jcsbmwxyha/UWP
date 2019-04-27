@@ -1,4 +1,4 @@
-﻿using CsvParse;
+﻿using FrameCoordinatesGenerator.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,7 @@ namespace FrameCoordinatesGenerator
         public List<CsvRow> DataRows;
 
         private StorageFile csvFile;
-        private List<int> unsortedLedIndexes;
+        private List<int> originOrderedIndexes;
 
         public int AppendRowStartIndex = -1;
         public int AppendColumnStartIndex = -1;
@@ -25,17 +25,32 @@ namespace FrameCoordinatesGenerator
         public int Column_Zindex = -1;
         public int Column_PNG = -1;
         
-        public InputCsvData(StorageFile inputFile)
+        private InputCsvData(StorageFile inputFile)
         {
             csvFile = inputFile;
             DataRows = new List<CsvRow>();
-            unsortedLedIndexes = new List<int>();
+            originOrderedIndexes = new List<int>();
+
+            AppendRowStartIndex = -1;
+            AppendColumnStartIndex = -1;
+
+            Column_Exist = -1;
+            Column_LeftTopX = -1;
+            Column_LeftTopY = -1;
+            Column_RightBottomX = -1;
+            Column_RightBottomY = -1;
+            Column_Zindex = -1;
+            Column_PNG = -1;
         }
-
-        public async Task StartParsingAsync()
+        static public async Task<InputCsvData> CreateInstanceAsync(StorageFile inputFile)
         {
-            DataReset();
+            InputCsvData csvData = new InputCsvData(inputFile);
+            await csvData.StartParsingAsync();
 
+            return csvData;
+        }
+        private async Task StartParsingAsync()
+        {
             using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
             {
                 CsvRow row = new CsvRow();
@@ -70,7 +85,7 @@ namespace FrameCoordinatesGenerator
                             row_0 = row_0.Replace("led", "").Replace(" ", "");
 
                             if (row[Column_Exist] == "1")
-                                unsortedLedIndexes.Add(Int32.Parse(row_0));
+                                originOrderedIndexes.Add(Int32.Parse(row_0));
                         }
                     }
 
@@ -104,26 +119,9 @@ namespace FrameCoordinatesGenerator
             DataRows[AppendRowStartIndex][Column_Zindex] = "Z_index";
         }
 
-        private void DataReset()
+        public List<int> GetOriginOrderedIndexes()
         {
-            DataRows = new List<CsvRow>();
-            unsortedLedIndexes = new List<int>();
-
-            AppendRowStartIndex = -1;
-            AppendColumnStartIndex = -1;
-
-            Column_Exist = -1;
-            Column_LeftTopX = -1;
-            Column_LeftTopY = -1;
-            Column_RightBottomX = -1;
-            Column_RightBottomY = -1;
-            Column_Zindex = -1;
-            Column_PNG = -1;
-        }
-
-        public List<int> GetIndexOrder()
-        {
-            return unsortedLedIndexes;
+            return originOrderedIndexes;
         }
 
         public List<CsvRow> GetCopiedDataRows()

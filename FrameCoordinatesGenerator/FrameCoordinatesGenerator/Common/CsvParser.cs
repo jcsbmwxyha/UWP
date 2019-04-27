@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace CsvParse
+namespace FrameCoordinatesGenerator.Common
 {
     // This csv reader code is from Jonathan Wood's article on reading / writing csv files
     // https://www.codeproject.com/Articles/415732/Reading-and-Writing-CSV-Files-in-Csharp

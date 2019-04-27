@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
-namespace FrameCoordinatesGenerator
+namespace FrameCoordinatesGenerator.Common
 {
     static class ControlHelper
     {
