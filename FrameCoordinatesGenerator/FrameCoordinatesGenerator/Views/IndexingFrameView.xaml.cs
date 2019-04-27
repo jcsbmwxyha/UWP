@@ -14,15 +14,15 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// 使用者控制項項目範本記載於 https://go.microsoft.com/fwlink/?LinkId=234236
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace FrameCoordinatesGenerator
+namespace FrameCoordinatesGenerator.Views
 {
-    public sealed partial class IndexingFrame : UserControl
+    public sealed partial class IndexingFrameView : UserControl
     {
         private IndexingFrameModel m_Model { get { return this.DataContext as IndexingFrameModel; } }
 
-        public IndexingFrame()
+        public IndexingFrameView()
         {
             this.InitializeComponent();
         }

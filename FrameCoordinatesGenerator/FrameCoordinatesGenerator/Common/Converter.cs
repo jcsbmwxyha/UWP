@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace FrameCoordinatesGenerator
+namespace FrameCoordinatesGenerator.Common
 {
     public class BooleanToVisibilityConverter : IValueConverter
     {

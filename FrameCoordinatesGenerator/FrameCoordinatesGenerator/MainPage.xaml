@@ -5,6 +5,9 @@
     xmlns:local="using:FrameCoordinatesGenerator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:FrameCoordinatesGenerator.Common"
+    xmlns:models="using:FrameCoordinatesGenerator.Models"
+    xmlns:views="using:FrameCoordinatesGenerator.Views"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="MainPage_Loaded">
@@ -52,7 +55,27 @@
                               BorderBrush="Black" BorderThickness="1"
                               VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch"
                               MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled" x:FieldModifier="public" HorizontalAlignment="Stretch">
-                    <Grid Name="DisplayGrid"/>
+                    <Grid Name="DisplayGrid">
+                        <Image Name="DeviceImage" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
+                        <ItemsControl Name="IndexingFrames" ItemsSource="{x:Bind Path=gIndexingFrameModels}" Canvas.ZIndex="5">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="common:BindingHelper.CanvasLeftBindingPath" Value="PixelLeft"/>
+                                    <Setter Property="common:BindingHelper.CanvasTopBindingPath" Value="PixelTop"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:IndexingFrameModel">
+                                    <views:IndexingFrameView/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </ScrollViewer>
             </Grid>
         </PivotItem>

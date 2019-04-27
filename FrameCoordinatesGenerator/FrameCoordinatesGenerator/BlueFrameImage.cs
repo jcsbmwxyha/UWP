@@ -27,23 +27,23 @@ namespace FrameCoordinatesGenerator
     class BlueFrameImage
     {
         private SoftwareBitmap m_SoftwareBitmap;
-        public bool[,] m_BluePixelArray;
-        private Image image;
-        public Image GetImage() { return image; }
-        public int PixelWidth
+        private bool[,] m_BluePixelArray;
+        private SoftwareBitmapSource mSource;
+        private int PixelWidth
         {
             get
             {
                 return m_BluePixelArray.GetLength(1);
             }
         }
-        public int PixelHeight
+        private int PixelHeight
         {
             get
             {
                 return m_BluePixelArray.GetLength(0);
             }
         }
+        public SoftwareBitmapSource GetImageSource() { return mSource; }
 
         private BlueFrameImage(SoftwareBitmap softwareBitmap)
         {
@@ -53,16 +53,8 @@ namespace FrameCoordinatesGenerator
         static public async Task<BlueFrameImage> CreateInstanceAsync(SoftwareBitmap softwareBitmap)
         {
             BlueFrameImage bfi = new BlueFrameImage(softwareBitmap);
-
-            var source = new SoftwareBitmapSource();
-            await source.SetBitmapAsync(softwareBitmap);
-            bfi.image = new Image
-            {
-                Stretch = 0,
-                HorizontalAlignment = 0,
-                VerticalAlignment = 0,
-                Source = source
-            };
+            bfi.mSource = new SoftwareBitmapSource();
+            await bfi.mSource.SetBitmapAsync(softwareBitmap);
 
             return bfi;
         }

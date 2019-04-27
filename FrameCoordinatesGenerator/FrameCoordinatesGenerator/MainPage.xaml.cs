@@ -4,7 +4,9 @@ using FrameCoordinatesGenerator.Models;
 using FrameCoordinatesGenerator.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -27,15 +29,16 @@ namespace FrameCoordinatesGenerator
         private InputCsvData gInputCsvData;
         private MouseEventCtrl gMouseEventCtrl;
         private BlueFrameImage gBlueFrameImage;
-        private List<IndexingFrameModel> gIndexingFrameModels;
+        private ObservableCollection<IndexingFrameModel> gIndexingFrameModels;
         private DeviceView gPugioDV;
         private DeviceView gVerifyDV;
+        //private List<Rect> gLedRects;
 
         public MainPage()
         {
             Self = this;
             this.InitializeComponent();
-            gIndexingFrameModels = new List<IndexingFrameModel>();
+            gIndexingFrameModels = new ObservableCollection<IndexingFrameModel>();
             IntializeMouseEventCtrl();
         }
         private void IntializeMouseEventCtrl()
@@ -74,7 +77,7 @@ namespace FrameCoordinatesGenerator
 
             return view;
         }
-        
+
         #region -- Loading --
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -105,7 +108,7 @@ namespace FrameCoordinatesGenerator
             }
 
             gBlueFrameImage = await BlueFrameImage.CreateInstanceAsync(softwareBitmap);
-            DisplayGrid.Children.Add(gBlueFrameImage.GetImage());
+            DeviceImage.Source = gBlueFrameImage.GetImageSource();
             LoadPathTextBlock.Text = inputFile.Path;
         }
 
@@ -127,8 +130,6 @@ namespace FrameCoordinatesGenerator
         #endregion
 
         #region -- Start --
-        List<Rect> gLedRects;
-
         private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if (gBlueFrameImage == null)
@@ -137,40 +138,37 @@ namespace FrameCoordinatesGenerator
             if (gInputCsvData != null)
                 await gInputCsvData.StartParsingAsync();
 
-            bool tryParse = int.TryParse(DifferenceTextBox.Text, out int offset);
-            gLedRects = gBlueFrameImage.GetSortedRects(ParsingMode.Frame, tryParse ? offset : 0);
-            CreateIndexingFrames(gLedRects);
+            CreateIndexingFrames();
         }
-        private void CreateIndexingFrames(List<Rect> frameRects)
+        private void CreateIndexingFrames()
         {
+            List<int> inputCsvIndexes = null;
+            bool tryParse = int.TryParse(DifferenceTextBox.Text, out int offset);
+            var sortedFrameRects = gBlueFrameImage.GetSortedRects(ParsingMode.Frame, tryParse ? offset : 0);
+
             gIndexingFrameModels.Clear();
-            DisplayGrid.Children.Clear();
-            DisplayGrid.Children.Add(gBlueFrameImage.GetImage());
-            List<int> indexes = null;
 
             if (gInputCsvData != null)
-                indexes = new List<int>(gInputCsvData.GetIndexOrder());
+                inputCsvIndexes = new List<int>(gInputCsvData.GetIndexOrder());
 
-            for (int i = 0; i < frameRects.Count; i++)
+            for (int i = 0; i < sortedFrameRects.Count; i++)
             {
-                IndexingFrame view = new IndexingFrame();
-
                 IndexingFrameModel model = new IndexingFrameModel()
                 {
-                    Left = frameRects[i].X,
-                    Top = frameRects[i].Y,
-                    Right = frameRects[i].Right,
-                    Bottom = frameRects[i].Bottom,
+                    Left = sortedFrameRects[i].X,
+                    Top = sortedFrameRects[i].Y,
+                    Right = sortedFrameRects[i].Right,
+                    Bottom = sortedFrameRects[i].Bottom,
                     LedIndex = i.ToString(),
                 };
 
-                if (indexes != null)
-                    model.LedIndex = indexes[i].ToString();
+                if (inputCsvIndexes != null)
+                    model.LedIndex = inputCsvIndexes[i].ToString();
 
-                view.DataContext = model;
-                DisplayGrid.Children.Add(view);
                 gIndexingFrameModels.Add(model);
             }
+
+            IndexingFrames.ItemsSource = gIndexingFrameModels;
         }
         #endregion
 
@@ -243,16 +241,16 @@ namespace FrameCoordinatesGenerator
                     };
                 csvWriter.WriteRow(secondRow);
 
-                for (int i = 0; i < gLedRects.Count; i++)
+                for (int i = 0; i < gIndexingFrameModels.Count; i++)
                 {
                     CsvRow row = new CsvRow
                         {
                             "LED " + i.ToString(),
                             1.ToString(), // exist
-                            gLedRects[i].X.ToString(),
-                            gLedRects[i].Y.ToString(),
-                            (gLedRects[i].Right + 1).ToString(),
-                            (gLedRects[i].Bottom + 1).ToString(),
+                            gIndexingFrameModels[i].Left.ToString(),
+                            gIndexingFrameModels[i].Top.ToString(),
+                            (gIndexingFrameModels[i].Right + 1).ToString(),
+                            (gIndexingFrameModels[i].Bottom + 1).ToString(),
                             "", // PNG
                             1.ToString(), // Z index
                         };
@@ -290,7 +288,7 @@ namespace FrameCoordinatesGenerator
             for (int i = gInputCsvData.AppendRowStartIndex; i < rowCount; i++)
             {
                 string index = copiedRows[i][0].ToLower().Replace("led", "").Replace(" ", "");
-                IndexingFrameModel findModel = gIndexingFrameModels.Find(
+                IndexingFrameModel findModel = gIndexingFrameModels.FirstOrDefault(
                         model => model.LedIndex.ToLower().Replace("led", "").Replace(" ", "") == index);
 
                 if (findModel != null)
@@ -322,9 +320,9 @@ namespace FrameCoordinatesGenerator
             try
             {
                 VerifyCanvas.Children.Remove(gVerifyDV);
-                
+
                 DeviceModel dm = await DeviceModel.GetDeviceModel(folder);
-                
+
                 gVerifyDV = new DeviceView();
                 gVerifyDV.DataContext = dm;
                 VerifyCanvas.Children.Add(gVerifyDV);
@@ -332,7 +330,7 @@ namespace FrameCoordinatesGenerator
                 var allzones = dm.AllZones;
                 SortByZIndex(allzones);
                 SetMouseDectectedRegion(new Point(dm.PixelLeft, dm.PixelTop), allzones);
-                
+
                 VerifyStatus.Text = "";
             }
             catch

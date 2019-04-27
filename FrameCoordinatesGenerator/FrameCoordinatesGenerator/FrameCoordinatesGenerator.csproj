@@ -111,7 +111,7 @@
     <Compile Include="Common\MouseEventCtrl.cs" />
     <Compile Include="Common\VisualStateHelper.cs" />
     <Compile Include="ControlHelper.cs" />
-    <Compile Include="Converter.cs" />
+    <Compile Include="Common\Converter.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\SpecialZoneModel.cs" />
     <Compile Include="Models\ZoneModel.cs" />
@@ -124,11 +124,11 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\IndexingFrame.xaml.cs">
-      <DependentUpon>IndexingFrame.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Models\IndexingFrameModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\IndexingFrameView.xaml.cs">
+      <DependentUpon>IndexingFrameView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -200,7 +200,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\IndexingFrame.xaml">
+    <Page Include="Views\IndexingFrameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
