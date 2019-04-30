@@ -21,21 +21,28 @@ namespace AuraEditor.Common
             List<ColorPointModel> DefaultColorPoints4 = new List<ColorPointModel>();
             List<ColorPointModel> DefaultColorPoints5 = new List<ColorPointModel>();
             List<ColorPointModel> DefaultColorPoints6 = new List<ColorPointModel>();
+            List<ColorPointModel> DefaultColorPoints7 = new List<ColorPointModel>();
 
             DefaultColorPoints1 = new List<ColorPointModel>()
             {
-                new ColorPointModel() { Color =HexToColor("#FFFFFFFF"), Offset = 0.0 },
-                new ColorPointModel() { Color =HexToColor("#FF4E4E4E"), Offset = 1.0 },
+                new ColorPointModel() { Color =HexToColor("#FFFF0029"), Offset = 0.0 },
+                new ColorPointModel() { Color =HexToColor("#FFFF0029"), Offset = 1.0 },
             };
 
             DefaultColorPoints2 = new List<ColorPointModel>()
+            {
+                new ColorPointModel() { Color =HexToColor("#FF0018F0"), Offset = 0.0 },
+                new ColorPointModel() { Color =HexToColor("#FFFF0031"), Offset = 1.0 },
+            };
+
+            DefaultColorPoints3 = new List<ColorPointModel>()
             {
                 new ColorPointModel() { Color =HexToColor("#FFFEBE3F"), Offset = 0.0 },
                 new ColorPointModel() { Color =HexToColor("#FFFE3F7D"), Offset = 0.5 },
                 new ColorPointModel() { Color =HexToColor("#FFF91D1D"), Offset = 1.0 },
             };
 
-            DefaultColorPoints3 = new List<ColorPointModel>()
+            DefaultColorPoints4 = new List<ColorPointModel>()
             {
                 new ColorPointModel() { Color =HexToColor("#FFD1FE3F"), Offset = 0.0 },
                 new ColorPointModel() { Color =HexToColor("#FF00DCFF"), Offset = 0.33 },
@@ -43,16 +50,16 @@ namespace AuraEditor.Common
                 new ColorPointModel() { Color =HexToColor("#FFD1FE3F"), Offset = 1.0 },
             };
 
-            DefaultColorPoints4 = new List<ColorPointModel>()
+            DefaultColorPoints5 = new List<ColorPointModel>()
             {
                 new ColorPointModel() { Color =HexToColor("#FFF1FF00"), Offset = 0.0 },
-                new ColorPointModel() { Color =HexToColor("#FFFFB500"), Offset = 0.25 },
+                new ColorPointModel() { Color =HexToColor("#FFFF00ED"), Offset = 0.25 },
                 new ColorPointModel() { Color =HexToColor("#FFF1FF00"), Offset = 0.5 },
-                new ColorPointModel() { Color =HexToColor("#FFFFB500"), Offset = 0.75 },
+                new ColorPointModel() { Color =HexToColor("#FFFF00ED"), Offset = 0.75 },
                 new ColorPointModel() { Color =HexToColor("#FFF1FF00"), Offset = 1.0 },
             };
 
-            DefaultColorPoints5 = new List<ColorPointModel>()
+            DefaultColorPoints6 = new List<ColorPointModel>()
             {
                 new ColorPointModel() { Color =HexToColor("#FFFF0091"), Offset = 0.0 },
                 new ColorPointModel() { Color =HexToColor("#FF8C00FF"), Offset = 0.2 },
@@ -62,14 +69,14 @@ namespace AuraEditor.Common
                 new ColorPointModel() { Color =HexToColor("#FFFF0091"), Offset = 1.0 },
             };
 
-            DefaultColorPoints6 = new List<ColorPointModel>()
+            DefaultColorPoints7 = new List<ColorPointModel>()
             {
-                new ColorPointModel() { Color =HexToColor("#FFFF000D"), Offset = 0.0 },
-                new ColorPointModel() { Color =HexToColor("#FFF500FF"), Offset = 0.16 },
-                new ColorPointModel() { Color =HexToColor("#FF0006FF"), Offset = 0.32 },
-                new ColorPointModel() { Color =HexToColor("#FF00FAFF"), Offset = 0.48 },
-                new ColorPointModel() { Color =HexToColor("#FF01FF00"), Offset = 0.64 },
-                new ColorPointModel() { Color =HexToColor("#FFFFF600"), Offset = 0.8 },
+                new ColorPointModel() { Color =HexToColor("#FFF500FF"), Offset = 0.0 },
+                new ColorPointModel() { Color =HexToColor("#FF0006FF"), Offset = 0.16 },
+                new ColorPointModel() { Color =HexToColor("#FF00FAFF"), Offset = 0.32 },
+                new ColorPointModel() { Color =HexToColor("#FF01FF00"), Offset = 0.48 },
+                new ColorPointModel() { Color =HexToColor("#FFFFF600"), Offset = 0.64 },
+                new ColorPointModel() { Color =HexToColor("#FFFF7807"), Offset = 0.8 },
                 new ColorPointModel() { Color =HexToColor("#FFFF000D"), Offset = 1.0 },
             };
 
@@ -79,6 +86,7 @@ namespace AuraEditor.Common
             DefaultColorPointListCollection.Add(DefaultColorPoints4);
             DefaultColorPointListCollection.Add(DefaultColorPoints5);
             DefaultColorPointListCollection.Add(DefaultColorPoints6);
+            DefaultColorPointListCollection.Add(DefaultColorPoints7);
 
             foreach (var list in DefaultColorPointListCollection)
                 SetColorPointBorders(list);

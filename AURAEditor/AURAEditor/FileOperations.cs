@@ -20,6 +20,8 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.MetroEventSource;
 using static AuraEditor.Common.StorageHelper;
 using static AuraEditor.Common.XmlHelper;
+using static AuraEditor.Common.ControlHelper;
+using Windows.ApplicationModel.Resources;
 
 namespace AuraEditor
 {
@@ -27,6 +29,7 @@ namespace AuraEditor
     {
         private StorageFolder m_LocalUserFileFolder;
         private StorageFolder m_LocalUserScriptFolder;
+        
         private List<string> GetUserFilenames()
         {
             List<string> filenames = new List<string>();
@@ -56,12 +59,13 @@ namespace AuraEditor
                         return;
                     }
 
+                    RenameItem.IsEnabled = true;
+                    DeleteItem.IsEnabled = true;
+
                     foreach (var filename in GetUserFilenames())
                     {
                         if (filename == value)
                         {
-                            RenameItem.IsEnabled = true;
-                            DeleteItem.IsEnabled = true;
                             return;
                         }
                     }
@@ -120,9 +124,7 @@ namespace AuraEditor
             await (new ServiceViewModel()).AuraEditorTrigger(StartTime);
             Log.Debug("[SaveAndApplyButton] Aft AuraEditorTrigger");
 
-            //Send to Socketserver
-            if (IsConnection)
-                SendMessageToServer("[XML] Change");
+            SendMessageToServer("[XML] Change");
         }
         private async void NewFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -135,10 +137,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save file",
-                    DialogContent = "Do you want to save changes?",
-                    DialogYesButtonContent = "Save",
-                    DialogCancelButtonContent = "Discard"
+                    DialogTitle = resourceLoader.GetString("YesNoCancelDialog_SaveFile"),
+                    DialogContent = resourceLoader.GetString("YesNoCancelDialog_SaveHint"),
+                    DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Save"),
+                    DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Discard")
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -184,9 +186,7 @@ namespace AuraEditor
                 };
             }
 
-            //Send to Socketserver
-            if (IsConnection)
-                SendMessageToServer("[XML] Change");
+            SendMessageToServer("[XML] Change");
         }
         private async void DeleteItem_Click(object sender, RoutedEventArgs e)
         {
@@ -195,10 +195,10 @@ namespace AuraEditor
 
             YesNoCancelDialog dialog = new YesNoCancelDialog
             {
-                DialogTitle = "Delete now?",
-                DialogContent = "Are you sure you want to delete this file? The deleted file cannot be recovered. Continue?",
-                DialogYesButtonContent = "Delete",
-                DialogCancelButtonContent = "Cancel"
+                DialogTitle = resourceLoader.GetString("YesNoCancelDialog_DeleteNow"),
+                DialogContent = resourceLoader.GetString("YesNoCancelDialog_DeleteHint"),
+                DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Delete"),
+                DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Cancel")
             };
 
             await dialog.ShowAsync();
@@ -225,17 +225,14 @@ namespace AuraEditor
             }
 
             ResetToDefault();
-
-            //Send to Socketserver
-            if (IsConnection)
-                SendMessageToServer("[XML] Change");
+            SendMessageToServer("[XML] Change");
         }
         private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             CanShowDeviceUpdateDialog = false;
 
             var inputFile = await ShowFileOpenPickerAsync();
-            
+
             if (inputFile == null)
             {
                 return;
@@ -247,10 +244,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save file",
-                    DialogContent = "Do you want to save changes?",
-                    DialogYesButtonContent = "Save",
-                    DialogCancelButtonContent = "Discard"
+                    DialogTitle = resourceLoader.GetString("YesNoCancelDialog_SaveFile"),
+                    DialogContent = resourceLoader.GetString("YesNoCancelDialog_SaveHint"),
+                    DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Save"),
+                    DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Discard")
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -302,10 +299,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save file",
-                    DialogContent = "Do you want to save changes?",
-                    DialogYesButtonContent = "Save",
-                    DialogCancelButtonContent = "Discard"
+                    DialogTitle = resourceLoader.GetString("YesNoCancelDialog_SaveFile"),
+                    DialogContent = resourceLoader.GetString("YesNoCancelDialog_SaveHint"),
+                    DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Save"),
+                    DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Discard")
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -328,6 +325,14 @@ namespace AuraEditor
         }
         private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
         {
+            ContentDialog cDialog = GetCurrentContentDialog();
+            if (cDialog != null)
+            {
+                cDialog.Hide();
+                e.Handled = true;
+                return;
+            }
+
             CanShowDeviceUpdateDialog = false;
 
             e.Handled = true;
@@ -337,8 +342,10 @@ namespace AuraEditor
             {
                 YesNoCancelDialog dialog = new YesNoCancelDialog
                 {
-                    DialogTitle = "Save File",
-                    DialogContent = "Do you want to save the changes?"
+                    DialogTitle = resourceLoader.GetString("YesNoCancelDialog_SaveFile"),
+                    DialogContent = resourceLoader.GetString("YesNoCancelDialog_SaveHint"),
+                    DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Save"),
+                    DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Discard")
                 };
                 await dialog.ShowAsync();
                 result = dialog.Result;
@@ -379,13 +386,11 @@ namespace AuraEditor
             StorageFile localfile;
             StorageFile localscript;
 
-            
-
             if (CurrentUserFilename == "")
             {
                 NamingDialog dialog = new NamingDialog(GetUserFilenames());
                 await dialog.ShowAsync();
-                
+
                 if (dialog.Result != true)
                 {
                     return false;
@@ -422,12 +427,14 @@ namespace AuraEditor
         private async Task LoadUserFile(string filename)
         {
             StorageFile localfile = await m_LocalUserFileFolder.CreateFileAsync(filename + ".xml", CreationCollisionOption.OpenIfExists);
-            
+
             Clean();
-            await LoadContent(await LoadFile(localfile));
-            SpacePage.RefreshSpaceScrollViewer();
+            LoadContent(await LoadFile(localfile));
+
+            SpacePage.SendSyncStateToService();
+            SpacePage.RefreshStage();
         }
-        private async Task LoadContent(string xmlContent)
+        private void LoadContent(string xmlContent)
         {
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(xmlContent);
@@ -438,50 +445,68 @@ namespace AuraEditor
             XmlNodeList deviceNodes = spaceNode.SelectNodes("device");
             XmlNodeList layerNodes = layersNode.SelectNodes("layer");
 
-            await ParsingDevices(deviceNodes);
+            ParsingDevices(deviceNodes);
             ParsingLayers(layerNodes);
         }
-        private async Task ParsingDevices(XmlNodeList deviceNodes)
+        private void ParsingDevices(XmlNodeList deviceNodes)
         {
-            List<DeviceModel> deviceModels = SpacePage.DeviceModelCollection;
-            deviceModels.Clear();
+            List<DeviceModel> remains = new List<DeviceModel>(SpacePage.DeviceModelCollection);
 
-            List<SyncDeviceModel> new_SD = ConnectedDevicesDialog.Self.GetIngroupDevices();
             foreach (XmlNode node in deviceNodes)
             {
                 XmlElement element = (XmlElement)node;
+                string folderName = element.GetAttribute("folder");
+                DeviceModel get = remains.Find(d => d.FolderName == folderName);
                 int x = Int32.Parse(element.SelectSingleNode("x").InnerText);
                 int y = Int32.Parse(element.SelectSingleNode("y").InnerText);
-                DeviceModel dm = await DeviceModel.ToDeviceModelAsync(node);
-                dm.PixelLeft = x * GridPixels;
-                dm.PixelTop = y * GridPixels;
 
-                if (new_SD.Find(sd => sd.ModelName == dm.Name && sd.Sync == true) != null)
+                if (get != null)
                 {
-                    dm.Status = DeviceStatus.OnStage;
-                    new_SD.RemoveAll(sd => sd.ModelName == dm.Name && sd.Sync == true);
+                    // Because notebook csv file maybe perkey or 4zone or single, even they have the same model name.
+                    // If different, ignore it.
+                    if (CompareCsv(element.GetAttribute("csv"), get.CsvName))
+                    {
+                        get.Sync = true;
+                        get.Plugged = true;
+                        get.PixelLeft = x * GridPixels;
+                        get.PixelTop = y * GridPixels;
+                    }
+
+                    remains.Remove(get);
                 }
                 else
-                    dm.Status = DeviceStatus.Temp;
+                {
+                    //DeviceModel dm = await DeviceModel.ToDeviceModelAsync(node);
+                    //dm.PixelLeft = x * GridPixels;
+                    //dm.PixelTop = y * GridPixels;
+                    //dm.Sync = false;
+                    //dm.Status = DeviceStatus.Temp;
 
-                deviceModels.Add(dm);
+                    //SpacePage.DeviceModelCollection.Add(dm);
+                }
             }
 
-            foreach (var sd in new_SD)
+            foreach (var dm in remains)
             {
-                DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
-
-                if (dm == null)
-                    continue;
-
-                Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
-                Point p = SpacePage.GetFreeRoomPositionForRect(r);
-                dm.PixelLeft = p.X;
-                dm.PixelTop = p.Y;
-                dm.Status = DeviceStatus.OnStage;
-                deviceModels.Add(dm);
+                dm.Sync = false;
             }
         }
+
+        private bool CompareCsv(string csv1, string csv2)
+        {
+            int type1 = 0, type2 = 0;
+
+            if (csv1.ToLower().Contains("perkey")) type1 = 1;
+            if (csv1.ToLower().Contains("zone")) type1 = 2;
+            if (csv1.ToLower().Contains("single")) type1 = 3;
+
+            if (csv2.ToLower().Contains("perkey")) type2 = 1;
+            if (csv2.ToLower().Contains("zone")) type2 = 2;
+            if (csv2.ToLower().Contains("single")) type2 = 3;
+
+            return (type1 == type2);
+        }
+
         private void ParsingLayers(XmlNodeList layerNodes)
         {
             List<LayerModel> layers = new List<LayerModel>();

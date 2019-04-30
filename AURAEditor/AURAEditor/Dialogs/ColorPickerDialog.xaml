@@ -414,7 +414,7 @@
         </Grid.RowDefinitions>
         <Image x:Name="BackgroundImage" Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_colorpicker_bg.png" Grid.RowSpan="4"/>
         <RelativePanel Grid.Row="0" Canvas.ZIndex="4">
-            <TextBlock Text="Color Picker" Foreground="White" RelativePanel.AlignLeftWithPanel="True" Canvas.ZIndex="4" Margin="22,10,0,0"/>
+            <TextBlock x:Uid="ColorTextBlock" Text="Color" Foreground="White" RelativePanel.AlignLeftWithPanel="True" Canvas.ZIndex="4" Margin="22,10,0,0"/>
             <Button RelativePanel.AlignRightWithPanel="True" Width="30" Margin="0,10,10,0" Click="CancelBtn_Click"
                      Style="{StaticResource RogDialogCloseButton}"/>
         </RelativePanel>
@@ -481,14 +481,13 @@
 
             <Grid x:Name="SelectGrid" Grid.Column="1" Margin="56,0,72,0">
                 <RelativePanel>
-                    <TextBlock x:Name="TextBlock_Selected" Text="Selected" Foreground="White" FontSize="16" Margin="0,41,0,0"/>
-                    <Grid x:Name="Grid_Selected" RelativePanel.Below="TextBlock_Selected" Margin="0,14,0,0" Height="32" Width="172">
+                    <Grid x:Name="Grid_Selected" Margin="0,55,0,0" Height="32" Width="172">
                         <Image Source="../Assets/EffectInfoGroup/asus_gc_aura_customize_colorpick_selected_btn.png" Stretch="Fill"/>
                         <Polygon x:Name="SelectedColorShowArea" Points="4,4,4,18,14,28,168,28,168,4" Fill="White"/>
                     </Grid>
 
                     <RelativePanel x:Name="Grid_R" RelativePanel.Below="Grid_Selected" Margin="25,26,0,0">
-                        <TextBlock Text="R" FontSize="16" Foreground="White" Margin="0,0,10,0"
+                        <TextBlock x:Uid="Color_R" Text="R" FontSize="16" Foreground="White" Margin="0,0,10,0"
                                    RelativePanel.LeftOf="TextBox_R"
                                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
                         <TextBox x:Name="TextBox_R" 
@@ -504,7 +503,7 @@
                     </RelativePanel>
 
                     <RelativePanel x:Name="Grid_G" RelativePanel.Below="Grid_R" Margin="25,16,0,0">
-                        <TextBlock Text="G" FontSize="16" Foreground="White" Margin="0,0,10,0"
+                        <TextBlock x:Uid="Color_G" Text="G" FontSize="16" Foreground="White" Margin="0,0,10,0"
                                    RelativePanel.LeftOf="TextBox_G"
                                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
                         <TextBox x:Name="TextBox_G"
@@ -520,7 +519,7 @@
                     </RelativePanel>
 
                     <RelativePanel x:Name="Grid_B" RelativePanel.Below="Grid_G" Margin="25,16,0,0">
-                        <TextBlock Text="B" FontSize="16" Foreground="White" Margin="0,0,10,0"
+                        <TextBlock x:Uid="Color_B" Text="B" FontSize="16" Foreground="White" Margin="0,0,10,0"
                                    RelativePanel.LeftOf="TextBox_B"
                                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
                         <TextBox x:Name="TextBox_B"
@@ -545,7 +544,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Vertical" Grid.Row="0">
-                <TextBlock Text="Default" Foreground="White"/>
+                <TextBlock x:Uid="DefaultTextBlock" Text="Default" Foreground="White"/>
                 <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,19,0,0">
                     <RadioButton x:Name="RBtnDefault1" Click="RBtnDefault_Click" Style="{StaticResource RogRadioColorBtn}" Background="#FF0000"/>
                     <RadioButton x:Name="RBtnDefault2" Click="RBtnDefault_Click" Style="{StaticResource RogRadioColorBtn}" Background="#FF6400"/>
@@ -569,7 +568,7 @@
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,24,0,0">
-                <TextBlock x:Uid="Recent" Text="Recent" Foreground="White"/>
+                <TextBlock x:Uid="RecentTextBlock" Text="Recent" Foreground="White"/>
                 <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,19,0,0">
                     <Button x:Name="AddRecentBtn" Style="{StaticResource AddRecentButton}" Click="AddRecentBtn_Click"/>
                     <RadioButton x:Name="RBtnRecent_1" Style="{StaticResource RogRadioColorBtn}" Click="RBtnRecent_Click" Visibility="Collapsed" IsEnabled="False"/>
@@ -583,8 +582,8 @@
                 </VariableSizedWrapGrid>
             </StackPanel>
         </Grid>
-        <Button Grid.Row="3" Content="OK" Height="36" Width="136" HorizontalAlignment="Right" Margin="0,0,40,39"
-                        Style="{StaticResource RogButtonStyle2}" Click="OKBtn_Click"/>
+        <Button x:Uid="OKButton" Grid.Row="3" Content="OK" Height="36" Width="136" HorizontalAlignment="Right" Margin="0,0,40,39"
+                Style="{StaticResource RogButtonStyle2}" Click="OKBtn_Click"/>
 
     </Grid>
 </ContentDialog>

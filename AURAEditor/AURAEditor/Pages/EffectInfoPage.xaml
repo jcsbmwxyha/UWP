@@ -52,19 +52,20 @@
             <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <common:ColorToSolidColorBrushConverter x:Key="colorToSolidColorBrushConverter" />
             <common:DoubleToInt32ToStringConverter x:Key="doubleToInt32ToStringConverter" />
+            <common:MultiLanguageConverter x:Key="multiLanguageConverter" />
         </ResourceDictionary>
     </Page.Resources>
 
     <ScrollViewer>
         <StackPanel Name="EffectInfoStackPanel">
             <RelativePanel Margin="20,15,50,0">
-                <TextBlock Name="TitleTextBlock" Text="{x:Bind m_Info.Name}" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
+                <TextBlock Name="TitleTextBlock" Text="{x:Bind m_Info.Name, Converter={StaticResource multiLanguageConverter}}" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
                                RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
                 <Button Name="ResetBtn" Margin="132,0,0,0" Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}"
                         RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Reset"/>
+                            <TextBlock x:Uid="ResetBtnTooltip" Foreground="White" Text="Reset"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
@@ -72,7 +73,7 @@
             <StackPanel>
                 <StackPanel x:Name="ColorGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
                             Margin="20,0,0,0">
-                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="0,20,0,0"/>
+                    <TextBlock x:Uid="ColorTextBlock" Text="Color" Foreground="White" FontSize="16" Margin="0,20,0,0"/>
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Name="Single" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                      GroupName="ColorModeSelection" Margin="0,10,0,0">
@@ -103,25 +104,25 @@
                             Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                     <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                      GroupName="ColorModeSelection">
-                        <TextBlock x:Name="RandomTextBlock" Text="Random" Foreground="White" VerticalAlignment="Center"/>
+                        <TextBlock x:Uid="RandomTextBlock" x:Name="RandomTextBlock" Text="Random" Foreground="White" VerticalAlignment="Center"/>
                     </RadioButton>
                     <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
                                                  RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
                                                  Margin="0,10,0,0">
                         <ToolTipService.ToolTip>
                             <ToolTip Background="Black" Placement="Mouse">
-                                <TextBlock Foreground="White" Text="Drag to adjust the random color"/>
+                                <TextBlock x:Uid="RandomToolTip" Foreground="White" Text="Drag to adjust the random color"/>
                             </ToolTip>
                         </ToolTipService.ToolTip>
                     </usercontrol:RangeSlider>
                 </StackPanel>
 
                 <StackPanel x:Name="PatternGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.PatternGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
+                    <TextBlock x:Uid="PatternTextBlock" Text="Pattern" Margin="20,20,0,0" Foreground="White"/>
                     <usercontrol:ColorPatternView x:Name="ColorPattern"/>
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                        <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
-                        <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}" VerticalAlignment="Center" Margin="80,0,0,0"
+                        <TextBlock x:Uid="GradientTextBlock" Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
+                        <ToggleSwitch x:Uid="GradientToggleSwitch" x:Name="SegmentationSwitch" MinWidth="20" IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}" VerticalAlignment="Center" Margin="80,0,0,0"
                                       Style="{StaticResource RogToggleSwitchStyle}" Toggled="SegmentationSwitch_Toggled"/>
                     </StackPanel>
                 </StackPanel>
@@ -137,7 +138,7 @@
                 </StackPanel>
 
                 <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.SpeedGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <TextBlock x:Uid="SpeedTextBlock" Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -152,16 +153,16 @@
                         <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
                                 Value="{x:Bind m_Info.Speed, Mode=TwoWay}" Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch" IsThumbToolTipEnabled="False"/>
                         <RelativePanel Grid.Row="2" VerticalAlignment="Top" Width="200" HorizontalAlignment="Left" Margin="20,0,0,0">
-                            <TextBlock Text="Slow" RelativePanel.AlignLeftWithPanel="True" FontSize="12"/>
-                            <TextBlock Text="Normal" RelativePanel.AlignHorizontalCenterWithPanel="True" FontSize="12"/>
-                            <TextBlock Text="Fast" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
+                            <TextBlock x:Uid="SlowTextBlock" Text="Slow" RelativePanel.AlignLeftWithPanel="True" FontSize="12"/>
+                            <TextBlock x:Uid="NormalTextBlock" Text="Normal" RelativePanel.AlignHorizontalCenterWithPanel="True" FontSize="12"/>
+                            <TextBlock x:Uid="FastTextBlock" Text="Fast" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
                         </RelativePanel>
                     </Grid>
                 </StackPanel>
 
                 <StackPanel x:Name="AngleGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.AngleGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}"
                             Margin="20,0,0,0">
-                    <TextBlock Text="Angle" Margin="0,20,0,0" Foreground="White"/>
+                    <TextBlock x:Uid="AngleTextBlock" Text="Angle" Margin="0,20,0,0" Foreground="White"/>
                     <ContentControl x:Name="AngleGridCC" Margin="0,10,0,0">
                         <StackPanel Orientation="Horizontal">
                             <Grid x:Name="AngleGrid" Grid.Column="0" Width="80" Height="80">
@@ -178,7 +179,7 @@
                                    PointerMoved="AngleBgImg_PointerMoved">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
-                                            <TextBlock Foreground="White" Text="Click or drag to change the angle"/>
+                                            <TextBlock x:Uid="AngleBgImgToolTip" Foreground="White" Text="Click or drag to change the angle"/>
                                         </ToolTip>
                                     </ToolTipService.ToolTip>
                                 </Image>
@@ -189,7 +190,7 @@
                                     <Button x:Name="DecreaseBtn" Click="DecreaseBtn_Click" Width="24" Height="24" Style="{StaticResource MinusButtonStyle}">
                                         <ToolTipService.ToolTip>
                                             <ToolTip Background="Black" Placement="Mouse">
-                                                <TextBlock Foreground="White" Text="Decrease the angle by 5 degrees"/>
+                                                <TextBlock x:Uid="DecreaseBtnToolTip" Foreground="White" Text="Decrease the angle by 5 degrees"/>
                                             </ToolTip>
                                         </ToolTipService.ToolTip>
                                     </Button>
@@ -201,14 +202,14 @@
                                          Text="{x:Bind m_Info.Angle, Converter={StaticResource doubleToInt32ToStringConverter}, Mode=TwoWay}">
                                         <ToolTipService.ToolTip>
                                             <ToolTip Background="Black" Placement="Mouse">
-                                                <TextBlock Foreground="White" Text="Click to edit the degree"/>
+                                                <TextBlock x:Uid="AngleTextBoxToolTip" Foreground="White" Text="Click to edit the degree"/>
                                             </ToolTip>
                                         </ToolTipService.ToolTip>
                                     </TextBox>
                                     <Button x:Name="IncreaseBtn" Click="IncreaseBtn_Click" Width="24" Height="24" Style="{StaticResource PlusButtonStyle}">
                                         <ToolTipService.ToolTip>
                                             <ToolTip Background="Black" Placement="Mouse">
-                                                <TextBlock Foreground="White" Text="Increase the angle by 5 degrees"/>
+                                                <TextBlock x:Uid="IncreaseBtnToolTip" Foreground="White" Text="Increase the angle by 5 degrees"/>
                                             </ToolTip>
                                         </ToolTipService.ToolTip>
                                     </Button>
@@ -218,7 +219,7 @@
                     </ContentControl>
                     <StackPanel x:Name="RotationStackPanel" Orientation="Vertical" Margin="0,20,0,0"  Visibility="{x:Bind m_Info.RainbowRotationVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Special effects" VerticalAlignment="Center" FontSize="15"/>
+                            <TextBlock x:Uid="SpecialEffectsTextBlock" Text="Special effects" VerticalAlignment="Center" FontSize="15"/>
                             <ToggleSwitch x:Name="RainbowRoatationSwitch" MinWidth="20" VerticalAlignment="Center" Margin="30,0,0,0"
                                           Style="{StaticResource RogToggleSwitchStyle}" Toggled="RainbowRoatationSwitch_Toggled"
                                           IsOn="{x:Bind m_Info.RainbowSpecialEffects, Mode=TwoWay}"/>
@@ -228,28 +229,28 @@
                                 <RadioButton x:Name="ClockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonClockwiseStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
-                                            <TextBlock Foreground="White" Text="Clockwise"/>
+                                            <TextBlock x:Uid="ClockwiseToolTip" Foreground="White" Text="Clockwise"/>
                                         </ToolTip>
                                     </ToolTipService.ToolTip>
                                 </RadioButton>
                                 <RadioButton x:Name="CountclockwiseRbt" Width="30" Style="{StaticResource RogRadioButtonCountclockwiseStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
-                                            <TextBlock Foreground="White" Text="Anticlockwise"/>
+                                            <TextBlock x:Uid="AnticlockwiseToolTip" Foreground="White" Text="Anticlockwise"/>
                                         </ToolTip>
                                     </ToolTipService.ToolTip>
                                 </RadioButton>
                                 <RadioButton x:Name="OutwardRbt" Width="40" Style="{StaticResource RogRadioButtonOutwardStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
-                                            <TextBlock Foreground="White" Text="Spread"/>
+                                            <TextBlock x:Uid="SpreadToolTip" Foreground="White" Text="Spread"/>
                                         </ToolTip>
                                     </ToolTipService.ToolTip>
                                 </RadioButton>
                                 <RadioButton x:Name="InwardRbt" Width="40" Style="{StaticResource RogRadioButtonInwardStyle}" GroupName="SpecialEffects" Click="RotationRbt_Click" Margin="10,0,0,0">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
-                                            <TextBlock Foreground="White" Text="Centralize"/>
+                                            <TextBlock x:Uid="CentralizeToolTip" Foreground="White" Text="Centralize"/>
                                         </ToolTip>
                                     </ToolTipService.ToolTip>
                                 </RadioButton>

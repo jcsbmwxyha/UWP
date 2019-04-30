@@ -109,6 +109,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\MaskManager.cs" />
     <Compile Include="Common\ReUndoCommand.cs" />
     <Compile Include="Dialogs\DeviceUpdatePromptDialog.xaml.cs">
       <DependentUpon>DeviceUpdatePromptDialog.xaml</DependentUpon>
@@ -679,6 +680,9 @@
     <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_d.png" />
     <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_h.png" />
     <Content Include="Assets\ToggleSwitch\asus_gc_toggle_reset_unselect_icn_n.png" />
+    <Content Include="Assets\TriggerButton\asus_ac_trigger_ic_h.png" />
+    <Content Include="Assets\TriggerButton\asus_ac_trigger_ic_off.png" />
+    <Content Include="Assets\TriggerButton\asus_ac_trigger_ic_on.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_bg.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_f.png" />
     <Content Include="Assets\TriggerDialog\asus_ac_effectorder_n.png" />
@@ -718,6 +722,8 @@
     <None Include="AuraEditor_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <PRIResource Include="String\zh-TW\Resources.resw" />
+    <PRIResource Include="String\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Button\asus_ac_eye_off_n_ic.png" />

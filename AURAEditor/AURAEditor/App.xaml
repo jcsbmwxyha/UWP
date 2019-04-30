@@ -1837,14 +1837,14 @@
                             <Image x:Name="OuterBorderOff"                                    
                                    Source="{ThemeResource ToggleBtn_unselect_bg_n}"/>
                             <Image x:Name="SwitchKnobOn" 
-                                           Opacity="0"                                
-                               HorizontalAlignment="Right"
-                               Margin="25 0 0 0"
-                                           Source="{ThemeResource ToggleBtn_select_n}"></Image>
-                            <Image x:Name="SwitchKnobOff"                                 
-                               Margin="0 0 25 0"
-                               HorizontalAlignment="Left"
-                                           Source="{ThemeResource ToggleBtn_unselect_n}"></Image>
+                                   Opacity="0" 
+                                   HorizontalAlignment="Right"
+                                   Margin="25 0 0 0"
+                                   Source="{ThemeResource ToggleBtn_select_n}"></Image>
+                            <Image x:Name="SwitchKnobOff" 
+                                   Margin="0 0 25 0"
+                                   HorizontalAlignment="Left"
+                                   Source="{ThemeResource ToggleBtn_unselect_n}"></Image>
                             <Thumb x:Name="SwitchThumb" AutomationProperties.AccessibilityView="Raw" Grid.Row="1" Grid.RowSpan="3" Grid.ColumnSpan="3" >
                                 <Thumb.Template>
                                     <ControlTemplate TargetType="Thumb">

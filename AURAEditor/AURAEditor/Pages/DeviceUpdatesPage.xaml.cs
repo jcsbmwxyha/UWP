@@ -13,6 +13,8 @@ using Windows.UI;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 using static AuraEditor.Common.AuraEditorColorHelper;
+using AuraEditor.Pages;
+using Windows.ApplicationModel.Resources;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,8 +28,15 @@ namespace AuraEditor
         private bool UpdateBtnMode;
         private bool IsCharge = false;
 
+        public ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+        static DeviceUpdatesPage _instance;
+        static public DeviceUpdatesPage Self
+        {
+            get { return _instance; }
+        }
         public DeviceUpdatesPage()
         {
+            _instance = this;
             this.InitializeComponent();
 
             NavigationCacheMode = NavigationCacheMode.Enabled;
@@ -40,9 +49,10 @@ namespace AuraEditor
                 UpdateBtnMode = (bool)e.Parameter;
                 if ((bool)e.Parameter)
                 {
-                    UpdateButton.Content = "Update now";
+                    UpdateButton.Content = resourceLoader.GetString("UpdateButton_Update");
                     UpdateBtnNewTab.Visibility = Visibility.Visible;
-                    UpdateStateTextBlock.Text = "A new version is available.";
+                    UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
+                    UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_NewVersion");
 
                     PowerManager.PowerSupplyStatusChanged += PowerState_ReportUpdated;
                     Battery.AggregateBattery.ReportUpdated += AggregateBattery_ReportUpdated;
@@ -50,9 +60,10 @@ namespace AuraEditor
                 }
                 else
                 {
-                    UpdateButton.Content = "Check update";
+                    UpdateButton.Content = resourceLoader.GetString("UpdateButton_Check");
                     UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                    UpdateStateTextBlock.Text = "Your device content is up-to-date.";
+                    UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
+                    UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_UpToDate");
                 }
             }
             else
@@ -62,10 +73,11 @@ namespace AuraEditor
             base.OnNavigatedTo(e);
         }
 
-        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
+        public async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (GetInternetConnectstate())
             {
+                int UITimeOut = 0;
                 if (UpdateBtnMode)
                 {
                     //Update Now
@@ -73,23 +85,32 @@ namespace AuraEditor
                     Battery.AggregateBattery.ReportUpdated -= AggregateBattery_ReportUpdated;
                     ProgressBar.Visibility = Visibility.Visible;
                     UpdateBtnRP.Visibility = Visibility.Collapsed;
-                    UpdateStateTextBlock.Text = "Updating...";
+                    UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_Updating");
                     UpdateStateTextBlock.Foreground = new SolidColorBrush(Colors.White);
                     
                     await (new ServiceViewModel()).Sendupdatestatus("CreatorUpdate");
                     while (true)
                     {
                         await (new ServiceViewModel()).Sendupdatestatus(ServiceViewModel.returnnum.ToString());
-                        if(ProgressBar.Value < 99)
-                            ProgressBar.Value += 3;
+
+                        if(ServiceViewModel.returnnum > ProgressBar.Value)
+                        {
+                            ProgressBar.Value = ServiceViewModel.returnnum;
+                            UITimeOut = 0;
+                        }
+                        else
+                        {
+                            UITimeOut += 1;
+                        }
+
                         if (ServiceViewModel.returnnum == 100)
                         {
                             ProgressBar.Value = ServiceViewModel.returnnum;
                             await Task.Delay(2000);
                             ProgressBar.Visibility = Visibility.Collapsed;
                             UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                            UpdateButton.Content = "Check update";
-                            UpdateStateTextBlock.Text = "Your device content is up-to-date.";
+                            UpdateButton.Content = resourceLoader.GetString("UpdateButton_Check");
+                            UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_UpToDate");
                             UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
                             UpdateStateTextBlock.Visibility = Visibility.Visible;
                             UpdateBtnRP.Visibility = Visibility.Visible;
@@ -97,27 +118,17 @@ namespace AuraEditor
                             MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
                             MainPage.Self.needToUpdadte = false;
                             UpdateBtnMode = false;
-                            await ConnectedDevicesDialog.Self.Rescan();
+                            await SpacePage.Self.Rescan();
                             break;
                         }
                         if (ServiceViewModel.returnnum == 813)
                         {
-                            await Task.Delay(2000);
-                            ProgressBar.Visibility = Visibility.Collapsed;
-                            UpdateBtnNewTab.Visibility = Visibility.Collapsed;
-                            UpdateButton.Content = "Check update";
-                            UpdateStateTextBlock.Text = "Your device content is up-to-date.";
-                            UpdateBtnRP.Visibility = Visibility.Visible;
-                            SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
-                            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                            MainPage.Self.needToUpdadte = false;
-                            UpdateStateTextBlock.Visibility = Visibility.Collapsed;
-                            NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
-                            NoticeImg.Visibility = Visibility.Visible;
-                            ErrorMessageText.Text = "Update failed. Please try again.";
-                            ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
-                            ErrorMessageStack.Visibility = Visibility.Visible;
-                            UpdateBtnMode = false;
+                            UpdateFailState();
+                            break;
+                        }
+                        if (UITimeOut == 60)
+                        {
+                            UpdateFailState();
                             break;
                         }
                         await Task.Delay(500);
@@ -129,13 +140,14 @@ namespace AuraEditor
                 {
                     //Check For Update
                     UpdateStateTextBlock.Visibility = Visibility.Collapsed;
-                    NoticeImg.Visibility = Visibility.Collapsed;
                     UpdateBtnRP.Visibility = Visibility.Collapsed;
                     CheckProgressRing.IsActive = true;
                     CheckStackPanel.Visibility = Visibility.Visible;
+                    ErrorMessageStack.Visibility = Visibility.Collapsed;
                     // disable end
                     await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
                     // < 0 No checkallbyservice function
+
                     if (ServiceViewModel.returnnum > 0)
                     {
                         //顯示需要更新
@@ -143,16 +155,15 @@ namespace AuraEditor
                         Battery.AggregateBattery.ReportUpdated += AggregateBattery_ReportUpdated;
                         CheckProgressRing.IsActive = false;
                         CheckStackPanel.Visibility = Visibility.Collapsed;
-                        UpdateButton.Content = "Update now";
+                        UpdateButton.Content = resourceLoader.GetString("UpdateButton_Update");
                         UpdateBtnNewTab.Visibility = Visibility.Visible;
                         UpdateBtnRP.Visibility = Visibility.Visible;
                         SettingsPage.Self.PivotNewTab.Visibility = Visibility.Visible;
                         MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
                         MainPage.Self.needToUpdadte = true;
-                        ErrorMessageStack.Visibility = Visibility.Collapsed;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
-                        UpdateStateTextBlock.Text = "A new version is available.";
+                        UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_NewVersion");
                         UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
                         UpdateBtnMode = true;
                     }
@@ -160,12 +171,11 @@ namespace AuraEditor
                     {
                         CheckProgressRing.IsActive = false;
                         CheckStackPanel.Visibility = Visibility.Collapsed;
-                        UpdateButton.Content = "Check update";
+                        UpdateButton.Content = resourceLoader.GetString("UpdateButton_Check");
                         UpdateBtnRP.Visibility = Visibility.Visible;
-                        ErrorMessageStack.Visibility = Visibility.Collapsed;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
-                        UpdateStateTextBlock.Text = "Your device content is up-to-date.";
+                        UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_UpToDate");
                         UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
                         UpdateBtnMode = false;
                     }
@@ -176,6 +186,26 @@ namespace AuraEditor
                 ContentDialog nonetworkdialog = new NoNetworkDialog();
                 await nonetworkdialog.ShowAsync();
             }
+        }
+
+        private void UpdateFailState()
+        {
+            ProgressBar.Visibility = Visibility.Collapsed;
+            UpdateBtnNewTab.Visibility = Visibility.Collapsed;
+            UpdateButton.Content = resourceLoader.GetString("UpdateButton_Check");
+            UpdateStateTextBlock.Foreground = new SolidColorBrush(HexToColor("#FF1046FF"));
+            UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_UpToDate");
+            UpdateBtnRP.Visibility = Visibility.Visible;
+            SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
+            MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
+            MainPage.Self.needToUpdadte = false;
+            UpdateStateTextBlock.Visibility = Visibility.Collapsed;
+            NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
+            NoticeImg.Visibility = Visibility.Visible;
+            ErrorMessageText.Text = resourceLoader.GetString("ErrorMessage_UpdateFail");
+            ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
+            ErrorMessageStack.Visibility = Visibility.Visible;
+            UpdateBtnMode = false;
         }
 
         private bool GetInternetConnectstate()
@@ -216,7 +246,7 @@ namespace AuraEditor
             {
                 if (PowerManager.PowerSupplyStatus == 0)
                 {
-                    ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
+                    ErrorMessageText.Text = resourceLoader.GetString("ErrorMessage_PowerProblem");
                     ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                     NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                     NoticeImg.Visibility = Visibility.Visible;
@@ -266,7 +296,7 @@ namespace AuraEditor
             //Laptop
             if (BatteryPercentage > 20)
             {
-                ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
+                ErrorMessageText.Text = resourceLoader.GetString("ErrorMessage_PowerProblem");
                 ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                 NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                 NoticeImg.Visibility = Visibility.Visible;
@@ -277,7 +307,7 @@ namespace AuraEditor
             }
             else
             {
-                ErrorMessageText.Text = "Ensure your device is connecting to the power adapter AND the battery level is at least 20%.";
+                ErrorMessageText.Text = resourceLoader.GetString("ErrorMessage_PowerProblem");
                 ErrorMessageText.Foreground = new SolidColorBrush(Colors.Red);
                 NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
                 NoticeImg.Visibility = Visibility.Visible;

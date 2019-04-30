@@ -30,6 +30,8 @@ using DevicZonesPair = System.Tuple<int, int[]>;
 using DeviceZonesPairList = System.Collections.Generic.List<System.Tuple<int, int[]>>;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Input;
+using Windows.ApplicationModel.Resources;
 
 namespace AuraEditor
 {
@@ -42,7 +44,6 @@ namespace AuraEditor
         }
         public SpacePage SpacePage;
         public LayerPage LayerPage;
-        public ConnectedDevicesDialog ConnectedDevicesDialog;
         public ContentDialog g_ContentDialog;
         static private DeviceUpdatePromptDialog dupd;
         public string g_NewPlugInDeviceName;
@@ -50,7 +51,8 @@ namespace AuraEditor
         ApplicationDataContainer g_LocalSettings;
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
-        
+        private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+
         public bool needToUpdadte = false;
 
         public EffectLineViewModel SelectedEffect
@@ -68,7 +70,6 @@ namespace AuraEditor
         #region -- Key Up & Down --
         public bool g_PressShift;
         public bool g_PressCtrl;
-        public bool g_CanPaste = true;
         public bool g_isFirstTimePressZ = true;
 
 
@@ -76,80 +77,7 @@ namespace AuraEditor
         {
             switch (args.VirtualKey)
             {
-                case Windows.System.VirtualKey.Z:
-                    if (g_PressCtrl == true)
-                    {
-                        if (g_PressShift == true)
-                            RedoButton_Click(null, null);
-                        else
-                            UndoButton_Click(null, null);
-                        break;
-                    }
-                    else
-                    {
-                        if (g_isFirstTimePressZ && SpacePage.isMouseInSpacePage) //just run one time when Z pressed
-                        {
-                            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
-                            g_isFirstTimePressZ = false;
-                            SpacePage.OnZKeyPressed();
-                        }
-                        break;
-                    }
-                case Windows.System.VirtualKey.Shift:
-                    g_PressShift = true;
-                    SpacePage.SpaceScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-                    LayerPage.TrackScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-                    break;
-                case Windows.System.VirtualKey.Control:
-                    g_PressCtrl = true;
-                    break;
-                case Windows.System.VirtualKey.X:
-                    if (SelectedEffect == null)
-                        return;
-
-                    if (g_PressCtrl == true)
-                    {
-                        LayerPage.CopiedEffect = new EffectLineViewModel(SelectedEffect);
-                        SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
-                    }
-                    break;
-                case Windows.System.VirtualKey.C:
-                    if (SelectedEffect == null)
-                        return;
-
-                    if (g_PressCtrl == true)
-                        LayerPage.CopiedEffect = new EffectLineViewModel(SelectedEffect);
-                    break;
-                case Windows.System.VirtualKey.V:
-                    if (LayerPage.CheckedLayer == null || g_PressCtrl == false || g_CanPaste == false || LayerPage.CopiedEffect == null)
-                        return;
-
-                    g_CanPaste = false;
-
-                    var copy = new EffectLineViewModel(LayerPage.CopiedEffect);
-
-                    if (SelectedEffect != null)
-                    {
-                        copy.Left = SelectedEffect.Right;
-                        SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
-                    }
-                    else
-                    {
-                        LayerPage.CheckedLayer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
-                    }
-
-                    TimeSpan delay = TimeSpan.FromMilliseconds(400);
-                    ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
-                        (source) =>
-                        {
-                            Dispatcher.RunAsync(
-                               CoreDispatcherPriority.High,
-                               () =>
-                               {
-                                   g_CanPaste = true;
-                               });
-                        }, delay);
-                    break;
+                //TODO modify
                 case Windows.System.VirtualKey.Delete:
                     if (g_PressCtrl == true && g_PressShift == true)
                     {
@@ -167,21 +95,21 @@ namespace AuraEditor
                         SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
                         break;
                     }
-                case Windows.System.VirtualKey.Home:
-                    if (g_PressShift == true)
-                    {
-                        LayerPage.JumpToBeginningButton_Click(null, null);
-                    }
+                case Windows.System.VirtualKey.Control:
+                    g_PressCtrl = true;
                     break;
-                case Windows.System.VirtualKey.End:
-                    if (g_PressShift == true)
-                    {
-                        LayerPage.JumpToEndButton_Click(null, null);
-                    }
+                case Windows.System.VirtualKey.Shift:
+                    g_PressShift = true;
+                    SpacePage.SpaceScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+                    LayerPage.TrackScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
                     break;
-                case Windows.System.VirtualKey.S:
-                    if (g_PressCtrl == true)
-                        SaveAndApplyButton_Click(null, null);
+                case Windows.System.VirtualKey.Z:
+                    if (g_isFirstTimePressZ && SpacePage.isMouseInSpacePage) //just run one time when Z pressed
+                    {
+                        Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Custom, 101); //101 release  102 hold
+                        g_isFirstTimePressZ = false;
+                        SpacePage.OnZKeyPressed();
+                    }
                     break;
                 case Windows.System.VirtualKey.R:
                     if (FileListButton.Content.ToString() == "")
@@ -198,76 +126,8 @@ namespace AuraEditor
                         ImportButton_Click(null, null);
                     break;
                 case Windows.System.VirtualKey.E:
-                    if (g_PressShift == true && LayerPage.CheckedLayer != null)
-                    {
-                        LayerPage.CheckedLayer.ClearAllEffect();
-                        LayerPage.CheckedEffect = null;
-                    }
-                    else if (g_PressCtrl == true && g_PressShift == false)
+                    if (g_PressCtrl == true && g_PressShift == false)
                         ExportButton_Click(null, null);
-                    break;
-                case Windows.System.VirtualKey.M:
-                    if (g_PressCtrl == true)
-                        SortDeviceButton_Click(null, null);
-                    break;
-                case Windows.System.VirtualKey.Number1:
-                    if (g_PressCtrl == true)
-                        SpacePage.DefaultViewButton_Click(null, null);
-                    break;
-                case Windows.System.VirtualKey.Number0:
-                    if (g_PressCtrl == true)
-                        SpacePage.FitAllButton_Click(null, null);
-                    break;
-                case Windows.System.VirtualKey.Add:
-                    if (g_PressCtrl == true)
-                        SpacePage.SpaceZoom_For_Hotkey(true);
-                    break;
-                case Windows.System.VirtualKey.Subtract:
-                    if (g_PressCtrl == true)
-                        SpacePage.SpaceZoom_For_Hotkey(false);
-                    break;
-                case Windows.System.VirtualKey.Enter:
-                    if (g_PressCtrl == true)
-                        LayerPage.Hotkey_for_Play_and_Puase();
-                    break;
-                case Windows.System.VirtualKey.D:
-                    if (g_PressCtrl == true && LayerPage.CheckedLayer != null)
-                    {
-                        int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
-                        LayerModel temp_layer = LayerModel.Clone(LayerPage.CheckedLayer);
-                        LayerPage.Layers.Insert(index, temp_layer);
-                        LayerPage.CheckedLayer = LayerPage.Layers[index+1];
-                    }
-                    break;
-                case Windows.System.VirtualKey.Back:
-                    if (g_PressCtrl == true)
-                    {
-                        int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
-                        LayerPage.TrashCanButton_Click(null, null);
-                        if(index>0)
-                            LayerPage.CheckedLayer = LayerPage.Layers[index-1];
-                        else if(index==0 && LayerPage.Layers.Count>0)
-                            LayerPage.CheckedLayer = LayerPage.Layers[0];
-                    }
-                    break;
-                case Windows.System.VirtualKey.A:
-                    if (g_PressCtrl == true)
-                    {
-                        if (SpacePage.GetSpaceStatus() == SpaceStatus.Editing || SpacePage.GetSpaceStatus() == SpaceStatus.ReEditing)
-                        {
-                            SpacePage.SelectAllZones();
-                            SetLayerButton.IsEnabled = true;
-                            SetLayerRectangle.Visibility = Visibility.Collapsed;
-                            EditDoneButton.IsEnabled = true;
-                        }
-                    }
-                    break;
-                case Windows.System.VirtualKey.F1:
-                    TutorialItem_Click(null,null);
-                    break;
-                case Windows.System.VirtualKey.H:
-                    if (g_PressCtrl == true)
-                        ShortcutsItem_Click(null,null);
                     break;
             }
         }
@@ -318,47 +178,20 @@ namespace AuraEditor
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             Log.Debug("[MainPage_Loaded] Intialize ...");
-
-            //Disable settings button until check finish
-            SettingsButton.IsEnabled = false;
-            SettingsButton.Opacity = 0.5;
-            // disable end
-
+            
             await IntializeFileOperations();
-            ConnectedDevicesDialog = new ConnectedDevicesDialog();
             SpaceFrame.Navigate(typeof(SpacePage));
             SpacePage = SpacePage.Self;
 
             LayerFrame.Navigate(typeof(LayerPage));
             LayerPage = LayerPage.Self;
 
-            await ConnectedDevicesDialog.Rescan();
-
             //Start SocketClient
+            MaskManager.GetInstance().ShowMask(MaskType.NoSupportDevice);
             startclient();
-
             LoadSettings();
 
-            #region Check for Update and show icon
-            await (new ServiceViewModel()).Sendupdatestatus("CreatorCheckVersion");
-            // < 0 No checkallbyservice function
-            if (ServiceViewModel.returnnum > 0)
-            {
-                //顯示需要更新
-
-                SettingBtnNewTab.Visibility = Visibility.Visible;
-                needToUpdadte = true;
-            }
-            else
-            {
-                SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                needToUpdadte = false;
-            }
-            //Enable settings button until check finish
-            MainPage.Self.SettingsButton.IsEnabled = true;
-            MainPage.Self.SettingsButton.Opacity = 1;
-            //Enable end
-            #endregion
+            DeviceUpdatesPage.Self.UpdateButton_Click(null, null);
         }
         private void LoadSettings()
         {
@@ -400,19 +233,21 @@ namespace AuraEditor
         #region -- Event --
         private async void ConnectedDevicesButton_Click(object sender, RoutedEventArgs e)
         {
-            await ConnectedDevicesDialog.ShowAsync();
+            ConnectedDevicesDialog dialog = new ConnectedDevicesDialog();
+            await dialog.ShowAsync();
         }
 
         private void EffectBlockListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
-            string effName = e.Items[0] as string;
-            e.Data.Properties.Add("EffectName", effName);
+            string ItemName = e.Items[0] as string;
+            string effName = GetEffectNameByNumString(ItemName);
+            e.Data.Properties.Add("EffectIndex", ItemName);
 
             SpacePage.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
 
             // Workaround for keeping EffectBlock in Pressed state
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
-            var index = EffectBlockListView.Items.IndexOf(effName);
+            var index = EffectBlockListView.Items.IndexOf(ItemName);
             var eb = ebList[index];
             eb.Dragging = true;
             VisualStateManager.GoToState(eb, "Pressed", false);
@@ -461,7 +296,8 @@ namespace AuraEditor
         private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
         {
             EditDoneButton.IsEnabled = true;
-            ShowMask("Device Sorting");
+            EditBarTextBlock.Text = resourceLoader.GetString("SortDeviceTitle");
+            MaskManager.GetInstance().ShowMask(MaskType.Editing);
             SpacePage.SetSpaceStatus(SpaceStatus.Sorting);
 
             oldSortingPositions.Clear();
@@ -478,7 +314,7 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectBlockScrollViewer))
             {
                 MainGrid.Children.Remove(EffectBlockScrollViewer);
-                MainGrid.Children.Remove(MaskEffectblockGrid);
+                MainGrid.Children.Remove(EffectBlockMask);
 
                 Grid.SetColumn(SpaceFrame, 0);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
@@ -486,10 +322,10 @@ namespace AuraEditor
             else
             {
                 Grid.SetColumn(EffectBlockScrollViewer, 0);
-                Grid.SetColumn(MaskEffectblockGrid, 0);
+                Grid.SetColumn(EffectBlockMask, 0);
 
                 MainGrid.Children.Add(EffectBlockScrollViewer);
-                MainGrid.Children.Add(MaskEffectblockGrid);
+                MainGrid.Children.Add(EffectBlockMask);
 
                 Grid.SetColumn(SpaceFrame, 1);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
@@ -502,27 +338,19 @@ namespace AuraEditor
             if (MainGrid.Children.Contains(EffectInfoFrame))
             {
                 MainGrid.Children.Remove(EffectInfoFrame);
-                MainGrid.Children.Remove(MaskEffectInfoGrid);
+                MainGrid.Children.Remove(EffectInfoMask);
                 Grid.SetColumnSpan(SpaceFrame, columnSpans + 1);
             }
             else
             {
                 Grid.SetColumn(EffectInfoFrame, 2);
-                Grid.SetColumn(MaskEffectInfoGrid, 2);
+                Grid.SetColumn(EffectInfoMask, 2);
 
                 MainGrid.Children.Add(EffectInfoFrame);
-                MainGrid.Children.Add(MaskEffectInfoGrid);
+                MainGrid.Children.Add(EffectInfoMask);
 
                 Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
             }
-        }
-
-        public void OnIngroupDevicesChanged()
-        {
-            if (SpacePage.DeviceModelCollection.Count == 0)
-                NoSupportedDeviceGrid.Visibility = Visibility.Visible;
-            else
-                NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
         }
 
         private void UndoButton_Click(object sender, RoutedEventArgs e)
@@ -622,7 +450,7 @@ namespace AuraEditor
                 SpacePage.GoToBlankEditing();
             }
 
-            HideMask();
+            MaskManager.GetInstance().ShowMask(MaskType.None);
         }
         private void EditCancelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -643,33 +471,16 @@ namespace AuraEditor
             }
 
             SpacePage.StopScrollTimer();
-            HideMask();
+            MaskManager.GetInstance().ShowMask(MaskType.None);
         }
         public void ShowReEditMask(LayerModel layer)
         {
-            ShowMask("Edit " + layer.Name);
-        }
-        private void ShowMask(string descriptionText)
-        {
-            EditBarTextBlock.Text = descriptionText;
-
-            EditBarRelativePanel.Visibility = Visibility.Visible;
-            ActionBarRelativePanel.Visibility = Visibility.Collapsed;
-            MaskConntectedDeviceGrid.Visibility = Visibility.Visible;
-            MaskFileCombobox.Visibility = Visibility.Visible;
-            MaskEffectblockGrid.Visibility = Visibility.Visible;
-            MaskEffectInfoGrid.Visibility = Visibility.Visible;
-            MaskLayerPage.Visibility = Visibility.Visible;
+            EditBarTextBlock.Text = resourceLoader.GetString("EditLayerText") + layer.Name;
+            MaskManager.GetInstance().ShowMask(MaskType.Editing);
         }
         private void HideMask()
         {
-            EditBarRelativePanel.Visibility = Visibility.Collapsed;
-            ActionBarRelativePanel.Visibility = Visibility.Visible;
-            MaskConntectedDeviceGrid.Visibility = Visibility.Collapsed;
-            MaskFileCombobox.Visibility = Visibility.Collapsed;
-            MaskEffectblockGrid.Visibility = Visibility.Collapsed;
-            MaskEffectInfoGrid.Visibility = Visibility.Collapsed;
-            MaskLayerPage.Visibility = Visibility.Collapsed;
+            MaskManager.GetInstance().ShowMask(MaskType.None);
         }
         #endregion
 
@@ -684,14 +495,18 @@ namespace AuraEditor
         //Use senddata(string) can send string to server
         public async void SendMessageToServer(string request)
         {
+            Log.Debug("[SendMessageToServer] Message : " + request);
+
+            if (!IsConnection)
+            {
+                Log.Debug("[SendMessageToServer] Service is disconnected ...");
+                return;
+            }
+
             Stream streamOut = socket.OutputStream.AsStreamForWrite();
             StreamWriter writer = new StreamWriter(streamOut);
             await writer.WriteLineAsync(request);
             await writer.FlushAsync();
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                //StatusTextBlock.Text = "Send successful";
-            });
         }
 
         public static bool IsConnection = false;
@@ -713,9 +528,10 @@ namespace AuraEditor
                     HostName serverHost = new HostName("127.0.0.1");
                     string serverPort = port;
                     await socket.ConnectAsync(serverHost, serverPort);
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         StatusTextBlock.Text = "Connect...\n";
+                        await SpacePage.Rescan();
                     });
                     IsConnection = true;
                 }
@@ -743,7 +559,7 @@ namespace AuraEditor
                         //from Service message
                         StatusTextBlock.Text = "Service : " + response;
                         Log.Debug("[ReceiveData] Rescan ...");
-                        await ConnectedDevicesDialog.Rescan();
+                        await SpacePage.Rescan();
                     });
                     string[] infoArray = response.Split(new char[3] { '[', ']', ',' });
                     if ((infoArray[1] == "PlugIn") && (infoArray[2] != " "))

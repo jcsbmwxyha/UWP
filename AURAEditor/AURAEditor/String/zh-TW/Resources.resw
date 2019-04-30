@@ -1,0 +1,525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>觸發動作：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>新增效果</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>新增節點</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>點擊或拖曳調整角度</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>角度</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>點擊以編輯角度</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>逆時針</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>呼吸</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>集中</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>確認中…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>順時針</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>彩色循環</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>雙擊調整顏色</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>色彩</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>彗星</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>可用裝置</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>可用裝置</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>選擇欲編輯燈效之裝置，所選裝置將自動設定為同步裝置。</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>複製</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>剪下</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>裝置內容更新</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>以5度為單位降低角度</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>刪除節點</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>請更新至最新裝置資訊以開始編輯燈效檔。</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>雙擊</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>複製並新增</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>編輯圖層</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>編輯 </value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>燈效</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>效果順序：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>請確認已連接電源充電器，且電池電量已達20%以上。</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>更新失敗，請再試一次</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>匯出檔案</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>隱藏圖層</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>顯示圖層</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>快</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>AURA Creator 燈光檔</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>檔案名稱</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>填滿編輯面板 (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>跳回開頭 (Shift + Home)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>跳到結尾 (Shift + End)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>漸層</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>匯入檔案</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>以5度為單位提高角度</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>圖層</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>展開燈效區</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>收合燈效區</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>選項</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>雙擊圖層以重新命名</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>開新檔案</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>無可用裝置</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>請連接至少一個裝置或至可用裝置清單選擇欲編輯裝置</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>點擊</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>點擊</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>貼上</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>樣式</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>暫停 (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>關於</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>播放 (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>彩虹</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>隨機</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>拖曳以選擇隨機顏色的範圍</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>取消復原 (Ctrl + Shift + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>全部刪除</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>重新命名</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>回到預設版面 (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>展開參數設定區</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>收合參數設定區</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>存檔並套用</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>儲存檔案</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>裝置</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>設為圖層</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>點擊選取或框選裝置顯示區域中的燈區並設為一個圖層</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>點擊選取或框選裝置顯示區域中的燈區並設為一個圖層</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>慢</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>已同步(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)個裝置</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>排列裝置</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>排列裝置</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>點擊以重新排序裝置 (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>特效</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>擴散</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>星空</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>恆亮</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>此檔名已存在。請重新輸入。</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>檔名不可包含特殊字元</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>閃爍</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>潮汐</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>時間軸標線</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>時間軸放大顯示</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>時間軸縮小顯示</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>刪除圖層</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>燈效：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>無觸發效果</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>部分裝置無法支援此操作</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>觸發效果設定</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>復原(Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>檢查更新</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>立即更新</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>請確認您的電池電量大於20%且連接電源，及請不要在更新時關閉您的電腦或移除裝置。</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>可更新至新版本。</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>更新中…</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>您的裝置內容為最新版本</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>軟體版本</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>上下拖曳以調整時間軸編輯區域</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>您確定要刪除此檔案嗎？已刪除的檔案將無法被還原</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>確認刪除？</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>不儲存</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>儲存檔案</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>是否儲存此次編輯？</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>縮放比例</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>藍</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>綠</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>紅</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>最近使用</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>雷射</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>音樂</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>回饋</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>漣漪</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>智慧</value>
+  </data>
+</root>

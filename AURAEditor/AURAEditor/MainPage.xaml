@@ -7,8 +7,10 @@
     xmlns:usercontrol="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Windows10version1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
     mc:Ignorable="d"
-    Loaded="MainPage_Loaded">
+    Loaded="MainPage_Loaded"
+    Windows10version1803:KeyboardAcceleratorPlacementMode="Hidden">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -472,7 +474,15 @@
         <Image Source="ms-appx:///Assets/Line/asus_ac_shortline_bg.png" Grid.ColumnSpan="3" Height="1" Stretch="Fill" VerticalAlignment="Bottom"/>
 
         <!-- Masks -->
-        <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="5"
+        <Grid Name="LiveServiceUpdatingMask" Grid.RowSpan="5" Grid.ColumnSpan="5" x:FieldModifier="public"
+              Background="#88000000" Canvas.ZIndex="11" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" FontSize="34">
+                    Live Service Updating ...
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+        <Grid Name="NoSupportedDeviceGrid" Grid.RowSpan="5" Grid.ColumnSpan="5" x:FieldModifier="public"
               Background="#88000000" Canvas.ZIndex="9" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock HorizontalAlignment="Center" FontSize="34">
@@ -483,23 +493,38 @@
                 </TextBlock>
             </StackPanel>
         </Grid>
-        <Grid Name="MaskConntectedDeviceGrid" Background="#88000000" Visibility="Collapsed" Canvas.ZIndex="3"/>
-        <Grid Name="MaskFileCombobox" Background="#88000000" Visibility="Collapsed" Grid.Column="2" Canvas.ZIndex="3"/>
-        <Grid Name="MaskEffectblockGrid" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Canvas.ZIndex="3"/>
-        <Grid Name="MaskEffectInfoGrid" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Canvas.ZIndex="3"/>
-        <Grid Name="MaskLayerPage" Background="#88000000" Visibility="Collapsed" Grid.Row="2" Grid.ColumnSpan="3" Canvas.ZIndex="3"/>
+        <Grid Name="ActionBarMask" Background="#88000000" Visibility="Collapsed" Grid.Column="1" Canvas.ZIndex="11" x:FieldModifier="public"/>
+        <Grid Name="AvailableButtonMask" Background="#88000000" Visibility="Collapsed" Canvas.ZIndex="11" x:FieldModifier="public"/>
+        <Grid Name="FileComboboxMask" Background="#88000000" Visibility="Collapsed" Grid.Column="2" Canvas.ZIndex="3" x:FieldModifier="public"/>
+        <Grid Name="EffectBlockMask" Background="#88000000" Visibility="Collapsed" Grid.RowSpan="2" Canvas.ZIndex="4" x:FieldModifier="public"/>
+        <Grid Name="EffectInfoMask" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Canvas.ZIndex="3" x:FieldModifier="public"/>
 
         <!-- Row 0 -->
-        <Button Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle3}"
+        <RelativePanel x:Name="SettingRelativePanel" x:FieldModifier="Public"
+                       Grid.Column="1" Canvas.ZIndex="10"
+                       VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
+                      Style="{StaticResource SettingsButtonStyle}" Click="SettingsButton_Click">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Black" Placement="Mouse">
+                        <TextBlock x:Uid="SettingsButtonTooltip" Foreground="White" Text="Settings"/>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Button>
+            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
+                   RelativePanel.AlignTopWith="SettingsButton" RelativePanel.AlignRightWith="SettingsButton"
+                   Visibility="Collapsed"/>
+        </RelativePanel>
+        <Button x:Uid="ConnectedDevicesButton" Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle3}"
                 Width="200" Margin="20,0,0,0" Content="Available devices" Click="ConnectedDevicesButton_Click"
                 Canvas.ZIndex="10"/>
-        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,48,0">
-            <Button Name="SetLayerButton" Style="{StaticResource SetAsLayerButtonStyle}" Background="{StaticResource AppBarBackgroundThemeBrush}"
+        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,48,0" x:FieldModifier="public">
+            <Button x:Uid="SetLayerButton" Name="SetLayerButton" Style="{StaticResource SetAsLayerButtonStyle}" Background="{StaticResource AppBarBackgroundThemeBrush}"
                         RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
                         x:FieldModifier="Public" Content="Set as a layer" Click="SetLayerButton_Click" IsEnabled="False">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                        <TextBlock x:Uid="SetLayerTooltip" Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
                                    TextWrapping="Wrap" Width="144"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
@@ -510,38 +535,50 @@
                            Margin="{Binding ElementName=SetLayerButton, Path=Margin}" HorizontalAlignment="Left" Fill="Transparent" x:FieldModifier="Public" Visibility="Visible">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Drag and select lighting zones from the device display area and set as a layer"
+                        <TextBlock x:Uid="SetLayerRectangle" Foreground="White" Text="Click or drag-select the lighting zones from the device display and set as a layer."
                                        TextWrapping="Wrap" Width="144"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Rectangle>
-            <Button Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
+            <Button x:Uid="SortDeviceButton" Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
                         Content="Arrange devices" Margin="20,0,0,0" Click="SortDeviceButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="M"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Click to switch to devices arrange mode (Ctrl + M)"
+                        <TextBlock x:Uid="SortDeviceTooltip" Foreground="White" Text="Click to rearrange the layout of your available devices (Ctrl + M)"
                                        TextWrapping="Wrap" Width="144"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="UndoButton" RelativePanel.LeftOf="RedoButton" Margin="0,3,10,0"
                     Style="{StaticResource UndoButtonStyle}" Click="UndoButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="Z"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Undo (Ctrl + Z)"/>
+                        <TextBlock x:Uid="UndoTooltip" Foreground="White" Text="Undo (Ctrl + Z)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="RedoButton" RelativePanel.LeftOf="SaveAndApplyButton" Margin="0,3,30,0"
                     Style="{StaticResource RedoButtonStyle}" Click="RedoButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control,Shift" Key="Z"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Redo (Ctrl + Shift + Z)"/>
+                        <TextBlock x:Uid="RedoTooltip" Foreground="White" Text="Redo (Ctrl + Shift + Z)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.LeftOf="HelpButton" Margin="0,0,19,0"
-                        Content="Save &amp; apply" Click="SaveAndApplyButton_Click">
+            <Button x:Uid="SaveAndApplyButton" Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.LeftOf="HelpButton" Margin="0,0,19,0"
+                    Content="Save &amp; apply" Click="SaveAndApplyButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="S"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                         <TextBlock Foreground="White" Text="(Ctrl + S)"/>
@@ -559,14 +596,22 @@
                                 <Setter Property="MaxWidth" Value="130"/>
                             </Style>
                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem x:Name="TutorialItem" Text="Tutorial" Click="TutorialItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                        <MenuFlyoutItem x:Name="TutorialItem" Text="Tutorial" Click="TutorialItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"
+                                        Windows10version1803:KeyboardAcceleratorPlacementMode="Hidden">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F1"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
                             <ToolTipService.ToolTip>
                                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                     <TextBlock Foreground="White" Text="(F1)"/>
                                 </ToolTip>
                             </ToolTipService.ToolTip>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="ShortcutsItem" Text="Shortcuts" Click="ShortcutsItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                        <MenuFlyoutItem x:Name="ShortcutsItem" Text="Shortcuts" Click="ShortcutsItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}"
+                                        Windows10version1803:KeyboardAcceleratorPlacementMode="Hidden">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="H" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
                             <ToolTipService.ToolTip>
                                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                     <TextBlock Foreground="White" Text="(Ctrl + H)"/>
@@ -581,28 +626,15 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
+            
         </RelativePanel>
 
-        <RelativePanel x:Name="SettingRelativePanel" Grid.Column="1" HorizontalAlignment="Right"
-                       VerticalAlignment="Center" x:FieldModifier="Public" Canvas.ZIndex="10">
-            <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
-                      Style="{StaticResource SettingsButtonStyle}" Click="SettingsButton_Click">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Settings"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Image x:Name="SettingBtnNewTab" x:FieldModifier="Public" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
-                   RelativePanel.AlignTopWith="SettingsButton" RelativePanel.AlignRightWith="SettingsButton"
-                   Visibility="Collapsed"/>
-        </RelativePanel>
-
-        <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1" Visibility="Collapsed">
-            <TextBlock Name="EditBarTextBlock" Text="Device Sorting" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
-            <Button Name="EditDoneButton" Content="Save" Click="EditDoneButton_Click" RelativePanel.LeftOf="EditCancelButton"
+        <RelativePanel Name="EditBarRelativePanel" VerticalAlignment="Center" Width="{Binding ElementName=EditBar, Path=Width}" MinWidth="400" Grid.Column="1"
+                       Canvas.ZIndex="11" Visibility="Collapsed" x:FieldModifier="public">
+            <TextBlock Name="EditBarTextBlock" Text="Available devices" RelativePanel.AlignLeftWithPanel="True" FontSize="20" Margin="20,0,0,0"/>
+            <Button x:Uid="SaveButton" Name="EditDoneButton" Content="Save" Click="EditDoneButton_Click" RelativePanel.LeftOf="EditCancelButton"
                         x:FieldModifier="Public" Margin="0,0,10,0" Style="{StaticResource RogButtonStyle3}"/>
-            <Button Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" Margin="0,0,40,0"
+            <Button x:Uid="CancelButton" Name="EditCancelButton" Content="Cancel" Click="EditCancelButton_Click" Margin="0,0,40,0"
                     RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogButtonStyle3}"/>
         </RelativePanel>
         <Grid x:Name="ActionBar_Column2" Grid.Column="4">
@@ -615,7 +647,7 @@
                     </Button.Flyout>
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="AURA Creator lighting file"/>
+                            <TextBlock x:Uid="FileListButtonTooltip" Foreground="White" Text="AURA Creator lighting file"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
@@ -627,35 +659,47 @@
                                     <Setter Property="MaxWidth" Value="130"/>
                                 </Style>
                             </MenuFlyout.MenuFlyoutPresenterStyle>
-                            <MenuFlyoutItem x:Name="RenameItem" Text="Rename" Click="RenameItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <MenuFlyoutItem x:Uid="RenameItem" x:Name="RenameItem" Text="Rename" Click="RenameItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                                <!--<MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="Control" Key="R"/>
+                                </MenuFlyoutItem.KeyboardAccelerators>-->
                                 <ToolTipService.ToolTip>
                                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                         <TextBlock Foreground="White" Text="(Ctrl + R)"/>
                                     </ToolTip>
                                 </ToolTipService.ToolTip>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem x:Name="DeleteItem" Text="Delete" Click="DeleteItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <MenuFlyoutItem x:Uid="DeleteItem" x:Name="DeleteItem" Text="Delete" Click="DeleteItem_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
                                 <ToolTipService.ToolTip>
                                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                         <TextBlock Foreground="White" Text="(Ctrl + Shift + Delete)"/>
                                     </ToolTip>
                                 </ToolTipService.ToolTip>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem Text="Create new file" Click="NewFileButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <MenuFlyoutItem x:Uid="NewFileItem" Text="Create new file" Click="NewFileButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                                <!--<MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="Control" Key="N"/>
+                                </MenuFlyoutItem.KeyboardAccelerators>-->
                                 <ToolTipService.ToolTip>
                                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                         <TextBlock Foreground="White" Text="(Ctrl + N)"/>
                                     </ToolTip>
                                 </ToolTipService.ToolTip>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem Text="Import file" Click="ImportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <MenuFlyoutItem x:Uid="ImportItem" Text="Import file" Click="ImportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                                <!--<MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="Control" Key="I"/>
+                                </MenuFlyoutItem.KeyboardAccelerators>-->
                                 <ToolTipService.ToolTip>
                                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                         <TextBlock Foreground="White" Text="(Ctrl + I)"/>
                                     </ToolTip>
                                 </ToolTipService.ToolTip>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem Text="Export file" Click="ExportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                            <MenuFlyoutItem x:Uid="ExportItem" Text="Export file" Click="ExportButton_Click" Style="{StaticResource RogMenuFlyoutItemStyle1}">
+                                <!--<MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="Control" Key="E"/>
+                                </MenuFlyoutItem.KeyboardAccelerators>-->
                                 <ToolTipService.ToolTip>
                                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
                                         <TextBlock Foreground="White" Text="(Ctrl + E)"/>
@@ -666,7 +710,7 @@
                     </Button.Flyout>
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                            <TextBlock Foreground="White" Text="Menu"/>
+                            <TextBlock x:Uid="MenuButtonTooltip" Foreground="White" Text="Menu"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
@@ -680,7 +724,7 @@
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" >
             <StackPanel Margin="0,10" HorizontalAlignment="Center">
-                <TextBlock Text="Effects" FontSize="20" Foreground="Gray" Margin="0,17"/>
+                <TextBlock x:Uid="Effects" Text="Effects" FontSize="20" Foreground="Gray" Margin="0,17"/>
                 <ListView x:Name="EffectBlockListView" Margin="0,5,0,0"
                           CanDragItems="True" DragItemsStarting="EffectBlockListView_DragItemsStarting" DragItemsCompleted="EffectBlockListView_DragItemsCompleted">
                     <ListView.ItemTemplate>
@@ -689,14 +733,23 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.Items>
-                        <x:String>Static</x:String>
+                        <x:String>0</x:String>
+                        <x:String>1</x:String>
+                        <x:String>2</x:String>
+                        <x:String>3</x:String>
+                        <x:String>4</x:String>
+                        <x:String>5</x:String>
+                        <x:String>6</x:String>
+                        <x:String>7</x:String>
+
+                        <!--<x:String>Static</x:String>
                         <x:String>Breathing</x:String>
                         <x:String>Color cycle</x:String>
                         <x:String>Rainbow</x:String>
                         <x:String>Strobing</x:String>
                         <x:String>Comet</x:String>
                         <x:String>Star</x:String>
-                        <x:String>Tide</x:String>
+                        <x:String>Tide</x:String>-->
                     </ListView.Items>
                 </ListView>
             </StackPanel>
@@ -715,7 +768,7 @@
               PointerExited="WindowSliderGrid_PointerExited">
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Drag up and down to adjust the timeline editing area"
+                    <TextBlock x:Uid="WindowSliderGridTooltip" Foreground="White" Text="Drag up and down to adjust the timeline editing area"
                                TextWrapping="Wrap" Width="150"/>
                 </ToolTip>
             </ToolTipService.ToolTip>

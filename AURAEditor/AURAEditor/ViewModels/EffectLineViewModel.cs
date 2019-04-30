@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using static AuraEditor.Common.Definitions;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor.ViewModels
 {
@@ -145,6 +145,7 @@ namespace AuraEditor.ViewModels
             }
 
         }
+        public string EffectBlockContentTooltip;
         public double PixelSizeOfName { get; set; }
         public string IconPath_s { set; get; }
         public string IconPath_n { set; get; }
@@ -154,8 +155,9 @@ namespace AuraEditor.ViewModels
         public EffectLineViewModel(TimelineEffect eff)
         {
             Model = eff;
-            EffectBlockContent = Name;
-            PixelSizeOfName = getPixelSizeOfName(Name);
+            EffectBlockContent = GetLanguageNameByStringName(Name);
+            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
+            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
         }
@@ -163,8 +165,9 @@ namespace AuraEditor.ViewModels
         {
             TimelineEffect eff = TimelineEffect.Clone(vm.Model);
             Model = eff;
-            EffectBlockContent = Name;
-            PixelSizeOfName = getPixelSizeOfName(Name);
+            EffectBlockContent = GetLanguageNameByStringName(Name);
+            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
+            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
             Layer = new LayerModel();
             Left = vm.Left;
             StartTime = vm.StartTime;
@@ -176,8 +179,9 @@ namespace AuraEditor.ViewModels
         {
             TimelineEffect eff = new TimelineEffect(type);
             Model = eff;
-            EffectBlockContent = Name;
-            PixelSizeOfName = getPixelSizeOfName(Name);
+            EffectBlockContent = GetLanguageNameByStringName(Name);
+            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
+            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
 

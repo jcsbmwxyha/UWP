@@ -26,6 +26,7 @@
                         <MenuFlyoutItem x:Name="DefaultPattern4" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
                         <MenuFlyoutItem x:Name="DefaultPattern5" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
                         <MenuFlyoutItem x:Name="DefaultPattern6" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
+                        <MenuFlyoutItem x:Name="DefaultPattern7" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
                         <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
                         <MenuFlyoutItem x:Name="CustomizePattern" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"
                                         Foreground="{x:Bind m_ColorPatternModel.CustomizeColorForground, Mode=OneWay}"/>
@@ -51,7 +52,7 @@
                         <usercontrol:ColorPointView>
                             <ToolTipService.ToolTip>
                                 <ToolTip Background="Black" Placement="Mouse">
-                                    <TextBlock Foreground="White" Text="Double click to change color"/>
+                                    <TextBlock x:Uid="ColorPointTooltip" Foreground="White" Text="Double click to change color"/>
                                 </ToolTip>
                             </ToolTipService.ToolTip>
                         </usercontrol:ColorPointView>
@@ -64,14 +65,14 @@
                 <Button Click="RemoveColorPointButton_Click" Style="{StaticResource MinusButtonStyle}">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
-                            <TextBlock Foreground="White" Text="Delete node"/>
+                            <TextBlock x:Uid="DeleteNodeToolTip" Foreground="White" Text="Delete node"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>
                 <Button Click="AddColorPointButton_Click" Style="{StaticResource PlusButtonStyle}" Margin="150,0,0,0">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
-                            <TextBlock Foreground="White" Text="Add node"/>
+                            <TextBlock x:Uid="AddNodeToolTip" Foreground="White" Text="Add node"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </Button>

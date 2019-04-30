@@ -26,6 +26,9 @@ using AuraEditor.ViewModels;
 using Windows.UI.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.System.Threading;
+using Windows.UI.Core;
+using AuraEditor.UserControls;
 
 namespace AuraEditor.Pages
 {
@@ -292,7 +295,7 @@ namespace AuraEditor.Pages
             CheckedLayer = null;
             Layers.Clear();
         }
-        public void ClearTypeData(int deviceType)
+        public void ClearDeviceData(int deviceType)
         {
             foreach (var layer in Layers)
             {
@@ -420,14 +423,6 @@ namespace AuraEditor.Pages
             Log.Debug("[PauseButton] Aft AuraEditorStopEngine");
         }
 
-        public void Hotkey_for_Play_and_Puase()
-        {
-            MainPage.Self.ForHotkeyFocus.Focus(FocusState.Programmatic);
-            if (playerModel.IsPlaying)
-                PauseButton_Click(null, null);
-            else
-                PlayButton_Click(null, null);
-        }
         private async void CursorStoryboardCompleted(object sender, object e)
         {
             Log.Debug("[Player] Completed");
@@ -582,6 +577,7 @@ namespace AuraEditor.Pages
                 {
                     effect.Left = effect.Left;
                     effect.Width = effect.Width;
+                    EffectLine.Self.RecalculationStringLength(effect);
                 }
             }
         }
@@ -773,6 +769,64 @@ namespace AuraEditor.Pages
             }
 
             return layersNode;
+        }
+
+        private void ClearAllEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if(CheckedLayer != null)
+            {
+                CheckedLayer.ClearAllEffect();
+                CheckedEffect = null;
+            }
+        }
+
+        private void CopyEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (MainPage.Self.SelectedEffect == null)
+                return;
+            
+            CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
+        }
+
+        private void CutEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (MainPage.Self.SelectedEffect == null)
+                return;
+
+            CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
+            MainPage.Self.SelectedEffect.Layer.DeleteEffectLine(MainPage.Self.SelectedEffect);
+        }
+        public bool g_CanPaste = true;
+        private void PasteEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (CheckedLayer == null  || g_CanPaste == false || CopiedEffect == null)
+                return;
+
+            g_CanPaste = false;
+
+            var copy = new EffectLineViewModel(CopiedEffect);
+            
+            if (MainPage.Self.SelectedEffect != null)
+            {
+                copy.Left = MainPage.Self.SelectedEffect.Right;
+                MainPage.Self.SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
+            }
+            else
+            {
+                CheckedLayer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
+            }
+
+            TimeSpan delay = TimeSpan.FromMilliseconds(400);
+            ThreadPoolTimer DelayTimer = ThreadPoolTimer.CreateTimer(
+                (source) =>
+                {
+                    Dispatcher.RunAsync(
+                       CoreDispatcherPriority.High,
+                       () =>
+                       {
+                           g_CanPaste = true;
+                       });
+                }, delay);
         }
     }
 }

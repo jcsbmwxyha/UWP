@@ -18,6 +18,7 @@ using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.Common.MetroEventSource;
+using System.Threading.Tasks;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -109,10 +110,15 @@ namespace AuraEditor.Pages
             DeviceModel topDM = DeviceModelCollection[0];
             DeviceModel bottomDM = DeviceModelCollection[0];
 
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelLeft < leftmostDM.PixelLeft) { leftmostDM = d; } });
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelRight > rightmostDM.PixelRight) { rightmostDM = d; } });
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelTop < topDM.PixelTop) { topDM = d; } });
-            DeviceModelCollection.ForEach(d => { if (d.Status == DeviceStatus.OnStage && d.PixelBottom > bottomDM.PixelBottom) { bottomDM = d; } });
+            var dms = DeviceModelCollection.FindAll(find => find.Sync == true && find.Plugged == true);
+
+            foreach(var dm in dms)
+            {
+                if (dm.PixelLeft < leftmostDM.PixelLeft) { leftmostDM = dm; }
+                if (dm.PixelRight > rightmostDM.PixelRight) { rightmostDM = dm; }
+                if (dm.PixelTop < topDM.PixelTop) { topDM = dm; }
+                if (dm.PixelBottom > bottomDM.PixelBottom) { bottomDM = dm; }
+            }
 
             return new Rect(
                 leftmostDM.PixelLeft,
@@ -127,15 +133,13 @@ namespace AuraEditor.Pages
         }
 
         #region -- Devices --
-        public async void FillCurrentIngroupDevices()
+        public void FillCurrentIngroupDevices()
         {
-            List<SyncDeviceModel> syncDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
-            DeviceModel dm;
+            List<DeviceModel> onStageDms = DeviceModelCollection.FindAll(d => d.Plugged == true);
+            DeviceModelCollection.Clear();
 
-            foreach (var d in syncDevices)
+            foreach (var dm in onStageDms)
             {
-                dm = await DeviceModel.ToDeviceModelAsync(d);
-
                 if (dm == null)
                     continue;
 
@@ -147,68 +151,23 @@ namespace AuraEditor.Pages
                 DeviceModelCollection.Add(dm);
             }
 
-            RefreshSpaceScrollViewer();
+            RefreshStage();
         }
-        public async void OnIngroupDevicesChanged()
+        public void SendSyncStateToService()
         {
-            List<SyncDeviceModel> ingroupDevices = ConnectedDevicesDialog.Self.GetIngroupDevices();
-            List<SyncDeviceModel> newSD = new List<SyncDeviceModel>();
-            List<DeviceModel> tempToStage = new List<DeviceModel>();
-            List<DeviceModel> stageToTemp = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            var dms = DeviceModelCollection.FindAll(find => find.Plugged == true);
 
-            foreach (var sd in ingroupDevices)
+            string s = "[SyncStatus]";
+
+            foreach(var dm in dms)
             {
-                DeviceModel dm = DeviceModelCollection.Find(d => d.Name == sd.ModelName);
-                if (dm == null)
-                {
-                    newSD.Add(sd);
-
-                    // delete temp data as same type as new, because new device is plugging
-                    LayerPage.Self.ClearTypeData(sd.Type);
-                    DeviceModelCollection.RemoveAll(d => d.Type == GetTypeByTypeName(sd.Type));
-                }
-                else if (dm.Status == DeviceStatus.Temp)
-                    tempToStage.Add(dm);
-                else if (dm.Status == DeviceStatus.OnStage)
-                    stageToTemp.RemoveAll(d => d.Name == sd.ModelName);
+                s += dm.ModelName + ",";
+                s += dm.Sync == true ? "1," : "0,";
             }
 
-            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                foreach (var dm in stageToTemp)
-                {
-                    dm.Status = DeviceStatus.Temp;
-                    Log.Debug("[OnIngroupDevicesChanged] Stage To Temp Device : " + dm.Name);
-                }
-
-                foreach (var dm in tempToStage)
-                {
-                    dm.Status = DeviceStatus.OnStage;
-                    Log.Debug("[OnIngroupDevicesChanged] Temp To Stage Device : " + dm.Name);
-                }
-
-                foreach (var sd in newSD)
-                {
-                    DeviceModel dm = await DeviceModel.ToDeviceModelAsync(sd);
-                    Log.Debug("[OnIngroupDevicesChanged] New Device : " + sd.ModelName);
-                    if (dm == null)
-                    {
-                        Log.Debug("[OnIngroupDevicesChanged] New Device create failed!");
-                        continue;
-                    }
-
-                    Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
-                    Point p = GetFreeRoomPositionForRect(r);
-                    dm.PixelLeft = p.X;
-                    dm.PixelTop = p.Y;
-                    dm.Status = DeviceStatus.OnStage;
-                    DeviceModelCollection.Add(dm);
-                }
-                RefreshSpaceScrollViewer();
-                MainPage.Self.OnIngroupDevicesChanged();
-            });
+            MainPage.Self.SendMessageToServer(s);
         }
-        public void RefreshSpaceScrollViewer()
+        public void RefreshStage()
         {
             List<MouseDetectedRegion> regions = new List<MouseDetectedRegion>();
 
@@ -220,7 +179,7 @@ namespace AuraEditor.Pages
             SpaceCanvas.Children.Add(RestrictLineBottom);
             SpaceCanvas.Children.Add(MouseRectangle);
 
-            var onStageList = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            var onStageList = DeviceModelCollection.FindAll(d => d.Plugged == true && d.Sync == true);
 
             foreach (var dm in onStageList)
             {
@@ -253,21 +212,140 @@ namespace AuraEditor.Pages
             }
 
             m_MouseEventCtrl.DetectionRegions = regions.ToArray();
-            UnselectAllZones();
+            GoToBlankEditing();
             StopScrollTimer();
+
+
+            if (DeviceModelCollection.Count == 0)
+                MaskManager.GetInstance().ShowMask(MaskType.NoSupportDevice);
+            else if (DeviceModelCollection.Find(find => find.Sync == true) == null)
+                MaskManager.GetInstance().ShowMask(MaskType.NoSyncDevice);
+            else
+                MaskManager.GetInstance().ShowMask(MaskType.None);
         }
 
         public void ClearTempDeviceData()
         {
-            var list = DeviceModelCollection.FindAll(dm => dm.Status == DeviceStatus.Temp);
-            list.ForEach(dm => LayerPage.Self.ClearTypeData(dm.Type));
-            DeviceModelCollection.RemoveAll(d => d.Status == DeviceStatus.Temp);
+            var list = DeviceModelCollection.FindAll(dm => dm.Plugged == false);
+            list.ForEach(dm => LayerPage.Self.ClearDeviceData(dm.Type));
+            DeviceModelCollection.RemoveAll(d => d.Plugged == false);
         }
         public void Clean()
         {
             IntializeMouseEventCtrl();
-            DeviceModelCollection.Clear();
+            //DeviceModelCollection.Clear();
             GoToBlankEditing();
+        }
+
+        public async Task Rescan()
+        {
+            try
+            {
+                Log.Debug("[Rescan] Start !");
+
+                List<DeviceModel> remainDMs = new List<DeviceModel>(DeviceModelCollection);
+                List<DeviceModel> newDMs = new List<DeviceModel>();
+                string deviceList = await GetPluggedDevicesFromService();
+                string[] deviceArray = deviceList.Split(':');
+
+                foreach (var deviceString in deviceArray)
+                {
+                    if (deviceString == "")
+                        continue;
+
+                    string[] deviceData = deviceString.Split(',');
+
+                    if (deviceData.Length != 6)
+                    {
+                        Log.Debug("[Rescan] Invalid device info : " + deviceArray);
+                        continue;
+                    }
+
+                    var get = DeviceModelCollection.Find(find => find.ModelName == deviceData[0]);
+                    if (get == null)
+                    {
+                        DeviceModel dm = await DeviceModel.ToDeviceModelAsync(
+                            deviceData[0], deviceData[1], deviceData[2],
+                            deviceData[3], deviceData[4], deviceData[5]);
+
+                        if (dm != null)
+                            newDMs.Add(dm);
+                    }
+                    else
+                    {
+                        if (deviceData[5] == "true")
+                        {
+                            get.Plugged = true;
+                            get.Sync = true;
+                        }
+                        else if (deviceData[5] == "false")
+                        {
+                            get.Sync = false;
+                        }
+
+                        remainDMs.Remove(get);
+                    }
+                }
+
+                foreach (var dm in newDMs)
+                {
+                    Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
+                    Point p = GetFreeRoomPositionForRect(r);
+                    dm.PixelLeft = p.X;
+                    dm.PixelTop = p.Y;
+                    dm.Plugged = true;
+
+                    // Delete temp data as same type as new, because new device is plugging
+                    LayerPage.Self.ClearDeviceData(dm.Type);
+
+                    if (dm.Type == (int)DeviceType.Notebook || dm.Type == (int)DeviceType.Desktop)
+                        DeviceModelCollection.Insert(0, dm);
+                    else
+                        DeviceModelCollection.Add(dm);
+                }
+
+                // The rest mean device was unplugged
+                foreach (var dm in remainDMs)
+                    dm.Plugged = false;
+
+                RefreshStage();
+            }
+            catch
+            {
+                MaskManager.GetInstance().ShowMask(MaskType.NoSupportDevice);
+                Log.Debug("[Rescan] Rescan pluggeddevices failed !");
+            }
+        }
+        private async Task<string> GetPluggedDevicesFromService()
+        {
+            try
+            {
+                string result = "";
+
+                await (new ServiceViewModel()).AuraCreatorGetDevice("CREATORGETDEVICE");
+                int listcount = Int32.Parse(ServiceViewModel.devicename);
+                Log.Debug("[GetPluggedDevices] Plugged device count : " + listcount);
+                for (int i = 0; i < listcount; i++)
+                {
+                    await (new ServiceViewModel()).AuraCreatorGetDevice(i.ToString());
+                    //string format : Name,DeviceType,SyncStatus
+                    string devicename = ServiceViewModel.devicename;
+                    Console.WriteLine(devicename);
+                    result += devicename + ":";
+                }
+
+                Log.Debug("[GetPluggedDevices] Get plugged devices : " + result);
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
+                return null;
+            }
         }
         #endregion
 
@@ -476,13 +554,23 @@ namespace AuraEditor.Pages
         #endregion
 
         #region -- Device Sorting --
+        public void MoveDeviceToFreeRoom(DeviceModel dm)
+        {
+            if (dm == null)
+                return;
+
+            Rect r = new Rect(0, 0, dm.PixelWidth, dm.PixelHeight);
+            Point p = GetFreeRoomPositionForRect(r);
+            dm.PixelLeft = p.X;
+            dm.PixelTop = p.Y;
+        }
         public void MoveMousePosition(DeviceModel device, double offsetX, double offsetY)
         {
             m_MouseEventCtrl.MoveGroupRects(device.Type, offsetX, offsetY);
         }
         public void DeleteOverlappingTempDevice(DeviceModel testDev)
         {
-            List<DeviceModel> tempDevices = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.Temp);
+            List<DeviceModel> tempDevices = DeviceModelCollection.FindAll(d => d.Plugged == false);
             foreach (var dm in tempDevices)
             {
                 if (testDev.Equals(dm))
@@ -492,7 +580,7 @@ namespace AuraEditor.Pages
                     ControlHelper.IsPiling(testDev.PixelTop, testDev.PixelHeight, dm.PixelTop, dm.PixelHeight))
                 {
                     DeviceModelCollection.Remove(dm);
-                    LayerPage.Self.ClearTypeData(dm.Type);
+                    LayerPage.Self.ClearDeviceData(dm.Type);
                 }
             }
         }
@@ -505,7 +593,7 @@ namespace AuraEditor.Pages
         {
             if (GetSpaceStatus() != SpaceStatus.Sorting) return;
 
-            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Plugged == true && d.Sync == true);
 
             foreach (var dm in dms)
             {
@@ -529,7 +617,7 @@ namespace AuraEditor.Pages
         }
         public bool IsPiling(DeviceModel testDev)
         {
-            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Status == DeviceStatus.OnStage);
+            List<DeviceModel> dms = DeviceModelCollection.FindAll(d => d.Plugged == true && d.Sync == true);
 
             foreach (var dm in dms)
             {
@@ -561,7 +649,9 @@ namespace AuraEditor.Pages
         }
         private DeviceModel GetFirstOverlappingDevice(Rect rect)
         {
-            foreach (var dm in DeviceModelCollection)
+            var dms = DeviceModelCollection.FindAll(d => d.Plugged == true && d.Sync == true);
+
+            foreach (var dm in dms)
             {
                 if (ControlHelper.IsPiling(rect.X, rect.Width, dm.PixelLeft, dm.PixelWidth) &&
                     ControlHelper.IsPiling(rect.Y, rect.Height, dm.PixelTop, dm.PixelBottom))
@@ -970,6 +1060,25 @@ namespace AuraEditor.Pages
             isMouseInSpacePage = false;
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
         }
+        private void ZoomAddInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            SpaceZoom_For_Hotkey(true);
+        }
 
+        private void ZoomSubtractInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            SpaceZoom_For_Hotkey(false);
+        }
+
+        private void SelectAllZonesInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (GetSpaceStatus() == SpaceStatus.Editing || GetSpaceStatus() == SpaceStatus.ReEditing)
+            {
+                SelectAllZones();
+                m_SetLayerButton.IsEnabled = true;
+                m_SetLayerRectangle.Visibility = Visibility.Collapsed;
+                m_EditDoneButton.IsEnabled = true;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AuraEditor.Pages;
+﻿using AuraEditor.Common;
+using AuraEditor.Pages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -74,6 +75,11 @@ namespace AuraEditor.Models
             }
             set
             {
+                if(value==true)
+                    MaskManager.GetInstance().ShowMask(MaskType.Playing);
+                else
+                    MaskManager.GetInstance().ShowMask(MaskType.None);
+
                 _isplaying = value;
                 RaisePropertyChanged("IsPlaying");
             }

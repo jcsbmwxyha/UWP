@@ -28,32 +28,32 @@ namespace AuraEditor.Dialogs
 
             TutorialFlipViewData.Add(new TutorialItem()
             {
-                Title = "Step 1. Arrange your devices",
-                Content = "Arrange your devices according to the actual relative position by pressing “Device arrangement” and drag and move the devices.",
+                Title = "Step 1. Arrange devices",
+                Content = "Arrange your devices according to the actual relative position by pressing the \"Device arrangement\" button and then dragging to move the devices.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_arrangedevice_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
                 Title = "Step 2. Create layers",
-                Content = "Drag or click to select the lighting areas on the devices, and press “set as a layer ” to group the lighting areas and create a layer with a timeline.",
+                Content = "Drag or click to select the lighting areas on the devices, and press the \"Set as a layer\" button to group the lighting areas and also create a layer.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_createlayers_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
                 Title = "Step 3. Add lighting effects",
-                Content = "Drag a lighting effect brick you want from the left side panel and put it on the timeline, and you’re able to modify the lengthand start time of the lighting effect brick. you can also press the “Trigger event” button on a layer to add an action with the trigger effects. ",
+                Content = "Drag a lighting effect brick from the left side panel to timeline area. Now you are able to adjust the length, start time and end time of the lighting effect brick.\nYou can also press the \"Trigger event settings\" button of every layer to add a trigger effect.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_addlightingeffects_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
-                Title = "Step 4. Manage the effect properties",
-                Content = "Change the properties of the lighting effect brick on the right side panel.",
+                Title = "Step 4. Manage effect properties",
+                Content = "Adjust the properties of the lighting effect brick on the right side panel.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_mamageeffect_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
-                Title = "Step 5. Preview or apply your lighting file",
-                Content = "You can press “Play” to preview the lighting file or press “Save and apply” to save the lighting file and apply it to your devices. ",
+                Title = "Step 5. Preview or apply the lighting file",
+                Content = "You can press the \"Play\" button to preview the editing lighting file or press \"Save & apply\" button to save the lighting file and also apply it to your devices.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_previeworapply_bg.png"
             });
             TutorialFlipView.ItemsSource = TutorialFlipViewData;
@@ -81,14 +81,6 @@ namespace AuraEditor.Dialogs
                 TutorialFlipView.SelectedIndex += 1;
         }
 
-        private void DoneButton_Click(object sender, RoutedEventArgs e)
-        {
-            WindowsPage.Self.TutorialDoneOrNot = true;
-            this.Hide();
-            MainPage.Self.CanShowDeviceUpdateDialog = true;
-            MainPage.Self.ShowDeviceUpdateDialogOrNot();
-        }
-
         private void TutorialFlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FlipView fv = sender as FlipView;
@@ -97,13 +89,13 @@ namespace AuraEditor.Dialogs
             {
                 SkipBtn.Visibility = Visibility.Collapsed;
                 NextBtn.Visibility = Visibility.Collapsed;
-                DoneBtn.Visibility = Visibility.Visible;
+                CloseBtn.Visibility = Visibility.Visible;
             }
             else
             {
                 SkipBtn.Visibility = Visibility.Visible;
                 NextBtn.Visibility = Visibility.Visible;
-                DoneBtn.Visibility = Visibility.Collapsed;
+                CloseBtn.Visibility = Visibility.Collapsed;
             }
         }
     }

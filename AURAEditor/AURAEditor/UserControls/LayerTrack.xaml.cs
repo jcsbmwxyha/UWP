@@ -62,7 +62,7 @@ namespace AuraEditor.UserControls
         {
             var pair = e.Data.Properties.FirstOrDefault();
             string effName = pair.Value as string;
-            int type = GetEffectIndex(effName);
+            int type = Int32.Parse(effName);
             var dropPosition = e.GetPosition(this);
             var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
             EffectLineViewModel effect = new EffectLineViewModel(type);
@@ -76,7 +76,7 @@ namespace AuraEditor.UserControls
             LayerPage.Self.CheckedEffect = effect;
             LayerPage.Self.UpdateSupportLine(0);
             NeedSave = true;
-            Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + effName);
+            Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffectName(Int32.Parse(effName)).ToString());
         }
         private bool GetAlignPosition(double p, ref double result)
         {

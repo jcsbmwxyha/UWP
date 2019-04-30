@@ -6,6 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor.Common
 {
@@ -117,6 +118,25 @@ namespace AuraEditor.Common
                 return Double.Parse(value as string);
             else
                 return 0;
+        }
+    }
+
+    public class MultiLanguageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is string)
+            {
+                string s = (string)value;
+                return GetLanguageNameByStringName(s);
+            }
+
+            return "Static";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return "Static";
         }
     }
 }

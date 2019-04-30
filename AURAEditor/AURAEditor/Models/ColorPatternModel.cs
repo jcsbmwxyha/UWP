@@ -142,7 +142,7 @@ namespace AuraEditor.Models
                 if (Selected < DefaultColorPointListCollection.Count)
                     d_cps = DefaultColorPointListCollection[Selected];
                 else
-                    d_cps = DefaultColorPointListCollection[5];
+                    d_cps = DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1];
 
                 foreach (var d_cp in d_cps)
                 {

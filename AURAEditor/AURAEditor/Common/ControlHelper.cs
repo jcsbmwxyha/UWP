@@ -14,6 +14,10 @@ namespace AuraEditor.Common
 {
     static class ControlHelper
     {
+        public static DependencyObject FindParentDependencyObject(DependencyObject child)
+        {
+            return VisualTreeHelper.GetParent(child);
+        }
         public static T FindParentControl<T>(UIElement child, Type targetType) where T : FrameworkElement
         {
             if (child == null)

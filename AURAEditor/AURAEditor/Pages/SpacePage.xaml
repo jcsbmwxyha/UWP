@@ -5,10 +5,18 @@
     xmlns:local="using:AuraEditor.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Windows10version1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
     PointerEntered="MouseEnteredSpacePage"
     PointerExited="MouseExitedSpacePage"
+    Windows10version1803:KeyboardAcceleratorPlacementMode="Hidden"
     mc:Ignorable="d">
-    
+
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator Modifiers="Control" Key="Add" Invoked="ZoomAddInvoked"/>
+        <KeyboardAccelerator Modifiers="Control" Key="Subtract" Invoked="ZoomSubtractInvoked"/>
+        <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllZonesInvoked"/>
+    </Page.KeyboardAccelerators>
+
     <Page.Resources>
         <ResourceDictionary>
             <BitmapImage x:Key="grid_bg" UriSource="ms-appx:///Assets/Background/grid.png"/>
@@ -173,6 +181,14 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
+
+        <Grid Name="NoSyncDeviceMask" Background="#88000000" Grid.RowSpan="2" Grid.Column="1" x:FieldModifier="public" Canvas.ZIndex="99">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" FontSize="34">
+                    No Sync Device
+                </TextBlock>
+            </StackPanel>
+        </Grid>
         
         <ScrollViewer Name="SpaceScrollViewer" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Left"
                       MinZoomFactor="0.1" MaxZoomFactor="3" ZoomMode="Enabled" x:FieldModifier="public"
@@ -219,23 +235,29 @@
                 </Button.Flyout>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Zoom levels"/>
+                        <TextBlock x:Uid="ZoomLevelTooltip" Foreground="White" Text="Zoom levels"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="DefaultViewButton" RelativePanel.RightOf="SpaceZoomButton" Height="32" Width="32" Margin="12,8,0,0"
                     Style="{StaticResource DefaultViewButtonStyle}" Click="DefaultViewButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="Number1"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Reset to default layout (Ctrl + 1)"/>
+                        <TextBlock x:Uid="ResetToDefaultTooltip" Foreground="White" Text="Reset to default layout (Ctrl + 1)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="FitAllButton" RelativePanel.RightOf="DefaultViewButton" Height="32" Width="32" Margin="12,8,0,0"
                     Style="{StaticResource FitAllViewButtonStyle}" Click="FitAllButton_Click">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Fill to the entire editing area (Ctrl + 0)"/>
+                        <TextBlock x:Uid="FitAllTooltip" Foreground="White" Text="Fill the entire editing area (Ctrl + 0)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -246,7 +268,7 @@
                     Style="{StaticResource LeftSidePanelButtonStyle}" Click="LeftSidePanelButton_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Fold lighting effect panel"/>
+                    <TextBlock x:Uid="LeftSideOpenedButtonTooltip" Foreground="White" Text="Fold lighting effect panel"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -254,7 +276,7 @@
                     Style="{StaticResource RightSidePanelButtonStyle}" Click="LeftSidePanelButton_Click" Visibility="Collapsed">
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Expand lighting effect panel"/>
+                    <TextBlock x:Uid="LeftSideClosedButtonTooltip" Foreground="White" Text="Expand lighting effect panel"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -264,7 +286,7 @@
                     Style="{StaticResource RightSidePanelButtonStyle}" Click="RightSidePanelButton_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Fold property setting panel"/>
+                    <TextBlock x:Uid="RightSideOpenedButtonTooltip" Foreground="White" Text="Fold property setting panel"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -272,7 +294,7 @@
                     Style="{StaticResource LeftSidePanelButtonStyle}" Click="RightSidePanelButton_Click" Visibility="Collapsed">
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Expand property setting panel"/>
+                    <TextBlock x:Uid="RightSideClosedButtonTooltip" Foreground="White" Text="Expand property setting panel"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>

@@ -142,10 +142,11 @@ namespace AuraEditor.Pages
             m_Info.RandomRangeMin = 0;
             m_Info.High = 60;
             m_Info.Low = 30;
-            m_Info.CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
+            m_Info.CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[DefaultColorPointListCollection.Count -1]); // TODO
             m_Info.ColorSegmentation = true;
             m_Info.RainbowSpecialEffects = false;
             m_Info.RainbowSpecialMode = 1;
+            ColorPatternModel.Self.Selected = DefaultColorPointListCollection.Count - 1;
         }
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {

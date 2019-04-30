@@ -12,14 +12,15 @@
     
     <Page.Resources>
         <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+        <common:MultiLanguageConverter x:Key="multiLanguageConverter"/>
     </Page.Resources>
     
     <StackPanel Name="EffectInfoStackPanel" Background="Transparent">
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-            <TextBlock Text="Effect :" VerticalAlignment="Center"
+            <TextBlock x:Uid="TriggerEffects" Text="Effects:" VerticalAlignment="Center"
                        Foreground="White"/>
             <Button x:Name="EffectSelectionButton" Foreground="White" Width="196" Style="{StaticResource RogComboBoxButtonStyle}"
-                    Content="{x:Bind m_Info.Name, Mode=OneWay}">
+                    Content="{x:Bind m_Info.Name, Mode=OneWay, Converter={StaticResource multiLanguageConverter}}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="EffectSelectionMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}"/>
                 </Button.Flyout>
@@ -29,7 +30,7 @@
             <StackPanel Name="EffectInfoPanel" Margin="0,10,0,0" Height="Auto">
                 <StackPanel x:Name="ColorGroup" Orientation="Vertical"
                             Visibility="{x:Bind m_Info.ColorGroupVisible, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
-                    <TextBlock Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <TextBlock x:Uid="ColorTextBlock" Text="Color" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,20">
                         <RadioButton Name="Single" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                      GroupName="ColorModeSelection">
@@ -42,14 +43,14 @@
                             Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                     <RadioButton Name="Random" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                  GroupName="ColorModeSelection">
-                        <TextBlock x:Name="RandomTextBlock" Text="Random" Foreground="White"/>
+                        <TextBlock x:Uid="RandomTextBlock" x:Name="RandomTextBlock" Text="Random" Foreground="White"/>
                     </RadioButton>
                     <usercontrol:RangeSlider x:Name="RandomRangeSlider" Maximum="12" Minimum="0"
                                                  RangeMax="{x:Bind m_Info.RandomRangeMax, Mode=TwoWay}" RangeMin="{x:Bind m_Info.RandomRangeMin, Mode=TwoWay}" HorizontalAlignment="Left"
                                                  Margin="0,10,0,0" Visibility="{x:Bind m_Info.RandomVisible, Converter={StaticResource booleanToVisibilityConverter}}">
                         <ToolTipService.ToolTip>
                             <ToolTip Background="Black" Placement="Mouse">
-                                <TextBlock Foreground="White" Text="Drag to adjust the random color"/>
+                                <TextBlock x:Uid="RandomToolTip" Foreground="White" Text="Drag to adjust the random color"/>
                             </ToolTip>
                         </ToolTipService.ToolTip>
                     </usercontrol:RangeSlider>
@@ -60,13 +61,13 @@
                     <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                         <RadioButton Name="Pattern" FontSize="16" VerticalAlignment="Center" RequestedTheme="Dark" Click="ColorModeSelection_Click"
                                      GroupName="ColorModeSelection">
-                            <TextBlock x:Name="PatternTextBlock" Text="Pattern" Foreground="White"/>
+                            <TextBlock x:Uid="PatternTextBlock" x:Name="PatternTextBlock" Text="Pattern" Foreground="White"/>
                         </RadioButton>
                     </StackPanel>
                     <usercontrol:ColorPatternView x:Name="ColorPattern" Margin="20,10,0,0"/>
                     <ContentControl x:Name="PatternSwitch">
                         <StackPanel Orientation="Horizontal" Margin="30,20,0,0">
-                            <TextBlock Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
+                            <TextBlock x:Uid="GradientTextBlock" Text="Gradient" VerticalAlignment="Center" FontSize="15"/>
                             <ToggleSwitch x:Name="SegmentationSwitch" MinWidth="20" VerticalAlignment="Center" Margin="80,0,0,0"
                                           Toggled="SegmentationSwitch_Toggled"
                                           IsOn="{x:Bind m_Info.ColorSegmentation, Mode=TwoWay}"
@@ -76,7 +77,7 @@
                 </StackPanel>
 
                 <StackPanel x:Name="SpeedGroup" Orientation="Vertical" Visibility="{x:Bind m_Info.SpeedGroupVisible, Converter={StaticResource booleanToVisibilityConverter}}">
-                    <TextBlock Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
+                    <TextBlock x:Uid="SpeedTextBlock" Text="Speed" Foreground="White" FontSize="16" Margin="20,20,0,0"/>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -91,11 +92,11 @@
                         <Slider Grid.Row="1" x:Name="SpeedSlider" Width="200" HorizontalAlignment="Left" ValueChanged="SpeedValueChanged"
                                 Margin="20,0,0,0" Minimum="0" Maximum="2" Style="{StaticResource SliderStyle}" VerticalAlignment="Stretch" IsThumbToolTipEnabled="False"
                                 Value="{x:Bind m_Info.Speed, Mode=TwoWay}"/>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Top">
-                            <TextBlock Text="Slow" Margin="0,0,50,0" FontSize="12"/>
-                            <TextBlock Text="Normal" Margin="0,0,60,0" FontSize="12"/>
-                            <TextBlock Text="Fast" FontSize="12"/>
-                        </StackPanel>
+                        <RelativePanel Grid.Row="2" VerticalAlignment="Top" Width="200" HorizontalAlignment="Left" Margin="20,0,0,0">
+                            <TextBlock x:Uid="SlowTextBlock" Text="Slow" RelativePanel.AlignLeftWithPanel="True" FontSize="12"/>
+                            <TextBlock x:Uid="NormalTextBlock" Text="Normal" RelativePanel.AlignHorizontalCenterWithPanel="True" FontSize="12"/>
+                            <TextBlock x:Uid="FastTextBlock" Text="Fast" RelativePanel.AlignRightWithPanel="True" FontSize="12"/>
+                        </RelativePanel>
                     </Grid>
                 </StackPanel>
             </StackPanel>

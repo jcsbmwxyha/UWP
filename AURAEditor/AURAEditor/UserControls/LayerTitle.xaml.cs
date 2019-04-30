@@ -71,7 +71,8 @@ namespace AuraEditor.UserControls
         #region -- Layer Name --
         private void NameTextBlock_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
-            NameTextBox.Text = "";
+            NameTextBox.Text = NameTextBlock.Text;
+            NameTextBox.SelectAll();
             NameTextBlock.Visibility = Visibility.Collapsed;
             NameTextBox.Visibility = Visibility.Visible;
             NameTextBox.Focus(FocusState.Programmatic);

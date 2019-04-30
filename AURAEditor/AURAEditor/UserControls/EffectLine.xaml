@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:AuraEditor.Common"
     mc:Ignorable="d"
     d:DesignHeight="50"
     d:DesignWidth="400"
@@ -98,6 +99,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
+            <common:MultiLanguageConverter x:Key="multiLanguageConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -109,28 +112,28 @@
                  Content="{x:Bind elvm.EffectBlockContent , Mode=OneWay}">
         <RadioButton.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="Copy" Click="CopyItem_Click" IsEnabled="True">
+                <MenuFlyoutItem x:Uid="CopyItem" Text="Copy" Click="CopyItem_Click" IsEnabled="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + C)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True">
+                <MenuFlyoutItem x:Uid="PasteItem" Text="Paste" Click="PasteItem_Click" IsEnabled="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + V)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Cut" Click="CutItem_Click" IsEnabled="True">
+                <MenuFlyoutItem x:Uid="CutItem" Text="Cut" Click="CutItem_Click" IsEnabled="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + X)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click" IsEnabled="True">
+                <MenuFlyoutItem x:Uid="DeleteItem" Text="Delete" Click="DeleteItem_Click" IsEnabled="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Delete/Backsapce)"/>
@@ -141,7 +144,7 @@
         </RadioButton.ContextFlyout>
         <ToolTipService.ToolTip>
             <ToolTip Background="Black" Placement="Mouse">
-                <TextBlock Foreground="White" Text="{x:Bind elvm.EffectBlockContent , Mode=OneWay}"/>
+                <TextBlock Foreground="White" Text="{x:Bind elvm.EffectBlockContentTooltip , Mode=OneWay}"/>
             </ToolTip>
         </ToolTipService.ToolTip>
     </RadioButton>

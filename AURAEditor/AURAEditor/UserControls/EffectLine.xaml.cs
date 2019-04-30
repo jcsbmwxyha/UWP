@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.StorageHelper;
 using CoreCursor = Windows.UI.Core.CoreCursor;
@@ -29,6 +30,13 @@ namespace AuraEditor.UserControls
         private double _tempSizeAllPosition;
         private double _oldValue;
         private bool _isPressed;
+
+        static EffectLine _instance;
+        static public EffectLine Self
+        {
+            get { return _instance; }
+        }
+
         private double ViewModelLeft
         {
             get
@@ -204,6 +212,7 @@ namespace AuraEditor.UserControls
 
         public EffectLine()
         {
+            _instance = this;
             this.InitializeComponent();
             this.DataContextChanged += (s, e) =>
             {
@@ -229,6 +238,7 @@ namespace AuraEditor.UserControls
         private void EffectLine_Loaded(object sender, RoutedEventArgs e)
         {
             LoadedStoryboard.Begin();
+            RecalculationStringLength(elvm);
         }
         private void EffectLine_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -256,7 +266,8 @@ namespace AuraEditor.UserControls
             }
 
             this.Opacity = 0.5;
-            this.SetValue(Canvas.ZIndexProperty, 3);
+            var containter = FindParentDependencyObject(this);
+            containter.SetValue(Canvas.ZIndexProperty, 3);
 
             alignPositions = LayerPage.Self.GetAlignPositions(elvm);
         }
@@ -331,13 +342,18 @@ namespace AuraEditor.UserControls
                     ViewModelWidth -= move;
                 }
             }
-            
-            if (ViewModelWidth - 70 < elvm.PixelSizeOfName)
-                setNewEffectName(ViewModelWidth - 70);
-            else
-                elvm.EffectBlockContent = elvm.Name;
+
+            RecalculationStringLength(elvm);
 
             LayerPage.Self.UpdateSupportLine(align);
+        }
+
+        public void RecalculationStringLength(EffectLineViewModel _elvm)
+        {
+            if (_elvm.Width - 70 < _elvm.PixelSizeOfName)
+                SetNewEffectName(_elvm, GetLanguageNameByStringName(_elvm.Name), _elvm.Width - 70);
+            else
+                _elvm.EffectBlockContent = GetLanguageNameByStringName(_elvm.Name);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
@@ -348,7 +364,9 @@ namespace AuraEditor.UserControls
             double result = elvm.Layer.MoveToFitPosition(elvm);
             NeedSave = true;
             this.Opacity = 1;
-            this.SetValue(Canvas.ZIndexProperty, 0);
+
+            var containter = FindParentDependencyObject(this);
+            containter.SetValue(Canvas.ZIndexProperty, 0);
 
             if (mouseState == CursorState.SizeAll)
                 ReUndoManager.Store(new MoveEffectCommand(elvm, _oldValue, result));
@@ -387,19 +405,18 @@ namespace AuraEditor.UserControls
             LayerPage.Self.CheckedEffect = elvm;
         }
 
-        private void setNewEffectName(double EffectLineWidth)
+        private void SetNewEffectName(EffectLineViewModel _elvm, string textContent, double EffectLineWidth)
         {
-            String tmp = elvm.Name;
-            int removeChar = (int)Math.Ceiling((elvm.PixelSizeOfName - EffectLineWidth) / 10);
+            int removeChar = (int)Math.Ceiling((_elvm.PixelSizeOfName - EffectLineWidth) / 10);
 
-            if (removeChar > elvm.Name.Length)
+            if (removeChar > textContent.Length)
             {
-                removeChar = elvm.Name.Length;
-                elvm.EffectBlockContent = "";
+                removeChar = textContent.Length;
+                _elvm.EffectBlockContent = "";
             }
             else
             {
-                elvm.EffectBlockContent = elvm.Name.Substring(0, elvm.Name.Length - removeChar) + "...";
+                _elvm.EffectBlockContent = textContent.Substring(0, textContent.Length - removeChar) + "...";
             }
         }
 

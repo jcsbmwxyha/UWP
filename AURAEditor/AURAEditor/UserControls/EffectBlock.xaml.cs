@@ -1,12 +1,14 @@
-﻿using AuraEditor.Common;
+﻿using System;
+using AuraEditor.Common;
 using System.ComponentModel;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.EffectHelper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -14,13 +16,24 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectBlock : UserControl, INotifyPropertyChanged
     {
-        public string MyText { get { return this.DataContext as string; } }
+        public string MyText
+        {
+            get
+            {
+                return this.DataContext as string;
+            }
+            set
+            {
+                DataContext = value;
+            }
+        }
 
         public bool Dragging;
         static public Point LastDraggingPoint;
         private string _effectBlockBackground_Normal= "ms-appx:///Assets/EffectBlock/";
         private string _effectBlockBackground_Pressed= "ms-appx:///Assets/EffectBlock/";
         public event PropertyChangedEventHandler PropertyChanged;
+        private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
 
         public string EffectBlockBackground_Normal
         {
@@ -75,8 +88,9 @@ namespace AuraEditor.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            EffectBlockBackground_Normal  = "ms-appx:///Assets/EffectBlock/asus_ac_" + MyText + "_btn_n.png";  //MyText get value in load step
-            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + MyText + "_btn_s.png"; ;
+            EffectBlockBackground_Normal  = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffectName(Int32.Parse(MyText)).ToString() + "_btn_n.png";  //MyText get value in load step
+            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffectName(Int32.Parse(MyText)).ToString() + "_btn_s.png";
+            MyText = GetEffectNameByNumString(MyText);
         }
         private void RaisePropertyChanged(string property)
         {

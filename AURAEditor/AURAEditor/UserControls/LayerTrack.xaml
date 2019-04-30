@@ -23,28 +23,28 @@
             PointerExited="Track_PointerExited">
         <Canvas.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="Copy" IsEnabled="False">
+                <MenuFlyoutItem x:Uid="CopyItem" Text="Copy" IsEnabled="False">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + C)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Paste" Click="PasteItem_Click" IsEnabled="True">
+                <MenuFlyoutItem x:Uid="PasteItem" Text="Paste" Click="PasteItem_Click" IsEnabled="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + V)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Cut" IsEnabled="False">
+                <MenuFlyoutItem x:Uid="CutItem" Text="Cut" IsEnabled="False">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + X)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Delete" IsEnabled="False">
+                <MenuFlyoutItem x:Uid="DeleteItem" Text="Delete" IsEnabled="False">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Delete/Backsapce)"/>

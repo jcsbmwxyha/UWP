@@ -32,7 +32,7 @@
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
                                                 <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_off_h}"/>
-                                                <Setter Target="EyeTextBlock.Text" Value="Hide layer"/>
+                                                <Setter x:Uid="EyesHideTooltip" Target="EyeTextBlock.Text" Value="Hide layer"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
@@ -48,7 +48,7 @@
                                         <VisualState x:Name="CheckedPointerOver">
                                             <VisualState.Setters>
                                                 <Setter Target="Eye.Source" Value="{ThemeResource EyeToggleButton_on_h}"/>
-                                                <Setter Target="EyeTextBlock.Text" Value="Show layer"/>
+                                                <Setter x:Uid="EyesShowTooltip" Target="EyeTextBlock.Text" Value="Show layer"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="CheckedPressed">
@@ -79,12 +79,9 @@
                 </Setter>
             </Style>
 
-            <BitmapImage x:Key="TriggerButtonOn_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_n.png"/>
-            <BitmapImage x:Key="TriggerButtonOn_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_h.png"/>
-            <BitmapImage x:Key="TriggerButtonOn_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_select2_p.png"/>
-            <BitmapImage x:Key="TriggerButtonOff_n" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_d.png"/>
-            <BitmapImage x:Key="TriggerButtonOff_h" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_n.png"/>
-            <BitmapImage x:Key="TriggerButtonOff_p" UriSource="ms-appx:///Assets/Button/asus_ac_radio_reset_unselect1_p.png"/>
+            <BitmapImage x:Key="TriggerButton_On" UriSource="ms-appx:///Assets/TriggerButton/asus_ac_trigger_ic_on.png"/>
+            <BitmapImage x:Key="TriggerButton_Off" UriSource="ms-appx:///Assets/TriggerButton/asus_ac_trigger_ic_off.png"/>
+            <BitmapImage x:Key="TriggerButton_Hover" UriSource="ms-appx:///Assets/TriggerButton/asus_ac_trigger_ic_h.png"/>
             <Style x:Key="TriggerStatusOnButtonStyle"  TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -94,17 +91,17 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_n}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_On}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_h}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_Hover}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOn_p}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_On}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -127,17 +124,17 @@
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_n}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_Off}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_h}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_Hover}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
-                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButtonOff_p}"/>
+                                                <Setter Target="TriggerButton.Source" Value="{ThemeResource TriggerButton_Off}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -237,21 +234,24 @@
           PointerPressed="MyGrid_PointerPressed">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="Duplicate" Click="DuplicateItem_Click">
+                <MenuFlyoutItem x:Uid="DuplicateItem" Text="Duplicate" Click="DuplicateItem_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="D"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + D)"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Rename" Click="RenameItem_Click">
+                <MenuFlyoutItem x:Uid="RenameItem" Text="Rename" Click="RenameItem_Click">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="Double click to rename"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Delete" Click="DeleteItem_Click">
+                <MenuFlyoutItem x:Uid="DeleteItem" Text="Delete" Click="DeleteItem_Click">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
                             <TextBlock Foreground="White" Text="(Ctrl + Backspace)"/>
@@ -264,23 +264,23 @@
         <RelativePanel VerticalAlignment="Center">
             <ToggleButton Name="EyeToggleButton" Width="28" Height="26" RelativePanel.AlignLeftWithPanel="True" Margin="16,0,0,0"
                           Click="EyeToggleButton_Click" IsChecked="{x:Bind m_Layer.Eye, Mode=TwoWay}" Style="{StaticResource EyeToggleButtonStyle}"/>
-            <TextBlock Name="NameTextBlock" Text="{x:Bind m_Layer.Name, Mode=TwoWay}"
+            <TextBlock Name="NameTextBlock" Width="100" Text="{x:Bind m_Layer.Name, Mode=TwoWay}"
                        RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="22,0,0,0" VerticalAlignment="Center"
-                       DoubleTapped="NameTextBlock_DoubleTapped">
+                       DoubleTapped="NameTextBlock_DoubleTapped" TextTrimming="CharacterEllipsis">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Double click to rename"/>
+                        <TextBlock x:Uid="NameTextBlockTooltip" Foreground="White" Text="Double click to rename"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </TextBlock>
-            <TextBox Name="NameTextBox" Width="120" MinHeight="30" Height="30" Visibility="Collapsed"
+            <TextBox Name="NameTextBox" Width="120" MinHeight="34" Height="34" Visibility="Collapsed"
                      LostFocus="NameTextBox_LostFocus" KeyDown="NameTextBox_KeyDown"
                      RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Edit layer"/>
+                        <TextBlock x:Uid="EditButtonTooltip" Foreground="White" Text="Edit layer"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -290,7 +290,7 @@
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource booleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Trigger effects settings"/>
+                        <TextBlock x:Uid="TriggerStatusOnButtonTooltip" Foreground="White" Text="Tigger effects settings"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -299,7 +299,7 @@
                     Visibility="{x:Bind m_Layer.IsTriggering, Converter={StaticResource reverseBooleanToVisibilityConverter},Mode=OneWay}">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Trigger effects settings"/>
+                        <TextBlock x:Uid="TriggerStatusOnButtonTooltip" Foreground="White" Text="Trigger effects settings"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -307,7 +307,7 @@
     </Grid>
     <ToolTipService.ToolTip>
         <ToolTip Background="Black" Placement="Mouse">
-            <TextBlock Foreground="White" Text="Layer"/>
+            <TextBlock x:Uid="LayerTooltip" Foreground="White" Text="Layer"/>
         </ToolTip>
     </ToolTipService.ToolTip>
 </UserControl>

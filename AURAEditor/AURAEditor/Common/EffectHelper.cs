@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
@@ -124,6 +125,10 @@ namespace AuraEditor.Common
 
             return false;
         }
+        static public string[] GetCommonEffect()
+        {
+            return _commonEffects;
+        }
         static public string[] GetTriggerEffect()
         {
             return _triggerEffects;
@@ -141,6 +146,19 @@ namespace AuraEditor.Common
             return false;
         }
 
+
+        public enum DeviceType : int
+        {
+            Notebook = 0,
+            Mouse,
+            Keyboard,
+            Headset,
+            Display,
+            Desktop,
+            MotherBoard,
+            MousePad,
+            Microphone,
+        }
         static public int GetTypeByTypeName(string typeName)
         {
             if (typeName == "Notebook") return 0;
@@ -166,6 +184,44 @@ namespace AuraEditor.Common
             else if (type == 7) return "MousePad";
             else if (type == 8) return "Microphone";
             return "Notebook";
+        }
+
+        static public string GetEffectNameByNumString(string numberName)
+        {
+            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+            if (numberName == "0") return resourceLoader.GetString("StaticEffectText");
+            else if (numberName == "1") return resourceLoader.GetString("BreathingEffectText");
+            else if (numberName == "2") return resourceLoader.GetString("ColorCycleEffectText");
+            else if (numberName == "3") return resourceLoader.GetString("RainbowEffectText");
+            else if (numberName == "4") return resourceLoader.GetString("StrobingEffectText");
+            else if (numberName == "5") return resourceLoader.GetString("CometEffectText");
+            else if (numberName == "6") return resourceLoader.GetString("StarEffectText");
+            else if (numberName == "7") return resourceLoader.GetString("TideEffectText");
+            else if (numberName == "8") return resourceLoader.GetString("ReactiveEffectText");
+            else if (numberName == "9") return resourceLoader.GetString("LaserEffectText");
+            else if (numberName == "10") return resourceLoader.GetString("RippleEffectText");
+            else if (numberName == "11") return resourceLoader.GetString("MusicEffectText");
+            else if (numberName == "12") return resourceLoader.GetString("SmartEffectText");
+            return null;
+        }
+
+        static public string GetLanguageNameByStringName(string numberName)
+        {
+            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+            if (numberName == "Static") return resourceLoader.GetString("StaticEffectText");
+            else if (numberName == "Breathing") return resourceLoader.GetString("BreathingEffectText");
+            else if (numberName == "Color cycle") return resourceLoader.GetString("ColorCycleEffectText");
+            else if (numberName == "Rainbow") return resourceLoader.GetString("RainbowEffectText");
+            else if (numberName == "Strobing") return resourceLoader.GetString("StrobingEffectText");
+            else if (numberName == "Comet") return resourceLoader.GetString("CometEffectText");
+            else if (numberName == "Star") return resourceLoader.GetString("StarEffectText");
+            else if (numberName == "Tide") return resourceLoader.GetString("TideEffectText");
+            else if (numberName == "Reactive") return resourceLoader.GetString("ReactiveEffectText");
+            else if (numberName == "Laser") return resourceLoader.GetString("LaserEffectText");
+            else if (numberName == "Ripple") return resourceLoader.GetString("RippleEffectText");
+            else if (numberName == "Music") return resourceLoader.GetString("MusicEffectText");
+            else if (numberName == "Smart") return resourceLoader.GetString("SmartEffectText");
+            return null;
         }
 
         static public void SetColorPointBorders(List<ColorPointModel> cps)

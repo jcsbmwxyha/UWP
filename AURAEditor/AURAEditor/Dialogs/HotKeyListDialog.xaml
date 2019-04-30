@@ -76,6 +76,30 @@
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+            <Style TargetType="Grid" x:Key="TitleGrid">
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="Background" Value="#55FFFFFF"/>
+            </Style>
+            <Style TargetType="Grid" x:Key="TypeGrid_K">
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="Background" Value="#0FFF0029"/>
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Padding" Value="15,0,0,0"/>
+            </Style>
+            <Style TargetType="StackPanel" x:Key="StackPanel_K">
+                <Setter Property="Background" Value="#0FFF0029"/>
+            </Style>
+            <Style TargetType="Grid" x:Key="TypeGrid_M">
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="Background" Value="#0F0024FF"/>
+            </Style>
+            <Style TargetType="StackPanel" x:Key="StackPanel_M">
+                <Setter Property="Background" Value="#0F0024FF"/>
             </Style>
         </ResourceDictionary>
     </ContentDialog.Resources>
@@ -91,9 +115,9 @@
                Source="ms-appx:///Assets/ConnectedDevices/asus_ac_cd_bg.png"
                Stretch="Fill"/>
         <RelativePanel Margin="21,0,17,0">
-            <TextBlock Text="Hot key List" RelativePanel.AlignLeftWithPanel="True"
+            <TextBlock Text="Shortcuts" RelativePanel.AlignLeftWithPanel="True"
                        RelativePanel.AlignVerticalCenterWithPanel="True"
-                       Foreground="White"/>
+                       Foreground="White" FontSize="16"/>
             <Button RelativePanel.AlignRightWithPanel="True"
                     RelativePanel.AlignVerticalCenterWithPanel="True"
                     Style="{StaticResource RogDialogCloseButton}"
@@ -106,286 +130,380 @@
         <ScrollViewer Grid.Row="1" HorizontalAlignment="Center" Margin="0,16,0,0" Width="472">
             <StackPanel Orientation="Vertical">
                 <!--Global shortcuts-->
-                <Grid Height="36">
+                <Grid Style="{StaticResource TitleGrid}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Global shortcuts - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Save and apply lighting file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;S&quot;" VerticalAlignment="Center"/>
+                <Grid Style="{StaticResource TypeGrid_K}">
+                    <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
+                    <TextBlock Text="Global" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Undo" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;Z&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Redo" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;Shoft&quot; + &quot;Z&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Rename file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;R&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Delete file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;Shoft&quot; + &quot;Delete&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Create new file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot;  &quot;N&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Import file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;I&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Export file" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;E&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Help - tutorial" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;F1&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Hot key list" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;H&quot;" VerticalAlignment="Center"/>
-                </Grid>
+                <StackPanel Style="{StaticResource StackPanel_K}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Save and apply the file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + S"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Undo"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + Z"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Redo"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + Shift + Z"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Rename current file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + R"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Delete current file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + Shift + Delete"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Create new file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + N"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Import file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + I"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Export current file"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + E"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Open tutorial"/>
+                        <TextBlock Grid.Column="1" Text="F1"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Open shortcuts list"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + H"/>
+                    </Grid>
+                </StackPanel>
                 <!--End-->
-                <!--Device display area-->
-                <Grid Height="36">
+                <!--Device area-->
+                <Grid Style="{StaticResource TypeGrid_K}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Device display area - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Device area" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Zoom in/out 固定顯示比例" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;+&quot; / &quot;-&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="全選燈區" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;A&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Reset to the default layout" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;1&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Fill to the entire editing area" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;0&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="進入裝置排序模式" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;M&quot;" VerticalAlignment="Center"/>
-                </Grid>
+                <StackPanel Style="{StaticResource StackPanel_K}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Zoom in/out device area by fixed zoom level"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + Plus (+) / Minus (-)"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Select all lighting areas"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + A"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Reset to default layout"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + 1"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Fill to the entire editing area"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + 0"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Enter device arrange mode"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + M"/>
+                    </Grid>
+                </StackPanel>
                 <!--End-->
-                <!--Timeline edit area-->
-                <Grid Height="36">
+                <!--Timeline editing-->
+                <Grid Style="{StaticResource TypeGrid_K}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Timeline edit area - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Timeline editing - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="複製新增整個圖層 (包含圖層+燈效)" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;D&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="刪除整個圖層" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; + &quot;Backspace&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Preview play/pause" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Shift&quot; + &quot;0&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Time cursor 移至起點" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Shift&quot; + &quot;Home&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Time cursor 移至終點" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Shift&quot; + &quot;End&quot;" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="剪下燈效磚" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; +  &quot;X&quot;(on effect brick)" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="複製燈效磚" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; +  &quot;C&quot;(on effect brick)" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="貼上燈效磚 (於 timeline 上或是燈效磚後)" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; +  &quot;V&quot;(on timeline or effect brick)" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="刪除燈效磚" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Delete&quot; / &quot;Backspace&quot;(on effect brick)" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="36" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="刪除圖層中所有燈效磚" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Shift&quot; + &quot;E&quot; (on layer or timeline or effect brick)" VerticalAlignment="Center"
-                               TextWrapping="Wrap"/>
-                </Grid>
+                <StackPanel Style="{StaticResource StackPanel_K}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Duplicate the whole layer"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + D"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Delete the whole layer"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + Backspace"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Play/Pause lighting file preview"/>
+                        <TextBlock Grid.Column="1" Text="Shift + 0"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Move time cursor to the beginning"/>
+                        <TextBlock Grid.Column="1" Text="Shift + Home"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Move time cursor to the end"/>
+                        <TextBlock Grid.Column="1" Text="Shift + End"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Cut the effect brick"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + X"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Copy the effect brick"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + C"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Paste the effect brick"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + V"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Delete the effect brick"/>
+                        <TextBlock Grid.Column="1" Text="Delete / Backspace"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Delete all the effect brick on the selected layer"/>
+                        <TextBlock Grid.Column="1" Text="Shift + E"/>
+                    </Grid>
+                </StackPanel>
                 <!--End-->
-                <!--Device display area-->
-                <Grid Height="36">
+                <!--Device area-->
+                <Grid Style="{StaticResource TitleGrid}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Device display area - Mouse shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Mouse shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Zoom in/out" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Ctrl&quot; +  Mouse scroll wheel" VerticalAlignment="Center"/>
+                <Grid Style="{StaticResource TypeGrid_M}">
+                    <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
+                    <TextBlock Text="Device area" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="水平捲動畫布" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Shift&quot; +  Mouse scroll wheel" VerticalAlignment="Center"/>
+                <StackPanel Style="{StaticResource StackPanel_M}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Zoom in/out device area"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + mouse scroll wheel"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Scroll horizontally"/>
+                        <TextBlock Grid.Column="1" Text="Shift + mouse scroll wheel"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Scroll vertically"/>
+                        <TextBlock Grid.Column="1" Text="Mouse scroll wheel"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Move the canvas of device area"/>
+                        <TextBlock Grid.Column="1" Text="Z + mouse drag"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Multi-select or deselect the lighting area"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + mouse click or drag"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Multi-select the lighting area"/>
+                        <TextBlock Grid.Column="1" Text="Shift + mouse click or drag"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Deselect the lighting area"/>
+                        <TextBlock Grid.Column="1" Text="Mouse right click on device area"/>
+                    </Grid>
+                </StackPanel>
+                <!--End-->
+                <!--Timeline editing-->
+                <Grid Style="{StaticResource TypeGrid_M}">
+                    <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
+                    <TextBlock Text="Timeline editing" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="垂直捲動畫布" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="Mouse scroll wheel" VerticalAlignment="Center"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
-                <Grid Height="24" Margin="15,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="顯示手型工具 icon，移動畫布" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="&quot;Z&quot; + Mouse hold and drag" VerticalAlignment="Center"/>
-                </Grid>
+                <StackPanel Style="{StaticResource StackPanel_M}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Rename the layer"/>
+                        <TextBlock Grid.Column="1" Text="Mouse double click on the layer name"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Multi-select the continuous layer"/>
+                        <TextBlock Grid.Column="1" Text="Shift + mouse click"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Multi-select the spaced layer"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + mouse click"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Move the timeline scale"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + mouse drag the timeline scale"/>
+                    </Grid>
+                    <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Open function menu"/>
+                        <TextBlock Grid.Column="1" Text="Mouse right click on layer, timeline or effect brick"/>
+                    </Grid>
+                </StackPanel>
                 <!--End-->
             </StackPanel>
         </ScrollViewer>

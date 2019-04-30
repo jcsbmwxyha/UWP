@@ -19,12 +19,6 @@ using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor.Models
 {
-    public enum DeviceStatus
-    {
-        OnStage = 0,
-        Temp,
-    }
-
     public class DeviceModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -167,52 +161,67 @@ namespace AuraEditor.Models
             }
         }
 
-        public string Name { get; set; }
+        public string ModelName { get; set; }
         public int Type { get; set; }
-        public DeviceStatus Status { get; set; }
+        public string FolderName { get; set; }
+        public string CsvName { get; set; }
+        public string PngName { get; set; }
+        public bool Plugged { get; set; }
+        public bool Sync { get; internal set; }
         #endregion
 
         public DeviceModel()
         {
         }
-
-        static public async Task<DeviceModel> ToDeviceModelAsync(SyncDeviceModel syncDevice)
+        static public async Task<DeviceModel> ToDeviceModelAsync(string model, string folder, string csv, string png, string type, string sync)
         {
-            return await GetDeviceModel(syncDevice.ModelName, syncDevice.FolderName, syncDevice.CsvName, syncDevice.PngName, syncDevice.Type);
+            return await GetDeviceModel(model, folder, csv, png, type, sync);
         }
         static public async Task<DeviceModel> ToDeviceModelAsync(XmlNode node)
         {
             XmlElement elem = (XmlElement)node;
             string modelName = elem.GetAttribute("name");
+            string folderName = elem.GetAttribute("folder");
+            string csvName = elem.GetAttribute("csv");
+            string pngName = elem.GetAttribute("png");
             string type = elem.GetAttribute("type");
-            return await GetDeviceModel(modelName, type);
+            return await GetDeviceModel(modelName, folderName, csvName, pngName, type, "true");
         }
-        static private async Task<DeviceModel> GetDeviceModel(string modelName, string type)
-        {
-            return await GetDeviceModel(modelName, modelName, modelName, modelName, type);
-        }
-        static private async Task<DeviceModel> GetDeviceModel(string modelName, string folderName, string csvName, string pngName, string type)
+        static private async Task<DeviceModel> GetDeviceModel(string modelName, string folderName, string csvName,
+                                                                string pngName, string type, string sync)
         {
             try
             {
-                DeviceModel dm = new DeviceModel();
+                DeviceModel dm = new DeviceModel
+                {
+                    ModelName = modelName,
+                    FolderName = folderName,
+                    CsvName=csvName,
+                    PngName = pngName,
+                    Type = GetTypeByTypeName(type),
+                    Sync = bool.Parse(sync),
+                };
+
+                Log.Debug("[GetDeviceModel] Model name : " + modelName +
+                          ", Folder name : " + folderName +
+                          ", CSV name : " + csvName +
+                          ", PNG name : " + pngName +
+                          ", Type name : " + type +
+                          ", Sync name : " + sync);
+
                 ObservableCollection<ZoneModel> zones = new ObservableCollection<ZoneModel>();
                 ObservableCollection<SpecialZoneModel> specialzones = new ObservableCollection<SpecialZoneModel>();
 
                 string auraCreatorFolderPath = ApplicationData.Current.LocalFolder.Path + "\\Devices\\";
                 double rateW = 0;
                 double rateH = 0;
-                int originalPixelWidth = 1000;
-                int originalPixelHeight = 1000;
 
-                Log.Debug("[GetDeviceModel] Model name : " + modelName + ", Type name : " + type);
                 StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(auraCreatorFolderPath + folderName);
                 StorageFile csvFile = await folder.GetFileAsync(csvName + ".csv");
                 StorageFile pngFile = await folder.GetFileAsync(pngName + ".png");
-
-                dm.Name = modelName;
-
+                
                 int gridW, gridH;
+
                 switch (type)
                 {
                     case "Notebook": gridW = 27; gridH = 27; break;
@@ -225,22 +234,14 @@ namespace AuraEditor.Models
                     default: gridW = 36; gridH = 36; break;
                 }
 
-                dm.Type = GetTypeByTypeName(type);
-
                 if (pngFile != null)
                 {
                     Log.Debug("[GetDeviceModel] Parse PNG info ...");
                     using (IRandomAccessStream fileStream = await pngFile.OpenAsync(FileAccessMode.Read))
                     {
                         BitmapImage bitmapImage = new BitmapImage();
-
                         bitmapImage.SetSource(fileStream);
-
                         dm.Image = bitmapImage;
-                        rateW = (double)(gridW * GridPixels) / bitmapImage.PixelWidth;
-                        rateH = (double)(gridH * GridPixels) / bitmapImage.PixelHeight;
-                        originalPixelWidth = bitmapImage.PixelWidth;
-                        originalPixelHeight = bitmapImage.PixelHeight;
                     }
                 }
 
@@ -255,6 +256,11 @@ namespace AuraEditor.Models
                 if (csvFile != null)
                 {
                     Log.Debug("[GetDeviceModel] Parse CSV info ...");
+
+                    // If csv not define, we use default gridW & gridH.
+                    rateW = (double)(gridW * GridPixels) / dm.Image.PixelWidth;
+                    rateH = (double)(gridH * GridPixels) / dm.Image.PixelHeight;
+
                     using (CsvFileReader csvReader = new CsvFileReader(await csvFile.OpenStreamForReadAsync()))
                     {
                         CsvRow row = new CsvRow();
@@ -263,14 +269,12 @@ namespace AuraEditor.Models
                             if (row[0].ToLower() == "gridwidth")
                             {
                                 gridW = Int32.Parse(row[1]);
-                                rateW = (double)(gridW * GridPixels) / originalPixelWidth;
-                                dm.PixelWidth = gridW * GridPixels;
+                                rateW = (double)(gridW * GridPixels) / dm.Image.PixelWidth;
                             }
                             else if (row[0].ToLower() == "gridheight")
                             {
                                 gridH = Int32.Parse(row[1]);
-                                rateH = (double)(gridH * GridPixels) / originalPixelHeight;
-                                dm.PixelHeight = gridH * GridPixels;
+                                rateH = (double)(gridH * GridPixels) / dm.Image.PixelHeight;
                             }
                             if (row[0].ToLower() == "parameters")
                             {
@@ -341,6 +345,9 @@ namespace AuraEditor.Models
                                 dm.SpecialZones = specialzones;
                             }
                         }
+
+                        dm.PixelWidth = gridW * GridPixels;
+                        dm.PixelHeight = gridH * GridPixels;
                     }
                 }
 
@@ -358,8 +365,20 @@ namespace AuraEditor.Models
             XmlNode deviceNode = CreateXmlNode("device");
 
             XmlAttribute attributeName = CreateXmlAttributeOfFile("name");
-            attributeName.Value = Name;
+            attributeName.Value = ModelName;
             deviceNode.Attributes.Append(attributeName);
+
+            XmlAttribute attributeFolder = CreateXmlAttributeOfFile("folder");
+            attributeFolder.Value = FolderName;
+            deviceNode.Attributes.Append(attributeFolder);
+
+            XmlAttribute attributeCSV = CreateXmlAttributeOfFile("csv");
+            attributeCSV.Value = CsvName;
+            deviceNode.Attributes.Append(attributeCSV);
+
+            XmlAttribute attributePNG = CreateXmlAttributeOfFile("png");
+            attributePNG.Value = PngName;
+            deviceNode.Attributes.Append(attributePNG);
 
             XmlAttribute attributeType = CreateXmlAttributeOfFile("type");
             attributeType.Value = GetTypeNameByType(Type);
@@ -380,7 +399,7 @@ namespace AuraEditor.Models
             XmlNode deviceNode = CreateXmlNode("device");
 
             XmlNode modelNode = CreateXmlNode("model");
-            modelNode.InnerText = Name.ToString();
+            modelNode.InnerText = ModelName.ToString();
             deviceNode.AppendChild(modelNode);
 
             string type = "";

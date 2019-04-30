@@ -67,6 +67,7 @@ namespace AuraEditor
             WindowsGrid.Visibility = Visibility.Visible;
             WindowsGrid1.Visibility = Visibility.Collapsed;
             WindowsFrame.Navigate(typeof(MainPage), null, new SuppressNavigationTransitionInfo());
+            WindowsFrame1.Navigate(typeof(SettingsPage), false, new SuppressNavigationTransitionInfo());
             LoadEULASettings();
             LoadTutorialDone();
 

@@ -314,11 +314,11 @@ namespace AuraEditor.Models
             RandomRangeMin = 0;
             High = 60;
             Low = 30;
-            CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
+            CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1]); // TODO
             ColorSegmentation = true;
             RainbowSpecialEffects = false;
             RainbowSpecialMode = 1;
-            PatternSelect = 5;
+            PatternSelect = DefaultColorPointListCollection.Count - 1;
         }
 
         private void SetGroupVisibility(string name)
@@ -510,11 +510,11 @@ namespace AuraEditor.Models
             RandomRangeMin = 0;
             High = 60;
             Low = 30;
-            CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[5]); // TODO
+            CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1]); // TODO
             ColorSegmentation = true;
             RainbowSpecialEffects = false;
             RainbowSpecialMode = 1;
-            PatternSelect = 5;
+            PatternSelect = DefaultColorPointListCollection.Count - 1;
         }
 
         #region Create script for lighting service

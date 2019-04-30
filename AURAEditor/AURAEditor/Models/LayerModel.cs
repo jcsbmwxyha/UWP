@@ -15,12 +15,15 @@ using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.UserControls.EffectLine;
+using Windows.ApplicationModel.Resources;
 
 namespace AuraEditor.Models
 {
     public class LayerModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
         private void RaisePropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -112,7 +115,7 @@ namespace AuraEditor.Models
             Eye = true;
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
-            TriggerAction = "Click";
+            TriggerAction = resourceLoader.GetString("One_Click_Text");
         }
 
         public LayerModel(LayerModel layerModel)
@@ -655,7 +658,7 @@ namespace AuraEditor.Models
             XmlNode deviceNode = CreateXmlNode("device");
 
             XmlAttribute attribute = CreateXmlAttributeOfFile("name");
-            attribute.Value = device.Name;
+            attribute.Value = device.ModelName;
             deviceNode.Attributes.Append(attribute);
 
             XmlAttribute attributeType = CreateXmlAttributeOfFile("type");

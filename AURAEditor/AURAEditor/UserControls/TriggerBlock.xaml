@@ -5,6 +5,7 @@
     xmlns:local="using:AuraEditor.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:AuraEditor.Common"
     mc:Ignorable="d"
     d:DesignHeight="50"
     d:DesignWidth="400">
@@ -14,6 +15,8 @@
             <BitmapImage x:Key="BG_n" UriSource="ms-appx:///Assets/TriggerDialog/asus_ac_effectorder_n.png"/>
             <BitmapImage x:Key="BG_h" UriSource="ms-appx:///Assets/TriggerDialog/asus_ac_effectorder_s.png"/>
             <BitmapImage x:Key="BG_s" UriSource="ms-appx:///Assets/TriggerDialog/asus_ac_effectorder_f.png"/>
+
+            <common:MultiLanguageConverter x:Key="multiLanguageConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -50,7 +53,7 @@
         <Image Name="ReorderIcon"
                Stretch="Fill" Margin="10,0,0,0"
                Source="ms-appx:///Assets/TriggerDialog/asus_ac_rearrange_ic_n.png"/>
-        <TextBlock Text="{x:Bind MyEffect.Info.Name, Mode=OneWay}" Grid.Column="1" VerticalAlignment="Center"
+        <TextBlock Text="{x:Bind MyEffect.Info.Name, Mode=OneWay, Converter={StaticResource multiLanguageConverter}}" Grid.Column="1" VerticalAlignment="Center"
                    Margin="20,0,0,3" FontSize="20" Foreground="White"/>
         <Button Name="DeleteButton" Grid.Column="2" Style="{StaticResource RogDialogCloseButton}"
                 Click="DeleteButton_Click" Margin="0,0,0,0"/>

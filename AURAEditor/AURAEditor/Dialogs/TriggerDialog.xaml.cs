@@ -7,6 +7,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static AuraEditor.Common.EffectHelper;
+using Windows.ApplicationModel.Resources;
 
 // 內容對話方塊項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,8 +19,10 @@ namespace AuraEditor.Dialogs
         private ObservableCollection<TriggerEffect> m_EffectList;
         private ObservableCollection<TriggerEffect> _oldTriggerEffectList;
 
+        private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+
         private string _oldActionSelected;
-        private string _currentActionSelected = "Click";
+        private string _currentActionSelected;
 
         static public TriggerDialog Self;
 
@@ -27,6 +30,8 @@ namespace AuraEditor.Dialogs
         {
             this.InitializeComponent();
             Self = this;
+
+            _currentActionSelected = resourceLoader.GetString("One_Click_Text");
 
             m_Layer = layer;
             TriggerActionButton.Content = m_Layer.TriggerAction;

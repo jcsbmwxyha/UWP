@@ -8,7 +8,16 @@
     xmlns:models="using:AuraEditor.Models"
     xmlns:common="using:AuraEditor.Common"
     xmlns:usercontrol="using:AuraEditor.UserControls"
-    mc:Ignorable="d">
+    xmlns:Windows10version1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
+    mc:Ignorable="d"
+    Windows10version1803:KeyboardAcceleratorPlacementMode="Hidden">
+
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator Modifiers="Shift" Key="E" Invoked="ClearAllEffectInvoke"/>
+        <KeyboardAccelerator Modifiers="Control" Key="C" Invoked="CopyEffectInvoke"/>
+        <KeyboardAccelerator Modifiers="Control" Key="X" Invoked="CutEffectInvoke"/>
+        <KeyboardAccelerator Modifiers="Control" Key="V" Invoked="PasteEffectInvoke"/>
+    </Page.KeyboardAccelerators>
 
     <Page.Resources>
         <ResourceDictionary>
@@ -532,7 +541,31 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
-
+        <Grid Name="PlayingMask" Grid.RowSpan="3" Grid.ColumnSpan="3" Background="#66000000" x:FieldModifier="public" Visibility="Collapsed"/>
+        <Button Name="PlayButton" Style="{StaticResource PlayButtonStyle}" Click="PlayButton_Click" Canvas.ZIndex="4"
+                Margin="35,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
+                Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanToVisibilityConverter}, Mode=OneWay}">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Modifiers="Control" Key="Enter"/>
+            </Button.KeyboardAccelerators>
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock x:Uid="PlayButtonTooltip" Foreground="White" Text="Play (Shift + 0)"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
+        <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}" Click="PauseButton_Click" Canvas.ZIndex="4" Margin="35,0,0,0"
+                RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
+                Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Modifiers="Control" Key="Enter"/>
+            </Button.KeyboardAccelerators>
+            <ToolTipService.ToolTip>
+                <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
+                    <TextBlock x:Uid="PauseButtonTooltip" Foreground="White" Text="Pause (Shift + 0)"/>
+                </ToolTip>
+            </ToolTipService.ToolTip>
+        </Button>
         <Image Grid.Row="0"
                Grid.Column="0"
                Grid.ColumnSpan="3"
@@ -543,36 +576,24 @@
             <Button Name="GoLeftButton" Style="{StaticResource GoLeftButtonStyle}" Click="JumpToBeginningButton_Click"
                     Margin="10,0,0,0" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="Home"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to beginning (Shift + Home)"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="PlayButton" Style="{StaticResource PlayButtonStyle}" Click="PlayButton_Click"
-                    Margin="3,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
-                    Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanToVisibilityConverter}, Mode=OneWay}">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Play (Shift + 0)"/>
-                    </ToolTip>
-                </ToolTipService.ToolTip>
-            </Button>
-            <Button Name="PauseButton" Style="{StaticResource PauseButtonStyle}" Click="PauseButton_Click"
-                    Margin="3,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
-                    Visibility="{x:Bind playerModel.IsPlaying, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
-                <ToolTipService.ToolTip>
-                    <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Pause (Shift + 0)"/>
+                        <TextBlock x:Uid="GoLeftButtonTooltip" Foreground="White" Text="Jump to beginning (Shift + Home)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="GoRightButton" Click="JumpToEndButton_Click" Style="{StaticResource GoRightButtonStyle}"
                     Margin="27,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="End"/>
+                </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                        <TextBlock Foreground="White" Text="Jump to end (Shift + End)"/>
+                        <TextBlock x:Uid="GoRightButtonTooltip" Foreground="White" Text="Jump to end (Shift + End)"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -597,7 +618,7 @@
                     </usercontrol:PlayerCursor.RenderTransform>
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse">
-                            <TextBlock Foreground="White" Text="Time cursor"/>
+                            <TextBlock x:Uid="TimeCursorTooltip" Foreground="White" Text="Time cursor"/>
                         </ToolTip>
                     </ToolTipService.ToolTip>
                 </usercontrol:PlayerCursor>
@@ -841,9 +862,12 @@
         <Button x:Name="TrashCanButton" Grid.Row="2" Style="{StaticResource DeleteButtonStyle}" VerticalAlignment="Top"
                     Click="TrashCanButton_Click" DragOver="TrashCanButton_DragOver" Drop="TrashCanButton_Drop" AllowDrop="True"
                     HorizontalAlignment="Right">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Modifiers="Control" Key="Back"/>
+            </Button.KeyboardAccelerators>
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock Foreground="White" Text="Delete layer"/>
+                    <TextBlock x:Uid="TrashCanButtonTooltip" Foreground="White" Text="Delete layer"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -853,7 +877,7 @@
                     Click="MinusButton_Click" Margin="3,3,0,0">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Timeline zoom in"/>
+                        <TextBlock x:Uid="TimelineMinusButtonTooltip" Foreground="White" Text="Timeline zoom in"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
@@ -865,7 +889,7 @@
                     Click="PlusButton_Click" Margin="0,3,3,0" VerticalAlignment="Center">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse">
-                        <TextBlock Foreground="White" Text="Timeline zoom out"/>
+                        <TextBlock x:Uid="TimelinePlusButtonTooltip" Foreground="White" Text="Timeline zoom out"/>
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>

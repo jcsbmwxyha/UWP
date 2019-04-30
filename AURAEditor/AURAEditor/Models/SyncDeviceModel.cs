@@ -16,9 +16,6 @@ namespace AuraEditor.Models
 
         #region -- Property --
         public string ModelName { get; set; }
-        public string FolderName { get; set; }
-        public string CsvName { get; set; }
-        public string PngName { get; set; }
 
         private string type;
         public string Type
@@ -70,10 +67,6 @@ namespace AuraEditor.Models
             }
         }
         #endregion
-
-        public SyncDeviceModel()
-        {
-        }
 
         public void UpdateDeviceImage()
         {

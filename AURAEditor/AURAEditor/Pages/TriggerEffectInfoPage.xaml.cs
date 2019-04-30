@@ -49,10 +49,13 @@ namespace AuraEditor.Pages
         {
             this.InitializeComponent();
 
-            foreach (var effectName in GetTriggerEffect())
+            
+            for (int i = 0; i < GetTriggerEffect().Length; i++)
             {
+                int effectIndex = i + GetCommonEffect().Length;
                 MenuFlyoutItem mfi = new MenuFlyoutItem();
-                mfi.Text = effectName;
+                mfi.Text = GetEffectNameByNumString(effectIndex.ToString());
+                mfi.Name = GetEffectName(effectIndex);
                 mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                 mfi.Click += EffectSelected;
                 EffectSelectionMenuFlyout.Items.Add(mfi);
@@ -77,7 +80,7 @@ namespace AuraEditor.Pages
         private void EffectSelected(object sender, RoutedEventArgs e)
         {
             var item = sender as MenuFlyoutItem;
-            string selectedName = item.Text;
+            string selectedName = item.Name;
 
             if (selectedName == EffectSelectionButton.Content as string)
                 return;

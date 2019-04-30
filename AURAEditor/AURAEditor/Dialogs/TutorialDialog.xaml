@@ -412,7 +412,7 @@
                Source="ms-appx:///Assets/Tutorial/asus_ac_tutorial_bg.png"
                Stretch="Fill"/>
         <RelativePanel Margin="21,0,17,0">
-            <TextBlock Text="Aura Creator Tutorial" RelativePanel.AlignLeftWithPanel="True"
+            <TextBlock Text="Tutorial" RelativePanel.AlignLeftWithPanel="True"
                        RelativePanel.AlignVerticalCenterWithPanel="True"
                        Foreground="White"/>
             <Button RelativePanel.AlignRightWithPanel="True"
@@ -464,7 +464,7 @@
         </ListBox>
         <Button x:Name="NextBtn" Grid.Row="2" Content="Next" VerticalAlignment="Center" HorizontalAlignment="Right" Width="136"
                 Style="{StaticResource RogButtonStyle2}" Click="NextButton_Click" Margin="0,0,72,0"/>
-        <Button x:Name="DoneBtn" Grid.Row="2" Content="Done" VerticalAlignment="Center" HorizontalAlignment="Right" Width="136"
-                Style="{StaticResource RogButtonStyle2}" Click="DoneButton_Click" Margin="0,0,72,0" Visibility="Collapsed"/>
+        <Button x:Name="CloseBtn" Grid.Row="2" Content="Close" VerticalAlignment="Center" HorizontalAlignment="Right" Width="136"
+                Style="{StaticResource RogButtonStyle2}" Click="CloseButton_Click" Margin="0,0,72,0" Visibility="Collapsed"/>
     </Grid>
 </ContentDialog>

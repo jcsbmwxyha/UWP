@@ -12,7 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Settings" Foreground="White" FontSize="24"
+        <TextBlock x:Uid="SettingPageTextBlock" Text="Settings" Foreground="White" FontSize="24"
                    FontFamily="Segoe UI" FontWeight="Bold" Margin="52,25,0,0"/>
 
         <Pivot x:Name="rootPivot" x:FieldModifier="Public" Grid.Row="1" Margin="49,25,0,0">
@@ -22,7 +22,7 @@
             <PivotItem>
                 <PivotItem.Header>
                     <RelativePanel Height="48" Width="100">
-                        <TextBlock x:Name="PivotTextBlock" Text="Update" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,13,0,0"/>
+                        <TextBlock x:Uid="PivotUpdateItem" x:Name="PivotTextBlock" Text="Update" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,13,0,0"/>
                         <Image x:Name="PivotNewTab" Source="ms-appx:///Assets/NewTab/asus_gc_new_small_ic.png" Width="15" Height="15"
                                RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"
                                Visibility="Visible" x:FieldModifier="Public"/>
@@ -30,7 +30,7 @@
                 </PivotItem.Header>
                 <Frame Name="DeviceUpdates"/>
             </PivotItem>
-            <PivotItem Header="About">
+            <PivotItem x:Uid="PivotAboutItem" Header="About">
                 <Frame Name="About"/>
             </PivotItem>
         </Pivot>
