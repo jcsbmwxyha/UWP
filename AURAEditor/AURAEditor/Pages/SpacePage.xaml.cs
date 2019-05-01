@@ -499,9 +499,21 @@ namespace AuraEditor.Pages
             float newFactor = percent / SpaceZoomDefaultPercent;
             float rate = newFactor / _spaceZoomFactor;
 
-            SpaceScrollViewer.ChangeView(
-                SpaceScrollViewer.HorizontalOffset * rate,
-                SpaceScrollViewer.VerticalOffset * rate, newFactor, true);
+            Task t = Task.Factory.StartNew(async () =>
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                {
+                     bool a;
+                     do
+                     {
+                         a = SpaceScrollViewer.ChangeView(
+                         SpaceScrollViewer.HorizontalOffset * rate,
+                         SpaceScrollViewer.VerticalOffset * rate, newFactor, true);
+                         await Task.Delay(100);
+                     }
+                     while (!a);
+                });
+            });
 
             _spaceZoomFactor = newFactor;
         }
