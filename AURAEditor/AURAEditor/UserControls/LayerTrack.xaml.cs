@@ -55,7 +55,7 @@ namespace AuraEditor.UserControls
                 if (GetAlignPosition(actualDragOverX, ref align))
                     LayerPage.Self.UpdateSupportLine(align);
                 else
-                    LayerPage.Self.UpdateSupportLine(0);
+                    LayerPage.Self.UpdateSupportLine(-1);
             }
         }
         private void Track_Drop(object sender, DragEventArgs e)
@@ -74,7 +74,7 @@ namespace AuraEditor.UserControls
 
             m_Layer.InsertTimelineEffectFitly(effect);
             LayerPage.Self.CheckedEffect = effect;
-            LayerPage.Self.UpdateSupportLine(0);
+            LayerPage.Self.UpdateSupportLine(-1);
             NeedSave = true;
             Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffectName(Int32.Parse(effName)).ToString());
         }

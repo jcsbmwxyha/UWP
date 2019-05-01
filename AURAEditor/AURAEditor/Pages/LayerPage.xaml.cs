@@ -314,7 +314,9 @@ namespace AuraEditor.Pages
 
         public void UpdateSupportLine(double align)
         {
-            if (align != 0)
+            double linePosition = align - ScaleScrollViewer.HorizontalOffset;
+
+            if (linePosition >= 0)
             {
                 SupportLine.Visibility = Visibility.Visible;
                 SupportLineTranslateTransform.X = align - ScaleScrollViewer.HorizontalOffset;

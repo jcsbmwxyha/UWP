@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static AuraEditor.Common.ControlHelper;
+using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.StorageHelper;
@@ -27,9 +28,10 @@ namespace AuraEditor.UserControls
 
         private ScrollViewer m_ScrollViewer;
         private DispatcherTimer m_ScrollTimerClock;
-        private double _tempSizeAllPosition;
-        private double _oldValue;
+        private double _pressedPosition;
+        private double _undoValue;
         private bool _isPressed;
+        private double _maxRight;
 
         static EffectLine _instance;
         static public EffectLine Self
@@ -37,7 +39,7 @@ namespace AuraEditor.UserControls
             get { return _instance; }
         }
 
-        private double ViewModelLeft
+        private double EffectLeft
         {
             get
             {
@@ -48,7 +50,7 @@ namespace AuraEditor.UserControls
                 elvm.Left = value;
             }
         }
-        private double ViewModelWidth
+        private double EffectWidth
         {
             get
             {
@@ -59,11 +61,11 @@ namespace AuraEditor.UserControls
                 elvm.Width = value;
             }
         }
-        private double Right { get { return ViewModelLeft + ViewModelWidth; } }
+        private double EffectRight { get { return EffectLeft + EffectWidth; } }
         private double[] alignPositions;
 
         #region Intelligent auto scroll
-        private int _mouseDirection;
+        private int _scrollDirection;
         public enum CursorState
         {
             None = 0,
@@ -97,7 +99,7 @@ namespace AuraEditor.UserControls
         private void Timer_Tick(object sender, object e)
         {
             int move = 10;
-            if (_mouseDirection == 1)
+            if (_scrollDirection == 1)
             {
                 if (m_ScrollViewer.HorizontalOffset == 0)
                     return;
@@ -109,64 +111,68 @@ namespace AuraEditor.UserControls
 
                 if (mouseState == CursorState.SizeLeft)
                 {
-                    if (ViewModelLeft > 0)
+                    if (EffectLeft > 0)
                     {
-                        double offset = ViewModelLeft - move;
+                        double offset = EffectLeft - move;
                         if (offset < 0)
                         {
-                            ViewModelLeft = 0;
-                            ViewModelWidth += offset;
+                            EffectLeft = 0;
+                            EffectWidth += offset;
                         }
                         else
                         {
 
-                            ViewModelLeft -= move;
-                            ViewModelWidth += move;
+                            EffectLeft -= move;
+                            EffectWidth += move;
                         }
                     }
                 }
                 else if (mouseState == CursorState.SizeAll)
                 {
-                    if (ViewModelLeft > 0)
+                    if (EffectLeft > 0)
                     {
-                        double offset = ViewModelLeft - move;
+                        double offset = EffectLeft - move;
                         if (offset < 0)
-                            ViewModelLeft = 0;
+                            EffectLeft = 0;
                         else
-                            ViewModelLeft -= move;
+                            EffectLeft -= move;
                     }
                 }
+
+                LayerPage.Self.UpdateSupportLine(-1);
             }
-            else if (_mouseDirection == 2)
+            else if (_scrollDirection == 2)
             { }
-            else if (_mouseDirection == 3)
+            else if (_scrollDirection == 3)
             {
                 m_ScrollViewer.ChangeView(
                     m_ScrollViewer.HorizontalOffset + move,
                     m_ScrollViewer.VerticalOffset,
                     1, true);
 
+                if (EffectRight >= _maxRight)
+                    return;
+
                 if (mouseState == CursorState.SizeRight)
                 {
-                    ViewModelWidth += move;
+                    EffectWidth += move;
                 }
                 else if (mouseState == CursorState.SizeAll)
                 {
-                    ViewModelLeft += move;
+                    EffectLeft += move;
                 }
+
+                LayerPage.Self.UpdateSupportLine(-1);
             }
         }
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            PointerPoint ptrPt = e.GetCurrentPoint(this);
-            Point position = e.GetCurrentPoint(this).Position;
-
             if (_isPressed)
             {
                 // Getting ScrollViewer is speculative, but it do the trick.
                 m_ScrollViewer = FindParentControl<ScrollViewer>(this, typeof(ScrollViewer));
                 var track = FindParentControl<LayerTrack>(this, typeof(LayerTrack));
-                Point position2 = e.GetCurrentPoint(track).Position;
+                Point positionInTrack = e.GetCurrentPoint(track).Position;
 
                 Rect screenRect = new Rect(
                     m_ScrollViewer.HorizontalOffset,
@@ -174,22 +180,25 @@ namespace AuraEditor.UserControls
                     m_ScrollViewer.ActualWidth,
                     m_ScrollViewer.ActualHeight);
 
-                if (position2.X > screenRect.Right - 100)
-                    _mouseDirection = 3;
-                else if (position2.X < screenRect.Left)
-                    _mouseDirection = 1;
+                if (positionInTrack.X > screenRect.Right - 100 && screenRect.Right != _maxRight)
+                    _scrollDirection = 3;
+                else if (positionInTrack.X < screenRect.Left)
+                    _scrollDirection = 1;
                 else
-                    _mouseDirection = 2;
+                    _scrollDirection = 2;
             }
+
+            PointerPoint ptrPt = e.GetCurrentPoint(this);
+            Point positionInEffectline = e.GetCurrentPoint(this).Position;
 
             if (ptrPt.Properties.IsLeftButtonPressed)
                 return;
 
-            if (position.X > ViewModelWidth - 5)
+            if (positionInEffectline.X > EffectWidth - 5)
             {
                 mouseState = CursorState.SizeRight;
             }
-            else if (position.X < 5)
+            else if (positionInEffectline.X < 5)
             {
                 mouseState = CursorState.SizeLeft;
             }
@@ -226,13 +235,13 @@ namespace AuraEditor.UserControls
             m_ScrollTimerClock = new DispatcherTimer();
             m_ScrollTimerClock.Tick += Timer_Tick;
             m_ScrollTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
-            _mouseDirection = 0;
+            _scrollDirection = 0;
             _isPressed = false;
         }
 
         private void MoveAnimation(double value)
         {
-            AnimationStart(this, "MoveTo", 200, ViewModelLeft, value);
+            AnimationStart(this, "MoveTo", 200, EffectLeft, value);
         }
 
         private void EffectLine_Loaded(object sender, RoutedEventArgs e)
@@ -250,19 +259,20 @@ namespace AuraEditor.UserControls
         {
             m_ScrollTimerClock.Start();
             _isPressed = true;
+            _maxRight = LayerPage.PixelsPerSecond * MaxEditTime;
 
             if (mouseState == CursorState.SizeAll)
             {
-                _tempSizeAllPosition = e.Position.X;
-                _oldValue = ViewModelLeft;
+                _pressedPosition = e.Position.X;
+                _undoValue = EffectLeft;
             }
             else if (mouseState == CursorState.SizeLeft)
             {
-                _oldValue = ViewModelLeft;
+                _undoValue = EffectLeft;
             }
             else if (mouseState == CursorState.SizeRight)
             {
-                _oldValue = Width;
+                _undoValue = Width;
             }
 
             this.Opacity = 0.5;
@@ -277,90 +287,83 @@ namespace AuraEditor.UserControls
 
             if (mouseState == CursorState.SizeAll)
             {
-                double tempLeft = ViewModelLeft + e.Position.X - _tempSizeAllPosition;
+                double unAlignLeft = EffectLeft + e.Position.X - _pressedPosition;
+                double unAlignRight = unAlignLeft + EffectWidth;
 
-                if (tempLeft < 0)
+                if (unAlignLeft < 0 || unAlignRight > _maxRight)
                     return;
 
                 // -- Try align --
-                double tempRight = tempLeft + ViewModelWidth;
-
-                if (GetAlignPosition(tempLeft, ref align)) // Align left
+                if (GetAlignPosition(unAlignLeft, ref align)) // Align left
                 {
-                    ViewModelLeft = align;
+                    EffectLeft = align;
                 }
-                else if (GetAlignPosition(tempRight, ref align)) // Align right
+                else if (GetAlignPosition(unAlignRight, ref align)) // Align right
                 {
-                    ViewModelLeft = align - ViewModelWidth;
+                    EffectLeft = align - EffectWidth;
                 }
                 else
                 {
-                    ViewModelLeft += e.Position.X - _tempSizeAllPosition;
+                    EffectLeft = unAlignLeft;
                 }
             }
             else if (mouseState == CursorState.SizeRight)
             {
-                if (e.Position.X <= 50)
+                double unAlignRight = EffectLeft + e.Position.X;
+
+                if (e.Position.X <= 50 || unAlignRight > _maxRight)
                     return;
 
                 // -- Try align --
-                if (GetAlignPosition(ViewModelLeft + e.Position.X, ref align))
+                if (GetAlignPosition(EffectLeft + e.Position.X, ref align))
                 {
-                    ViewModelWidth = align - ViewModelLeft;
+                    EffectWidth = align - EffectLeft;
                 }
                 else
                 {
-                    ViewModelWidth = e.Position.X;
+                    EffectWidth = e.Position.X;
                 }
             }
             else if (mouseState == CursorState.SizeLeft)
             {
                 double move = e.Position.X;
-                double tempRight = Right;
+                double fixedRight = EffectRight;
 
                 if (move < 0) // To left
                 {
-                    if (ViewModelLeft <= 0)
+                    if (EffectLeft <= 0)
                         return;
 
                     // Hit another
-                    if (elvm.Layer.WhichIsOn(ViewModelLeft + move) != null)
+                    if (elvm.Layer.WhichIsOn(EffectLeft + move) != null)
                         return;
                 }
-                if (ViewModelWidth - move <= 50)
+
+                if (EffectWidth - move <= 50)
                     return;
 
                 // -- Try align --
-                if (GetAlignPosition(ViewModelLeft + e.Position.X, ref align))
+                if (GetAlignPosition(EffectLeft + e.Position.X, ref align))
                 {
-                    ViewModelLeft = align;
-                    ViewModelWidth = tempRight - ViewModelLeft;
+                    EffectLeft = align;
+                    EffectWidth = fixedRight - EffectLeft;
                 }
                 else
                 {
-                    ViewModelLeft += move;
-                    ViewModelWidth -= move;
+                    EffectLeft += move;
+                    EffectWidth -= move;
                 }
             }
 
             RecalculationStringLength(elvm);
-
             LayerPage.Self.UpdateSupportLine(align);
-        }
-
-        public void RecalculationStringLength(EffectLineViewModel _elvm)
-        {
-            if (_elvm.Width - 70 < _elvm.PixelSizeOfName)
-                SetNewEffectName(_elvm, GetLanguageNameByStringName(_elvm.Name), _elvm.Width - 70);
-            else
-                _elvm.EffectBlockContent = GetLanguageNameByStringName(_elvm.Name);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             _isPressed = false;
             m_ScrollTimerClock.Stop();
 
-            LayerPage.Self.UpdateSupportLine(0);
+            LayerPage.Self.UpdateSupportLine(-1);
             double result = elvm.Layer.MoveToFitPosition(elvm);
             NeedSave = true;
             this.Opacity = 1;
@@ -369,14 +372,15 @@ namespace AuraEditor.UserControls
             containter.SetValue(Canvas.ZIndexProperty, 0);
 
             if (mouseState == CursorState.SizeAll)
-                ReUndoManager.Store(new MoveEffectCommand(elvm, _oldValue, result));
+                ReUndoManager.Store(new MoveEffectCommand(elvm, _undoValue, result));
             else if (mouseState == CursorState.SizeLeft)
-                ReUndoManager.Store(new WidthLeftEffectCommand(elvm, _oldValue, ViewModelLeft));
+                ReUndoManager.Store(new WidthLeftEffectCommand(elvm, _undoValue, EffectLeft));
             else if (mouseState == CursorState.SizeRight)
-                ReUndoManager.Store(new WidthRightEffectCommand(elvm, _oldValue, Width));
+                ReUndoManager.Store(new WidthRightEffectCommand(elvm, _undoValue, Width));
 
             mouseState = CursorState.None;
         }
+
         private bool GetAlignPosition(double p, ref double result)
         {
             int range = 8;
@@ -397,6 +401,7 @@ namespace AuraEditor.UserControls
                 return true;
             }
 
+            result = -1;
             return false;
         }
 
@@ -405,6 +410,13 @@ namespace AuraEditor.UserControls
             LayerPage.Self.CheckedEffect = elvm;
         }
 
+        public void RecalculationStringLength(EffectLineViewModel _elvm)
+        {
+            if (_elvm.Width - 70 < _elvm.PixelSizeOfName)
+                SetNewEffectName(_elvm, GetLanguageNameByStringName(_elvm.Name), _elvm.Width - 70);
+            else
+                _elvm.EffectBlockContent = GetLanguageNameByStringName(_elvm.Name);
+        }
         private void SetNewEffectName(EffectLineViewModel _elvm, string textContent, double EffectLineWidth)
         {
             int removeChar = (int)Math.Ceiling((_elvm.PixelSizeOfName - EffectLineWidth) / 10);
@@ -419,7 +431,6 @@ namespace AuraEditor.UserControls
                 _elvm.EffectBlockContent = textContent.Substring(0, textContent.Length - removeChar) + "...";
             }
         }
-
         #endregion
 
         #region -- Right-clicked menu --
@@ -433,7 +444,7 @@ namespace AuraEditor.UserControls
                 return;
 
             var copy = new EffectLineViewModel(LayerPage.Self.CopiedEffect);
-            copy.Left = this.Right;
+            copy.Left = this.EffectRight;
             elvm.Layer.InsertTimelineEffectFitly(copy);
         }
         private void CutItem_Click(object sender, RoutedEventArgs e)
@@ -459,7 +470,7 @@ namespace AuraEditor.UserControls
 
         static private void ScrollTimeLinePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as EffectLine).ViewModelLeft = (double)e.NewValue;
+            (d as EffectLine).EffectLeft = (double)e.NewValue;
         }
 
         public class MoveEffectCommand : IReUndoCommand

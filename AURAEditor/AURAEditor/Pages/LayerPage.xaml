@@ -602,7 +602,7 @@
                        RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
         </RelativePanel>
         <Line Name="SupportLine" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
-              X1="0" Y1="10" X2="0" Y2="500" StrokeDashArray="2,1" Stroke="Green" StrokeThickness="2"
+              X1="0" Y1="10" X2="0" Y2="500" StrokeDashArray="2,1" Stroke="Red" StrokeThickness="2"
               Canvas.ZIndex="10" Visibility="Collapsed">
             <Line.RenderTransform>
                 <TranslateTransform x:Name="SupportLineTranslateTransform"/>
