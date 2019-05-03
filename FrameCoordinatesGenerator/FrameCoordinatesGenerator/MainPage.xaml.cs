@@ -146,6 +146,12 @@ namespace FrameCoordinatesGenerator
             if (gInputCsvData != null)
                 inputCsvIndexes = new List<int>(gInputCsvData.GetOriginOrderedIndexes());
 
+            if (inputCsvIndexes != null && sortedFrameRects.Count != inputCsvIndexes.Count)
+            {
+                StatusTextBlock.Text = "CSV 跟 PNG 燈數不相等！";
+                return;
+            }
+
             for (int i = 0; i < sortedFrameRects.Count; i++)
             {
                 IndexingFrameModel model = new IndexingFrameModel()
