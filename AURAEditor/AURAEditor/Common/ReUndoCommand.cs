@@ -16,6 +16,34 @@ namespace AuraEditor.Common
     /* The Invoker class */
     static public class ReUndoManager
     {
+        #region RelayCommand
+        static private RelayCommand undoCommand = null;
+        static public RelayCommand UndoCommand
+        {
+            get { return (undoCommand ?? (undoCommand = new RelayCommand(ReUndoManager.Undo, ReUndoManager.CanUndo))); }
+        }
+        static private RelayCommand redoCommand = null;
+        static public RelayCommand RedoCommand
+        {
+            get { return (redoCommand ?? (redoCommand = new RelayCommand(ReUndoManager.Redo, ReUndoManager.CanRedo))); }
+        }
+
+        static public bool CanRedo()
+        {
+            return RedoStack.Count != 0;
+        }
+        static public bool CanUndo()
+        {
+            return UndoStack.Count != 0;
+        }
+
+        static private void RaiseCanExecute()
+        {
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
+        #endregion
+
         static private readonly Stack<IReUndoCommand> RedoStack;
         static private readonly Stack<IReUndoCommand> UndoStack;
         static private bool _mutex;
@@ -34,6 +62,7 @@ namespace AuraEditor.Common
 
             UndoStack.Push(command);
             RedoStack.Clear();
+            RaiseCanExecute();
         }
         static public void Redo()
         {
@@ -51,6 +80,8 @@ namespace AuraEditor.Common
                 if (c.Conflict())
                     Redo();
             }
+
+            RaiseCanExecute();
         }
         static public void Undo()
         {
@@ -68,12 +99,15 @@ namespace AuraEditor.Common
                 if (c.Conflict())
                     Undo();
             }
+
+            RaiseCanExecute();
         }
         static public void Clear()
         {
             RedoStack.Clear();
             UndoStack.Clear();
             _mutex = false;
+            RaiseCanExecute();
         }
     }
 }

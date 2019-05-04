@@ -128,9 +128,10 @@
                 <Button RelativePanel.AlignRightWithPanel="True" Style="{StaticResource RogDialogCloseButton}" Click="CancelButton_Click" Margin="0,0,10,0"/>
             </RelativePanel>
             <TextBlock x:Uid="FilenameTextBlock" Text="Filename" Margin="23,32,0,0" Foreground="White" FontSize="18" FontWeight="Bold" />
-            <TextBox Name="NamingTextBox" Text="{x:Bind TheName, Mode=TwoWay}"
+            <TextBox Name="NamingTextBox" Text="{x:Bind TheName, Mode=TwoWay}" Width="436"
                      Margin="18,24,17,0" Style="{StaticResource RogTextBoxStyle}"
-                     KeyDown="NamingTextBox_KeyDown" TextChanged="NamingTextBox_TextChanged"/>
+                     KeyDown="NamingTextBox_KeyDown" TextChanged="NamingTextBox_TextChanged"
+                     MaxLength="100" TabIndex="1"/>
             <TextBlock Name="StatusTextBlock" Text="" Foreground="Red" Margin="28,23,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,47,0,0">
                 <Button x:Uid="SaveButton" x:Name="OKButton" Content="Save" Click="OKButton_Click"

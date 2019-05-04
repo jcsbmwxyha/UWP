@@ -13,8 +13,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Canvas Name="Track" Width="5000" Background="Transparent" AllowDrop="True"
-            x:FieldModifier="public"
+    <Canvas Background="Transparent" AllowDrop="True"
             DragEnter="Track_DragEnter"
             DragOver="Track_DragOver"
             Drop="Track_Drop"

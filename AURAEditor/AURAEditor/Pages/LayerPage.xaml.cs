@@ -180,7 +180,7 @@ namespace AuraEditor.Pages
         public void AddLayer(LayerModel layer)
         {
             int index = Layers.IndexOf(layer);
-            Layers.Add(layer);
+            Layers.Insert(0, layer);
             ReUndoManager.Store(new AddLayerCommand(layer, index));
         }
         public void RemoveLayer(LayerModel layer)
@@ -381,9 +381,14 @@ namespace AuraEditor.Pages
 
             Log.Debug("[PlayButton] Clicked");
             StorageFolder localfolder = ApplicationData.Current.LocalFolder;
-            StorageFile localsf = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(localsf, MainPage.Self.GetLastScript());
-            Log.Debug("[PlayButton] Save LastScript successfully : " + localsf.Path);
+            string scriptString = MainPage.Self.GetLastScript();
+
+            StorageFile lastScriptSF = await localfolder.CreateFileAsync("LastScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(lastScriptSF, scriptString);
+            StorageFile playSF = await localfolder.CreateFileAsync("LastPlayScript.xml", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(playSF, scriptString);
+
+            Log.Debug("[PlayButton] Save LastScript successfully : " + lastScriptSF.Path);
 
             long StartTime = (long)PositionToTime(playerModel.Position);
 
@@ -496,7 +501,7 @@ namespace AuraEditor.Pages
                     if (_oldLayerZoomLevel != value)
                     {
                         MSecondsBetweenLongLines = GetMSecondsPerTimeUnitByLevel(value);
-                        playerModel.MaxEditWidth = PixelsPerSecond * MaxEditTime;
+                        playerModel.MaxEditWidth = MaxRightPixel;
 
                         int oldSecondsPerTimeUnit = GetMSecondsPerTimeUnitByLevel(_oldLayerZoomLevel);
                         double rate = (double)oldSecondsPerTimeUnit / MSecondsBetweenLongLines;
@@ -511,6 +516,7 @@ namespace AuraEditor.Pages
         }
         static public int MSecondsBetweenLongLines; // TimeUnit : the seconds between two long lines
         static public double PixelsPerSecond { get { return (PixelsBetweenLongLines / MSecondsBetweenLongLines) * 1000; } }
+        static public double MaxRightPixel { get { return PixelsPerSecond * MaxEditTime; } }
 
         private void TimelineScaleInitialize()
         {
@@ -519,7 +525,7 @@ namespace AuraEditor.Pages
             TimeSpan interval = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
 
             int pixelsBetweenLines = (int)(PixelsBetweenLongLines / 2);
-            int width = (int)(PixelsPerSecond * MaxEditTime);
+            int width = (int)MaxRightPixel;
             int height = (int)ScaleCanvas.ActualHeight;
             int y1_short = (int)(height / 1.5);
             int y1_long = height / 2;
@@ -779,6 +785,7 @@ namespace AuraEditor.Pages
             {
                 CheckedLayer.ClearAllEffect();
                 CheckedEffect = null;
+                args.Handled = true;
             }
         }
 
@@ -788,6 +795,7 @@ namespace AuraEditor.Pages
                 return;
             
             CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
+            args.Handled = true;
         }
 
         private void CutEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -797,6 +805,7 @@ namespace AuraEditor.Pages
 
             CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
             MainPage.Self.SelectedEffect.Layer.DeleteEffectLine(MainPage.Self.SelectedEffect);
+            args.Handled = true;
         }
         public bool g_CanPaste = true;
         private void PasteEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -829,6 +838,7 @@ namespace AuraEditor.Pages
                            g_CanPaste = true;
                        });
                 }, delay);
+            args.Handled = true;
         }
     }
 }

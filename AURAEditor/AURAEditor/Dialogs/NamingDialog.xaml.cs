@@ -10,9 +10,9 @@ namespace AuraEditor.Dialogs
     public sealed partial class NamingDialog : ContentDialog
     {
         public string TheName { get; set; }
+        public bool NamingCancel = false;
         public bool Result;
         private List<string> m_filenames;
-        bool key_shift;
 
         private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
 
@@ -50,6 +50,7 @@ namespace AuraEditor.Dialogs
             else
             {
                 Result = true;
+                NamingCancel = false;
                 this.Hide();
             }
             MainPage.Self.CanShowDeviceUpdateDialog = true;
@@ -58,6 +59,7 @@ namespace AuraEditor.Dialogs
         private void CancelButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             Result = false;
+            NamingCancel = true;
             this.Hide();
             MainPage.Self.CanShowDeviceUpdateDialog = true;
             MainPage.Self.ShowDeviceUpdateDialogOrNot();

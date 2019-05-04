@@ -1,5 +1,0 @@
-Model,,,,,,,
-GridWidth,12,,,,,,
-GridHeight,15,,,,,,
-Parameters,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,PNG,Z_index
-LED 0,1,1062,1224,1320,1878,Fusion500_led01.png,1

@@ -312,7 +312,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Play/Pause lighting file preview"/>
-                        <TextBlock Grid.Column="1" Text="Shift + 0"/>
+                        <TextBlock Grid.Column="1" Text="Control + Enter"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>

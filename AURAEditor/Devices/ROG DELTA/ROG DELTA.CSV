@@ -1,0 +1,11 @@
+Model,Delta,,,,,,,,
+,,,,,,,,,
+Parameters,grid_x,grid_y,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,PNG,Z_index
+LED 0,0,0,1,322,1805,470,2045,ROG DELTA_led01.png,1
+LED 1,1,0,1,500,1986,817,2049,ROG DELTA_led02.png,1
+LED 2,2,0,1,843,1843,1151,2014,ROG DELTA_led03.png,1
+LED 3,3,0,1,1108,1620,1205,1841,ROG DELTA_led04.png,1
+LED 4,4,0,1,922,1451,1109,1622,ROG DELTA_led05.png,1
+LED 5,5,0,1,701,1305,916,1460,ROG DELTA_led06.png,1
+LED 6,6,0,1,484,1281,684,1483,ROG DELTA_led07.png,1
+LED 7,7,0,1,367,1499,503,1781,ROG DELTA_led08.png,1

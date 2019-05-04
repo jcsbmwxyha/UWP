@@ -9,6 +9,7 @@
     d:DesignHeight="200"
     d:DesignWidth="30"
     ManipulationMode="TranslateX"
+    ManipulationStarted="PlayerCursor_ManipulationStarted"
     ManipulationDelta="PlayerCursor_ManipulationDelta"
     PointerEntered="PlayerCursor_PointerEntered"
     PointerExited="PlayerCursor_PointerExited">

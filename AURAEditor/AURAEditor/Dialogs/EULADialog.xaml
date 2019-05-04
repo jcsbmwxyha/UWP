@@ -140,8 +140,8 @@
                Width="160" Height="160"/>
         <Image Source="ms-appx:///Assets/EULA/asus_ac_eula_card_bg.png" Grid.Row="1" Grid.Column="1" Stretch="Fill"/>
 
-        <ScrollViewer Height="248" Grid.Row="1" Grid.Column="1" Margin="10,20,10,20">
-            <RichTextBlock TextIndent="12" Foreground="White" FontSize="14" FontFamily="Segoe UI">
+        <ScrollViewer Height="248" Grid.Row="1" Grid.Column="1" Margin="15,0,0,0" Padding="0,20,0,10">
+            <RichTextBlock TextIndent="12" Foreground="White" FontSize="14" FontFamily="Segoe UI" Padding="0,0,15,20">
                 <Paragraph>
                     This End User License Agreement (“EULA”) constitutes a valid and binding agreement between ASUSTeK Computer Inc. (“ASUS“) and You, as a user, for the use of the ASUS Software (“Software”) defined as set forth below. By installing and continuing to use the software YOU EXPRESSLY ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND AND AGREE TO BE BOUND BY THE TERMS OF THIS EULA AND ANY NEW VERSIONS HEREOF.
                 </Paragraph>

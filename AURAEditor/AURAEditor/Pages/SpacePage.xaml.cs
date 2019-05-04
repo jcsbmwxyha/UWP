@@ -503,15 +503,17 @@ namespace AuraEditor.Pages
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                 {
-                     bool a;
-                     do
-                     {
-                         a = SpaceScrollViewer.ChangeView(
-                         SpaceScrollViewer.HorizontalOffset * rate,
-                         SpaceScrollViewer.VerticalOffset * rate, newFactor, true);
-                         await Task.Delay(100);
-                     }
-                     while (!a);
+                    int expired = 10;
+                    bool a;
+                    do
+                    {
+                        a = SpaceScrollViewer.ChangeView(
+                        SpaceScrollViewer.HorizontalOffset * rate,
+                        SpaceScrollViewer.VerticalOffset * rate, newFactor, true);
+                        await Task.Delay(100);
+                        expired--;
+                    }
+                    while (!a && expired != 0);
                 });
             });
 
@@ -1075,11 +1077,13 @@ namespace AuraEditor.Pages
         private void ZoomAddInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             SpaceZoom_For_Hotkey(true);
+            args.Handled = true;
         }
 
         private void ZoomSubtractInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             SpaceZoom_For_Hotkey(false);
+            args.Handled = true;
         }
 
         private void SelectAllZonesInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -1090,6 +1094,7 @@ namespace AuraEditor.Pages
                 m_SetLayerButton.IsEnabled = true;
                 m_SetLayerRectangle.Visibility = Visibility.Collapsed;
                 m_EditDoneButton.IsEnabled = true;
+                args.Handled = true;
             }
         }
     }

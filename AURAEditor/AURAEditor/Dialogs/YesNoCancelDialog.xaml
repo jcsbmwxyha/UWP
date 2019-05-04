@@ -128,7 +128,7 @@
             <TextBlock Name="ContentTextBlock" Text="" Foreground="White" TextWrapping="Wrap" Margin="0,26,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,140,17,15">
                 <Button x:Name="OKButton" Content="Yes" Click="YesButton_Click"
-                        Style="{StaticResource RogButtonStyle2}"/>
+                        Style="{StaticResource RogButtonStyle2}" TabIndex="1"/>
                 <Button x:Name="CancelButton" Content="No" Click="NoButton_Click"
                         Margin="20,0,0,0" Style="{StaticResource RogButtonStyle2}"/>
             </StackPanel>

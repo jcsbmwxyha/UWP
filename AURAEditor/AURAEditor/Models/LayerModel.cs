@@ -115,7 +115,7 @@ namespace AuraEditor.Models
             Eye = true;
 
             m_ZoneDictionary = new Dictionary<int, int[]>();
-            TriggerAction = resourceLoader.GetString("One_Click_Text");
+            TriggerAction = "Click";
         }
 
         public LayerModel(LayerModel layerModel)
@@ -621,7 +621,12 @@ namespace AuraEditor.Models
             layerNode.Attributes.Append(attribute);
 
             XmlAttribute triggerAttribute = CreateXmlAttributeOfFile("trigger");
-            triggerAttribute.Value = TriggerAction;
+            if (TriggerAction == "Click")
+                triggerAttribute.Value = "OneClick";
+            else if (TriggerAction == "Double_Click")
+                triggerAttribute.Value = "DoubleClick";
+            else
+                triggerAttribute.Value = TriggerAction;
             layerNode.Attributes.Append(triggerAttribute);
 
             XmlAttribute attributeEye = CreateXmlAttributeOfFile("Eye");

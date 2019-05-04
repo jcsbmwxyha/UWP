@@ -1,0 +1,11 @@
+GridWidth,27,,,,,,,,,
+GridHeight,27,,,,,,,,,
+Parameters,grid_x,grid_y,exist,LeftTop_x,LeftTop_y,RightBottom_x,RightBottom_y,Z_index,Note,PNG
+LED 0,0,0,1,759,1679,3119,2560,1,keyboard,
+LED 1,0,0,1,678,62,1190,402,1,LOGO,
+LED 2,0,0,1,3372,1551,3420,3222,1,LIGHTBAR_R1,
+LED 3,0,0,1,3234,3242,3420,3444,1,LIGHTBAR_R2,bar_b_r.png
+LED 4,0,0,1,1977,3396,3216,3444,1,LIGHTBAR_R3,
+LED 5,0,0,1,665,3396,1904,3444,1,LIGHTBAR_L3,
+LED 6,0,0,1,459,3242,645,3444,1,LIGHTBAR_L2,bar_b_l.png
+LED 7,0,0,1,459,1551,507,3222,1,LIGHTBAR_L1,

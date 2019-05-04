@@ -550,7 +550,7 @@
             </Button.KeyboardAccelerators>
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock x:Uid="PlayButtonTooltip" Foreground="White" Text="Play (Shift + 0)"/>
+                    <TextBlock x:Uid="PlayButtonTooltip" Foreground="White" Text="Play (Control + Enter)"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -562,7 +562,7 @@
             </Button.KeyboardAccelerators>
             <ToolTipService.ToolTip>
                 <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
-                    <TextBlock x:Uid="PauseButtonTooltip" Foreground="White" Text="Pause (Shift + 0)"/>
+                    <TextBlock x:Uid="PauseButtonTooltip" Foreground="White" Text="Pause (Control + Enter)"/>
                 </ToolTip>
             </ToolTipService.ToolTip>
         </Button>
@@ -577,7 +577,7 @@
                     Margin="10,0,0,0" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="Home"/>
+                    <KeyboardAccelerator Modifiers="Shift" Key="Home"/>
                 </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -589,7 +589,7 @@
                     Margin="27,0,0,0" RelativePanel.RightOf="GoLeftButton" RelativePanel.AlignVerticalCenterWithPanel="True"
                     IsEnabled="{x:Bind playerModel.IsPlaying, Converter={StaticResource reverseBooleanConverter}, Mode=OneWay}">
                 <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="End"/>
+                    <KeyboardAccelerator Modifiers="Shift" Key="End"/>
                 </Button.KeyboardAccelerators>
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -810,13 +810,13 @@
         <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}" x:FieldModifier="public">
-            <Canvas Name="TrackCanvas" VerticalAlignment="Top" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" HorizontalAlignment="Left">
+            <Canvas Name="TrackCanvas" VerticalAlignment="Top" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" HorizontalAlignment="Stretch">
                 <Line Name="PlayerCursor_Tail" X1="0" Y1="0" X2="0" Y2="500" Canvas.ZIndex="8" Stroke="White" StrokeThickness="0.5">
                     <Line.RenderTransform>
                         <TranslateTransform X="{x:Bind playerModel.Position, Mode=OneWay}"/>
                     </Line.RenderTransform>
                 </Line>
-                <ItemsControl Name="LayerTracks" ItemsSource="{x:Bind Path=Layers}">
+                <ItemsControl Name="LayerTracks" ItemsSource="{x:Bind Path=Layers}" HorizontalAlignment="Stretch" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel/>
@@ -825,12 +825,11 @@
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ContentPresenter">
                             <Setter Property="Height" Value="52"/>
-                            <Setter Property="Width" Value="5000"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:LayerModel">
-                            <usercontrol:LayerTrack Width="5000" Height="52"/>
+                            <usercontrol:LayerTrack Height="52"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

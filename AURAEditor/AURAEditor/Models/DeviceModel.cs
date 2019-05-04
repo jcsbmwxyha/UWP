@@ -402,6 +402,10 @@ namespace AuraEditor.Models
             modelNode.InnerText = ModelName.ToString();
             deviceNode.AppendChild(modelNode);
 
+            XmlNode csvNode = CreateXmlNode("csv");
+            csvNode.InnerText = CsvName.ToString();
+            deviceNode.AppendChild(csvNode);
+
             string type = "";
             switch (Type)
             {

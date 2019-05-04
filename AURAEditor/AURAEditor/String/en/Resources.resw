@@ -298,7 +298,7 @@
     <value>Pattern</value>
   </data>
   <data name="PauseButtonTooltip.Text" xml:space="preserve">
-    <value>Pause (Shift + 0)</value>
+    <value>Pause (Control + Enter)</value>
   </data>
   <data name="PivotAboutItem.Header" xml:space="preserve">
     <value>About</value>
@@ -307,7 +307,7 @@
     <value>Update</value>
   </data>
   <data name="PlayButtonTooltip.Text" xml:space="preserve">
-    <value>Play (Shift + 0)</value>
+    <value>Play (Control + Enter)</value>
   </data>
   <data name="RainbowEffectText" xml:space="preserve">
     <value>Rainbow</value>
@@ -521,5 +521,8 @@
   </data>
   <data name="SmartEffectText" xml:space="preserve">
     <value>Smart</value>
+  </data>
+  <data name="Double_Click_Text" xml:space="preserve">
+    <value>Double click</value>
   </data>
 </root>

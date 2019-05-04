@@ -110,6 +110,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\MaskManager.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\ReUndoCommand.cs" />
     <Compile Include="Dialogs\DeviceUpdatePromptDialog.xaml.cs">
       <DependentUpon>DeviceUpdatePromptDialog.xaml</DependentUpon>
@@ -275,6 +276,7 @@
     <Content Include="Assets\Button\asus_ac_nameedit_ic_h.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_n.png" />
     <Content Include="Assets\Button\asus_ac_nameedit_ic_p.png" />
+    <Content Include="Assets\Button\asus_ac_redo_btn_d.png" />
     <Content Include="Assets\Button\asus_ac_redo_btn_h.png" />
     <Content Include="Assets\Button\asus_ac_redo_btn_n.png" />
     <Content Include="Assets\Button\asus_ac_redo_btn_s.png" />
@@ -293,6 +295,7 @@
     <Content Include="Assets\Button\asus_ac_sbtn_r_p.png" />
     <Content Include="Assets\Button\asus_ac_setaslayer_ic.png" />
     <Content Include="Assets\Button\asus_ac_sorting_ic.png" />
+    <Content Include="Assets\Button\asus_ac_undo_btn_d.png" />
     <Content Include="Assets\Button\asus_ac_undo_btn_h.png" />
     <Content Include="Assets\Button\asus_ac_undo_btn_n.png" />
     <Content Include="Assets\Button\asus_ac_undo_btn_s.png" />

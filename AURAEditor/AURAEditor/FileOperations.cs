@@ -44,13 +44,13 @@ namespace AuraEditor
         {
             get
             {
-                return FileListButton.Content as string;
+                return FileListButtonContent.Text as string;
             }
             set
             {
-                if (value != FileListButton.Content as string)
+                if (value != FileListButtonContent.Text as string)
                 {
-                    FileListButton.Content = value;
+                    FileListButtonContent.Text = value;
 
                     if (value == "")
                     {
@@ -158,11 +158,15 @@ namespace AuraEditor
 
                 ResetToDefault();
             }
+            ForHotkeyFocus.Focus(FocusState.Programmatic);
         }
         private async void RenameItem_Click(object sender, RoutedEventArgs e)
         {
             NamingDialog dialog = new NamingDialog(CurrentUserFilename, GetUserFilenames());
             ContentDialogResult namingResult = await dialog.ShowAsync();
+
+            if (dialog.NamingCancel)
+                return;
 
             if (CurrentUserFilename == dialog.TheName)
                 return;
@@ -269,6 +273,10 @@ namespace AuraEditor
 
                 CurrentUserFilename = copyfile.Name.Replace(".xml", "");
                 await LoadUserFile(CurrentUserFilename);
+                await SaveCurrentUserFile();
+
+                ReUndoManager.Clear();
+                NeedSave = false;
             }
         }
         private async void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -321,6 +329,9 @@ namespace AuraEditor
                 Log.Debug("[FileItem_Click] Selected file name : " + selectedName);
                 await LoadUserFile(selectedName);
                 CurrentUserFilename = selectedName;
+
+                ReUndoManager.Clear();
+                NeedSave = false;
             }
         }
         private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
@@ -418,6 +429,10 @@ namespace AuraEditor
         {
             XmlNode root = CreateXmlNode("root");
 
+            XmlNode versionNode = CreateXmlNode("version");
+            versionNode.InnerText = "1.0";
+            root.AppendChild(versionNode);
+
             root.AppendChild(SpacePage.ToXmlNodeForUserData());
             root.AppendChild(LayerPage.ToXmlNodeForUserData());
 
@@ -433,6 +448,8 @@ namespace AuraEditor
 
             SpacePage.SendSyncStateToService();
             SpacePage.RefreshStage();
+
+            ReUndoManager.Clear();
         }
         private void LoadContent(string xmlContent)
         {
@@ -630,15 +647,15 @@ namespace AuraEditor
         private void ResetToDefault()
         {
             Clean();
-            ReUndoManager.Clear();
+            CurrentUserFilename = "";
             SpacePage.FillCurrentIngroupDevices();
+            ReUndoManager.Clear();
         }
         private void Clean()
         {
             SetLayerButton.IsEnabled = true;
             SetLayerRectangle.Visibility = Visibility.Collapsed;
             NeedSave = false;
-            CurrentUserFilename = "";
             LayerPage.Clean();
             SpacePage.Clean();
         }

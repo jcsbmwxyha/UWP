@@ -31,10 +31,17 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
             Self = this;
 
-            _currentActionSelected = resourceLoader.GetString("One_Click_Text");
+            _currentActionSelected = "Click";
 
             m_Layer = layer;
-            TriggerActionButton.Content = m_Layer.TriggerAction;
+            if (m_Layer.TriggerAction == "Click" || m_Layer.TriggerAction == "OneClick")
+            {
+                TriggerActionButton.Content = resourceLoader.GetString("One_Click_Text");
+            }
+            else if (m_Layer.TriggerAction == "Double_Click" || m_Layer.TriggerAction == "DoubleClick")
+            {
+                TriggerActionButton.Content = resourceLoader.GetString("Double_Click_Text");
+            }
 
             m_EffectList = new ObservableCollection<TriggerEffect>();
 
@@ -61,8 +68,15 @@ namespace AuraEditor.Dialogs
         private void ActionButton_Click(object sender, RoutedEventArgs e)
         {
             var item = sender as MenuFlyoutItem;
-            string selectedAction = item.Text;
-            TriggerActionButton.Content = selectedAction;
+            string selectedAction = item.Name;
+            if (selectedAction == "Click")
+            {
+                TriggerActionButton.Content = resourceLoader.GetString("One_Click_Text");
+            }
+            else if (selectedAction == "Double_Click")
+            {
+                TriggerActionButton.Content = resourceLoader.GetString("Double_Click_Text");
+            }
             m_Layer.TriggerAction = selectedAction;
 
             if(_currentActionSelected != selectedAction)
@@ -155,13 +169,27 @@ namespace AuraEditor.Dialogs
 
             public void ExecuteRedo()
             {
-                Self.TriggerActionButton.Content = _currentActionSelectedValue;
+                if (_currentActionSelectedValue == "Click")
+                {
+                    Self.TriggerActionButton.Content = Self.resourceLoader.GetString("One_Click_Text");
+                }
+                else if (_currentActionSelectedValue == "Double_Click")
+                {
+                    Self.TriggerActionButton.Content = Self.resourceLoader.GetString("Double_Click_Text");
+                }
                 Self.m_Layer.TriggerAction = _currentActionSelectedValue;
             }
 
             public void ExecuteUndo()
             {
-                Self.TriggerActionButton.Content = _oldActionSelectedValue;
+                if (_oldActionSelectedValue == "Click")
+                {
+                    Self.TriggerActionButton.Content = Self.resourceLoader.GetString("One_Click_Text");
+                }
+                else if (_oldActionSelectedValue == "Double_Click")
+                {
+                    Self.TriggerActionButton.Content = Self.resourceLoader.GetString("Double_Click_Text");
+                }
                 Self.m_Layer.TriggerAction = _oldActionSelectedValue;
             }
         }

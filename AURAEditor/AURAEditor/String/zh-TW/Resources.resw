@@ -298,7 +298,7 @@
     <value>樣式</value>
   </data>
   <data name="PauseButtonTooltip.Text" xml:space="preserve">
-    <value>暫停 (Shift + 0)</value>
+    <value>暫停 (Control + Enter)</value>
   </data>
   <data name="PivotAboutItem.Header" xml:space="preserve">
     <value>關於</value>
@@ -307,7 +307,7 @@
     <value>更新</value>
   </data>
   <data name="PlayButtonTooltip.Text" xml:space="preserve">
-    <value>播放 (Shift + 0)</value>
+    <value>播放 (Control + Enter)</value>
   </data>
   <data name="RainbowEffectText" xml:space="preserve">
     <value>彩虹</value>
@@ -521,5 +521,8 @@
   </data>
   <data name="SmartEffectText" xml:space="preserve">
     <value>智慧</value>
+  </data>
+  <data name="Double_Click_Text" xml:space="preserve">
+    <value>雙擊</value>
   </data>
 </root>

@@ -1,7 +1,0 @@
-Model,P503,,,,,,,,,
-GridWidth,8,,,,,,,,,
-GridHeight,10,,,,,,,,,
-Parameters,grid_x,grid_y,exist,leftTop_x,leftTop_y,rightBottom_x,rightBottom_y,PNG,Z_index,Note
-LED 0,0,5,1,474,1068,726,1200,,2,Logo
-LED 1,0,5,1,528,270,630,498,,1,Scroll Wheel
-LED 2,0,0,1,246,762,918,1314,2.png,1,Buttom Ring

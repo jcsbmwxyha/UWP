@@ -65,7 +65,7 @@
                                         </ControlTemplate>
                                     </ToggleButton.Template>
                                 </ToggleButton>
-                                <Image Name="Eye" Source="../Assets/Button/asus_ac_eye_off_n_ic.png"
+                                <Image Name="Eye" Source="{ThemeResource EyeToggleButton_off_n}"
                                                Stretch="Uniform" Width="30" VerticalAlignment="Center">
                                     <ToolTipService.ToolTip>
                                         <ToolTip Background="Black" Placement="Mouse">
@@ -275,7 +275,8 @@
             </TextBlock>
             <TextBox Name="NameTextBox" Width="120" MinHeight="34" Height="34" Visibility="Collapsed"
                      LostFocus="NameTextBox_LostFocus" KeyDown="NameTextBox_KeyDown"
-                     RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                     RelativePanel.RightOf="EyeToggleButton" FontSize="16" Margin="5,0,0,0" VerticalAlignment="Bottom"
+                     MaxLength="100"/>
             <Button Name="EditButton" Style="{StaticResource ReEditButtonStyle}" RelativePanel.AlignRightWithPanel="True"
                     Width="22" Height="22" Margin="0,0,45,0" Click="EditButton_Click">
                 <ToolTipService.ToolTip>

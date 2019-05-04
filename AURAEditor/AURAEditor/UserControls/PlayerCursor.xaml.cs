@@ -1,9 +1,11 @@
 ﻿using AuraEditor.Models;
+using AuraEditor.Pages;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.Definitions;
 using static AuraEditor.UserControls.EffectLine;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -36,17 +38,24 @@ namespace AuraEditor.UserControls
                 }
             }
         }
+        private double _maxRight;
 
         public PlayerCursor()
         {
             this.InitializeComponent();
         }
 
+        private void PlayerCursor_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            _maxRight = LayerPage.MaxRightPixel;
+        }
         private void PlayerCursor_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             TranslateTransform tt = this.RenderTransform as TranslateTransform;
             if (tt.X + e.Delta.Translation.X < 0)
                 tt.X = 0;
+            else if (tt.X + e.Delta.Translation.X > _maxRight)
+                tt.X = _maxRight;
             else
                 tt.X += e.Delta.Translation.X;
         }

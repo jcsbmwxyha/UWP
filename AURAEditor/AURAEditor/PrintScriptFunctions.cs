@@ -79,8 +79,10 @@ namespace AuraEditor
                         XmlNode triggerNode = CreateXmlNode("trigger");
                         if (layer.TriggerAction == "Click")
                             triggerNode.InnerText = "OneClick";
-                        else if (layer.TriggerAction == "Double click")
+                        else if (layer.TriggerAction == "Double_Click")
                             triggerNode.InnerText = "DoubleClick";
+                        else
+                            triggerNode.InnerText = layer.TriggerAction;
                         effectNode.AppendChild(triggerNode);
                     }
                     else

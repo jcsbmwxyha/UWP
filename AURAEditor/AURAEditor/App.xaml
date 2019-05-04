@@ -1357,12 +1357,13 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <TextBlock x:Name="ItemTextBlock"
-                                               Text="{TemplateBinding Text}"
-                                               TextTrimming="Clip"
-                                               Foreground="White"
-                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                               Margin="20,0,0,0"/>
+                                       Text="{TemplateBinding Text}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="White"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       Margin="15,0,0,0"
+                                       Width="150"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

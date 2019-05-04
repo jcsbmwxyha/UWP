@@ -81,7 +81,7 @@ namespace AuraEditor
                 case Windows.System.VirtualKey.Delete:
                     if (g_PressCtrl == true && g_PressShift == true)
                     {
-                        if (FileListButton.Content.ToString() == "")
+                        if (FileListButtonContent.Text.ToString() == "")
                             break;
                         else
                             DeleteItem_Click(null, null);
@@ -103,6 +103,15 @@ namespace AuraEditor
                     SpacePage.SpaceScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
                     LayerPage.TrackScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
                     break;
+                case Windows.System.VirtualKey.Back:
+                    if (g_PressCtrl == false && g_PressShift == false)
+                    {
+                        if (SelectedEffect == null)
+                            return;
+
+                        SelectedEffect.Layer.DeleteEffectLine(SelectedEffect);
+                    }
+                    break;
                 case Windows.System.VirtualKey.Z:
                     if (g_isFirstTimePressZ && SpacePage.isMouseInSpacePage) //just run one time when Z pressed
                     {
@@ -112,7 +121,7 @@ namespace AuraEditor
                     }
                     break;
                 case Windows.System.VirtualKey.R:
-                    if (FileListButton.Content.ToString() == "")
+                    if (FileListButtonContent.Text.ToString() == "")
                         break;
                     if (g_PressCtrl == true)
                         RenameItem_Click(null, null);
@@ -169,7 +178,7 @@ namespace AuraEditor
             //EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
             oldSortingPositions = new Dictionary<DeviceModel, Point>();
 
-            if (FileListButton.Content.ToString() == "")
+            if (FileListButtonContent.Text.ToString() == "")
             {
                 RenameItem.IsEnabled = false;
                 DeleteItem.IsEnabled = false;
@@ -291,6 +300,7 @@ namespace AuraEditor
             LayerPage.AddLayer(layer);
             Log.Debug("[SetLayerButton] Add the layer : " + layer.Name);
             LayerPage.CheckedLayer = layer;
+            LayerPage.TrackScrollViewer.ChangeView(null, 0, null, false);
             NeedSave = true;
         }
         private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
@@ -351,15 +361,6 @@ namespace AuraEditor
 
                 Grid.SetColumnSpan(SpaceFrame, columnSpans - 1);
             }
-        }
-
-        private void UndoButton_Click(object sender, RoutedEventArgs e)
-        {
-            ReUndoManager.Undo();
-        }
-        private void RedoButton_Click(object sender, RoutedEventArgs e)
-        {
-            ReUndoManager.Redo();
         }
 
         bool _isPressed = false;
@@ -530,17 +531,12 @@ namespace AuraEditor
                     await socket.ConnectAsync(serverHost, serverPort);
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
-                        StatusTextBlock.Text = "Connect...\n";
                         await SpacePage.Rescan();
                     });
                     IsConnection = true;
                 }
                 catch (Exception ex)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        StatusTextBlock.Text = "Server not start!!";
-                    });
                     await Task.Delay(2000);
                 }
             } while (!IsConnection);
@@ -557,7 +553,6 @@ namespace AuraEditor
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         //from Service message
-                        StatusTextBlock.Text = "Service : " + response;
                         Log.Debug("[ReceiveData] Rescan ...");
                         await SpacePage.Rescan();
                     });

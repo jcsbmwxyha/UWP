@@ -24,7 +24,6 @@
             </Style>
             <Style TargetType="Canvas">
                 <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Width" Value="2500" />
                 <Setter Property="AllowDrop" Value="True" />
             </Style>
             
@@ -345,6 +344,7 @@
             <BitmapImage x:Key="Undo_n" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_n.png"/>
             <BitmapImage x:Key="Undo_h" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_h.png"/>
             <BitmapImage x:Key="Undo_s" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_s.png"/>
+            <BitmapImage x:Key="Undo_d" UriSource="ms-appx:///Assets/Button/asus_ac_undo_btn_d.png"/>
             <Style x:Key="UndoButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -367,6 +367,11 @@
                                                 <Setter Target="Image.Source" Value="{ThemeResource Undo_s}"/>
                                             </VisualState.Setters>
                                         </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Undo_d}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid>
@@ -382,6 +387,7 @@
             <BitmapImage x:Key="Redo_n" UriSource="ms-appx:///Assets/Button/asus_ac_redo_btn_n.png"/>
             <BitmapImage x:Key="Redo_h" UriSource="ms-appx:///Assets/Button/asus_ac_redo_btn_h.png"/>
             <BitmapImage x:Key="Redo_s" UriSource="ms-appx:///Assets/Button/asus_ac_redo_btn_s.png"/>
+            <BitmapImage x:Key="Redo_d" UriSource="ms-appx:///Assets/Button/asus_ac_redo_btn_d.png"/>
             <Style x:Key="RedoButtonStyle"  TargetType="Button" BasedOn="{StaticResource BasicButton}">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -402,6 +408,11 @@
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
                                                 <Setter Target="Image.Source" Value="{ThemeResource Redo_s}"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="Image.Source" Value="{ThemeResource Redo_d}"/>
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -553,7 +564,7 @@
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="UndoButton" RelativePanel.LeftOf="RedoButton" Margin="0,3,10,0"
-                    Style="{StaticResource UndoButtonStyle}" Click="UndoButton_Click">
+                    Style="{StaticResource UndoButtonStyle}" Command="{x:Bind common:ReUndoManager.UndoCommand}">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="Z"/>
                 </Button.KeyboardAccelerators>
@@ -564,7 +575,7 @@
                 </ToolTipService.ToolTip>
             </Button>
             <Button Name="RedoButton" RelativePanel.LeftOf="SaveAndApplyButton" Margin="0,3,30,0"
-                    Style="{StaticResource RedoButtonStyle}" Click="RedoButton_Click">
+                    Style="{StaticResource RedoButtonStyle}" Command="{x:Bind common:ReUndoManager.RedoCommand}">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="Z"/>
                 </Button.KeyboardAccelerators>
@@ -639,11 +650,13 @@
         </RelativePanel>
         <Grid x:Name="ActionBar_Column2" Grid.Column="4">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
-                <Button x:Name="FileListButton" Content="" Foreground="White"
-                    Width="200" Margin="0,0,5,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                <Button x:Name="FileListButton" Foreground="White"
+                        Width="200" Margin="0,0,5,0" Style="{StaticResource RogComboBoxButtonStyle}">
+                    <Button.Content>
+                        <TextBlock x:Name="FileListButtonContent" Width="130" TextTrimming="CharacterEllipsis"/>
+                    </Button.Content>
                     <Button.Flyout>
-                        <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
-                        </MenuFlyout>
+                        <MenuFlyout x:Name="FileListMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}"/>
                     </Button.Flyout>
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -754,9 +767,7 @@
                 </ListView>
             </StackPanel>
         </ScrollViewer>
-        <TextBlock x:Name="StatusTextBlock" Grid.Row="1" HorizontalAlignment="Left" FontSize="10"
-                   VerticalAlignment="Bottom" Text="" Width="168" Foreground="White"
-                   x:FieldModifier="public"/>
+
         <Frame Name="SpaceFrame" Grid.Row="1" Grid.Column="1"/>
         <Frame Name="EffectInfoFrame" Grid.Row="1" Grid.Column="4" x:FieldModifier="public"/>
 

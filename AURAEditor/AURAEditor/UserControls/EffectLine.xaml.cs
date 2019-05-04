@@ -259,7 +259,7 @@ namespace AuraEditor.UserControls
         {
             m_ScrollTimerClock.Start();
             _isPressed = true;
-            _maxRight = LayerPage.PixelsPerSecond * MaxEditTime;
+            _maxRight = LayerPage.MaxRightPixel;
 
             if (mouseState == CursorState.SizeAll)
             {
@@ -272,7 +272,7 @@ namespace AuraEditor.UserControls
             }
             else if (mouseState == CursorState.SizeRight)
             {
-                _undoValue = Width;
+                _undoValue = EffectWidth;
             }
 
             this.Opacity = 0.5;
@@ -376,7 +376,7 @@ namespace AuraEditor.UserControls
             else if (mouseState == CursorState.SizeLeft)
                 ReUndoManager.Store(new WidthLeftEffectCommand(elvm, _undoValue, EffectLeft));
             else if (mouseState == CursorState.SizeRight)
-                ReUndoManager.Store(new WidthRightEffectCommand(elvm, _undoValue, Width));
+                ReUndoManager.Store(new WidthRightEffectCommand(elvm, _undoValue, EffectWidth));
 
             mouseState = CursorState.None;
         }
