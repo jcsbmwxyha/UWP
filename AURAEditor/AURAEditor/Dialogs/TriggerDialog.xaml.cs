@@ -88,7 +88,7 @@ namespace AuraEditor.Dialogs
         }
         private void AddEffectButton_Click(object sender, RoutedEventArgs e)
         {
-            TriggerEffect effect = new TriggerEffect(GetTriggerEffect()[0]);
+            TriggerEffect effect = new TriggerEffect(GetCommonEffects().Length); // First trigger effect
             effect.Layer = m_Layer;
             m_EffectList.Add(effect);
             if (m_EffectList.Count != 0)

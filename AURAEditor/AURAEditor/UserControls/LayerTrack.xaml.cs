@@ -43,8 +43,9 @@ namespace AuraEditor.UserControls
             e.DragUIOverride.IsGlyphVisible = false;
 
             var pair = e.Data.Properties.FirstOrDefault();
-            string effName = pair.Value as string;
-            if (effName != null)
+            int idx = (int)pair.Value;
+
+            if (idx >= 0)
             {
                 e.AcceptedOperation = DataPackageOperation.Copy;
 
@@ -61,11 +62,10 @@ namespace AuraEditor.UserControls
         private void Track_Drop(object sender, DragEventArgs e)
         {
             var pair = e.Data.Properties.FirstOrDefault();
-            string effName = pair.Value as string;
-            int type = Int32.Parse(effName);
+            int idx = (int)pair.Value;
             var dropPosition = e.GetPosition(this);
             var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
-            EffectLineViewModel effect = new EffectLineViewModel(type);
+            EffectLineViewModel effect = new EffectLineViewModel(idx);
 
             if (align > 0)
                 effect.Left = align;
@@ -84,7 +84,7 @@ namespace AuraEditor.UserControls
 
             LayerPage.Self.CheckedEffect = effect;
             NeedSave = true;
-            Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffEngName(Int32.Parse(effName)).ToString());
+            Log.Debug("[Track_Drop] " + m_Layer.Name + " : " + GetEffEngNameByIdx(idx));
         }
         private bool GetAlignPosition(double p, ref double result)
         {
@@ -135,9 +135,9 @@ namespace AuraEditor.UserControls
                 else
                     m_Layer.VisualState = "Normal";
             }
-          
+
         }
-        private void PasteItem_Click(object sender, RoutedEventArgs e) 
+        private void PasteItem_Click(object sender, RoutedEventArgs e)
         {
             var copy = LayerPage.Self.CopiedEffect;
 

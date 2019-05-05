@@ -50,12 +50,12 @@ namespace AuraEditor.Pages
             this.InitializeComponent();
 
             
-            for (int i = 0; i < GetTriggerEffect().Length; i++)
+            for (int i = 0; i < GetTriggerEffects().Length; i++)
             {
-                int effectIndex = i + GetCommonEffect().Length;
+                int effectIndex = i + GetCommonEffects().Length;
                 MenuFlyoutItem mfi = new MenuFlyoutItem();
-                mfi.Text = GetEffectNameByNumString(effectIndex.ToString());
-                mfi.Name = GetEffEngName(effectIndex);
+                mfi.Text = GetLanguageNameByIdx(effectIndex);
+                mfi.Name = GetEffEngNameByIdx(effectIndex);
                 mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                 mfi.Click += EffectSelected;
                 EffectSelectionMenuFlyout.Items.Add(mfi);

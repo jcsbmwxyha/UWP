@@ -47,7 +47,7 @@
                Source="{x:Bind EffectBlockBackground_Normal ,Mode=OneWay}"
                Stretch="Fill"/>
         <TextBlock x:Name="EffectBlocktext" Margin="40,0,0,0"
-                   Text="{Binding}"
+                   Text="{x:Bind EffName, Mode=OneWay}"
                    VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

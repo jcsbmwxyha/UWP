@@ -175,7 +175,10 @@ namespace AuraEditor
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
             g_LocalSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
-            //EffectBlockListView.ItemsSource = GetCommonEffectBlocks();
+            // EffectBlocks
+            for (int i = 0; i < GetCommonEffects().Length; i++)
+                EffectBlockListView.Items.Add(i);
+
             oldSortingPositions = new Dictionary<DeviceModel, Point>();
 
             if (FileListButtonContent.Text.ToString() == "")
@@ -201,6 +204,7 @@ namespace AuraEditor
             LoadSettings();
 
             DeviceUpdatesPage.Self.UpdateButton_Click(null, null);
+            SpacePage.Rescan();
         }
         private void LoadSettings()
         {
@@ -248,16 +252,14 @@ namespace AuraEditor
 
         private void EffectBlockListView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
-            string ItemName = e.Items[0] as string;
-            string effName = GetEffectNameByNumString(ItemName);
-            e.Data.Properties.Add("EffectIndex", ItemName);
-
+            int effIdx = (int)e.Items[0];
+            e.Data.Properties.Add("EffectIndex", effIdx);
             SpacePage.SetSpaceStatus(SpaceStatus.DraggingEffectBlock);
 
             // Workaround for keeping EffectBlock in Pressed state
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
-            var index = EffectBlockListView.Items.IndexOf(ItemName);
-            var eb = ebList[index];
+            var ebIndex = EffectBlockListView.Items.IndexOf(effIdx);
+            var eb = ebList[ebIndex];
             eb.Dragging = true;
             VisualStateManager.GoToState(eb, "Pressed", false);
         }

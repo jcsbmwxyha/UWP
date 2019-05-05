@@ -120,23 +120,4 @@ namespace AuraEditor.Common
                 return 0;
         }
     }
-
-    public class MultiLanguageConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            if (value is string)
-            {
-                string s = (string)value;
-                return GetLanguageNameByStringName(s);
-            }
-
-            return "Static";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return "Static";
-        }
-    }
 }

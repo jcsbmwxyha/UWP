@@ -335,14 +335,14 @@ namespace AuraEditor.Pages
                 }
 
                 Log.Debug("[GetPluggedDevices] Get plugged devices : " + result);
-                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
                 //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return result;
             }
             catch (Exception ex)
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
-                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
                 //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return null;
             }

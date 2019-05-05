@@ -529,7 +529,7 @@ namespace AuraEditor.Models
 
             foreach (var eff in TriggerEffects)
             {
-                if (GetEffEngName(eff.Type) == "Reactive") // No speed problem, give 1 second
+                if (GetEffEngNameByIdx(eff.Type) == "Reactive") // No speed problem, give 1 second
                     duration = 1000;
                 else
                 {

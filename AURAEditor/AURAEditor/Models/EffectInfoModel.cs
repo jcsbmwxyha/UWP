@@ -23,28 +23,30 @@ namespace AuraEditor.Models
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        private string _name;
+        
         public string Name
         {
             get
             {
-                return _name;
-            }
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged("Name");
-                }
+                return GetLanguageNameByIdx(Type);
             }
         }
 
-        public int Type;
+        private int _type;
+        public int Type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                RaisePropertyChanged("Name");
+            }
+        }
 
         public bool ColorGroupVisible;
-
         public bool DoubleColorGroupVisible;
 
         private bool _patternGroupVisible;
@@ -276,10 +278,8 @@ namespace AuraEditor.Models
 
         public EffectInfoModel(EffectInfoModel eim)
         {
-            Name = eim.Name;
-            SetGroupVisibility(Name);
-
             Type = eim.Type;
+            SetGroupVisibility(Type);
             InitColor = eim.InitColor;
             DoubleColor1 = eim.DoubleColor1;
             DoubleColor2 = eim.DoubleColor2;
@@ -299,10 +299,8 @@ namespace AuraEditor.Models
         }
         public EffectInfoModel(int type)
         {
-            Name = GetEffEngName(type);
-            SetGroupVisibility(Name);
-
             Type = type;
+            SetGroupVisibility(type);
             InitColor = Colors.Red;
             DoubleColor1 = Colors.Red;
             DoubleColor2 = Colors.Blue;
@@ -321,9 +319,9 @@ namespace AuraEditor.Models
             PatternSelect = DefaultColorPointListCollection.Count - 1;
         }
 
-        private void SetGroupVisibility(string name)
+        private void SetGroupVisibility(int type)
         {
-            switch (name)
+            switch (GetEffEngNameByIdx(type))
             {
                 case "Static":
                     ColorGroupVisible = true;
@@ -495,10 +493,8 @@ namespace AuraEditor.Models
 
         public void ChangeType(int type)
         {
-            Name = GetEffEngName(type);
-            SetGroupVisibility(Name);
-
             Type = type;
+            SetGroupVisibility(type);
             InitColor = Colors.Red;
             DoubleColor1 = Colors.Red;
             DoubleColor2 = Colors.Blue;
@@ -522,21 +518,21 @@ namespace AuraEditor.Models
         {
             if (speed == 0)
             {
-                if (GetEffEngName(effType) == "Comet") return 10;
-                else if (GetEffEngName(effType) == "Laser") return 10;
-                else if (GetEffEngName(effType) == "Ripple") return 10;
+                if (GetEffEngNameByIdx(effType) == "Comet") return 10;
+                else if (GetEffEngNameByIdx(effType) == "Laser") return 10;
+                else if (GetEffEngNameByIdx(effType) == "Ripple") return 10;
             }
             else if (speed == 1)
             {
-                if (GetEffEngName(effType) == "Comet") return 15;
-                else if (GetEffEngName(effType) == "Laser") return 15;
-                else if (GetEffEngName(effType) == "Ripple") return 15;
+                if (GetEffEngNameByIdx(effType) == "Comet") return 15;
+                else if (GetEffEngNameByIdx(effType) == "Laser") return 15;
+                else if (GetEffEngNameByIdx(effType) == "Ripple") return 15;
             }
             else if (speed == 2)
             {
-                if (GetEffEngName(effType) == "Comet") return 20;
-                else if (GetEffEngName(effType) == "Laser") return 20;
-                else if (GetEffEngName(effType) == "Ripple") return 20;
+                if (GetEffEngNameByIdx(effType) == "Comet") return 20;
+                else if (GetEffEngNameByIdx(effType) == "Laser") return 20;
+                else if (GetEffEngNameByIdx(effType) == "Ripple") return 20;
             }
 
             return 0;
@@ -584,15 +580,15 @@ namespace AuraEditor.Models
             XmlNode methodNode = CreateXmlNode("method");
 
 
-            if (GetEffEngName(effType) == "Static" ||
-                GetEffEngName(effType) == "Breathing" ||
-                GetEffEngName(effType) == "Color cycle" ||
-                GetEffEngName(effType) == "Strobing")
+            if (GetEffEngNameByIdx(effType) == "Static" ||
+                GetEffEngNameByIdx(effType) == "Breathing" ||
+                GetEffEngNameByIdx(effType) == "Color cycle" ||
+                GetEffEngNameByIdx(effType) == "Strobing")
             {
                 methodString = "point";
             }
-            else if (GetEffEngName(effType) == "Comet" ||
-                     GetEffEngName(effType) == "Tide")
+            else if (GetEffEngNameByIdx(effType) == "Comet" ||
+                     GetEffEngNameByIdx(effType) == "Tide")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "0";
@@ -600,7 +596,7 @@ namespace AuraEditor.Models
 
                 methodString = "OrthogonaProject";
             }
-            else if (GetEffEngName(effType) == "Rainbow")
+            else if (GetEffEngNameByIdx(effType) == "Rainbow")
             {
                 if (RainbowSpecialEffects)
                 {
@@ -626,7 +622,7 @@ namespace AuraEditor.Models
                     methodString = "OrthogonaProject";
                 }
             }
-            else if (GetEffEngName(effType) == "Reactive")
+            else if (GetEffEngNameByIdx(effType) == "Reactive")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -642,7 +638,7 @@ namespace AuraEditor.Models
 
                 methodString = "limitRadius";
             }
-            else if (GetEffEngName(effType) == "Laser")
+            else if (GetEffEngNameByIdx(effType) == "Laser")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -654,7 +650,7 @@ namespace AuraEditor.Models
 
                 methodString = "distance";
             }
-            else if (GetEffEngName(effType) == "Ripple")
+            else if (GetEffEngNameByIdx(effType) == "Ripple")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -666,7 +662,7 @@ namespace AuraEditor.Models
 
                 methodString = "radius";
             }
-            else if (GetEffEngName(effType) == "Star")
+            else if (GetEffEngNameByIdx(effType) == "Star")
             {
                 methodString = "shuffle";
             }
@@ -687,7 +683,7 @@ namespace AuraEditor.Models
             double temp = Angle_CreatorToLService(Angle);
             int maxOperatingGridLength = MaxOperatingLength(maxOperatingGridWidth, maxOperatingGridHeight, Angle_CreatorToLService(Angle));
 
-            if (GetEffEngName(Type) == "Static")
+            if (GetEffEngNameByIdx(Type) == "Static")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
@@ -702,7 +698,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffEngName(Type) == "Breathing")
+            else if (GetEffEngNameByIdx(Type) == "Breathing")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -802,7 +798,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode4);
                 }
             }
-            else if (GetEffEngName(Type) == "Color cycle")
+            else if (GetEffEngNameByIdx(Type) == "Color cycle")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "QuarterSineWave"));
@@ -822,7 +818,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffEngName(Type) == "Rainbow")
+            else if (GetEffEngNameByIdx(Type) == "Rainbow")
             {
                 // wave 1 for HUE
                 XmlNode waveNode1 = CreateXmlNode("wave");
@@ -938,7 +934,7 @@ namespace AuraEditor.Models
                 waveNode3.AppendChild(GetCustomizedXmlNode(2));
                 waveListNode.AppendChild(waveNode3);
             }
-            else if (GetEffEngName(Type) == "Strobing")
+            else if (GetEffEngNameByIdx(Type) == "Strobing")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SawtoothWave"));
@@ -1037,7 +1033,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode4);
                 }
             }
-            else if (GetEffEngName(Type) == "Comet")
+            else if (GetEffEngNameByIdx(Type) == "Comet")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
@@ -1095,7 +1091,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffEngName(Type) == "Tide")
+            else if (GetEffEngNameByIdx(Type) == "Tide")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1136,7 +1132,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffEngName(Type) == "Star")
+            else if (GetEffEngNameByIdx(Type) == "Star")
             {
                 // wave 1
                 XmlNode waveNode = CreateXmlNode("wave");
@@ -1181,7 +1177,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode3);
                 }
             }
-            else if (GetEffEngName(Type) == "Reactive")
+            else if (GetEffEngNameByIdx(Type) == "Reactive")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1217,7 +1213,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffEngName(Type) == "Laser")
+            else if (GetEffEngNameByIdx(Type) == "Laser")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1253,7 +1249,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffEngName(Type) == "Ripple")
+            else if (GetEffEngNameByIdx(Type) == "Ripple")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));

@@ -29,11 +29,11 @@ namespace AuraEditor.ViewModels
         public TimelineEffect Model;
         public LayerModel Layer { get; set; }
 
-        public string Name
+        public string EngName
         {
             get
             {
-                return Model.Name;
+                return GetEffEngNameByIdx(Model.Type);
             }
         }
         public double Left
@@ -62,7 +62,7 @@ namespace AuraEditor.ViewModels
                 double seconds = value / LayerPage.PixelsPerSecond;
                 DurationTime = seconds * 1000;
                 RaisePropertyChanged("Width");
-                RecalculateStringLength();
+                RecalculateCurText();
             }
         }
         public double Right
@@ -101,7 +101,7 @@ namespace AuraEditor.ViewModels
         {
             RaisePropertyChanged("Left");
             RaisePropertyChanged("Width");
-            RecalculateStringLength();
+            RecalculateCurText();
         }
 
         public delegate void MoveToEventHandler(double value);
@@ -139,21 +139,21 @@ namespace AuraEditor.ViewModels
             }
         }
 
-        private string effectBlockContent;
-        public string EffectBlockContent
+        private string _curText;
+        public string CurText
         {
-            get { return effectBlockContent; }
+            get { return _curText; }
             set
             {
-                if (effectBlockContent != value)
+                if (_curText != value)
                 {
-                    effectBlockContent = value;
-                    RaisePropertyChanged("EffectBlockContent");
+                    _curText = value;
+                    RaisePropertyChanged("CurText");
                 }
             }
 
         }
-        public string EffectBlockContentTooltip;
+        public string FullText;
         public string IconPath_s { set; get; }
         public string IconPath_n { set; get; }
         private double mPixelSizeOfName { get; set; }
@@ -161,70 +161,63 @@ namespace AuraEditor.ViewModels
         public EffectLineViewModel(TimelineEffect eff)
         {
             Model = eff;
-            EffectBlockContent = GetLanguageNameByStringName(Name);
-            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
-            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
-            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
-            RecalculateStringLength();
+            FullText = GetLanguageNameByIdx(Model.Type);
+            mPixelSizeOfName = GetPixelsOfText(FullText);
+            RecalculateCurText();
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_n.png";
         }
         public EffectLineViewModel(EffectLineViewModel vm)
         {
-            TimelineEffect eff = TimelineEffect.Clone(vm.Model);
-            Model = eff;
-            EffectBlockContent = GetLanguageNameByStringName(Name);
-            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
+            Model = TimelineEffect.Clone(vm.Model);
+            FullText = GetLanguageNameByIdx(Model.Type);
+            mPixelSizeOfName = GetPixelsOfText(FullText);
+            RecalculateCurText();
             Layer = new LayerModel();
             Left = vm.Left;
             StartTime = vm.StartTime;
             DurationTime = vm.DurationTime;
-            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
-            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
-            RecalculateStringLength();
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_n.png";
         }
         public EffectLineViewModel(int type)
         {
-            TimelineEffect eff = new TimelineEffect(type);
-            Model = eff;
-            EffectBlockContent = GetLanguageNameByStringName(Name);
-            EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
-            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
-            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
-            RecalculateStringLength();
+            Model = new TimelineEffect(type);
+            FullText = GetLanguageNameByIdx(type);
+            mPixelSizeOfName = GetPixelsOfText(FullText);
+            RecalculateCurText();
+            IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_s.png";
+            IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + EngName + "_btn_n.png";
         }
 
-        public void RecalculateStringLength()
+        public void RecalculateCurText()
         {
-            double textContainerSize = Width - 70;
+            double curTextContainerSize = Width - 70;
 
-            if (textContainerSize < mPixelSizeOfName)
-                AddDot(GetLanguageNameByStringName(Name), textContainerSize);
+            if (curTextContainerSize < mPixelSizeOfName)
+                AddDot(FullText, curTextContainerSize);
             else
-                EffectBlockContent = GetLanguageNameByStringName(Name);
-
-            RaisePropertyChanged("EffectBlockContent");
+                CurText = FullText;
         }
-        private void AddDot(string textContent, double textContainerSize)
+        private void AddDot(string fullText, double curTextContainerSize)
         {
             double dotLength = GetPixelsOfText("...");
-            double remain = textContainerSize - dotLength;
+            double remain = curTextContainerSize - dotLength;
 
-            if(remain<0)
-                EffectBlockContent = "";
+            if (remain < 0)
+                CurText = "";
             else
             {
-                int textCount = textContent.Length - 1;
-                string content = textContent.Substring(0, textCount);
+                int textCount = fullText.Length - 1;
+                string content = fullText.Substring(0, textCount);
 
                 while (remain < GetPixelsOfText(content))
                 {
                     textCount--;
-                    content = textContent.Substring(0, textCount);
+                    content = fullText.Substring(0, textCount);
                 }
 
-                EffectBlockContent = content + "...";
+                CurText = content + "...";
             }
         }
     }

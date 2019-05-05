@@ -12,7 +12,6 @@ namespace AuraEditor
     public class Effect
     {
         public LayerModel Layer { get; set; }
-        public string Name { get; set; }
         public string ScriptName { get; set; }
         public int Type { get; private set; }
         public virtual double StartTime { get; set; }
@@ -23,19 +22,11 @@ namespace AuraEditor
         public Effect(int effectType)
         {
             Type = effectType;
-            Name = GetEffEngName(effectType);
             Info = new EffectInfoModel(effectType);
-        }
-        public Effect(string effectName)
-        {
-            Type = GetEffIdxByEng(effectName);
-            Name = effectName;
-            Info = new EffectInfoModel(Type);
         }
         public void ChangeType(int effectType)
         {
             Type = effectType;
-            Name = GetEffEngName(effectType);
             Info.ChangeType(effectType);
         }
 

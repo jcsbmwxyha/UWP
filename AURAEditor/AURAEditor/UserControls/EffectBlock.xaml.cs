@@ -16,54 +16,32 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectBlock : UserControl, INotifyPropertyChanged
     {
-        public string MyText
+        public int Idx
         {
             get
             {
-                return this.DataContext as string;
-            }
-            set
-            {
-                DataContext = value;
+                if (DataContext == null)
+                    return -1;
+
+                return (int)DataContext;
             }
         }
-
+        public string EffName
+        {
+            get
+            {
+                return GetLanguageNameByIdx(Idx);
+            }
+        }
         public bool Dragging;
         static public Point LastDraggingPoint;
-        private string _effectBlockBackground_Normal= "ms-appx:///Assets/EffectBlock/";
-        private string _effectBlockBackground_Pressed= "ms-appx:///Assets/EffectBlock/";
         public event PropertyChangedEventHandler PropertyChanged;
         private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
-
-        public string EffectBlockBackground_Normal
-        {
-            get { return _effectBlockBackground_Normal; }
-            set
-            {
-                if (_effectBlockBackground_Normal != value)
-                {
-                    _effectBlockBackground_Normal = value;
-                    RaisePropertyChanged("EffectBlockBackground_Normal");
-                }
-            }
-        }
-
-        public string EffectBlockBackground_Pressed
-        {
-            get { return _effectBlockBackground_Pressed; }
-            set
-            {
-                if (_effectBlockBackground_Pressed != value)
-                {
-                    _effectBlockBackground_Pressed = value;
-                    RaisePropertyChanged("EffectBlockBackground_Pressed");
-                }
-            }
-        }
 
         public EffectBlock()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -88,9 +66,36 @@ namespace AuraEditor.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            EffectBlockBackground_Normal  = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngName(Int32.Parse(MyText)).ToString() + "_btn_n.png";  //MyText get value in load step
-            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngName(Int32.Parse(MyText)).ToString() + "_btn_s.png";
-            MyText = GetEffectNameByNumString(MyText);
+            //MyText get value in load step
+            EffectBlockBackground_Normal = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngNameByIdx(Idx) + "_btn_n.png";
+            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngNameByIdx(Idx) + "_btn_s.png";
+        }
+
+        private string _effectBlockBackground_Normal = "ms-appx:///Assets/EffectBlock/";
+        private string _effectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/";
+        public string EffectBlockBackground_Normal
+        {
+            get { return _effectBlockBackground_Normal; }
+            set
+            {
+                if (_effectBlockBackground_Normal != value)
+                {
+                    _effectBlockBackground_Normal = value;
+                    RaisePropertyChanged("EffectBlockBackground_Normal");
+                }
+            }
+        }
+        public string EffectBlockBackground_Pressed
+        {
+            get { return _effectBlockBackground_Pressed; }
+            set
+            {
+                if (_effectBlockBackground_Pressed != value)
+                {
+                    _effectBlockBackground_Pressed = value;
+                    RaisePropertyChanged("EffectBlockBackground_Pressed");
+                }
+            }
         }
         private void RaisePropertyChanged(string property)
         {

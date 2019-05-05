@@ -12,7 +12,6 @@
     
     <Page.Resources>
         <common:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
-        <common:MultiLanguageConverter x:Key="multiLanguageConverter"/>
     </Page.Resources>
     
     <StackPanel Name="EffectInfoStackPanel" Background="Transparent">
@@ -20,7 +19,7 @@
             <TextBlock x:Uid="TriggerEffects" Text="Effects:" VerticalAlignment="Center"
                        Foreground="White"/>
             <Button x:Name="EffectSelectionButton" Foreground="White" Width="196" Style="{StaticResource RogComboBoxButtonStyle}"
-                    Content="{x:Bind m_Info.Name, Mode=OneWay, Converter={StaticResource multiLanguageConverter}}">
+                    Content="{x:Bind m_Info.Name, Mode=OneWay}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="EffectSelectionMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}"/>
                 </Button.Flyout>

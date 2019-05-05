@@ -98,8 +98,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
-            <common:MultiLanguageConverter x:Key="multiLanguageConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -108,7 +106,7 @@
                  RightTapped="EffectlineRadioButton_RightTapped"
                  GroupName="Effectline"
                  Style="{StaticResource EffectLineStyle}"
-                 Content="{x:Bind elvm.EffectBlockContent , Mode=OneWay}">
+                 Content="{x:Bind elvm.CurText , Mode=OneWay}">
         <RadioButton.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem x:Uid="CopyItem" Text="Copy" Click="CopyItem_Click" IsEnabled="True">
@@ -143,7 +141,7 @@
         </RadioButton.ContextFlyout>
         <ToolTipService.ToolTip>
             <ToolTip Background="Black" Placement="Mouse">
-                <TextBlock Foreground="White" Text="{x:Bind elvm.EffectBlockContentTooltip , Mode=OneWay}"/>
+                <TextBlock Foreground="White" Text="{x:Bind elvm.FullText , Mode=OneWay}"/>
             </ToolTip>
         </ToolTipService.ToolTip>
     </RadioButton>

@@ -63,7 +63,7 @@ namespace AuraEditor
                     XmlNode effectNode = CreateXmlNode("effect");
 
                     // Give uniqle index for all effects
-                    eff.ScriptName = GetEffEngName(eff.Type) + effectCount.ToString();
+                    eff.ScriptName = GetEffEngNameByIdx(eff.Type) + effectCount.ToString();
                     effectCount++;
 
                     XmlAttribute attribute = CreateXmlAttributeOfFile("key");

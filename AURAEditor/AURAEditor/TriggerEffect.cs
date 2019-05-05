@@ -11,10 +11,9 @@ namespace AuraEditor
     public class TriggerEffect : Effect
     {
         public TriggerEffect(int effectType) : base(effectType) {}
-        public TriggerEffect(string effectName) : base(effectName) {}
         public static TriggerEffect Clone(TriggerEffect tmp)
         {
-            TriggerEffect triggerEffect_clone = new TriggerEffect(tmp.Name);
+            TriggerEffect triggerEffect_clone = new TriggerEffect(tmp.Type);
             triggerEffect_clone.Info = tmp.Info.Clone() as EffectInfoModel;
             return triggerEffect_clone;
         }
