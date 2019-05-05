@@ -98,7 +98,7 @@ namespace AuraEditor.ViewModels
         
         public delegate void MoveToEventHandler(double value);
         public event MoveToEventHandler MoveTo;
-        public void MovePosition(double value)
+        public void MovePositionWithAnimation(double value)
         {
             MoveTo?.Invoke(value);
         }

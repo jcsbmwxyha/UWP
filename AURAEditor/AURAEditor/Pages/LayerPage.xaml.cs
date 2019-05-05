@@ -35,8 +35,6 @@ namespace AuraEditor.Pages
     public sealed partial class LayerPage : Page
     {
         static public LayerPage Self;
-        private PlayerModel playerModel;
-
         public LayerPage()
         {
             this.InitializeComponent();
@@ -56,6 +54,7 @@ namespace AuraEditor.Pages
         }
 
         private Frame m_EffectInfoFrame;
+        private PlayerModel playerModel;
 
         private LayerModel _checkedLayer;
         public LayerModel CheckedLayer
@@ -81,7 +80,7 @@ namespace AuraEditor.Pages
 
                     if (CheckedEffect == null || CheckedEffect.Layer != value)
                     {
-                        var find = value.GetFirstOnRightSide(0);
+                        var find = value.GetFirstBehindPosition(0);
 
                         if (find != null)
                             CheckedEffect = find;
@@ -173,10 +172,9 @@ namespace AuraEditor.Pages
         private List<TextBlock> TimeTextBlockCollection;
 
         #region -- Layers --
-        public ObservableCollection<LayerModel> Layers { get; set; }
         private LayerModel _oldRemovedLayer;
         private int _oldRemovedIndex;
-
+        public ObservableCollection<LayerModel> Layers { get; set; }
         public void AddLayer(LayerModel layer)
         {
             int index = Layers.IndexOf(layer);
@@ -220,72 +218,7 @@ namespace AuraEditor.Pages
             SpacePage.Self.GoToBlankEditing();
             TrackCanvas.Height = Layers.Count * 52;
         }
-        public class AddLayerCommand : IReUndoCommand
-        {
-            private LayerModel _layer;
-            private int _index;
 
-            public AddLayerCommand(LayerModel layer, int index)
-            {
-                _layer = layer;
-                _index = index;
-            }
-
-            public void ExecuteRedo()
-            {
-                LayerPage.Self.AddLayer(_layer);
-                LayerPage.Self.CheckedLayer = _layer;
-            }
-            public void ExecuteUndo()
-            {
-                LayerPage.Self.RemoveLayer(_layer);
-            }
-        }
-        public class SwapLayerCommand : IReUndoCommand
-        {
-            private int _old;
-            private int _new;
-
-            public SwapLayerCommand(int oldIndex, int newIndex)
-            {
-                _old = oldIndex;
-                _new = newIndex;
-            }
-
-            public void ExecuteRedo()
-            {
-                LayerModel layer = LayerPage.Self.Layers[_old];
-                LayerPage.Self.Layers.RemoveAt(_old);
-                LayerPage.Self.Layers.Insert(_new, layer);
-            }
-            public void ExecuteUndo()
-            {
-                LayerModel layer = LayerPage.Self.Layers[_new];
-                LayerPage.Self.Layers.RemoveAt(_new);
-                LayerPage.Self.Layers.Insert(_old, layer);
-            }
-        }
-        public class DeleteLayerCommand : IReUndoCommand
-        {
-            private LayerModel _layer;
-            private int _index;
-
-            public DeleteLayerCommand(LayerModel layer, int index)
-            {
-                _layer = layer;
-                _index = index;
-            }
-
-            public void ExecuteRedo()
-            {
-                LayerPage.Self.Layers.RemoveAt(_index);
-            }
-            public void ExecuteUndo()
-            {
-                LayerPage.Self.Layers.Insert(_index, _layer);
-                LayerPage.Self.CheckedLayer = _layer;
-            }
-        }
         public int GetLayerCount()
         {
             return Layers.Count;
@@ -791,40 +724,39 @@ namespace AuraEditor.Pages
 
         private void CopyEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
-            if (MainPage.Self.SelectedEffect == null)
+            if (CheckedEffect == null)
                 return;
             
-            CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
+            CopiedEffect = new EffectLineViewModel(CheckedEffect);
             args.Handled = true;
         }
 
         private void CutEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
-            if (MainPage.Self.SelectedEffect == null)
+            if (CheckedEffect == null)
                 return;
 
-            CopiedEffect = new EffectLineViewModel(MainPage.Self.SelectedEffect);
-            MainPage.Self.SelectedEffect.Layer.DeleteEffectLine(MainPage.Self.SelectedEffect);
+            CopiedEffect = new EffectLineViewModel(CheckedEffect);
+            CheckedLayer.DeleteEffectLine(CheckedEffect);
             args.Handled = true;
         }
+
         public bool g_CanPaste = true;
         private void PasteEffectInvoke(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             if (CheckedLayer == null  || g_CanPaste == false || CopiedEffect == null)
                 return;
 
+            args.Handled = true;
             g_CanPaste = false;
 
             var copy = new EffectLineViewModel(CopiedEffect);
-            
-            if (MainPage.Self.SelectedEffect != null)
+            copy.Left = (CheckedEffect != null) ? CheckedEffect.Right : 0;
+
+            if (!CheckedLayer.TryInsertToTimelineFitly(copy))
             {
-                copy.Left = MainPage.Self.SelectedEffect.Right;
-                MainPage.Self.SelectedEffect.Layer.InsertTimelineEffectFitly(copy);
-            }
-            else
-            {
-                CheckedLayer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
+                // TODO
+                return;
             }
 
             TimeSpan delay = TimeSpan.FromMilliseconds(400);
@@ -838,7 +770,73 @@ namespace AuraEditor.Pages
                            g_CanPaste = true;
                        });
                 }, delay);
-            args.Handled = true;
+        }
+
+        public class AddLayerCommand : IReUndoCommand
+        {
+            private LayerModel _layer;
+            private int _index;
+
+            public AddLayerCommand(LayerModel layer, int index)
+            {
+                _layer = layer;
+                _index = index;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.AddLayer(_layer);
+                LayerPage.Self.CheckedLayer = _layer;
+            }
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.RemoveLayer(_layer);
+            }
+        }
+        public class SwapLayerCommand : IReUndoCommand
+        {
+            private int _old;
+            private int _new;
+
+            public SwapLayerCommand(int oldIndex, int newIndex)
+            {
+                _old = oldIndex;
+                _new = newIndex;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerModel layer = LayerPage.Self.Layers[_old];
+                LayerPage.Self.Layers.RemoveAt(_old);
+                LayerPage.Self.Layers.Insert(_new, layer);
+            }
+            public void ExecuteUndo()
+            {
+                LayerModel layer = LayerPage.Self.Layers[_new];
+                LayerPage.Self.Layers.RemoveAt(_new);
+                LayerPage.Self.Layers.Insert(_old, layer);
+            }
+        }
+        public class DeleteLayerCommand : IReUndoCommand
+        {
+            private LayerModel _layer;
+            private int _index;
+
+            public DeleteLayerCommand(LayerModel layer, int index)
+            {
+                _layer = layer;
+                _index = index;
+            }
+
+            public void ExecuteRedo()
+            {
+                LayerPage.Self.Layers.RemoveAt(_index);
+            }
+            public void ExecuteUndo()
+            {
+                LayerPage.Self.Layers.Insert(_index, _layer);
+                LayerPage.Self.CheckedLayer = _layer;
+            }
         }
     }
 }

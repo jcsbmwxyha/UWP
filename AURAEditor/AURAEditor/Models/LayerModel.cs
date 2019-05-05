@@ -16,6 +16,7 @@ using static AuraEditor.Common.Math2;
 using static AuraEditor.Common.XmlHelper;
 using static AuraEditor.UserControls.EffectLine;
 using Windows.ApplicationModel.Resources;
+using System.Linq;
 
 namespace AuraEditor.Models
 {
@@ -51,6 +52,7 @@ namespace AuraEditor.Models
                 }
             }
         }
+
         private string _name;
         public string Name
         {
@@ -67,6 +69,7 @@ namespace AuraEditor.Models
                 }
             }
         }
+
         private bool isTriggering;
         public bool IsTriggering
         {
@@ -84,8 +87,6 @@ namespace AuraEditor.Models
             }
         }
 
-        public string TriggerAction;
-
         private string _visualstate;
         public string VisualState
         {
@@ -102,9 +103,21 @@ namespace AuraEditor.Models
                 }
             }
         }
+
+        public string TriggerAction;
+        public double RemainingSpaceOnLast
+        {
+            get
+            {
+                var eff = GetRightmostEffect();
+                return (eff != null) ? LayerPage.MaxRightPixel - eff.Right : LayerPage.MaxRightPixel;
+            }
+        }
+
         public int copy_count = 0;
         public string nameOfOriginalLayer = "";
         public LayerModel originalLayer;
+
         public LayerModel(string name = "")
         {
             EffectLineViewModels = new ObservableCollection<EffectLineViewModel>();
@@ -117,7 +130,6 @@ namespace AuraEditor.Models
             m_ZoneDictionary = new Dictionary<int, int[]>();
             TriggerAction = "Click";
         }
-
         public LayerModel(LayerModel layerModel)
         {
             if (layerModel.nameOfOriginalLayer != "") //be copyed layer then copy again
@@ -153,10 +165,13 @@ namespace AuraEditor.Models
 
             foreach (EffectLineViewModel eff in layerModel.EffectLineViewModels)
             {
-                InsertTimelineEffectFitly(new EffectLineViewModel(eff));
+                AddTimelineEffect(new EffectLineViewModel(eff));
             }
         }
-
+        static public LayerModel Clone(LayerModel vm)
+        {
+            return new LayerModel(vm);
+        }
         private void TimelineEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             EffectLineViewModel model;
@@ -169,82 +184,7 @@ namespace AuraEditor.Models
                 case NotifyCollectionChangedAction.Add:
                     model = e.NewItems[0] as EffectLineViewModel;
                     ReUndoManager.Store(new AddEffectCommand(model));
-                    LayerPage.Self.CheckedEffect = model;
                     break;
-            }
-        }
-
-        public class AddEffectCommand : IReUndoCommand
-        {
-            EffectLineViewModel _elvm;
-
-            public AddEffectCommand(EffectLineViewModel elvm)
-            {
-                _elvm = elvm;
-            }
-
-            public void ExecuteRedo()
-            {
-                var layer = _elvm.Layer;
-                layer.AddTimelineEffect(_elvm);
-            }
-            public void ExecuteUndo()
-            {
-                var layer = _elvm.Layer;
-                layer.DeleteEffectLine(_elvm);
-            }
-        }
-
-        public class RemoveEffectCommand : IReUndoCommand
-        {
-            EffectLineViewModel _elvm;
-
-            public RemoveEffectCommand(EffectLineViewModel elvm)
-            {
-                _elvm = elvm;
-            }
-
-            public void ExecuteRedo()
-            {
-                var layer = _elvm.Layer;
-                layer.DeleteEffectLine(_elvm);
-            }
-            public void ExecuteUndo()
-            {
-                var layer = _elvm.Layer;
-                layer.AddTimelineEffect(_elvm);
-            }
-        }
-
-        public class RemoveAllEffectCommand : IReUndoCommand
-        {
-            LayerModel _layerModel;
-            LayerModel tmp;
-            public RemoveAllEffectCommand(LayerModel layermodel)
-            {
-                _layerModel = layermodel;
-                tmp = LayerModel.Clone(layermodel);
-            }
-
-            public void ExecuteRedo()
-            {
-                int i = tmp.EffectLineViewModels.Count;
-                for (int j = 0; j < i; j++)
-                {
-                    _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
-                }
-                _layerModel.TriggerEffects.Clear();
-                _layerModel.IsTriggering = false;
-            }
-            public void ExecuteUndo()
-            {
-                int i = tmp.EffectLineViewModels.Count;
-                for (int j = 0; j < i; j++)
-                {
-                    _layerModel.InsertTimelineEffectFitly(tmp.EffectLineViewModels[j]);
-                }
-                _layerModel.TriggerEffects = tmp.TriggerEffects;
-                _layerModel.IsTriggering = tmp.isTriggering;
             }
         }
 
@@ -292,64 +232,82 @@ namespace AuraEditor.Models
         }
         #endregion
 
-        #region Track behavior
+        #region -- Track behavior --
         public void AddTimelineEffect(EffectLineViewModel eff)
         {
             eff.Layer = this;
             EffectLineViewModels.Add(eff);
         }
-        public double InsertTimelineEffectFitly(EffectLineViewModel eff)
+        public bool TryInsertToTimelineFitly(EffectLineViewModel eff)
         {
             eff.Layer = this;
-            double result = MoveToFitPosition(eff);
-            eff.Left = result;
-            EffectLineViewModels.Add(eff);
 
-            return result;
-        }
-        public void AppendTimelineEffect(EffectLineViewModel eff)
-        {
-            EffectLineViewModel rightmost = GetRightmostEffect();
-
-            if (rightmost == null)
-            {
-                eff.StartTime = 0;
-            }
-            else
-            {
-                eff.StartTime = rightmost.EndTime;
-            }
+            if (ExceedAfterApplyingEff(eff))
+                return false;
 
             EffectLineViewModels.Add(eff);
+            double moveTo = ApplyEffect(eff);
+
+            // Because EffectLine create after MoveTo invoke,
+            // assign again to make sure position is correct.
+            eff.Left = moveTo;
+
+            return true;
         }
-
-        public double MoveToFitPosition(EffectLineViewModel placedEff)
+        public bool ExceedAfterApplyingEff(EffectLineViewModel eff)
         {
-            placedEff.Layer = this;
-            EffectLineViewModel pilingEff = GetFirstPilingEffect(placedEff);
+            double needSpace = 0;
+            EffectLineViewModel first = GetFirstIntersectingEffect(eff);
 
-            if (pilingEff != null)
+            if (first != null)
             {
-                if (placedEff.Left <= pilingEff.Left)
+                if (eff.Left <= first.Left)
                 {
-                    double move = placedEff.Right - pilingEff.Left;
-                    PushAllOnRightSide(placedEff, move);
+                    needSpace = eff.Right - first.Left;
+                }
+                else
+                {
+                    eff.Left = first.Right;
+                    EffectLineViewModel second = GetFirstIntersectingEffect(eff);
+
+                    if (second == null)
+                    {
+                        return eff.Right > LayerPage.MaxRightPixel;
+                    }
+                    else
+                    {
+                        needSpace = eff.Right - second.Left;
+                    }
+                }
+            }
+
+            return (RemainingSpaceOnLast >= needSpace) ? false : true;
+        }
+        public double ApplyEffect(EffectLineViewModel placedEff)
+        {
+            EffectLineViewModel firstIntersecting = GetFirstIntersectingEffect(placedEff);
+
+            if (firstIntersecting != null)
+            {
+                if (placedEff.Left <= firstIntersecting.Left)
+                {
+                    double move = placedEff.Right - firstIntersecting.Left;
+                    PushAllBehindEffect(placedEff, move);
 
                     return placedEff.Left;
                 }
                 else
                 {
-                    double target = pilingEff.Right;
-                    placedEff.MovePosition(target);
+                    double target = firstIntersecting.Right;
+                    placedEff.MovePositionWithAnimation(target);
 
                     EffectLineViewModel nextEff = GetTheNext(placedEff);
                     if (nextEff != null)
                     {
-                        if (ControlHelper.IsPiling(target, placedEff.Width,
-                                                   nextEff.Left, nextEff.Width))
+                        if (ControlHelper.IsPiling(target, placedEff.Width, nextEff.Left, nextEff.Width))
                         {
-                            double move = target + placedEff.Width - nextEff.Left;
-                            PushAllOnRightSide(placedEff, move);
+                            double push = target + placedEff.Width - nextEff.Left;
+                            PushAllBehindEffect(placedEff, push);
                         }
                     }
 
@@ -358,6 +316,21 @@ namespace AuraEditor.Models
             }
 
             return placedEff.Left;
+        }
+        private void PushAllBehindEffect(EffectLineViewModel effect, double move)
+        {
+            foreach (EffectLineViewModel e in EffectLineViewModels)
+            {
+                if (effect.Equals(e))
+                    continue;
+
+                if (effect.Left <= e.Left)
+                {
+                    double target = e.Left + move;
+                    e.MovePositionWithAnimation(target);
+                    ReUndoManager.Store(new MoveEffectCommand(e, e.Left, target));
+                }
+            }
         }
         public void DeleteEffectLine(EffectLineViewModel eff)
         {
@@ -373,6 +346,8 @@ namespace AuraEditor.Models
 
             EffectLineViewModels.Remove(eff);
         }
+
+        // Functional
         public EffectLineViewModel WhichIsOn(double x)
         {
             foreach (EffectLineViewModel e in EffectLineViewModels)
@@ -384,25 +359,6 @@ namespace AuraEditor.Models
                     return e;
             }
             return null;
-        }
-        public EffectLineViewModel GetFirstOnRightSide(double x)
-        {
-            EffectLineViewModel result = null;
-
-            foreach (EffectLineViewModel e in EffectLineViewModels)
-            {
-                if (e.Left >= x)
-                {
-                    if (result == null)
-                        result = e;
-
-                    if (e.Left < result.Left)
-                    {
-                        result = e;
-                    }
-                }
-            }
-            return result;
         }
         public double GetFirstRoomPosition(double needRoomOfDuration)
         {
@@ -434,7 +390,23 @@ namespace AuraEditor.Models
 
             return result;
         }
+        public EffectLineViewModel GetFirstBehindPosition(double x)
+        {
+            EffectLineViewModel result = null;
 
+            foreach (EffectLineViewModel e in EffectLineViewModels)
+            {
+                if (e.Left >= x)
+                {
+                    if (result == null)
+                        result = e;
+
+                    if (e.Left < result.Left)
+                        result = e;
+                }
+            }
+            return result;
+        }
         private EffectLineViewModel GetRightmostEffect()
         {
             EffectLineViewModel rightmost = null;
@@ -453,7 +425,7 @@ namespace AuraEditor.Models
         }
         private EffectLineViewModel GetTheNext(EffectLineViewModel eff)
         {
-            EffectLineViewModel find = GetFirstOnRightSide(eff.Left + 1);
+            EffectLineViewModel find = GetFirstBehindPosition(eff.Left + 1);
 
             if (find == null)
                 return null;
@@ -484,31 +456,16 @@ namespace AuraEditor.Models
             else
                 return null;
         }
-        private void PushAllOnRightSide(EffectLineViewModel effect, double move)
-        {
-            foreach (EffectLineViewModel e in EffectLineViewModels)
-            {
-                if (effect.Equals(e))
-                    continue;
-
-                if (effect.Left <= e.Left)
-                {
-                    double target = e.Left + move;
-                    e.MovePosition(target);
-                    ReUndoManager.Store(new MoveEffectCommand(e, e.Left, target));
-                }
-            }
-        }
-        public EffectLineViewModel GetFirstPilingEffect(EffectLineViewModel testEffect)
+        public EffectLineViewModel GetFirstIntersectingEffect(EffectLineViewModel eff)
         {
             EffectLineViewModel result = null;
 
             foreach (EffectLineViewModel e in EffectLineViewModels)
             {
-                if (e.Equals(testEffect))
+                if (e.Equals(eff))
                     continue;
 
-                if (IsPiling(testEffect, e))
+                if (IsIntersecting(eff, e))
                 {
                     if (result == null)
                         result = e;
@@ -521,26 +478,34 @@ namespace AuraEditor.Models
 
             return result;
         }
-        private List<EffectLineViewModel> GetAllPilingEffect(double left, double right)
-        {
-            List<EffectLineViewModel> result = new List<EffectLineViewModel>();
-
-            foreach (EffectLineViewModel eff in EffectLineViewModels)
-            {
-                if (ControlHelper.IsPiling(left, right, eff.Left, eff.Width))
-                    result.Add(eff);
-            }
-
-            return result;
-        }
-        static private bool IsPiling(EffectLineViewModel effect1, EffectLineViewModel effect2)
+        private bool IsIntersecting(EffectLineViewModel effect1, EffectLineViewModel effect2)
         {
             return ControlHelper.IsPiling(
                 effect1.Left, effect1.Width,
                 effect2.Left, effect2.Width);
         }
+        private EffectLineViewModel GetFirstIntersectingEffect(double left, double width)
+        {
+            EffectLineViewModel result = null;
+
+            foreach (var e in EffectLineViewModels)
+            {
+                if (ControlHelper.IsPiling(left, width, e.Left, e.Width))
+                {
+                    if (result == null)
+                        result = e;
+                    else if (e.Left < result.Left)
+                    {
+                        result = e;
+                    }
+                }
+            }
+
+            return result;
+        }
         #endregion
 
+        #region -- Trigger Effect --
         public void AddTriggerEffect(TriggerEffect effect)
         {
             effect.Layer = this;
@@ -570,6 +535,16 @@ namespace AuraEditor.Models
                 eff.DurationTime = duration;
                 delay_accu += duration;
             }
+        }
+        #endregion
+
+        public void ClearAllEffect()
+        {
+            ReUndoManager.Store(new RemoveAllEffectCommand(this));
+            EffectLineViewModels.Clear();
+            TriggerEffects.Clear();
+            IsTriggering = false;
+            LayerPage.Self.CheckedLayer = this;
         }
 
         public XmlNode ToXmlNodeForScript()
@@ -684,18 +659,76 @@ namespace AuraEditor.Models
             return deviceNode;
         }
 
-        static public LayerModel Clone(LayerModel vm)
+        public class AddEffectCommand : IReUndoCommand
         {
-            return new LayerModel(vm);
-        }
+            EffectLineViewModel _elvm;
 
-        public void ClearAllEffect()
+            public AddEffectCommand(EffectLineViewModel elvm)
+            {
+                _elvm = elvm;
+            }
+
+            public void ExecuteRedo()
+            {
+                var layer = _elvm.Layer;
+                layer.TryInsertToTimelineFitly(_elvm);
+            }
+            public void ExecuteUndo()
+            {
+                var layer = _elvm.Layer;
+                layer.DeleteEffectLine(_elvm);
+            }
+        }
+        public class RemoveEffectCommand : IReUndoCommand
         {
-            ReUndoManager.Store(new RemoveAllEffectCommand(this));
-            EffectLineViewModels.Clear();
-            TriggerEffects.Clear();
-            IsTriggering = false;
-            LayerPage.Self.CheckedLayer = this;
+            EffectLineViewModel _elvm;
+
+            public RemoveEffectCommand(EffectLineViewModel elvm)
+            {
+                _elvm = elvm;
+            }
+
+            public void ExecuteRedo()
+            {
+                var layer = _elvm.Layer;
+                layer.DeleteEffectLine(_elvm);
+            }
+            public void ExecuteUndo()
+            {
+                var layer = _elvm.Layer;
+                layer.AddTimelineEffect(_elvm);
+            }
+        }
+        public class RemoveAllEffectCommand : IReUndoCommand
+        {
+            LayerModel _layerModel;
+            LayerModel tmp;
+            public RemoveAllEffectCommand(LayerModel layermodel)
+            {
+                _layerModel = layermodel;
+                tmp = LayerModel.Clone(layermodel);
+            }
+
+            public void ExecuteRedo()
+            {
+                int i = tmp.EffectLineViewModels.Count;
+                for (int j = 0; j < i; j++)
+                {
+                    _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
+                }
+                _layerModel.TriggerEffects.Clear();
+                _layerModel.IsTriggering = false;
+            }
+            public void ExecuteUndo()
+            {
+                int i = tmp.EffectLineViewModels.Count;
+                for (int j = 0; j < i; j++)
+                {
+                    _layerModel.TryInsertToTimelineFitly(tmp.EffectLineViewModels[j]);
+                }
+                _layerModel.TriggerEffects = tmp.TriggerEffects;
+                _layerModel.IsTriggering = tmp.isTriggering;
+            }
         }
     }
 }

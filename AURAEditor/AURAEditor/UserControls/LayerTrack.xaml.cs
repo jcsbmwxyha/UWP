@@ -71,10 +71,18 @@ namespace AuraEditor.UserControls
                 effect.Left = align;
             else
                 effect.Left = actualDropX >= 0 ? actualDropX : 0;
-
-            m_Layer.InsertTimelineEffectFitly(effect);
-            LayerPage.Self.CheckedEffect = effect;
             LayerPage.Self.UpdateSupportLine(-1);
+
+            if (effect.Right > LayerPage.MaxRightPixel)
+                return;
+
+            if (!m_Layer.TryInsertToTimelineFitly(effect))
+            {
+                // TODO
+                return;
+            }
+
+            LayerPage.Self.CheckedEffect = effect;
             NeedSave = true;
             Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffectName(Int32.Parse(effName)).ToString());
         }
@@ -98,7 +106,7 @@ namespace AuraEditor.UserControls
                 return true;
             }
 
-            result = 0;
+            result = -1;
             return false;
         }
 
@@ -136,7 +144,12 @@ namespace AuraEditor.UserControls
             if (copy == null)
                 return;
 
-            m_Layer.InsertTimelineEffectFitly(new EffectLineViewModel(copy));
+            copy.Left = 0;
+
+            if (!m_Layer.TryInsertToTimelineFitly(new EffectLineViewModel(copy)))
+            {
+                // TODO
+            }
         }
     }
 }
