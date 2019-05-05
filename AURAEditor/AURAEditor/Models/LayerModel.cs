@@ -407,7 +407,7 @@ namespace AuraEditor.Models
             }
             return result;
         }
-        private EffectLineViewModel GetRightmostEffect()
+        public EffectLineViewModel GetRightmostEffect()
         {
             EffectLineViewModel rightmost = null;
             double rightmostPosition = 0;
@@ -503,6 +503,12 @@ namespace AuraEditor.Models
 
             return result;
         }
+
+        public void UpdateTimelineProportion()
+        {
+            foreach (var eff in EffectLineViewModels)
+                eff.UpdateTimelineProportion();
+        }
         #endregion
 
         #region -- Trigger Effect --
@@ -523,7 +529,7 @@ namespace AuraEditor.Models
 
             foreach (var eff in TriggerEffects)
             {
-                if (GetEffectName(eff.Type) == "Reactive") // No speed problem, give 1 second
+                if (GetEffEngName(eff.Type) == "Reactive") // No speed problem, give 1 second
                     duration = 1000;
                 else
                 {

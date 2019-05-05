@@ -299,7 +299,7 @@ namespace AuraEditor.Models
         }
         public EffectInfoModel(int type)
         {
-            Name = GetEffectName(type);
+            Name = GetEffEngName(type);
             SetGroupVisibility(Name);
 
             Type = type;
@@ -495,7 +495,7 @@ namespace AuraEditor.Models
 
         public void ChangeType(int type)
         {
-            Name = GetEffectName(type);
+            Name = GetEffEngName(type);
             SetGroupVisibility(Name);
 
             Type = type;
@@ -522,21 +522,21 @@ namespace AuraEditor.Models
         {
             if (speed == 0)
             {
-                if (GetEffectName(effType) == "Comet") return 10;
-                else if (GetEffectName(effType) == "Laser") return 10;
-                else if (GetEffectName(effType) == "Ripple") return 10;
+                if (GetEffEngName(effType) == "Comet") return 10;
+                else if (GetEffEngName(effType) == "Laser") return 10;
+                else if (GetEffEngName(effType) == "Ripple") return 10;
             }
             else if (speed == 1)
             {
-                if (GetEffectName(effType) == "Comet") return 15;
-                else if (GetEffectName(effType) == "Laser") return 15;
-                else if (GetEffectName(effType) == "Ripple") return 15;
+                if (GetEffEngName(effType) == "Comet") return 15;
+                else if (GetEffEngName(effType) == "Laser") return 15;
+                else if (GetEffEngName(effType) == "Ripple") return 15;
             }
             else if (speed == 2)
             {
-                if (GetEffectName(effType) == "Comet") return 20;
-                else if (GetEffectName(effType) == "Laser") return 20;
-                else if (GetEffectName(effType) == "Ripple") return 20;
+                if (GetEffEngName(effType) == "Comet") return 20;
+                else if (GetEffEngName(effType) == "Laser") return 20;
+                else if (GetEffEngName(effType) == "Ripple") return 20;
             }
 
             return 0;
@@ -584,15 +584,15 @@ namespace AuraEditor.Models
             XmlNode methodNode = CreateXmlNode("method");
 
 
-            if (GetEffectName(effType) == "Static" ||
-                GetEffectName(effType) == "Breathing" ||
-                GetEffectName(effType) == "Color cycle" ||
-                GetEffectName(effType) == "Strobing")
+            if (GetEffEngName(effType) == "Static" ||
+                GetEffEngName(effType) == "Breathing" ||
+                GetEffEngName(effType) == "Color cycle" ||
+                GetEffEngName(effType) == "Strobing")
             {
                 methodString = "point";
             }
-            else if (GetEffectName(effType) == "Comet" ||
-                     GetEffectName(effType) == "Tide")
+            else if (GetEffEngName(effType) == "Comet" ||
+                     GetEffEngName(effType) == "Tide")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "0";
@@ -600,7 +600,7 @@ namespace AuraEditor.Models
 
                 methodString = "OrthogonaProject";
             }
-            else if (GetEffectName(effType) == "Rainbow")
+            else if (GetEffEngName(effType) == "Rainbow")
             {
                 if (RainbowSpecialEffects)
                 {
@@ -626,7 +626,7 @@ namespace AuraEditor.Models
                     methodString = "OrthogonaProject";
                 }
             }
-            else if (GetEffectName(effType) == "Reactive")
+            else if (GetEffEngName(effType) == "Reactive")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -642,7 +642,7 @@ namespace AuraEditor.Models
 
                 methodString = "limitRadius";
             }
-            else if (GetEffectName(effType) == "Laser")
+            else if (GetEffEngName(effType) == "Laser")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -654,7 +654,7 @@ namespace AuraEditor.Models
 
                 methodString = "distance";
             }
-            else if (GetEffectName(effType) == "Ripple")
+            else if (GetEffEngName(effType) == "Ripple")
             {
                 XmlNode inputNode = CreateXmlNode("input");
                 inputNode.InnerText = "keyPressX";
@@ -666,7 +666,7 @@ namespace AuraEditor.Models
 
                 methodString = "radius";
             }
-            else if (GetEffectName(effType) == "Star")
+            else if (GetEffEngName(effType) == "Star")
             {
                 methodString = "shuffle";
             }
@@ -687,7 +687,7 @@ namespace AuraEditor.Models
             double temp = Angle_CreatorToLService(Angle);
             int maxOperatingGridLength = MaxOperatingLength(maxOperatingGridWidth, maxOperatingGridHeight, Angle_CreatorToLService(Angle));
 
-            if (GetEffectName(Type) == "Static")
+            if (GetEffEngName(Type) == "Static")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
@@ -702,7 +702,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffectName(Type) == "Breathing")
+            else if (GetEffEngName(Type) == "Breathing")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -802,7 +802,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode4);
                 }
             }
-            else if (GetEffectName(Type) == "Color cycle")
+            else if (GetEffEngName(Type) == "Color cycle")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "QuarterSineWave"));
@@ -822,7 +822,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "HUE" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffectName(Type) == "Rainbow")
+            else if (GetEffEngName(Type) == "Rainbow")
             {
                 // wave 1 for HUE
                 XmlNode waveNode1 = CreateXmlNode("wave");
@@ -938,7 +938,7 @@ namespace AuraEditor.Models
                 waveNode3.AppendChild(GetCustomizedXmlNode(2));
                 waveListNode.AppendChild(waveNode3);
             }
-            else if (GetEffectName(Type) == "Strobing")
+            else if (GetEffEngName(Type) == "Strobing")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SawtoothWave"));
@@ -1037,7 +1037,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode4);
                 }
             }
-            else if (GetEffectName(Type) == "Comet")
+            else if (GetEffEngName(Type) == "Comet")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));
@@ -1095,7 +1095,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffectName(Type) == "Tide")
+            else if (GetEffEngName(Type) == "Tide")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1136,7 +1136,7 @@ namespace AuraEditor.Models
                 waveNode.AppendChild(GetBindToSlotXmlNode(new List<string> { "ALPHA" }));
                 waveListNode.AppendChild(waveNode);
             }
-            else if (GetEffectName(Type) == "Star")
+            else if (GetEffEngName(Type) == "Star")
             {
                 // wave 1
                 XmlNode waveNode = CreateXmlNode("wave");
@@ -1181,7 +1181,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode3);
                 }
             }
-            else if (GetEffectName(Type) == "Reactive")
+            else if (GetEffEngName(Type) == "Reactive")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1217,7 +1217,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffectName(Type) == "Laser")
+            else if (GetEffEngName(Type) == "Laser")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "SineWave"));
@@ -1253,7 +1253,7 @@ namespace AuraEditor.Models
                     waveListNode.AppendChild(waveNode2);
                 }
             }
-            else if (GetEffectName(Type) == "Ripple")
+            else if (GetEffEngName(Type) == "Ripple")
             {
                 XmlNode waveNode = CreateXmlNode("wave");
                 waveNode.AppendChild(CreateXmlNodeByValue("type", "ConstantWave"));

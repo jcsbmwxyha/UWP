@@ -10,7 +10,7 @@ namespace AuraEditor.Common
 {
     static class EffectHelper
     {
-        static string[] _commonEffects =
+        static private string[] _commonEffects =
         {
             "Static",
             "Breathing",
@@ -21,13 +21,13 @@ namespace AuraEditor.Common
             "Star",
             "Tide",
         };
-        static string[] _triggerEffects =
+        static private string[] _triggerEffects =
         {
             "Reactive",
             "Laser",
             "Ripple",
         };
-        static string[] _otherTriggerEffects =
+        static private string[] _otherEffects =
         {
             "Music",
             "Smart",
@@ -55,11 +55,11 @@ namespace AuraEditor.Common
 
             return collection;
         }
-        static public ObservableCollection<string> GetOtherTriggerEffectBlocks()
+        static public ObservableCollection<string> GetOtherEffectBlocks()
         {
             ObservableCollection<string> collection = new ObservableCollection<string>();
 
-            foreach (string name in _otherTriggerEffects)
+            foreach (string name in _otherEffects)
             {
                 collection.Add(name);
             }
@@ -67,12 +67,12 @@ namespace AuraEditor.Common
             return collection;
         }
 
-        static public int GetEffectIndex(string effectName)
+        static public int GetEffIdxByEng(string effectName)
         {
             List<string> effectBlocks = new List<string>();
             effectBlocks.AddRange(_commonEffects);
             effectBlocks.AddRange(_triggerEffects);
-            effectBlocks.AddRange(_otherTriggerEffects);
+            effectBlocks.AddRange(_otherEffects);
 
             // remove index
             char[] charArray = effectName.ToCharArray();
@@ -93,12 +93,12 @@ namespace AuraEditor.Common
 
             return -1;
         }
-        static public string GetEffectName(int effectIdx)
+        static public string GetEffEngName(int effectIdx)
         {
             List<string> effectBlocks = new List<string>();
             effectBlocks.AddRange(_commonEffects);
             effectBlocks.AddRange(_triggerEffects);
-            effectBlocks.AddRange(_otherTriggerEffects);
+            effectBlocks.AddRange(_otherEffects);
 
             if (effectIdx < effectBlocks.Count)
                 return effectBlocks[effectIdx];
@@ -135,7 +135,7 @@ namespace AuraEditor.Common
         }
         static public bool IsTriggerEffect(int index)
         {
-            string effectName = GetEffectName(index);
+            string effectName = GetEffEngName(index);
 
             foreach (string s in _triggerEffects)
             {
@@ -145,8 +145,44 @@ namespace AuraEditor.Common
 
             return false;
         }
+        static public string GetEffectNameByNumString(string numberName)
+        {
+            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+            if (numberName == "0") return resourceLoader.GetString("StaticEffectText");
+            else if (numberName == "1") return resourceLoader.GetString("BreathingEffectText");
+            else if (numberName == "2") return resourceLoader.GetString("ColorCycleEffectText");
+            else if (numberName == "3") return resourceLoader.GetString("RainbowEffectText");
+            else if (numberName == "4") return resourceLoader.GetString("StrobingEffectText");
+            else if (numberName == "5") return resourceLoader.GetString("CometEffectText");
+            else if (numberName == "6") return resourceLoader.GetString("StarEffectText");
+            else if (numberName == "7") return resourceLoader.GetString("TideEffectText");
+            else if (numberName == "8") return resourceLoader.GetString("ReactiveEffectText");
+            else if (numberName == "9") return resourceLoader.GetString("LaserEffectText");
+            else if (numberName == "10") return resourceLoader.GetString("RippleEffectText");
+            else if (numberName == "11") return resourceLoader.GetString("MusicEffectText");
+            else if (numberName == "12") return resourceLoader.GetString("SmartEffectText");
+            return null;
+        }
+        static public string GetLanguageNameByStringName(string numberName)
+        {
+            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
+            if (numberName == "Static") return resourceLoader.GetString("StaticEffectText");
+            else if (numberName == "Breathing") return resourceLoader.GetString("BreathingEffectText");
+            else if (numberName == "Color cycle") return resourceLoader.GetString("ColorCycleEffectText");
+            else if (numberName == "Rainbow") return resourceLoader.GetString("RainbowEffectText");
+            else if (numberName == "Strobing") return resourceLoader.GetString("StrobingEffectText");
+            else if (numberName == "Comet") return resourceLoader.GetString("CometEffectText");
+            else if (numberName == "Star") return resourceLoader.GetString("StarEffectText");
+            else if (numberName == "Tide") return resourceLoader.GetString("TideEffectText");
+            else if (numberName == "Reactive") return resourceLoader.GetString("ReactiveEffectText");
+            else if (numberName == "Laser") return resourceLoader.GetString("LaserEffectText");
+            else if (numberName == "Ripple") return resourceLoader.GetString("RippleEffectText");
+            else if (numberName == "Music") return resourceLoader.GetString("MusicEffectText");
+            else if (numberName == "Smart") return resourceLoader.GetString("SmartEffectText");
+            return null;
+        }
 
-
+        // Device
         public enum DeviceType : int
         {
             Notebook = 0,
@@ -186,44 +222,7 @@ namespace AuraEditor.Common
             return "Notebook";
         }
 
-        static public string GetEffectNameByNumString(string numberName)
-        {
-            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
-            if (numberName == "0") return resourceLoader.GetString("StaticEffectText");
-            else if (numberName == "1") return resourceLoader.GetString("BreathingEffectText");
-            else if (numberName == "2") return resourceLoader.GetString("ColorCycleEffectText");
-            else if (numberName == "3") return resourceLoader.GetString("RainbowEffectText");
-            else if (numberName == "4") return resourceLoader.GetString("StrobingEffectText");
-            else if (numberName == "5") return resourceLoader.GetString("CometEffectText");
-            else if (numberName == "6") return resourceLoader.GetString("StarEffectText");
-            else if (numberName == "7") return resourceLoader.GetString("TideEffectText");
-            else if (numberName == "8") return resourceLoader.GetString("ReactiveEffectText");
-            else if (numberName == "9") return resourceLoader.GetString("LaserEffectText");
-            else if (numberName == "10") return resourceLoader.GetString("RippleEffectText");
-            else if (numberName == "11") return resourceLoader.GetString("MusicEffectText");
-            else if (numberName == "12") return resourceLoader.GetString("SmartEffectText");
-            return null;
-        }
-
-        static public string GetLanguageNameByStringName(string numberName)
-        {
-            ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
-            if (numberName == "Static") return resourceLoader.GetString("StaticEffectText");
-            else if (numberName == "Breathing") return resourceLoader.GetString("BreathingEffectText");
-            else if (numberName == "Color cycle") return resourceLoader.GetString("ColorCycleEffectText");
-            else if (numberName == "Rainbow") return resourceLoader.GetString("RainbowEffectText");
-            else if (numberName == "Strobing") return resourceLoader.GetString("StrobingEffectText");
-            else if (numberName == "Comet") return resourceLoader.GetString("CometEffectText");
-            else if (numberName == "Star") return resourceLoader.GetString("StarEffectText");
-            else if (numberName == "Tide") return resourceLoader.GetString("TideEffectText");
-            else if (numberName == "Reactive") return resourceLoader.GetString("ReactiveEffectText");
-            else if (numberName == "Laser") return resourceLoader.GetString("LaserEffectText");
-            else if (numberName == "Ripple") return resourceLoader.GetString("RippleEffectText");
-            else if (numberName == "Music") return resourceLoader.GetString("MusicEffectText");
-            else if (numberName == "Smart") return resourceLoader.GetString("SmartEffectText");
-            return null;
-        }
-
+        // Pattern
         static public void SetColorPointBorders(List<ColorPointModel> cps)
         {
             int width = 13;
@@ -255,7 +254,7 @@ namespace AuraEditor.Common
                 EndPoint = new Point(1, 0.5)
             };
 
-            foreach(var cp in cps)
+            foreach (var cp in cps)
             {
                 pattern.GradientStops.Add(
                     new GradientStop

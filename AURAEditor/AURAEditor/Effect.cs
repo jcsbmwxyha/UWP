@@ -20,24 +20,22 @@ namespace AuraEditor
         public virtual double EndTime { get { return StartTime + DurationTime; } }
         public EffectInfoModel Info { get; set; }
 
-
-
         public Effect(int effectType)
         {
             Type = effectType;
-            Name = GetEffectName(effectType);
+            Name = GetEffEngName(effectType);
             Info = new EffectInfoModel(effectType);
         }
         public Effect(string effectName)
         {
-            Type = GetEffectIndex(effectName);
+            Type = GetEffIdxByEng(effectName);
             Name = effectName;
             Info = new EffectInfoModel(Type);
         }
         public void ChangeType(int effectType)
         {
             Type = effectType;
-            Name = GetEffectName(effectType);
+            Name = GetEffEngName(effectType);
             Info.ChangeType(effectType);
         }
 
@@ -65,7 +63,5 @@ namespace AuraEditor
 
             return effNode;
         }
-
-      
     }
 }

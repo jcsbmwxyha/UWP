@@ -24,7 +24,7 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class EffectLine : UserControl
     {
-        public EffectLineViewModel elvm { get { return this.DataContext as EffectLineViewModel; } }
+        private EffectLineViewModel elvm { get { return this.DataContext as EffectLineViewModel; } }
 
         private ScrollViewer m_ScrollViewer;
         private DispatcherTimer m_ScrollTimerClock;
@@ -32,12 +32,6 @@ namespace AuraEditor.UserControls
         private double _undoValue;
         private bool _isPressed;
         private double _maxRight;
-
-        static EffectLine _instance;
-        static public EffectLine Self
-        {
-            get { return _instance; }
-        }
 
         private double EffectLeft
         {
@@ -222,7 +216,6 @@ namespace AuraEditor.UserControls
         #region -- Move to --
         public EffectLine()
         {
-            _instance = this;
             this.InitializeComponent();
             this.DataContextChanged += (s, e) =>
             {
@@ -242,7 +235,6 @@ namespace AuraEditor.UserControls
         private void EffectLine_Loaded(object sender, RoutedEventArgs e)
         {
             LoadedStoryboard.Begin();
-            RecalculationStringLength(elvm);
         }
         private void EffectLine_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -371,7 +363,6 @@ namespace AuraEditor.UserControls
                 }
             }
 
-            RecalculationStringLength(elvm);
             LayerPage.Self.UpdateSupportLine(align);
         }
         private void EffectLine_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -446,28 +437,6 @@ namespace AuraEditor.UserControls
             LayerPage.Self.CheckedEffect = elvm;
         }
         #endregion
-
-        public void RecalculationStringLength(EffectLineViewModel _elvm)
-        {
-            if (_elvm.Width - 70 < _elvm.PixelSizeOfName)
-                SetNewEffectName(_elvm, GetLanguageNameByStringName(_elvm.Name), _elvm.Width - 70);
-            else
-                _elvm.EffectBlockContent = GetLanguageNameByStringName(_elvm.Name);
-        }
-        private void SetNewEffectName(EffectLineViewModel _elvm, string textContent, double EffectLineWidth)
-        {
-            int removeChar = (int)Math.Ceiling((_elvm.PixelSizeOfName - EffectLineWidth) / 10);
-
-            if (removeChar > textContent.Length)
-            {
-                removeChar = textContent.Length;
-                _elvm.EffectBlockContent = "";
-            }
-            else
-            {
-                _elvm.EffectBlockContent = textContent.Substring(0, textContent.Length - removeChar) + "...";
-            }
-        }
 
         #region -- Right-clicked menu --
         private void CopyItem_Click(object sender, RoutedEventArgs e)

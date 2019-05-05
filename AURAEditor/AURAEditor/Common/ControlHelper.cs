@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -172,6 +173,14 @@ namespace AuraEditor.Common
             {
                 await Task.Delay(50);
             }
+        }
+
+        static public double GetPixelsOfText(string text)
+        {
+            var tmp = new TextBlock { Text = text, FontSize = 20, FontFamily = new FontFamily("Segoe UI") };
+            tmp.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            Size NameSize = tmp.DesiredSize;
+            return NameSize.Width;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.EffectHelper;
 
 namespace AuraEditor.ViewModels
@@ -61,6 +62,7 @@ namespace AuraEditor.ViewModels
                 double seconds = value / LayerPage.PixelsPerSecond;
                 DurationTime = seconds * 1000;
                 RaisePropertyChanged("Width");
+                RecalculateStringLength();
             }
         }
         public double Right
@@ -79,7 +81,7 @@ namespace AuraEditor.ViewModels
             set
             {
                 Model.StartTime = value;
-                RaisePropertyChanged("StartTime");
+                RaisePropertyChanged("Left");
             }
         }
         public double DurationTime
@@ -91,11 +93,17 @@ namespace AuraEditor.ViewModels
             set
             {
                 Model.DurationTime = value;
-                RaisePropertyChanged("DurationTime");
+                RaisePropertyChanged("Width");
             }
         }
         public virtual double EndTime { get { return StartTime + DurationTime; } }
-        
+        public void UpdateTimelineProportion()
+        {
+            RaisePropertyChanged("Left");
+            RaisePropertyChanged("Width");
+            RecalculateStringLength();
+        }
+
         public delegate void MoveToEventHandler(double value);
         public event MoveToEventHandler MoveTo;
         public void MovePositionWithAnimation(double value)
@@ -146,20 +154,19 @@ namespace AuraEditor.ViewModels
 
         }
         public string EffectBlockContentTooltip;
-        public double PixelSizeOfName { get; set; }
         public string IconPath_s { set; get; }
         public string IconPath_n { set; get; }
-
-
+        private double mPixelSizeOfName { get; set; }
 
         public EffectLineViewModel(TimelineEffect eff)
         {
             Model = eff;
             EffectBlockContent = GetLanguageNameByStringName(Name);
             EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
+            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
+            RecalculateStringLength();
         }
         public EffectLineViewModel(EffectLineViewModel vm)
         {
@@ -167,13 +174,14 @@ namespace AuraEditor.ViewModels
             Model = eff;
             EffectBlockContent = GetLanguageNameByStringName(Name);
             EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
+            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
             Layer = new LayerModel();
             Left = vm.Left;
             StartTime = vm.StartTime;
             DurationTime = vm.DurationTime;
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
+            RecalculateStringLength();
         }
         public EffectLineViewModel(int type)
         {
@@ -181,18 +189,43 @@ namespace AuraEditor.ViewModels
             Model = eff;
             EffectBlockContent = GetLanguageNameByStringName(Name);
             EffectBlockContentTooltip = GetLanguageNameByStringName(Name);
-            PixelSizeOfName = getPixelSizeOfName(GetLanguageNameByStringName(Name));
+            mPixelSizeOfName = GetPixelsOfText(GetLanguageNameByStringName(Name));
             IconPath_n = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_s.png";
             IconPath_s = "ms-appx:///Assets/EffectLine/asus_gc_aurazone_" + Name + "_btn_n.png";
-
+            RecalculateStringLength();
         }
-        
-        private double getPixelSizeOfName(string text)
+
+        public void RecalculateStringLength()
         {
-            var tmp = new TextBlock { Text = text, FontSize = 20, FontFamily = new FontFamily("Segoe UI") };
-            tmp.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-            Size NameSize = tmp.DesiredSize;
-            return NameSize.Width;
+            double textContainerSize = Width - 70;
+
+            if (textContainerSize < mPixelSizeOfName)
+                AddDot(GetLanguageNameByStringName(Name), textContainerSize);
+            else
+                EffectBlockContent = GetLanguageNameByStringName(Name);
+
+            RaisePropertyChanged("EffectBlockContent");
+        }
+        private void AddDot(string textContent, double textContainerSize)
+        {
+            double dotLength = GetPixelsOfText("...");
+            double remain = textContainerSize - dotLength;
+
+            if(remain<0)
+                EffectBlockContent = "";
+            else
+            {
+                int textCount = textContent.Length - 1;
+                string content = textContent.Substring(0, textCount);
+
+                while (remain < GetPixelsOfText(content))
+                {
+                    textCount--;
+                    content = textContent.Substring(0, textCount);
+                }
+
+                EffectBlockContent = content + "...";
+            }
         }
     }
 }

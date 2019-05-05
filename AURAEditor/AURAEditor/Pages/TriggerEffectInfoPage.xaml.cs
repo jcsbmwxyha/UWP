@@ -55,7 +55,7 @@ namespace AuraEditor.Pages
                 int effectIndex = i + GetCommonEffect().Length;
                 MenuFlyoutItem mfi = new MenuFlyoutItem();
                 mfi.Text = GetEffectNameByNumString(effectIndex.ToString());
-                mfi.Name = GetEffectName(effectIndex);
+                mfi.Name = GetEffEngName(effectIndex);
                 mfi.Style = (Style)Application.Current.Resources["RogMenuFlyoutItemStyle1"];
                 mfi.Click += EffectSelected;
                 EffectSelectionMenuFlyout.Items.Add(mfi);
@@ -87,7 +87,7 @@ namespace AuraEditor.Pages
 
             _oldEffectInfoModel = new EffectInfoModel(m_TriggerEffect.Info);
 
-            int type = GetEffectIndex(selectedName);
+            int type = GetEffIdxByEng(selectedName);
             m_TriggerEffect.ChangeType(type);
             ColorPattern.DataContext = new ColorPatternModel(m_Info);
             SetColorMode(m_TriggerEffect.Info);

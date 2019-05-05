@@ -84,7 +84,7 @@ namespace AuraEditor.UserControls
 
             LayerPage.Self.CheckedEffect = effect;
             NeedSave = true;
-            Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffectName(Int32.Parse(effName)).ToString());
+            Log.Debug("[Track_Drop] " + m_Layer.Name + " was added effect : " + GetEffEngName(Int32.Parse(effName)).ToString());
         }
         private bool GetAlignPosition(double p, ref double result)
         {

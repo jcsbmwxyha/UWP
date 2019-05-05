@@ -150,24 +150,18 @@ namespace AuraEditor.Pages
         }
         private EffectLineViewModel GetRightmostEffect()
         {
-            double position = 0;
-            double rightmostPosition = 0;
-            EffectLineViewModel rightmostEffect = null;
+            EffectLineViewModel result = null;
+            double max = 0;
 
             foreach (LayerModel layer in Layers)
             {
-                foreach (var effect in layer.EffectLineViewModels)
+                EffectLineViewModel eff = layer.GetRightmostEffect();
+                if (eff != null && eff.Right > max)
                 {
-                    position = effect.Left + effect.Width;
-
-                    if (position > rightmostPosition)
-                    {
-                        rightmostPosition = position;
-                        rightmostEffect = effect;
-                    }
+                    result = eff;
                 }
             }
-            return rightmostEffect;
+            return result;
         }
         private List<TextBlock> TimeTextBlockCollection;
 
@@ -513,14 +507,7 @@ namespace AuraEditor.Pages
         private void ChangeEffectsPosition(double rate)
         {
             foreach (var layer in Layers)
-            {
-                foreach (var effect in layer.EffectLineViewModels)
-                {
-                    effect.Left = effect.Left;
-                    effect.Width = effect.Width;
-                    EffectLine.Self.RecalculationStringLength(effect);
-                }
-            }
+                layer.UpdateTimelineProportion();
         }
         private void SetScaleText()
         {

@@ -88,8 +88,8 @@ namespace AuraEditor.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            EffectBlockBackground_Normal  = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffectName(Int32.Parse(MyText)).ToString() + "_btn_n.png";  //MyText get value in load step
-            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffectName(Int32.Parse(MyText)).ToString() + "_btn_s.png";
+            EffectBlockBackground_Normal  = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngName(Int32.Parse(MyText)).ToString() + "_btn_n.png";  //MyText get value in load step
+            EffectBlockBackground_Pressed = "ms-appx:///Assets/EffectBlock/asus_ac_" + GetEffEngName(Int32.Parse(MyText)).ToString() + "_btn_s.png";
             MyText = GetEffectNameByNumString(MyText);
         }
         private void RaisePropertyChanged(string property)

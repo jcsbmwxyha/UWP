@@ -84,13 +84,12 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="8"/>
-                                    <!--<ColumnDefinition Width="30"/>-->
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="28"/>
                                 </Grid.ColumnDefinitions>
                                 <Image x:Name="LPart" Grid.Column="0" Source="{ThemeResource LPart_n}" Stretch="Fill"/>
                                 <Image x:Name="MPart" Grid.Column="1" Source="{ThemeResource MPart_n}" Stretch="Fill"/>
-                                <Image x:Name="IconPart" Grid.Column="1" HorizontalAlignment="Left"  Source="{ThemeResource IconPart_s}" Stretch="Uniform" Margin="0,0,0,0" />
+                                <Image x:Name="IconPart" Grid.Column="1" HorizontalAlignment="Left" Source="{ThemeResource IconPart_s}" Stretch="Uniform"/>
                                 <Image x:Name="RPart" Grid.Column="2" Source="{ThemeResource RPart_n}" Stretch="Fill"/>
                                 <TextBlock Text="{TemplateBinding Content}" Foreground="White" VerticalAlignment="Center"
                                            FontSize="20" Margin="50,0,0,0" Grid.ColumnSpan="3" HorizontalAlignment="Left"/>
