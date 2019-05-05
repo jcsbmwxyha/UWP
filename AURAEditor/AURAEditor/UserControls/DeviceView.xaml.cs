@@ -25,7 +25,6 @@ namespace AuraEditor.UserControls
         public DeviceView()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (s, e) => Bindings.Update();
 
             BindingOperations.SetBinding(this, OperationEnabledProperty,
                     new Binding

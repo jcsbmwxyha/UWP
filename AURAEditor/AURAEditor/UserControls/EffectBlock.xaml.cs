@@ -41,7 +41,7 @@ namespace AuraEditor.UserControls
         public EffectBlock()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (s, e) => Bindings.Update();
+            this.DataContextChanged += (s, e) => RaisePropertyChanged("EffName");
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
