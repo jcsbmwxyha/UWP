@@ -1,0 +1,569 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>Action：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>Aj effet</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>Ajouter nœud</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>Cliquer ou faire glisser pour ajuster l'angle</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>Angle</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>Clic pour saisir la valeur en degrés</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>Dans le sens inverse des aiguilles d'une montre</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>Pulsation</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>Vers l'intérieur</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>Vérification…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>Dans le sens des aiguilles d'une montre</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>Cycle de couleur</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>Double clic pour changer la couleur</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>Couleur</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>Comète</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>Appareils dispo</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>Appareils dispo</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>Sélect appareils pr éditer profil lumineux. Appareils sélect ajoutés automatiqt à liste appareils AURA Sync.</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>Couper</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>Mise à jour conditions préalables</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Diminuer l'angle de 5 degrés</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>Supprimer nœud</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>Assurez-vous de mettre à jour vos appareils à la dernière version logicielle pour éditer les profils lumineux.</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>Double-clic</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>Dupliquer</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>Éditer niveau</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>Éditer</value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>Effets</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>Séquence d'effets：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>Vérifiez ordinateur branché à source d'alimentation ET niveau batterie &gt; 20 %.</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>Échec de la mise à jour. Veuillez réessayer.</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>Masquer niveau</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>Afficher niveau</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>Rapide</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>Profil d'éclairage AURA Creator</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>Nom de fichier</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>Remplir toute la zone d'édition (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>Accéder au début (Maj + Accueil)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>Accéder à la fin (Maj + Fin)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>Gradient</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>Importer</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Augmenter l'angle de 5 degrés</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>Niveau</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Développer le panneau des effets lumineux</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Réduire le panneau des effets lumineux</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>Double-clic pour renommer</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>Créer nouveau</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>Aucun appareil disponible</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>Veuillez connecter au moins un appareil compatible AURA Sync.</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>Moyen</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>Clic</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>Clic</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>Coller</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>Modèle</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>Pause (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>À propos</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>Màj</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>Lecture (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>Arc-en-ciel</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>Enreg</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>Faire glisser pour ajuster la plage de couleur aléatoire</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>Rétablir (Ctrl + Maj + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>Tout suppr</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>Réinitialiser</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>Réinitialiser à la disposition par défaut (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Développer le panneau des paramètres des propriétés</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Réduire le panneau des paramètres des propriétés</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>Enr &amp; appliquer</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>Enreg</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>Enregistrer fichier</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>Appareils</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>Déf niveau</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>Cliquer ou glisser-sélectionner zones d'éclairage depuis affichage appareil et définir comme niveau.</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>Cliquer ou glisser-sélectionner zones d'éclairage depuis affichage appareil et définir comme niveau.</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>Lent</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)appareil(s) synchronisé(s).</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>Org appareils</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>Org appareils</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>Cliquez pour réorganiser la disposition de vos appareils disponibles (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>Effets spéciaux</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>Vers l'extérieur</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>Étoile</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>Statique</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>Nom de fichier existant. Choisissez un autre.</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>Caractères spéciaux interdits ds nom fichier.</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>Stroboscopique</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>Marée</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>Curseur frise chronologique</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>Zoom avant frise chronologique</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>Zoom arrière frise chronologique</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>Supprimer niveau</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>Effets：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>Aucun effet déclencheur</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>Certains appareils ne prennent peut-être pas en charge cette action.</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>Paramètres des effets déclencheurs</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>Annuler (Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>Màj</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>Vérif màj</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>Màj</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>Veuillez vous assurer que le niveau de la batterie de votre ordinateur est supérieur à 20 %. N'éteignez pas votre système et ne déconnectez pas d'appareils tant que la mise à jour n'est pas terminée.</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>Une nouvelle version est disponible.</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>Mise à jour…</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>Le contenu de votre appareil est à jour.</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Version logicielle</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>Faire glisser vers le haut et le bas pour ajuster la hauteur du panneau de la frise chronologique</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer ce fichier ? Le fichier supprimé ne peut pas être récupéré. Continuer ?</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>Supprimer fichier</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>Non</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>Enreg</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>Enregistrer fichier</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>Souhaitez-vous enregistrer les modifications ?</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>Niveaux de zoom</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>V</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>R</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>Par défaut</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Récent</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>Laser</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>Musique</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>Réactif</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>Ondulation</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>Intelligent</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>Ce Contrat de Licence de l'Utilisateur Final (CLUF) constitue un contrat valide entre ASUSTeK Computer Inc. (“ASUS“) et vous-même, en tant qu'utilisateur, concernant l'utilisation du logiciel ASUS (“Logiciel“) défini comme indiqué ci-dessous.
+En installant et en procédant à l'utilisation du logiciel VOUS RECONNAISSEZ EXPRÉSSEMENT AVOIR LU, COMPRIS ET CONSENTI À ÊTRE LIÉ PAR LES TERMES DE CE CONTRAT ET DE TOUTES SES VERSIONS ULTÉRIEURES.
+
+1. LE LOGICIEL se rapporte au Logiciel ASUS inclus dans ou avec le produit ASUS concerné, incluant, mais ne s'y limitant pas, toute correction de programme, mise à jour, mise à niveau ou version modifiée ultérieure.
+Le Logiciel peut être accompagné de tout autre logiciel créé par ASUS ou tout autre logiciel tiers protégé par une ou plusieurs licences de logiciel Free Open Source comme indiqué sur le site suivant : www.opensource.org/licenses.
+Un tel logiciel Free Open Source ne vous est fourni qu'en conformité avec les termes de la licence concernée ou de l'avis de droit d'auteur qui l'accompagne ou dans le fichier de licence des logiciels Free Open Source qui accompagnent le Logiciel.
+Les termes de ce contrat de licence ne s'appliquent PAS aux logiciels Free Open Source.
+
+2. LA LICENCE En conformité avec les termes de ce contrat de licence, ASUS vous concède une licence non exclusive, non commerciale, personnelle et limitée à l'utilisation du Logiciel comme inclus dans les produits ASUS uniquement.
+Vous pouvez faire une copie du Logiciel sous forme lisible par machine à des fins de sauvegarde uniquement; à condition que la copie de sauvegarde inclue tous les droits d'auteur et autres mentions de propriété figurant sur l'original.
+Cette licence ne doit pas être sous-licenciée, et n'est pas transférable, sauf à une personne ou une entité à laquelle vous acceptez de transférer la propriété de l'intégralité des produits ASUS contenant le Logiciel, à condition de transférer de façon permanente tous les droits en vertu du présent CLUF et de ne conserver aucune copie intégrale ou partielle du Logiciel, et pourvu que le bénéficiaire accepte les termes du présent CLUF.
+
+3. RESTRICTION DE DEMONTAGE Vous ne devez pas démonter, décompiler, décrypter ou désassembler le Logiciel ou permettre ou causer ce qui précède, sauf dans la mesure où la législation applicable interdit directement l'application de ce qui précède.
+
+4. CONFIDENTIALITÉ Vous avez le devoir de protéger et de ne pas divulguer ou provoquer la divulgation de l'intégralité ou de toute partie des informations confidentielles du Logiciel, incluant, mais ne s'y limitant pas, les secrets commerciaux ou le matériel protégé sous une forme quelconque à des tiers.
+
+5. DROITS de propriété intellectuelle ( «Droits PI») Vous reconnaissez et acceptez que tous les droits de propriété intellectuelle, titres et intérêts du, ou découlant du, Logiciel sont et demeurent la propriété exclusive d'ASUS ou de son donneur de licence.
+Aucun contenu de ce contrat de licence n'a pour but de vous transférer des droits de propriété intellectuelle quelconques.
+Toute utilisation non autorisée des droits de propriété intellectuelle est une violation de ce contrat de licence ainsi qu'une violation de la législation sur la propriété intellectuelle, incluant, mais ne s'y limitant, pas la législation concernant les droits d'auteur et les droits des marques commerciales.
+En envoyant des informations, des documents, des idées, des concepts ou des techniques, à l'exception des renseignements personnels, à destination d'ASUS via le Logiciel ( «Feedbacks»), vous reconnaissez et acceptez que : 
+(i) Vos Feedbacks ne doivent pas contenir d'informations confidentielles;
+(ii) ASUS n'est soumis à aucune obligation de quelque manière que ce soit concernant la confidentialité, expresse ou implicite, des Feedbacks;
+(iii) ASUS a le droit d'utiliser ou de divulguer, et ce à la seule discrétion d'ASUS, les Feedbacks, pour toute utilisation et de quelque manière que ce soit, dans le monde entier;
+(iv) Vos Feedbacks deviennent la propriété d'ASUS sans qu'ASUS ne dispose de quelque obligation que ce soit envers vous;
+et (v) Vous n'êtes sujet à aucun dédommagement ou remboursement de quelque sorte que ce soit.
+
+6. DURÉE ET RÉSILIATION Le présent contrat de licence prend effet à compter de la date d'installation du Logiciel.
+Vous pouvez résilier cette licence à tout moment en cessant toute utilisation du Logiciel et en retirant le logiciel du produit ASUS.
+Vos droits prendront fin sans aucun préavis de la part d'ASUS si nous pensons que vous ne respectez pas toutes les clauses de ce contrat de licence.
+
+7. Exclusion de garantie et limitation de responsabilité VOUS reconnaissez que le LOGICIEL est fourni «EN L'ÉTAT». VOUS ASSUMEZ LES RISQUES QUANT À LA QUALITÉ ET LES PERFORMANCES DE CE LOGICIEL, INCLUANT, MAIS NE S'Y LIMITANT PAS, LES FRAIS CONNEXES DE TOUS LES SERVICES ET RÉPARATIONS NÉCESSAIRES."
+Dans la mesure autorisée par la loi, ASUS NE DONNE AUCUNE GARANTIE, EXPLICITE OU IMPLICITE, EN CE QUI CONCERNE LE LOGICIEL OU TOUTE AUTRE INFORMATION OU DOCUMENTATION FOURNIES EN VERTU DU PRÉSENT CLUF OU POUR CE LOGICIEL, INCLUANT, MAIS NE S'Y LIMITANT PAS, TOUTE GARANTIE DE QUALITÉ MARCHANDE OU D'ADAPTATION À UN BUT PARTICULIER OU CONTRE LA CONTREFAÇON, OU TOUTE GARANTIE EN DEHORS DE L'UTILISATION OU EN DEHORS DU COURS DE PERFORMANCE. ASUS NE GARANTIT PAS LES RÉSULTATS QUI PEUVENT ÊTRE OBTENUS PAR L'UTILISATION DE CE LOGICIEL OU L'EXACTITUDE OU LA FIABILITÉ DE TOUTE INFORMATION OBTENUE PAR CE LOGICIEL. CERTAINES JURIDICTIONS NE PERMETTENT PAS L'EXCLUSION DE CERTAINES GARANTIES OU LA LIMITATION OU L'EXCLUSION DE RESPONSABILITÉ POUR CERTAINS DOMMAGES.
+PAR CONSÉQUENT, CERTAINES DES EXCLUSIONS ET LIMITATIONS DE RESPONSABILITÉ CI-DESSUS PEUVENT NE PAS S'APPLIQUER À VOUS.
+VOUS ASSUMEZ LA TOTALITÉ DES RISQUES PROVENANT DE L'UTILISATION ET / OU DES PERFORMANCES DE CE LOGICIEL.
+EN AUCUN CAS ASUS, SES DONNEURS DE LICENCE SES DIRECTEURS, SES CADRES, SES EMPLOYÉS, SES AGENTS OU SES AFFILIÉS NE PEUVENT ÊTRE TENUS RESPONSABLES DES DÉGÂTS INDIRECTS, SPÉCIAUX, ACCIDENTELS OU CONSÉCUTIFS (Y COMPRIS LES DÉGÂTS POUR MANQUE À GAGNER, PERTES DE PROFITS, PERTE DE JOUISSANCE OU DE DONNÉES, INTERRUPTION PROFESSIONNELLE OU ASSIMILÉ), PROVENANT OU RELATIFS À CE CONTRAT DE LICENCE, OU DE L'UTILISATION OU DE L'INCAPACITÉ À UTILISER LE LOGICIEL OU TOUTE PARTIE DE CELUI-CI, MÊME SI ASUS A ÉTÉ PRÉVENU DE LA POSSIBILITÉ DE TELS DÉGÂTS.
+CERTAINES JURIDICTIONS NE PERMETTENT PAS L'EXCLUSION DE CERTAINES GARANTIES OU LA LIMITATION OU L'EXCLUSION DE RESPONSABILITÉ POUR CERTAINS DÉGÂTS. PAR CONSÉQUENT, CERTAINES DES EXCLUSIONS ET LIMITATIONS DE RESPONSABILITÉ CI-DESSUS PEUVENT NE PAS S'APPLIQUER À VOUS.
+
+8. Indemnité VOUS acceptez de défendre, d'indemniser et de considérer comme non responsables ASUS et ses sociétés affiliées, fournisseurs de services, syndicats, distributeurs, concédants, dirigeants, administrateurs et employés, de et contre toutes pertes, dommages, dettes et dépenses résultant de toute réclamation ou demande (y compris les honoraires raisonnables d'avocat et les frais de justice), en raison de ou en relation avec VOTRE violation du présent CLUF ou toute loi ou réglementation applicable, ou droit de tiers.
+</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>Contrat de licence de l'utilisateur</value>
+  </data>
+</root>

@@ -29,7 +29,20 @@ namespace AuraEditor
     {
         private StorageFolder m_LocalUserFileFolder;
         private StorageFolder m_LocalUserScriptFolder;
-        
+
+        private IReUndoCommand savedUndoCommand;
+        private bool NeedSave
+        {
+            get
+            {
+                if (CurrentUserFilename == "" && (ReUndoManager.CanRedo() || ReUndoManager.CanUndo()))
+                    return true;
+                if (savedUndoCommand == ReUndoManager.CurUndoCommand)
+                    return false;
+                return true;
+            }
+        }
+
         private List<string> GetUserFilenames()
         {
             List<string> filenames = new List<string>();
@@ -82,7 +95,6 @@ namespace AuraEditor
         #region Intialize
         private async Task IntializeFileOperations()
         {
-            NeedSave = false;
             m_LocalUserScriptFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalUserScriptsFolderName, CreationCollisionOption.OpenIfExists);
             m_LocalUserFileFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalUserFilesFolderName, CreationCollisionOption.OpenIfExists);
 
@@ -110,7 +122,7 @@ namespace AuraEditor
             if (!successful)
                 return;
 
-            NeedSave = false;
+            savedUndoCommand = ReUndoManager.CurUndoCommand;
             long StartTime = 0;
 
             // Apply after saving file
@@ -154,6 +166,8 @@ namespace AuraEditor
 
                     if (!successful)
                         return;
+
+                    savedUndoCommand = ReUndoManager.CurUndoCommand;
                 }
 
                 ResetToDefault();
@@ -265,6 +279,8 @@ namespace AuraEditor
 
                     if (!successful)
                         return;
+
+                    savedUndoCommand = ReUndoManager.CurUndoCommand;
                 }
 
                 StorageFile copyfile = await inputFile.CopyAsync(m_LocalUserFileFolder, inputFile.Name, NameCollisionOption.ReplaceExisting);
@@ -276,7 +292,7 @@ namespace AuraEditor
                 await SaveCurrentUserFile();
 
                 ReUndoManager.Clear();
-                NeedSave = false;
+                SetLayerCounter = 1;
             }
         }
         private async void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -290,7 +306,6 @@ namespace AuraEditor
                 Log.Debug("[ExportButton] SaveFile : " + saveFile.Path);
             }
         }
-
         private async void FileItem_Click(object sender, RoutedEventArgs e)
         {
             CanShowDeviceUpdateDialog = false;
@@ -324,6 +339,8 @@ namespace AuraEditor
 
                     if (!successful)
                         return;
+
+                    savedUndoCommand = ReUndoManager.CurUndoCommand;
                 }
 
                 Log.Debug("[FileItem_Click] Selected file name : " + selectedName);
@@ -331,16 +348,18 @@ namespace AuraEditor
                 CurrentUserFilename = selectedName;
 
                 ReUndoManager.Clear();
-                NeedSave = false;
+                SetLayerCounter = 1;
             }
         }
+
         private async void OnCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
         {
             ContentDialog cDialog = GetCurrentContentDialog();
+            e.Handled = true;
+
             if (cDialog != null)
             {
                 cDialog.Hide();
-                e.Handled = true;
                 return;
             }
 
@@ -358,6 +377,7 @@ namespace AuraEditor
                     DialogYesButtonContent = resourceLoader.GetString("YesNoCancelDialog_Save"),
                     DialogCancelButtonContent = resourceLoader.GetString("YesNoCancelDialog_Discard")
                 };
+
                 await dialog.ShowAsync();
                 result = dialog.Result;
             }
@@ -526,8 +546,6 @@ namespace AuraEditor
 
         private void ParsingLayers(XmlNodeList layerNodes)
         {
-            List<LayerModel> layers = new List<LayerModel>();
-
             foreach (XmlNode node in layerNodes)
             {
                 XmlElement element = (XmlElement)node;
@@ -639,13 +657,13 @@ namespace AuraEditor
                     layer.AddDeviceZones(zoneDictionary);
                 }
 
-                layers.Add(layer);
                 LayerPage.AddLayer(layer);
             }
         }
 
         private void ResetToDefault()
         {
+            SetLayerCounter = 1;
             Clean();
             CurrentUserFilename = "";
             SpacePage.FillCurrentIngroupDevices();
@@ -653,9 +671,9 @@ namespace AuraEditor
         }
         private void Clean()
         {
+            savedUndoCommand = null;
             SetLayerButton.IsEnabled = true;
             SetLayerRectangle.Visibility = Visibility.Collapsed;
-            NeedSave = false;
             LayerPage.Clean();
             SpacePage.Clean();
         }

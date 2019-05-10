@@ -44,6 +44,7 @@ namespace AuraEditor.Common
         }
         #endregion
 
+        static public IReUndoCommand CurUndoCommand { get { return UndoStack.Count == 0 ? null : UndoStack.Peek(); } }
         static private readonly Stack<IReUndoCommand> RedoStack;
         static private readonly Stack<IReUndoCommand> UndoStack;
         static private bool _mutex;
@@ -70,12 +71,12 @@ namespace AuraEditor.Common
                 return;
 
             _mutex = true;
-            IReUndoCommand command =  RedoStack.Pop();
+            IReUndoCommand command = RedoStack.Pop();
             command.ExecuteRedo();
             UndoStack.Push(command);
             _mutex = false;
 
-            if(command is MoveEffectCommand c)
+            if (command is MoveEffectCommand c)
             {
                 if (c.Conflict())
                     Redo();
@@ -108,6 +109,14 @@ namespace AuraEditor.Common
             UndoStack.Clear();
             _mutex = false;
             RaiseCanExecute();
+        }
+        static public void Enable()
+        {
+            _mutex = false;
+        }
+        static public void Disable()
+        {
+            _mutex = true;
         }
     }
 }

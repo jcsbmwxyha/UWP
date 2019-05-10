@@ -69,6 +69,7 @@ namespace AuraEditor.Models
                 }
             }
         }
+        public string ScriptName;
 
         private bool isTriggering;
         public bool IsTriggering
@@ -242,7 +243,7 @@ namespace AuraEditor.Models
         {
             eff.Layer = this;
 
-            if (ExceedAfterApplyingEff(eff))
+            if (ExceedIfApplyingEff(eff))
                 return false;
 
             EffectLineViewModels.Add(eff);
@@ -254,13 +255,14 @@ namespace AuraEditor.Models
 
             return true;
         }
-        public bool ExceedAfterApplyingEff(EffectLineViewModel eff)
+        public bool ExceedIfApplyingEff(EffectLineViewModel eff)
         {
-            double needSpace = 0;
             EffectLineViewModel first = GetFirstIntersectingEffect(eff);
 
             if (first != null)
             {
+                double needSpace;
+
                 if (eff.Left <= first.Left)
                 {
                     needSpace = eff.Right - first.Left;
@@ -279,9 +281,11 @@ namespace AuraEditor.Models
                         needSpace = eff.Right - second.Left;
                     }
                 }
+
+                return (RemainingSpaceOnLast < needSpace);
             }
 
-            return (RemainingSpaceOnLast >= needSpace) ? false : true;
+            return (LayerPage.MaxRightPixel < eff.Right);
         }
         public double ApplyEffect(EffectLineViewModel placedEff)
         {
@@ -558,7 +562,7 @@ namespace AuraEditor.Models
             List<DeviceModel> deviceModels = SpacePage.Self.DeviceModelCollection;
             XmlNode groupoNode = CreateXmlNode("group");
             XmlAttribute attribute = CreateXmlAttributeOfFile("key");
-            attribute.Value = Name;
+            attribute.Value = ScriptName;
             groupoNode.Attributes.Append(attribute);
 
             foreach (var dm in deviceModels)

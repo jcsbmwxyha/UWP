@@ -116,9 +116,11 @@ namespace AuraEditor
                             UpdateBtnRP.Visibility = Visibility.Visible;
                             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
                             MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
-                            MainPage.Self.needToUpdadte = false;
+                            MainPage.Self.needToUpdate = false;
                             UpdateBtnMode = false;
                             await SpacePage.Self.Rescan();
+                            MainPage.Self.NoSupportedDeviceContent.Text = "Please connect at least one Aura Sync compatible device.";
+                            MainPage.Self.GoToUpdateBtn.Visibility = Visibility.Collapsed;
                             break;
                         }
                         if (ServiceViewModel.returnnum == 813)
@@ -160,7 +162,9 @@ namespace AuraEditor
                         UpdateBtnRP.Visibility = Visibility.Visible;
                         SettingsPage.Self.PivotNewTab.Visibility = Visibility.Visible;
                         MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
-                        MainPage.Self.needToUpdadte = true;
+                        MainPage.Self.needToUpdate = true;
+                        MainPage.Self.NoSupportedDeviceContent.Text = "To start editing the lighting profile, the latest software version of connected devices are required."; ;
+                        MainPage.Self.GoToUpdateBtn.Visibility = Visibility.Visible;
                         NoticeImg.Visibility = Visibility.Collapsed;
                         UpdateStateTextBlock.Visibility = Visibility.Visible;
                         UpdateStateTextBlock.Text = resourceLoader.GetString("UpdateStateTextBlock_NewVersion");
@@ -198,7 +202,7 @@ namespace AuraEditor
             UpdateBtnRP.Visibility = Visibility.Visible;
             SettingsPage.Self.PivotNewTab.Visibility = Visibility.Collapsed;
             MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Collapsed;
-            MainPage.Self.needToUpdadte = false;
+            MainPage.Self.needToUpdate = false;
             UpdateStateTextBlock.Visibility = Visibility.Collapsed;
             NoticeImg.Source = new BitmapImage(new Uri(this.BaseUri, "ms-appx:///Assets/NoticeImage/asus_ac_error_ic.png"));
             NoticeImg.Visibility = Visibility.Visible;

@@ -12,8 +12,6 @@
     mc:Ignorable="d">
 
     <Page.KeyboardAccelerators>
-        <KeyboardAccelerator Modifiers="Control" Key="Add" Invoked="ZoomAddInvoked"/>
-        <KeyboardAccelerator Modifiers="Control" Key="Subtract" Invoked="ZoomSubtractInvoked"/>
         <KeyboardAccelerator Modifiers="Control" Key="A" Invoked="SelectAllZonesInvoked"/>
     </Page.KeyboardAccelerators>
 
@@ -191,7 +189,7 @@
         </Grid>
         
         <ScrollViewer Name="SpaceScrollViewer" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Left"
-                      MinZoomFactor="0.1" MaxZoomFactor="3" ZoomMode="Enabled" x:FieldModifier="public"
+                      MinZoomFactor="0.515" MaxZoomFactor="3" ZoomMode="Enabled" x:FieldModifier="public"
                       HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Canvas Name="SpaceCanvas"  VerticalAlignment="Top" Width="4800" Height="1920" HorizontalAlignment="Left">
                 <Rectangle Name="MouseRectangle" Width="0" Height="0"

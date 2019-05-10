@@ -118,7 +118,7 @@
             <RelativePanel Height="0"/>
         </DataTemplate>
     </ContentDialog.TitleTemplate>
-    <Grid>
+    <Grid KeyDown="YesNoCancelDialog_KeyDown">
         <StackPanel Margin="20,10,10,10">
             <RelativePanel>
                 <TextBlock Name="TitleTextBlock" Text="" Foreground="White" FontSize="18"/>

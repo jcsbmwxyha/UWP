@@ -26,7 +26,7 @@ namespace AuraEditor.UserControls
     {
         private EffectLineViewModel elvm { get { return this.DataContext as EffectLineViewModel; } }
 
-        private ScrollViewer m_ScrollViewer;
+        static private ScrollViewer m_ScrollViewer;
         private DispatcherTimer m_ScrollTimerClock;
         private double _pressedPosition;
         private double _undoValue;
@@ -57,6 +57,35 @@ namespace AuraEditor.UserControls
         }
         private double EffectRight { get { return EffectLeft + EffectWidth; } }
         private double[] alignPositions;
+
+
+        public EffectLine()
+        {
+            this.InitializeComponent();
+            this.DataContextChanged += (s, e) =>
+            {
+                Bindings.Update();
+
+                // Do a trick to remove older handler
+                elvm.ClearMoveToHandler();
+                elvm.MoveTo += MoveAnimation;
+            };
+
+            m_ScrollTimerClock = new DispatcherTimer();
+            m_ScrollTimerClock.Tick += Timer_Tick;
+            m_ScrollTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
+            _scrollDirection = 0;
+            _isPressed = false;
+        }
+        private void EffectLine_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadedStoryboard.Begin();
+            m_ScrollViewer = FindParentControl<ScrollViewer>(this, typeof(ScrollViewer));
+        }
+        private void EffectLine_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
+        }
 
         #region -- Intelligent auto scroll --
         private int _scrollDirection;
@@ -159,20 +188,21 @@ namespace AuraEditor.UserControls
                 LayerPage.Self.UpdateSupportLine(-1);
             }
         }
+
         private void EffectLine_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             if (_isPressed)
             {
                 // Getting ScrollViewer is speculative, but it do the trick.
-                m_ScrollViewer = FindParentControl<ScrollViewer>(this, typeof(ScrollViewer));
                 var track = FindParentControl<LayerTrack>(this, typeof(LayerTrack));
                 Point positionInTrack = e.GetCurrentPoint(track).Position;
 
+                var scp = FindParentControl<ScrollContentPresenter>(this, typeof(ScrollContentPresenter));
                 Rect screenRect = new Rect(
-                    m_ScrollViewer.HorizontalOffset,
-                    m_ScrollViewer.VerticalOffset,
-                    m_ScrollViewer.ActualWidth,
-                    m_ScrollViewer.ActualHeight);
+                    scp.HorizontalOffset,
+                    scp.VerticalOffset,
+                    scp.ActualWidth,
+                    scp.ActualHeight);
 
                 if (positionInTrack.X > screenRect.Right - 100 && screenRect.Right != _maxRight)
                     _scrollDirection = 3;
@@ -214,33 +244,6 @@ namespace AuraEditor.UserControls
         #endregion
 
         #region -- Move to --
-        public EffectLine()
-        {
-            this.InitializeComponent();
-            this.DataContextChanged += (s, e) =>
-            {
-                Bindings.Update();
-
-                // Do a trick to remove older handler
-                elvm.ClearMoveToHandler();
-                elvm.MoveTo += MoveAnimation;
-            };
-
-            m_ScrollTimerClock = new DispatcherTimer();
-            m_ScrollTimerClock.Tick += Timer_Tick;
-            m_ScrollTimerClock.Interval = new TimeSpan(0, 0, 0, 0, 5); // 10 ms
-            _scrollDirection = 0;
-            _isPressed = false;
-        }
-        private void EffectLine_Loaded(object sender, RoutedEventArgs e)
-        {
-            LoadedStoryboard.Begin();
-        }
-        private void EffectLine_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Bindings.StopTracking();
-        }
-
         private void MoveAnimation(double value)
         {
             AnimationStart(this, "MoveTo", 200, EffectLeft, value);
@@ -371,7 +374,7 @@ namespace AuraEditor.UserControls
             m_ScrollTimerClock.Stop();
             LayerPage.Self.UpdateSupportLine(-1);
 
-            if (elvm.Layer.ExceedAfterApplyingEff(elvm))
+            if (elvm.Layer.ExceedIfApplyingEff(elvm))
             {
                 if (mouseState == CursorState.SizeAll)
                 {
@@ -393,8 +396,6 @@ namespace AuraEditor.UserControls
             else
             {
                 double result = elvm.Layer.ApplyEffect(elvm);
-                NeedSave = true;
-
                 var containter = FindParentDependencyObject(this);
                 containter.SetValue(Canvas.ZIndexProperty, 0);
 

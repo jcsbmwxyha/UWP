@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>Действие：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>Добавить эффект</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>Добавить узел</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>Нажмите или перетащите, чтобы настроить угол</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>Угол</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>Нажмите для ввода угла</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>Против часовой стрелки</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>Дыхание</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>Внутренний</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>Проверка…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>По часовой стрелке</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>Цветовой цикл</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>Дважды щелкните для изменения цвета</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>Цвет</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>Коме́та</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>Доступные устройства</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>Доступные устройства</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>Выберите устройства для редактирования профиля подсветки. Выбранные устройства будут автоматически добавлены в список устройств AURA Sync.</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>Вырезать</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>Actualización de requisitos previos</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Уменьшить угол на 5 градусов</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>Удалить узел</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>Для редактирования профилей подсветки обязательно обновите программное обеспечение своих устройств до последней версии.</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>Дважды нажмите</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>Дублировать</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>Редактировать слой</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>Эффекты</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>Последовательность эффектов：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>Убедитесь, что компьютер подключен к источнику питания и уровень заряда аккумулятора более 20%.</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>Ошибка обновления. Пожалуйста, попробуйте еще раз.</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>Скрыть слой</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>Отобразить слой</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>Быстрая</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>Профиль освещения AURA Creator</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>Имя файла</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>Заполнить всю область редактирования (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>Перейти к началу (Shift + Home)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>Перейти в конец (Shift + End)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>Градиент</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>Импорт</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Увеличить угол на 5 градусов</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>Слой</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Развернуть панель эффектов подсветки</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Свернуть панель эффектов подсветки</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>Опции</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>Дважды щелкните для переименования</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>Нет доступных устройств</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>Пожалуйста, подключите хотя бы одно устройство, совместимое с AURA Sync.</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>Средняя</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>Нажмите</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>Нажмите</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>Шаблон</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>Пауза (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>Справка</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>Воспроизвести (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>Ра́дуга</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>Случайный</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>Перетащите для настройки случайного цветового диапазона</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>Восстановить (Ctrl + Shift + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>Удалить все</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>Сброс</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>Сброс к виду по умолчанию (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Развернуть панель настроек свойств</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Свернуть панель настроек свойств</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>Сохранить и применить</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>Сохранить файл</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>Устройства</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>Установить как слой</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>Нажмите или перетащите области подсветки с дисплея устройства и установите в качестве слоя.</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>Нажмите или перетащите области подсветки с дисплея устройства и установите в качестве слоя.</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>Медленная</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)синхронизированных устройств.</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>Упорядочить устройства</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>Упорядочить устройства</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>Нажмите для изменения расположения доступных устройств (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>Спецэффекты</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>Скорость</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>Внешний</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>Звезда</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>Статический</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>Файл с таким именем уже есть. Пожалуйста, попробуйте другое.</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>В имени файла нельзя использовать специальные символы.</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>Стробоскоп</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>Прилив</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>Курсор временной шкалы</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>Увеличить шкалу</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>Уменьшить шкалу</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>Удалить слой</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>Эффекты：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>Нет триггерного эффекта</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>Некоторые устройства могут не поддерживать это действие.</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>Настройки эффекта триггера</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>Отменить (Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>Проверка обновлений</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>Обновить сейчас</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>Пожалуйста, убедитесь, что уровень заряда аккумулятора компьютера более 20%. Не выключайте систему и не отключайте никакие устройства до завершения обновления.</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>Доступна новая версия.</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>Обновление…</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>Устройство обновлено.</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Версия ПО</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>Перетащите вверх и вниз для настройки высоты панели графика</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить этот файл? Удаленный файл не может быть восстановлен. Продолжить?</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>Удалить файл</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>Сохранить файл</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>Сохранить изменения?</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>Уровни масштабирования</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>G</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>R</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>По умолча́нию</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Последние</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>Ла́зер</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>Pеагирующий</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>Ripple</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>Интеллектуальный</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>Настоящее Лицензионное соглашение с пользователем Программного обеспечения ASUS («End-user license agreement») представляет собой действительное и обязательное соглашение между ASUSTeK Computer Inc. («ASUS») и Вами в качестве пользователя Программного обеспечения ASUS (далее – «Программное обеспечение»). Установив и продолжая использовать Программное обеспечение, ВЫ ПРИЗНАЕТЕ, ЧТО ВЫ ПРОЧИТАЛИ, ПОНИМАЕТЕ И СОГЛАШАЕТЕСЬ В ПОЛНОМ ОБЪЕМЕ С УСЛОВИЯМИ ДАННОГО СОГЛАШЕНИЯ И ЛЮБЫМИ НОВЫМИ ВЕРСИЯМИ НАСТОЯЩЕГО СОГЛАШЕНИЯ. 
+ 
+1.ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ 
+означает Программное обеспечение ASUS, интегрированное или поставляемое с продуктом ASUS включая любые исправления, обновления, модернизированные и измененные версии.
+
+Программное обеспечение может поставляется вместе с другим Программным обеспечением, созданным ASUS или третьей стороной, которое лицензируется под одной или несколькими свободным лицензиями Программного обеспечения с открытым исходным кодом, как указано на www.opensource.org/licenses. Такое Свободное программное обеспечение с открытым исходным кодом поставляется в соответствии с соответствующим лицензионным соглашением или уведомлением об авторском праве в файле лицензий FOSS, включенным в Программное обеспечение. Условия этого лицензионного соглашения НЕ применяются к такому Свободному программному обеспечению с открытым исходным кодом.
+
+2.ЛИЦЕНЗИЯ. 
+В соответствии с условиями настоящего лицензионного соглашения ASUS предоставляет Вам ограниченную личную некоммерческую простую (неисключительную) лицензию на использование Программного обеспечения, встроенного в продукты ASUS. Вы можете использовать Программное обеспечение только для личного, непрофессионального использования, не связанного с осуществлением предпринимательской деятельности. Вы можете использовать Программное обеспечение только в том состоянии, в котором оно было предоставлено Вам по настоящей лицензии. Вы можете использовать Программное обеспечение в вышеуказанных целях путем использования предусмотренных в Программном обеспечении функций и возможностей. Вы можете сделать копию Программного обеспечения только в целях резервного копирования при условии, что резервная копия содержит все уведомления об авторских правах или других правах, содержащихся в оригинале. Эта лицензия не может быть сублицензирована и не может быть передана за исключением лица или организации, которым вы передаете право собственности на продукт ASUS, содержащий данное Программное обеспечение, при условии, что вы передаете все права в соответствии с настоящим Лицензионным соглашением и не сохраняете копий Программного обеспечения и получатель согласен с условиями настоящего Лицензионного соглашения.
+
+3.ОГРАНИЧЕНИЯ. 
+Вам запрещено декомпилировать, декодировать или изменять исходный код Программного обеспечения или разрешать вышесказанное третьим лицам, за исключением случаев, когда законом предусмотрено иное.
+
+4.КОНФИДЕНЦИАЛЬНОСТЬ. 
+Вы обязаны защищать и не раскрывать конфиденциальную информацию о Программном обеспечении третьим лицам, включая коммерческую тайну и защищенные авторским правом материалы в любой форме.
+
+5.ПРАВА ИНТЕЛЛЕКТУАЛЬНОЙ СОБСТВЕННОСТИ («Права ИС»). 
+Вы признаете и соглашаетесь с тем, что все права интеллектуальной собственности, связанные с Программным обеспечением, являются и остаются исключительной собственностью ASUS или его лицензиара. Данное лицензионное соглашение не передает Вам права на интеллектуальную собственность. Любое несанкционированное использование прав интеллектуальной собственности является нарушением настоящего Лицензионного соглашения, а также нарушением положений закона об интеллектуальной собственности, включая, но не ограничиваясь положениями закона об авторском праве и о товарном знаке.
+Отправляя любую информацию, материалы, идеи, концепции или методы, за исключением персональных данных в ASUS с помощью Программного обеспечения («Обратная связь»), Вы подтверждаете и соглашаетесь с тем, что: (i) Ваши сообщения не будут содержать конфиденциальную или закрытую информацию; (ii) ASUS не несет никакой ответственности за какую-либо конфиденциальность в отношении информации, изложенной в Ваших сообщениях; (iii) ASUS имеет право использовать или раскрывать по собственному усмотрению информацию из обратной связи для любых целей, в любом случае, в любом месте; (iv) информация, изложенная в Ваших сообщениях, станет собственностью ASUS без каких-либо обязательств со стороны ASUS; (v) Вы не имеете права на компенсацию или возмещение ущерба любого рода.
+
+6.СРОК ДЕЙСТВИЯ И ПРЕКРАЩЕНИЕ ЛИЦЕНЗИИ. 
+Данное лицензионное соглашение будет действовать с даты установки Программного обеспечения. Вы можете прекратить действие этой лицензии в любое время, прекратив все использование Программного обеспечения и удалив Программное обеспечение из продукта ASUS. ASUS имеет право собирать, хранить и иным образом обрабатывать данные об использовании Программного обеспечения («лог-файлы») для целей статистического учета, исправления неисправностей и повышения качества Программного обеспечения. Ваше право будет прекращено без предварительного уведомления со стороны ASUS, если мы решим, что Вы не соблюдаете какое-либо положение настоящего Лицензионного соглашения.
+
+7.Отказ от гарантий и ограничение ответственности. 
+ВЫ ПРИЗНАЕТЕ, ЧТО ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ ПО ПРИНЦИПУ «КАК ЕСТЬ». ВЫ БЕРЕТЕ НА СЕБЯ ВСЕ РИСКИ В ОТНОШЕНИИ КАЧЕСТВА И РЕЗУЛЬТАТОВ РАБОТЫ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ, ВКЛЮЧАЯ РАСХОДЫ НА НЕОБХОДИМОЕ ОБСЛУЖИВАНИЕ И РЕМОНТ. В ПРЕДЕЛАХ, ДОПУСКАЕМЫХ ДЕЙСТВУЮЩИМ ЗАКОНОДАТЕЛЬСТВОМ, ASUS НЕ ПРЕДОСТАВЛЯЕТ НИКАКИХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, В ОТНОШЕНИИ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ЛЮБОЙ ДРУГОЙ ИНФОРМАЦИИ ИЛИ ДОКУМЕНТАЦИИ, ПРЕДОСТАВЛЯЕМЫХ ЭТОЙ ЛИЦЕНЗИЕЙ ИЛИ ДЛЯ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ЛЮБЫМИ ГАРАНТИЯМИ КОММЕРЧЕСКОЙ ЦЕННОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ ИЛИ ПРОТИВ НАРУШЕНИЙ, ИЛИ ЛЮБЫЙ ГАРАНТИЙ, ВОЗНИКАЮЩИХ В РЕЗУЛЬТАТЕ ИСПОЛЬЗОВАНИЯ В ХОДЕ РАБОТЫ. ASUS ТАКЖЕ НЕ ДАЕТ НИКАКИХ ГАРАНТИЙ В ОТНОШЕНИИ РЕЗУЛЬТАТОВ, КОТОРЫЕ МОГУТ БЫТЬ ПОЛУЧЕНЫ ПРИ ИСПОЛЬЗОВАНИИ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ, ТОЧНОСТИ ИЛИ НАДЕЖНОСТИ ЛЮБОЙ ИНФОРМАЦИИ, ПОЛУЧЕННОЙ С ПОМОЩЬЮ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ. НЕКОТОРЫЕ ЮРИСДИКЦИИ НЕ ДОПУСКАЮТ ИСКЛЮЧЕНИЯ НЕКОТОРЫХ ГАРАНТИЙ, ОГРАНИЧЕНИЙ ИЛИ ИСКЛЮЧЕНИЙ ОТВЕТСТВЕННОСТИ ЗА НЕКОТОРЫЕ УБЫТКИ. СООТВЕТСТВЕННО, ОТДЕЛЬНЫЕ ПОЛОЖЕНИЯ ИЗ ВЫШЕИЗЛОЖЕННОГО ОТКАЗА ОТ ГАРАНТИЙ И ОГРАНИЧЕНИЯ ОТВЕТСТВЕННОСТИ МОГУТ НЕ ПРИМЕНЯТЬСЯ К ВАМ.
+
+ВЫ БЕРЕТЕ НА СЕБЯ ВЕСЬ РИСК, ВОЗНИКАЮЩИЙ В РЕЗУЛЬТАТЕ ИСПОЛЬЗОВАНИЯ И/ИЛИ В РЕЗУЛЬТАТЕ РАБОТЫ ЭТОГО ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ. НИ ПРИ КАКИХ ОБСТОЯТЕЛЬСТВАХ ASUS, ЕЕ РУКОВОДСТВО, ДОЛЖНОСТНЫЕ ЛИЦА, СЛУЖАЩИЕ И ПОСРЕДНИКИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ЗА КАКОЙ-ЛИБО КОСВЕННЫЙ, СПЕЦИАЛЬНЫЙ, СЛУЧАЙНЫЙ ИЛИ ЗАКОНОМЕРНЫЙ УЩЕРБ (ВКЛЮЧАЯ УЩЕРБ ОТ УПУЩЕННОЙ ВЫГОДЫ, НЕСОСТОЯВШЕЙСЯ СДЕЛКИ, ПОТЕРИ ДАННЫХ ИЛИ НЕВОЗМОЖНОСТИ ИХ ИСПОЛЬЗОВАНИЯ, ПРЕРЫВАНИЯ ДЕЯТЕЛЬНОСТИ И Т.П.) ВЫТЕКАЮЩИЕ ИЗ ИЛИ КАСАЮЩИЕСЯ ЭТОГО СОГЛАШЕНИЯ, В ТОМ ЧИСЛЕ ИСПОЛЬЗОВАНИЯ ИЛИ НЕВОЗМОЖНОСТИ ИСПОЛЬЗОВАНИЯ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ЛЮБОЙ ЕГО ЧАСТИ, ДАЖЕ В ТОМ СЛУЧАЕ, ЕСЛИ ASUS БЫЛ УВЕДОМЛЕН О ВОЗМОЖНОСТИ ТАКОГО УЩЕРБА. НЕКОТОРЫЕ ЮРИСДИКЦИИ НЕ ДОПУСКАЮТ ИСКЛЮЧЕНИЯ НЕКОТОРЫХ ГАРАНТИЙ, ОГРАНИЧЕНИЙ ИЛИ ИСКЛЮЧЕНИЙ ОТВЕТСТВЕННОСТИ ЗА НЕКОТОРЫЕ УБЫТКИ. СООТВЕТСТВЕННО, ЧТО-ТО ИЗ ВЫШЕИЗЛОЖЕННОГО ОТКАЗА ОТ ГАРАНТИЙ И ОГРАНИЧЕНИЯ ОТВЕТСТВЕННОСТИ МОГУТ НЕ ПРИМЕНЯТЬСЯ К ВАМ.
+
+8.Возмещение ущерба. 
+Вы соглашаетесь защищать, возмещать ущерб и ограждать ASUS, ее дочерние компании, руководство, должностных лиц, сотрудников и посредников от любых убытков, обязательств и расходов, возникающих в результате любых требований со стороны третьих лиц (включая разумные гонорары адвокатов и судебные издержки) из-за или в связи с нарушением Вами настоящего Лицензионного соглашения или любого применимого закона, постановления или прав третьих лиц. 
+9.Территория действия настоящей Лицензии. 
+Настоящая Лицензия распространяется только на территорию поставки Продукта.</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>Лицензионное соглашение</value>
+  </data>
+</root>

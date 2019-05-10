@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>Akce：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>Přid efekt</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>Přidat uzel</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>Kliknutím nebo potažením upravte úhel</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>Úhel</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>Kliknutím zadejte hodnotu stupňů</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>Zprava doleva</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>Pulzující</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>Dovnitř</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>Probíhá kontrola…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>Zleva doprava</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>Barevný cyklus</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>Kliknutím dvakrát změňte barvu</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>Barva</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>Kometa</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>Dostupná zařízení</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>Dostupná zařízení</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>Vyberte zařízení pro úpravy světelných efektů, která budou automaticky přidána do seznamu zařízení AURA Sync.</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>Kopírovat</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>Vyjmout</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>Požadavek aktualizace</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Zmenšit úhel o 5 stupňů</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>Odstranit uzel</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>Aby bylo možné upravovat světelné profily, zaktualizujte svá zařízení na nejnovější verzi softwaru.</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>Dvakrát klik.</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>Duplikovat</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>Upravit vrstvu</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>Upravit</value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>Efekty</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>Pořadí efektů：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>Ověřte, zda je počítač připojen k napáj. A zda je bat. nabitá na více než 20 %.</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>Aktualizace se nezdařila. Zkuste to znovu.</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>Exportovat</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>Skrýt vrstvu</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>Zobrazit vrstvu</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>Vysoká</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>Profil osvětlení AURA Creator</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>Název souboru</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>Vyplnit celou oblast úprav (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>Přeskočit na začátek (Shift + Home)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>Přeskočit na konec (Shift + End)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>Přechod</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>Importovat</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Zvětšit úhel o 5 stupňů</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>Vrstva</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Rozbalit panel světelných efektů</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Sbalit panel světelných efektů</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>Kliknutím dvakrát přejmenujte</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>Vytvořit nový</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>Žádná dostupná zařízení</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>Připojte alespoň jedno zařízení kompatibilní s AURA Sync.</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>Normální</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>Kliknout</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>Kliknout</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>Vložit</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>Vzorek</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>Pozastavit (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>O aplikaci</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>Aktualiz.</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>Přehrát (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>Duha</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>Náhodně</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>Přetažením upravte rozsah náhodných barev</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>Znovu (Ctrl + Shift + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>Odstr. vše</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>Přejmenovat</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>Resetovat</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>Resetovat na výchozí rozvržení (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Rozbalit panel nastavení vlastností</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Sbalit panel nastavení vlastností</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>Uložit a použít</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>Uložit soubor</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>Zařízení</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>Nastavit vrstvu</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>Kliknutím nebo přetažením vyberte zóny osvětlení na displeji zařízení a nastavte jako vrstvu.</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>Kliknutím nebo přetažením vyberte zóny osvětlení na displeji zařízení a nastavte jako vrstvu.</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>Nízká</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)synchronizovaných zařízení.</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>Uspořádat zař.</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>Uspořádat zař.</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>Kliknutím změníte uspořádání rozvržení svých dostupných zařízení (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>Zvláštní efekty</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>Rychlost</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>Ven</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>Hvězda</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>Statický</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>Název souboru již existuje. Zkuste jiný.</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>Název souboru nesmí obsahovat zvláštní znaky.</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>Stroboskop</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>Příliv</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>Ukazatel časové osy</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>Zvětšit časovou osu</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>Zmenšit časovou osu</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>Odstranit vrstvu</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>Efekty：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>Žádná aktivace efektu</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>Některá zařízení nemusí tuto akci podporovat.</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>Nastavení spuštění efektu</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>Zpět (Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>Aktualiz.</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>Najít akt</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>Aktualiz.</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>Zkontrolujte, zda je baterie vašeho počítače nabitá na více než 20 %. Do dokončení aktualizace nevypínejte systém ani neodpojujte žádná zařízení.</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>K dispozici je nová verze.</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>Probíhá aktualizace...</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>Obsah vašeho zařízení je aktuální.</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Verze softwaru</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>Přetažením nahoru a dolů upravte výšku panelu časové osy</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>Opravdu chcete tento soubor odstranit? Odstraněný soubor nelze obnovit. Pokračovat?</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>Odstranit soubor</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>Uložit soubor</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>Chcete uložit změny?</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>Úrovně zvětšení</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>M</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>Z</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>Č</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>Výchozí</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Nedávné</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>Laser</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>Hudba</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>Reaktivní</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>Vlnění</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>Chytrý</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>Tato licenční smlouva s koncovým uživatelem („EULA“) představuje platnou a závaznou dohodu mezi společností ASUSTeK Computer Inc. (dále jen „ASUS“) a vámi jako uživatele pro používání níže definovaného softwaru ASUS (dále jen „software“). Nainstalováním a dalším používání tohoto softwaru BERETE VÝSLOVNĚ NA VĚDOMÍ, ŽE JSTE SI PŘEČETLI, POROZUMĚLI A SOUHLASÍTE S TÍM, ŽE BUDETE DODRŽOVAT PODMÍNKY TÉTO SMLOUVY EULA A JAKÉKOLIV JEJÍ NOVÉ VERZE.
+ 
+1.SOFTWARE znamená software ASUS dodávaný v příslušném produktu ASUS nebo s příslušným produktem ASUS, včetně, ale bez omezení, jakýchkoli budoucích programových oprav, aktualizací, upgradů a upravených verzí.
+
+S tímto softwarem může být dodáván další software, který byl vytvořen společností ASUS nebo třetí stranou a který je licencován v rámci jedné nebo více licencí na bezplatný software s otevřeným zdrojovým kódem uvedených na webové stránce www.opensource.org/licenses. Tento bezplatný software s otevřeným zdrojovým kódem je vám poskytován výhradně v souladu s podmínkami příslušné licenční smlouvy nebo oznámení o autorských právech, které je k němu přiloženo nebo se nachází v souboru licencí FOSS, který je součástí softwaru. Podmínky této smlouvy EULA se NEVZTAHUJÍ na tento bezplatný software s otevřeným zdrojovým kódem.
+
+2.LICENCE V souladu s podmínkami této smlouvy EULA vám společnost ASUS uděluje omezenou, osobní, neobchodní a nevýhradní licenci na používání softwaru výhradně jako součást produktů ASUS. Můžete vytvořit jednu kopii softwaru ve strojově čitelné podobě pouze pro účely zálohování; záložní kopie musí obsahovat všechna oznámení o autorských právech nebo jiné vlastnické informace obsažené v originálu. Je zakázáno tuto licenci dále sublicencovat nebo převádět s výjimkou osoby nebo subjektu, kterému převedete vlastnictví všech produktů ASUS obsahujících tento software, za předpokladu, že trvale převádíte všechna práva podle této smlouvy EULA a nezachováváte žádné úplné ani částečné kopie softwaru a příjemce souhlasí s podmínkami této smlouvy EULA.
+
+3.ZÁKAZ ZPĚTNÉHO PŘEVODU Je zakázáno provádět zpětnou analýzu, dekompilovat, dešifrovat nebo rozebírat software nebo tyto operace povolit nebo stimulovat, s výjimkou případů, kdy platný zákon přímo zakazuje uplatnění výše uvedené podmínky.
+
+4.DŮVĚRNOST Jste povinni chránit a nezveřejňovat ani nezpřístupňovat úplné ani částečné důvěrné informace o softwaru, včetně obchodního tajemství, materiálu chráněného autorskými právy v jakékoli podobě, žádné třetí straně.
+
+5.PRÁVA NA DUŠEVNÍ VLASTNICTVÍ („IP PRÁVA“) Berete na vědomí a souhlasíte s tím, že veškerá IP práva, nárok a zájem na softwaru nebo z něho vyplývající jsou a zůstávají výlučným vlastnictvím společnosti ASUS nebo jejího poskytovatele licence. Žádnou částí této smlouvy EULA se na vás nepřevádějí žádná taková IP práva. Jakékoli neoprávněné použití práv na duševní vlastnictví je porušením této smlouvy EULA a porušením zákonů o duševním vlastnictví, včetně zákonů o autorských právech a zákonů o ochranných známkách.
+Odesíláním jakýchkoli informací, materiálů, nápadů, konceptů nebo technik s výjimkou osobních informací společnosti ASUS prostřednictvím softwaru („zpětné vazby“) berete na vědomí a souhlasíte s tím, že: (i) vaše zpětné vazby nesmí obsahovat důvěrné nebo chráněné informace; (ii) společnost ASUS není povinna poskytovat jakoukoli důvěrnost, výslovnou nebo předpokládanou, pokud jde o zpětné vazby; (iii) společnost ASUS je podle vlastního uvážení oprávněna používat zpětné vazby k jakémukoli účelu a jakýmkoli způsobem po celém světě; (iv) vaše zpětné vazby se stávají majetkem společnosti ASUS bez jakýchkoli závazků společnosti ASUS vůči vám; a (v) nemáte nárok na jakoukoli kompenzaci nebo náhradu jakéhokoli druhu.
+
+6.DÉLKA TRVÁNÍ A UKONČENÍ Tato smlouva EULA bude platná od data instalace softwaru. Tuto licenci můžete kdykoli ukončit tím, že zcela přestanete používat software a odstraníte jej z produktu ASUS. Pokud společnost ASUS usoudí, že jste nedodrželi některá ustanovení této smlouvy EULA, bude vaše právo ukončeno bez předchozího oznámení. 
+
+7.Právní omezení záruky a omezení odpovědnosti BERETE NA VĚDOMÍ, ŽE TENTO SOFTWARE JE POSKYTOVÁN „TAK JAK JE“. VEŠKERÉ RIZIKO SOUVISEJÍCÍ S KVALITOU A VÝKONEM TOHOTO SOFTWARU NESETE VY, MIMO JINÉ VČETNĚ SPOJENÝCH NÁKLADŮ NA NEZBYTNOU ÚDRŽBU A OPRAVU. V ROZSAHU POVOLENÉM ZÁKONEM SPOLEČNOST ASUS NEPOSKYTUJE ŽÁDNÉ ZÁRUKY, VÝSLOVNÉ NEBO VYPLÝVAJÍCÍ, S OHLEDEM NA SOFTWARE NEBO JAKÉKOLI DALŠÍ INFORMACE NEBO DOKUMENTACE POSKYTOVANÉ V RÁMCI TÉTO SMLOUVY EULA NEBO PRO TENTO SOFTWARE, VČETNĚ, ALE BEZ OMEZENÍ JAKÉKOLI ZÁRUKY OBCHODOVATELNOSTI NEBO VHODNOSTI PRO KONKRÉTNÍ ÚČEL NEBO V SOUVISLOSTI S NEDOVOLENÝMI ZÁSAHY NEBO JAKÉKOLI ZÁRUKY VYPLÝVAJÍCÍ Z POUŽITÍ NEBO Z ZPŮSOBU VÝKONU. SPOLEČNOST ASUS ROVNĚŽ NEPOSKYTUJE ŽÁDNÉ ZÁRUKY NA VÝSLEDKY, KTERÝCH LZE DOSÁHNOUT POUŽÍVÁNÍM TOHOTO SOFTWARU, ANI ZÁRUKY NA PŘESNOST NEBO SPOLEHLIVOST VŠECH INFORMACÍ ZÍSKANÝCH PROSTŘEDNICTVÍM TOTO SOFTWARU. NĚKTERÉ PRÁVNÍ ŘÁDY NEPOVOLUJÍ VYLOUČENÍ URČITÝCH ZÁRUK NEBO OMEZENÍ NEBO VYLOUČENÍ ODPOVĚDNOSTI ZA URČITÉ ŠKODY. Z TOHOTO DŮVODU SE NA VÁS NĚKTERÁ VÝŠE UVEDENÁ OMEZENÍ A VYLOUČENÍ ODPOVĚDNOSTI NEMUSÍ VZTAHOVAT.
+
+VEŠKERÉ RIZIKO VYPLÝVAJÍCÍ Z POUŽÍVÁNÍ A/NEBO VÝKONU TOHOTO SOFTWARU NESETE VY. SPOLEČNOST ASUS, JEJÍ POSKYTOVATELÉ LICENCÍ ANI JEJÍ ZODPOVĚDNÍ ÚŘEDNÍCI, ŘEDITELÉ, ZAMĚSTNANCI, AGENTI NEBO PŘIDRUŽENÉ SUBJEKTY V ŽÁDNÉM PŘÍPADĚ NENESOU ODPOVĚDNOST ZA JAKÉKOLI NÁSLEDNÉ, NÁHODNÉ, PŘÍMÉ, NEPŘÍMÉ, ZVLÁŠTNÍ, TRESTNÍ NEBO JINÉ ŠKODY (MIMO JINÉ ZA ZTRÁTY ZISKU, PŘERUŠENÍ, ZTRÁTU INFORMACÍ NEBO JINÉ PENĚŽNÍ ZTRÁTY) VZNIKLÉ NA ZÁKLADĚ TÉTO SMLOUVY NEBO S NÍ SOUVISEJÍCÍ NEBO POUŽÍVÁNÍM NEBO ZNEMOŽNĚNÍM POUŽÍVÁNÍ SOFTWARU NEBO JAKÉKOLI JEHO ČÁSTI, I KDYŽ BYLA SPOLEČNOST ASUS NA MOŽNOST TAKOVÝCH ŠKOD UPOZORNĚNA. NĚKTERÉ PRÁVNÍ ŘÁDY NEPOVOLUJÍ VYLOUČENÍ URČITÝCH ZÁRUK NEBO OMEZENÍ NEBO VYLOUČENÍ ODPOVĚDNOSTI ZA URČITÉ ŠKODY. Z TOHOTO DŮVODU SE NA VÁS NĚKTERÁ VÝŠE UVEDENÁ OMEZENÍ A VYLOUČENÍ ODPOVĚDNOSTI NEMUSÍ VZTAHOVAT.
+
+8.Odškodnění Souhlasíte, že budete společnost ASUS a její přidružené společnosti, poskytovatele služeb, členy syndikátu, distributory, poskytovatele licencí, úředníky, ředitele a zaměstnance chránit, že je odškodníte a nebudete je považovat za zodpovědné za jakékoli ztráty, škody, závazky a výdaje vyplývající z jakéhokoli nároku nebo požadavku (včetně přiměřených poplatků za právní zastoupení a soudních nákladů) v důsledku nebo v souvislosti s VAŠÉM porušením této smlouvy EULA nebo jakéhokoli příslušného zákona nebo nařízení nebo práva třetích stran.
+</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>Licenční smlouva s koncovým uživatelem</value>
+  </data>
+</root>

@@ -31,9 +31,10 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
             Self = this;
 
-            _currentActionSelected = "Click";
-
             m_Layer = layer;
+
+            _currentActionSelected = m_Layer.TriggerAction;
+
             if (m_Layer.TriggerAction == "Click" || m_Layer.TriggerAction == "OneClick")
             {
                 TriggerActionButton.Content = resourceLoader.GetString("One_Click_Text");

@@ -10,13 +10,9 @@ namespace AuraEditor.Dialogs
 {
     public sealed partial class DeviceUpdatePromptDialog : ContentDialog
     {
-        private string DeviceName;
-        public DeviceUpdatePromptDialog(string deviceName)
+        public DeviceUpdatePromptDialog()
         {
             this.InitializeComponent();
-            DeviceName = deviceName;
-            //InfoTextBlock.Text = "[" + DeviceName + "] Need to Update!";
-            MainPage.Self.needToUpdadte = true;
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
@@ -27,7 +23,7 @@ namespace AuraEditor.Dialogs
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             WindowsPage.Self.WindowsGrid.Visibility = Visibility.Collapsed;
             MainPage.Self.SettingBtnNewTab.Visibility = Visibility.Visible;
-            WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), true, new SuppressNavigationTransitionInfo());
+            WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), MainPage.Self.needToUpdate, new SuppressNavigationTransitionInfo());
             SettingsPage.Self.rootPivot.SelectedIndex = 0;
             WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Visible;
             MainPage.Self.g_ContentDialog = null;

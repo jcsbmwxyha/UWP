@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using AuraEditor.Dialogs;
+using static AuraEditor.Common.MetroEventSource;
 
 // 空白頁項目範本已記錄在 https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -61,6 +62,7 @@ namespace AuraEditor
             coreTitleBar.IsVisibleChanged += CoreTitleBar_IsVisibleChanged;
             #endregion
 
+            Log.Debug("[WindowsPage_Loaded] Intialize ...");
             LoadingRing.IsActive = true;
             LoadingFrame.Visibility = Visibility.Visible;
 

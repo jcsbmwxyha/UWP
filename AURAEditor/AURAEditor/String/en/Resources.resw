@@ -127,16 +127,16 @@
     <value>Add node</value>
   </data>
   <data name="AngleBgImgToolTip.Text" xml:space="preserve">
-    <value>Click or drag to change the angle</value>
+    <value>Click or drag to adjust the angle</value>
   </data>
   <data name="AngleTextBlock.Text" xml:space="preserve">
     <value>Angle</value>
   </data>
   <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
-    <value>Click to edit the degree</value>
+    <value>Click to enter the degree value</value>
   </data>
   <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
-    <value>Anticlockwise</value>
+    <value>Counterclockwise</value>
   </data>
   <data name="BreathingEffectText" xml:space="preserve">
     <value>Breathing</value>
@@ -145,7 +145,7 @@
     <value>Cancel</value>
   </data>
   <data name="CentralizeToolTip.Text" xml:space="preserve">
-    <value>Centralize</value>
+    <value>Inward</value>
   </data>
   <data name="CheckingTextBlock.Text" xml:space="preserve">
     <value>Checking…</value>
@@ -172,7 +172,7 @@
     <value>Available devices</value>
   </data>
   <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
-    <value>Select the device(s) for lighting profile editing. The selected devices will be added to AURA SYNC devices list automatically.</value>
+    <value>Select the device(s) for lighting profile editing. The selected devices will be added to AURA Sync devices list automatically.</value>
   </data>
   <data name="CopyItem.Text" xml:space="preserve">
     <value>Copy</value>
@@ -181,7 +181,7 @@
     <value>Cut</value>
   </data>
   <data name="DCU.Text" xml:space="preserve">
-    <value>Device content update</value>
+    <value>Prerequisite update</value>
   </data>
   <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
     <value>Decrease the angle by 5 degrees</value>
@@ -193,7 +193,7 @@
     <value>Delete node</value>
   </data>
   <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
-    <value>Please update to the latest device content before lighting profile editing.</value>
+    <value>Ensure to update your devices to the latest software version to edit the lighting profiles.</value>
   </data>
   <data name="Double_Click.Text" xml:space="preserve">
     <value>Double click</value>
@@ -214,13 +214,13 @@
     <value>Effect sequence:</value>
   </data>
   <data name="ErrorMessage_PowerProblem" xml:space="preserve">
-    <value>Ensure your device is connecting to the power adapter AND the battery level is at least 20%.</value>
+    <value>Ensure your computer is connected to a power source AND the battery power is more than 20%.</value>
   </data>
   <data name="ErrorMessage_UpdateFail" xml:space="preserve">
     <value>Update failed. Please try again.</value>
   </data>
   <data name="ExportItem.Text" xml:space="preserve">
-    <value>Export file</value>
+    <value>Export</value>
   </data>
   <data name="EyesHideTooltip.Value" xml:space="preserve">
     <value>Hide layer</value>
@@ -232,7 +232,7 @@
     <value>Fast</value>
   </data>
   <data name="FileListButtonTooltip.Text" xml:space="preserve">
-    <value>AURA Creator lighting file</value>
+    <value>AURA Creator lighting profile</value>
   </data>
   <data name="FilenameTextBlock.Text" xml:space="preserve">
     <value>Filename</value>
@@ -250,7 +250,7 @@
     <value>Gradient</value>
   </data>
   <data name="ImportItem.Text" xml:space="preserve">
-    <value>Import file</value>
+    <value>Import</value>
   </data>
   <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
     <value>Increase the angle by 5 degrees</value>
@@ -259,25 +259,25 @@
     <value>Layer</value>
   </data>
   <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
-    <value>Expand lighting effect panel</value>
+    <value>Expand lighting effects panel</value>
   </data>
   <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
-    <value>Fold lighting effect panel</value>
+    <value>Collapse lighting effects panel</value>
   </data>
   <data name="MenuButtonTooltip.Text" xml:space="preserve">
-    <value>Menu</value>
+    <value>Options</value>
   </data>
   <data name="NameTextBlockTooltip.Text" xml:space="preserve">
     <value>Double click to rename</value>
   </data>
   <data name="NewFileItem.Text" xml:space="preserve">
-    <value>Create new file</value>
+    <value>Create new</value>
   </data>
   <data name="NoAD.Text" xml:space="preserve">
-    <value>No available device</value>
+    <value>No devices available</value>
   </data>
   <data name="NoADHint.Text" xml:space="preserve">
-    <value>Please connect at least one device or select device(s) at the "Available device list".</value>
+    <value>Please connect at least one AURA Sync compatible device.</value>
   </data>
   <data name="NormalTextBlock.Text" xml:space="preserve">
     <value>Normal</value>
@@ -316,7 +316,7 @@
     <value>Random</value>
   </data>
   <data name="RandomToolTip.Text" xml:space="preserve">
-    <value>Drag to adjust the random color</value>
+    <value>Drag to adjust the random color range</value>
   </data>
   <data name="RedoTooltip.Text" xml:space="preserve">
     <value>Redo (Ctrl + Shift + Z)</value>
@@ -334,10 +334,10 @@
     <value>Reset to default layout (Ctrl + 1)</value>
   </data>
   <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
-    <value>Expand property setting panel</value>
+    <value>Expand property settings panel</value>
   </data>
   <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
-    <value>Fold property setting panel</value>
+    <value>Collapse property settings panel</value>
   </data>
   <data name="SaveAndApplyButton.Content" xml:space="preserve">
     <value>Save &amp; apply</value>
@@ -382,7 +382,7 @@
     <value>Arrange devices</value>
   </data>
   <data name="SortDeviceTooltip.Text" xml:space="preserve">
-    <value>Click to rearrange the layout of your available devices (Ctrl + M)</value>
+    <value>Click to rearrange  the layout of your available devices (Ctrl + M)</value>
   </data>
   <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
     <value>Special effects</value>
@@ -391,7 +391,7 @@
     <value>Speed</value>
   </data>
   <data name="SpreadToolTip.Text" xml:space="preserve">
-    <value>Spread</value>
+    <value>Outward</value>
   </data>
   <data name="StarEffectText" xml:space="preserve">
     <value>Star</value>
@@ -400,10 +400,10 @@
     <value>Static</value>
   </data>
   <data name="StatusTextBlock_Exist" xml:space="preserve">
-    <value>Filename exists. Please use another one.</value>
+    <value>Filename already exists. Please try another.</value>
   </data>
   <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
-    <value>Filename cannot contain special characters</value>
+    <value>Filename cannot contain special characters.</value>
   </data>
   <data name="StrobingEffectText" xml:space="preserve">
     <value>Strobing</value>
@@ -412,13 +412,13 @@
     <value>Tide</value>
   </data>
   <data name="TimeCursorTooltip.Text" xml:space="preserve">
-    <value>Time cursor</value>
+    <value>Timeline cursor</value>
   </data>
   <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
-    <value>Timeline zoom in</value>
+    <value>Timeline zoom out</value>
   </data>
   <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
-    <value>Timeline zoom out</value>
+    <value>Timeline zoom in</value>
   </data>
   <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
     <value>Delete layer</value>
@@ -430,10 +430,10 @@
     <value>No trigger effect</value>
   </data>
   <data name="TriggerNotice.Text" xml:space="preserve">
-    <value>Some devices may not compatible with this action.</value>
+    <value>Some devices may not support this action.</value>
   </data>
   <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
-    <value>Trigger effects settings</value>
+    <value>Trigger effect settings</value>
   </data>
   <data name="UndoTooltip.Text" xml:space="preserve">
     <value>Undo (Ctrl + Z)</value>
@@ -448,7 +448,7 @@
     <value>Update Now</value>
   </data>
   <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
-    <value>Please make sure the power of your computer is up to 20% and do not shut down your computer or unplug any device when updating.</value>
+    <value>Please make sure the battery power of your computer is more than 20%. Do not shut down your system or disconnect any devices until the update is complete.</value>
   </data>
   <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
     <value>A new version is available.</value>
@@ -463,7 +463,7 @@
     <value>Software version</value>
   </data>
   <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
-    <value>Drag up and down to adjust the timeline editing area</value>
+    <value>Drag up and down to adjust the height of the timeline panel</value>
   </data>
   <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -475,10 +475,10 @@
     <value>Are you sure you want to delete this file? The deleted file cannot be recovered. Continue?</value>
   </data>
   <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
-    <value>Delete now?</value>
+    <value>Delete file</value>
   </data>
   <data name="YesNoCancelDialog_Discard" xml:space="preserve">
-    <value>Discard</value>
+    <value>No</value>
   </data>
   <data name="YesNoCancelDialog_Save" xml:space="preserve">
     <value>Save</value>
@@ -524,5 +524,32 @@
   </data>
   <data name="Double_Click_Text" xml:space="preserve">
     <value>Double click</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>This End User License Agreement (“EULA”) constitutes a valid and binding agreement between ASUSTeK Computer Inc. (“ASUS“) and You, as a user, for the use of the ASUS Software (“Software”) defined as set forth below. By installing and continuing to use the software YOU EXPRESSLY ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND AND AGREE TO BE BOUND BY THE TERMS OF THIS EULA AND ANY NEW VERSIONS HEREOF.
+ 
+1.SOFTWARE means the ASUS Software provided in or with the applicable ASUS product including but not limited to any future programming fixes, updates, upgrades and modified versions.
+The Software may be accompanied by other ASUS- or third party created software that is licensed under one or more of the Free Open Source Software licenses as listed under www.opensource.org/licenses. Such Free Open Source Software is provided to you solely under the terms of the respective license agreement or copyright notice accompanying it or in the FOSS licenses file accompanying the Software. The terms of this EULA do NOT apply to such Free Open Source Software.
+
+2.LICENSE Subject to the terms of this EULA, ASUS hereby grants You a limited, personal, non-commercial, non-exclusive license to use the Software solely as embedded in the ASUS products. You may make one copy of the Software in machine-readable form for backup purposes only; provided that the backup copy must include all copyright or other proprietary notices contained on the original. This license shall not be sublicensed, and is not transferable except to a person or entity to whom you transfer ownership of the complete ASUS products containing the Software, provided you permanently transfer all rights under this EULA and do not retain any full or partial copies of the Software, and the recipient agrees to the terms of this EULA.
+
+3.REVERSE RESTRICTION You shall not reverse engineer, decompile decrypt or disassemble the Software or permit or induce the foregoing except to the extent directly applicable law prohibits enforcement of the foregoing.
+
+4.CONFIDENTIAL ITY You shall have a duty to protect and not to disclose or cause to be disclosed in whole or in part of confidential information of the Software including but not limited to trade secrets, copyrighted material in any form to any third party.
+
+5.Intellectual Property RIGHTS (“IP Rights”) You acknowledge and agree that all IP Rights, title, and interest to or arising from the Software are and shall remain the exclusive property of ASUS or its licensor. Nothing in this EULA intends to transfer any such IP Rights to You. Any unauthorized use of the IP Rights is a violation of this EULA as well as a violation of intellectual property laws, including but not limited to copyright laws and trademark laws.
+By sending any information, material, ideas, concepts or techniques except for personal information to ASUS through the Software (“Feedbacks”), You acknowledge and agree that: (i) Your Feedbacks shall not contain confidential or proprietary information; (ii) ASUS is under no obligation of any kind of confidentiality, express or implied, regarding the Feedbacks; (iii)ASUS shall be entitled to use or disclose, at ASUS’s sole discretion, the Feedbacks for any purpose, in any way, worldwide; (iv) Your Feedbacks shall become the property of ASUS without any obligation of ASUS to You; and (v) You are not entitled to any compensation or reimbursement of any kind from.
+
+6.TERM AND TERMINATION This EULA will be effective as of the date You install the Software. You may terminate this License at any time by ceasing all use of the Software and removing the Software from ASUS product. Your right will terminate without prior notice from ASUS if we think You fail to comply with any provision of this EULA.
+
+7.Warranty Disclaimer and Limitation of Liability YOU ACKNOWLEDGE THAT THE SOFTWARE IS PROVIDED “AS IS.” THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THIS SOFTWARE IS WITH YOU, INCLUDING BUT NOT LIMITED TO RELATED COST OF ALL NECESSARY SERVICING AND REPAIR. TO THE EXTENT PERMITTED BY LAW, ASUS MAKES NO WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO THIS SOFTWARE OR ANY OTHER INFORMATION OR DOCUMENTATION PROVIDED UNDER THIS EULA OR FOR THIS SOFTWARE, INCLUDING BUT NOT LIMITED TO ANY WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE OR AGAINST INFRINGEMENT, OR ANY WARRANTY ARISING OUT OF USAGE OR OUT OF COURSE OF PERFORMANCE. ASUS ALSO MAKES NO WARRANTY AS TO THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THIS SOFTWARE OR AS TO THE ACCURACY OR RELIABILITY OF ANY INFORMATION OBTAINED THROUGH THIS SOFTWARE. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR CERTAIN DAMAGES. ACCORDINGLY, SOME OF THE ABOVE DISCLAIMERS AND LIMITATIONS OF LIABILITY MAY NOT APPLY TO YOU.
+
+THE ENTIRE RISK ARISING OUT OF THE USE AND/OR PERFORMANCE OF THIS SOFTWARE REMAINS WITH YOU. IN NO EVENT SHALL ASUS, ITS LICENSORS OR ANY OF THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, AGENTS OR AFFILIATES BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, DIRECT, INDIRECT, SPECIAL, PUNITIVE, OR OTHER DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS, INTERRUPTION, LOSS OF INFORMATION, OR OTHER PECUNIARY LOSS) ARISING OUT OF OR RELATING TO THIS EULA OR THE USE OF OR INABILITY TO USE THE SOFTWARE OR ANY PART THEREOF, EVEN IF ASUS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR CERTAIN DAMAGES. ACCORDINGLY, SOME OF THE ABOVE DISCLAIMERS AND LIMITATIONS OF LIABILITY MAY NOT APPLY TO YOU.
+
+8.Indemnity YOU agree to defend, indemnify and hold harmless ASUS and its affiliates, service providers, syndicators, distributors, licensors, officers, directors and employees, from and against any and all losses, damages, liabilities, and expenses arising out of any claim or demand (including reasonable attorneys' fees and court costs), due to or in connection with YOUR violation of this EULA or any applicable law or regulation, or third-party right.
+</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>End User License Agreement</value>
   </data>
 </root>

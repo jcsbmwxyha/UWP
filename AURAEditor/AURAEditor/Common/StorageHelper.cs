@@ -9,8 +9,6 @@ namespace AuraEditor.Common
 {
     static class StorageHelper
     {
-        static public bool NeedSave;
-
         static public async Task<StorageFile> ShowFileOpenPickerAsync()
         {
             FileOpenPicker fileOpenPicker = new FileOpenPicker();

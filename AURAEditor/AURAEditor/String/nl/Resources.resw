@@ -1,0 +1,561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>Actie：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>Effct toev</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>Knooppunt toevoegen</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>Klikken of slepen om de hoek aan te passen</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>Hoek</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>Klik om temp in te voeren</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>Linksom</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>Ademen</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>Annulrn</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>Naar binnen</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>Controleren…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>Rechtsom</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>Kleurcyclus</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>Dubbelklik om de kleur te wijzigen</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>Kleur</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>Komeet</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>Beschikb. apprtn</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>Beschikb. apprtn</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>Selctr appart/appartn vr bewrkn van  verl.profl. Gesl. apprtn wrdn autom. aan apprtnlijst AURA Sync toegevgd.</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>Kopiëren</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>Snijden</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>Vereiste bijwerken</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>De hoek 5 graden verkleinen</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>Knooppunt verwijderen</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>Werk wel apparaten bij naar de nieuwste softwareversie om de verlichtingsprofielen te bewerken.</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>Dubbelklikken</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>Dupliceren</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>Laag bewerken</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>bewerken</value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>Effecten</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>Reeks effecten：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>Zorg dat comp. is aangesl met een strmbron EN dat accuvermgn hoger is dan 20%.</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>Bijwerken mislukt. Probeer het nogmaals.</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>Exporteren</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>Laag verbergen</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>Laag weergeven</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>Snel</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>Verlichtingsprofiel AURA Creator</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>Bestandsnaam</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>Het gehele bewerkingsgebied vullen (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>Naar beginspringen (Shift + Home)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>Naar het einde springen (Shift + End)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>Gradiënt</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>Importeren</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>De hoek 5 graden groter maken</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>Laag</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Deelvenster verlichtingseffecten uitvouwen</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Deelvenster verlichtingseffecten samenvouwen</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>Opties</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>Dubbelklikken om te hernoemen</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>Nieuwe maken</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>Geen apparaten beschikbaar</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>Sluit tenminste een met AURA Sync compatibel apparaat aan.</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>Gemiddeld</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>Klikken</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>Klikken</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>Plakken</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>Patroon</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>Passeren (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>Bijwerken</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>Afspelen (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>Regenboog</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>Willekeurig</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>Slepen om het willekeurige kleurbereik aan te passen</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>Opnieuw (Ctrl + Shift + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>Alles verw</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>Naam wijzigen</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>Standaard indeling herstellen (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Deelvenster instellingen eigenschappen uitvouwen</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Deelvenster instellingen eigenschappen samenvouwen</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>Opsl en toepssn</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>Bestand opslaan</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>Apparaten</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>Als laag inst</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>Klik of sleep-selectr de verlicht.zones op het scherm van het appart en stel deze in als laag.</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>Klik of sleep-selectr de verlicht.zones op het scherm van het appart en stel deze in als laag.</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>Langzaam</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)gesynchroniseerd(e) apparaat/apparaten</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>Apprtn rangsch.</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>Apprtn rangsch.</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>Klik om de indeling van uw beschikbare apparaten opnieuw te rangschikken (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>Spec effecten</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>Naar buiten</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>Ster</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>Statisch</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>Bestandsnaam bestaat reeds. Probeer een ander</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>Bestandsnaam mag geen spec. tekens bevatten.</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>Strobe</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>Getij</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>Tijdlijn-cursor</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>Op tijdlijn inzoomen</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>Op tijdlijn uitzoomen</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>Laag verwijderen</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>Effecten：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>Geen trigger-effect</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>Sommige apparaten ondersteunen deze actie mogelijk niet.</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>Instellingen activeringseffect</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>Ongedaan maken (Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>Bijwerken</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>Updte cntr</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>Nu bijwrkn</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>Zorg ervoor dat het accuvermogen van uw computer boven 20% is, sluit het systeem niet af en maakt geen apparaten los totdat de update voltooid is.</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>Er is een nieuwe versie beschikbaar.</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>Bezig met bijwerken…</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>De inhoud van het apparaat is actueel.</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Software-versie</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>Sleep omhoog en omlaag om de hoogte van het tijdlijnpaneel af te stellen</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>Annulrn</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>Weet u zeker dat u dit bestand wilt verwijderen? Het verwijderde bestand kan niet worden teruggehaald. Doorgaan?</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>Bestand verwijderen</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>Bestand opslaan</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>Wilt u wijzigingen opslaan?</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>Zoomniveaus</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>G</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>R</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>Laser</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>Muziek</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>Reactief</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>Rimpel</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>Smart</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>Deze licentieovereenkomst voor eindgebruikers (“EULA”) vormt een geldige en bindende overeenkomst tussen ASUSTeK Computer Inc. (“ASUS“) en u, als gebruiker, voor het gebruik van de ASUS-software (“Software”), gedefinieerd zoals hieronder uiteengezet. Door de software te installeren en te blijven gebruiken BEVESTIGT U EXPLICIET DAT U DE VOORWAARDEN VAN DEZE EULA EN ALLE NIEUWE VERSIES ERVAN HEBT GELEZEN EN BEGREPEN EN DAT U ERMEE INSTEMT DAT U DOOR DEZE VOORWAARDEN BENT GEBONDEN.
+ 
+1.SOFTWARE 
+staat voor de ASUS-software die wordt geleverd in of bij het betreffende ASUS-product, inclusief maar niet beperkt tot eventuele toekomstige programmeringoplossingen, updates, upgrades en gewijzigde versies.
+
+De Software kan vergezeld gaan door andere ASUS- of door derden gemaakte software die in licentie is gegeven onder een van de gratis open source-softwarelicenties als vermeld onder www.opensource.org/licenses. Dergelijke gratis open source-software wordt u enkel aangeboden onder de voorwaarden van de desbetreffende licentieovereenkomst of copyright-mededeling die het vergezelt, of in het FOSS-licentiebestand die de Software vergezelt. De voorwaarden van deze EULA zijn NIET van toepassing op dergelijke gratis open source-software.
+
+2.LICENTIE
+ Volgens de voorwaarden van deze EULA, verleent ASUS u hierbij een beperkte, persoonlijke, niet-commerciële, niet-exclusieve licentie om de software uitsluitend te gebruiken als geïntegreerd in de ASUS-producten. U mag één kopie van de Software maken in door een computer leesbare vorm alleen voor doeleinden van back-up; mits de back-upkopie alle copyright- en andere eigendomsverklaringen van het origineel bevat. Deze licentie mag niet als sublicentie worden verleend en is niet overdraagbaar, behalve naar een persoon of entiteit aan wie u het eigendom van het volledige ASUS-product dat de software bevat, overdraagt, op voorwaarde dat u alle rechten onder deze EULA permanent overdraagt en geen volledige of gedeeltelijke kopieën van de software behoudt en op voorwaarde dat de ontvanger akkoord gaat met de voorwaarden van deze EULA.
+
+3.OMGEKEERDE BEPERKING 
+U mag geen reverse engineering toepassen op de Software of deze decompileren, decoderen of demonteren, en u mag het voorgaande niet toelaten of veroorzaken, behalve voor zover dit direct wordt opgelegd door de toepasselijke wetgeving.
+
+4.VERTROUWELIJKHEID 
+U hebt de plicht de vertrouwelijke informatie van de software in enige vorm te beschermen, geheim te houden of de gedeeltelijke of volledige onthulling aan derden te voorkomen, inclusief maar niet beperkt tot bedrijfsgeheimen en auteursrechtelijk beschermd materiaal.
+
+5.Intellectuele eigendomsrechten (“IP-rechten”) 
+U bevestigt en gaat akkoord dat alle IP-rechten, eigendom en belang in of voortvloeiend uit de software, het exclusieve eigendom zijn en blijven van ASUS of haar licentieverlener. Niets in deze EULA is bedoeld om dergelijke IP-rechten aan u over te dragen. Elk onbevoegd gebruik van de IP-rechten betekent een overtreding van deze EULA en een inbreuk op de wetten op intellectueel eigendom, inclusief maar niet beperkt tot wetten betreffende auteursrechten en handelsmerken.
+Door informatie, materiaal, ideeën, concepten of technieken, behalve voor persoonlijke informatie, naar ASUS te sturen via de software (“Feedback”), bevestigt en gaat u akkoord dat: (i) uw feedback geen vertrouwelijke of eigendomsinformatie zal bevatten; (ii) ASUS geen enkele verplichting heeft betreffende vertrouwelijkheid, expliciet of impliciet, betreffende de feedback; (iii) ASUS het recht zal hebben om, naar goeddunken van ASUS, de feedback te gebruiken of te onthullen, voor elk doel, op elke manier en wereldwijd; (iv) uw feedback eigendom wordt van ASUS zonder enige verplichting van ASUS tegenover u; en (v) dat u geen recht hebt op enige vergoeding of terugbetaling.
+
+6.TERMIJN EN BEËINDIGING 
+Deze EULA wordt van kracht vanaf de datum waarop u de Software installeert. U kunt deze Licentie op elk ogenblik beëindigen door elk gebruik van de Software te stoppen en de Software te verwijderen van het ASUS-product. Uw recht wordt beëindigd zonder voorafgaande kennisgeving van ASUS als wij vermoeden dat u een voorwaarde van deze EULA niet naleeft.
+
+7.Afwijzing van garantie en beperking van aansprakelijkheid 
+U BEVESTIGT DAT DE SOFTWARE WORDT GELEVERD “IN DE HUIDIGE CONDITIE”. U DRAAGT HET VOLLEDIGE RISICO MET BETREKKING TOT DE KWALITEIT EN DE PRESTATIES VAN DEZE SOFTWARE, INCLUSIEF MAAR NIET BEPERKT TOT DE VERWANTE KOSTEN VOOR ALLE BENODIGDE ONDERHOUDS- EN REPARATIEWERKZAAMHEDEN. VOOR ZOVER DIT DOOR DE WET IS TOEGESTAAN, BIEDT ASUS GEEN GARANTIES, EXPLICIET OF IMPLICIET, MET BETREKKING TOT DEZE SOFTWARE OF ELKE ANDERE INFORMATIE OF DOCUMENTATIE, GELEVERD ONDER DEZE EULA OF VOOR DEZE SOFTWARE, INCLUSIEF MAAR NIET BEPERKT TOT ENIGE GARANTIE VAN VERKOOPBAARHEID OF GESCHIKTHEID VOOR EEN BEPAALD DOEL OF TEGEN INBREUK, OF ELKE GARANTIE DIE VOORTVLOEIT UIT HET GEBRUIK OF DE PRESTATIES ERVAN. ASUS BIEDT OOK GEEN GARANTIE MET BETREKKING TOT DE RESULTATEN DIE KUNNEN WORDEN VERKREGEN DOOR HET GEBRUIK VAN DEZE SOFTWARE OF MET BETREKKING TOT DE NAUWKEURIGHEID OF BETROUWBAARHEID VAN ENIGE INFORMATIE DIE VIA DEZE SOFTWARE IS VERKREGEN. SOMMIGE RECHTSGEBIEDEN LATEN DE UITSLUITING VAN BEPAALDE GARANTIES OF DE BEPERKING OF UITSLUITING VAN DE AANSPRAKELIJKHEID VOOR BEPAALDE SCHADE NIET TOE. BIJGEVOLG ZULLEN SOMMIGE VAN DE BOVENSTAANDE AFWIJZINGEN EN BEPERKINGEN MOGELIJK NIET VAN TOEPASSING ZIJN OP U.
+
+HET VOLLEDIGE RISICO DAT VOORTVLOEIT UIT HET GEBRUIK EN/OF DE PRESTATIES VAN DEZE SOFTWARE BLIJFT UW VERANTWOORDELIJKHEID. IN GEEN GEVAL ZULLEN ASUS, HAAR LICENTIEVERLENERS OF EEN VAN DE RESPECTIEVE FUNCTIONARISSEN, DIRECTEURS, WERKNEMERS, AGENTEN OF PARTNERS, AANSPRAKELIJK ZIJN VOOR ENIGE GEVOLGSCHADE, INCIDENTELE, DIRECTE, INDIRECTE, SPECIALE, PUNITIEVE OF ANDERE SCHADE (INCLUSIEF EN ZONDER BEPERKING, SCHADE DOOR WINSTDERVING, WERKONDERBREKING, VERLIES VAN INFORMATIE OF ANDER FINANCIEEL VERLIES) DIE VOORTVLOEIT UIT OF VERBAND HOUDT MET DEZE EULA OF HET GEBRUIK OF DE ONMOGELIJKHEID TOT HET GEBRUIK VAN DE SOFTWARE OF ELK ONDERDEEL DAARVAN, ZELFS ALS ASUS OP DE HOOGTE WERD GEBRACHT VAN DE MOGELIJKHEID VAN DERGELIJKE SCHADE. SOMMIGE RECHTSGEBIEDEN LATEN DE UITSLUITING VAN BEPAALDE GARANTIES OF DE BEPERKING OF UITSLUITING VAN DE AANSPRAKELIJKHEID VOOR BEPAALDE SCHADE NIET TOE. BIJGEVOLG ZULLEN SOMMIGE VAN DE BOVENSTAANDE AFWIJZINGEN EN BEPERKINGEN MOGELIJK NIET VAN TOEPASSING ZIJN OP U.
+
+8.Schadeloosstelling 
+U gaat akkoord om ASUS en haar moedermaatschappijen, leden, dochtermaatschappijen, partners, dienstverleners, uitgevers, distributeurs, licentieverleners, functionarissen, directeurs en werknemers schadeloos te stellen en te vrijwaren van elke verlies, schade, aansprakelijkheid en kosten, voortvloeiend uit enige claim of eis (inclusief redelijke advocaatkosten en gerechtskosten), veroorzaakt door of met betrekking tot UW inbreuk van deze EULA of elke toepasselijke wet of richtlijn, of elk recht van derden.
+</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>Licentieovereenkomst voor eindgebruikers</value>
+  </data>
+</root>

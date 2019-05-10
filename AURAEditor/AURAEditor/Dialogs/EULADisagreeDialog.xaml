@@ -136,7 +136,7 @@
                    TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,0,40,0"
                    Foreground="White" FontSize="16" TextAlignment="Center"/>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50">
-            <Button x:Name="ExitBtn" Content="Leave" Click="ExitBtn_Click" Style="{StaticResource RogButtonStyle2}"/>
+            <Button x:Name="ExitBtn" Content="Leave" Click="ExitBtn_Click" Style="{StaticResource RogButtonStyle2}" TabIndex="1"/>
             <Button x:Name="BackEULABtn" Content="Back to EULA" Click="BackEULABtn_Click" Style="{StaticResource RogButtonStyle2}" Margin="30,0,0,0"/>
         </StackPanel>
     </Grid>

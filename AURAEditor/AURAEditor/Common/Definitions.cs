@@ -96,12 +96,12 @@ namespace AuraEditor.Common
         {
             int seconds;
 
-            if (level == 1) seconds = 200;
-            else if (level == 2) seconds = 1000;
-            else if (level == 3) seconds = 2000;
-            else if (level == 4) seconds = 5000;
-            else if (level == 5) seconds = 15000;
-            else seconds = 30000;
+            if (level == 1) seconds = 30000;
+            else if (level == 2) seconds = 15000;
+            else if (level == 3) seconds = 5000;
+            else if (level == 4) seconds = 2000;
+            else if (level == 5) seconds = 1000;
+            else seconds = 200;
 
             return seconds;
         }

@@ -45,8 +45,6 @@ namespace AuraEditor.UserControls
 
             ContentDialog triggerDialog = new TriggerDialog(m_Layer);
             await triggerDialog.ShowAsync();
-
-            NeedSave = true;
         }
 
         private void MyGrid_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -134,10 +132,7 @@ namespace AuraEditor.UserControls
 
         private void DuplicateItem_Click(object sender, RoutedEventArgs e)
         {
-            int index = LayerPage.Layers.IndexOf(LayerPage.CheckedLayer);
-            LayerModel temp_layer = LayerModel.Clone(LayerPage.CheckedLayer);
-            LayerPage.Layers.Insert(index, temp_layer);
-            LayerPage.CheckedLayer = LayerPage.Layers[index + 1];
+            LayerPage.Self.DuplicateCheckedLayer();
         }
 
         private void RenameItem_Click(object sender, RoutedEventArgs e)
@@ -153,7 +148,6 @@ namespace AuraEditor.UserControls
                 LayerPage.RemoveLayer(LayerPage.CheckedLayer);
                 SpacePage.Self.GoToBlankEditing();
                 LayerPage.CheckedLayer = null;
-                NeedSave = true;
             }
         }
     }

@@ -76,7 +76,7 @@ namespace AuraEditor.Common
             {
                 if (_currentHoverIndex != value)
                 {
-                    if (_currentHoverIndex != -1)
+                    if (_currentHoverIndex != -1 && _currentHoverIndex < DetectionRegions.Length)
                         DetectionRegions[_currentHoverIndex].SendMouseEvent(MouseEvent.Unhover);
                     if (value != -1)
                         DetectionRegions[value].SendMouseEvent(MouseEvent.Hover);

@@ -23,23 +23,8 @@ namespace AuraEditor.Dialogs
         {
             Self = this;
             this.InitializeComponent();
-            m_SyncDeviceList = new ObservableCollection<SyncDeviceModel>();
 
-            var getList = SpacePage.Self.DeviceModelCollection.FindAll(find => find.Plugged == true);
-
-            foreach (var dm in getList)
-            {
-                SyncDeviceModel sd = new SyncDeviceModel
-                {
-                    ModelName = dm.ModelName,
-                    Type = GetTypeNameByType(dm.Type),
-                    Sync = dm.Sync
-                };
-
-                m_SyncDeviceList.Add(sd);
-            }
-
-            ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
+            UpdateDeviceList();
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
@@ -72,7 +57,6 @@ namespace AuraEditor.Dialogs
             MainPage.Self.CanShowDeviceUpdateDialog = true;
             MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
-
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
             if (m_SyncDeviceList.Count == 0)
@@ -90,7 +74,27 @@ namespace AuraEditor.Dialogs
             }
         }
 
-        public void UpdateSelectedText()
+        public void UpdateDeviceList()
+        {
+            m_SyncDeviceList = new ObservableCollection<SyncDeviceModel>();
+            var getList = SpacePage.Self.DeviceModelCollection.FindAll(find => find.Plugged == true);
+
+            foreach (var dm in getList)
+            {
+                SyncDeviceModel sd = new SyncDeviceModel
+                {
+                    ModelName = dm.ModelName,
+                    Type = GetTypeNameByType(dm.Type),
+                    Sync = dm.Sync
+                };
+
+                m_SyncDeviceList.Add(sd);
+            }
+
+            ConnectedDevicesListView.ItemsSource = m_SyncDeviceList;
+            UpdateSelectedState();
+        }
+        public void UpdateSelectedState()
         {
             int selectedcount = 0;
 

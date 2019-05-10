@@ -46,7 +46,7 @@ namespace AuraEditor.Models
                     sync = false;
 
                 UpdateDeviceImage();
-                ConnectedDevicesDialog.Self.UpdateSelectedText();
+                ConnectedDevicesDialog.Self.UpdateSelectedState();
                 RaisePropertyChanged("Sync");
             }
         }

@@ -21,7 +21,7 @@
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <PackageCertificateThumbprint>57D0791331C85A43CE6BE11760D296B9FA48C9ED</PackageCertificateThumbprint>
@@ -715,16 +715,28 @@
     <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_h.png" />
     <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_n.png" />
     <Content Include="Assets\ZoomSlider\asus_ac_slider_btn_s.png" />
-    <Content Include="AURAEditor.sccd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="CursorResource.res">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="RpcClient.dll" />
+    <Content Include="AURACreator.sccd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="AuraEditor_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <PRIResource Include="String\zh-cn\Resources.resw" />
+    <PRIResource Include="String\tr\Resources.resw" />
+    <PRIResource Include="String\ru\Resources.resw" />
+    <PRIResource Include="String\pt\Resources.resw" />
+    <PRIResource Include="String\nl\Resources.resw" />
+    <PRIResource Include="String\ko\Resources.resw" />
+    <PRIResource Include="String\ja\Resources.resw" />
+    <PRIResource Include="String\it\Resources.resw" />
+    <PRIResource Include="String\fr\Resources.resw" />
+    <PRIResource Include="String\es\Resources.resw" />
+    <PRIResource Include="String\de\Resources.resw" />
+    <PRIResource Include="String\cs\Resources.resw" />
     <PRIResource Include="String\zh-TW\Resources.resw" />
     <PRIResource Include="String\en\Resources.resw" />
   </ItemGroup>

@@ -414,18 +414,17 @@
                                         <RowDefinition Height="36" />
                                     </Grid.RowDefinitions>
                                     <ScrollContentPresenter x:Name="ScrollContentPresenter"
-                                                    Grid.ColumnSpan="2"
-                                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                    Margin="{TemplateBinding Padding}" />
+                                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                            Margin="{TemplateBinding Padding}" />
                                     <ScrollBar x:Name="VerticalScrollBar"
-                                       Grid.Column="1"
-                                       IsTabStop="False"
-                                       Maximum="{TemplateBinding ScrollableHeight}"
-                                       Orientation="Vertical"
-                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                       Value="{TemplateBinding VerticalOffset}"
-                                       ViewportSize="{TemplateBinding ViewportHeight}"
-                                       HorizontalAlignment="Right" />
+                                               Grid.Column="1"
+                                               IsTabStop="False"
+                                               Maximum="{TemplateBinding ScrollableHeight}"
+                                               Orientation="Vertical"
+                                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                               Value="{TemplateBinding VerticalOffset}"
+                                               ViewportSize="{TemplateBinding ViewportHeight}"
+                                               HorizontalAlignment="Right" />
                                     <ScrollBar x:Name="HorizontalScrollBar"
                                                Margin="10,0,0,0"
                                                HorizontalAlignment="Left"
@@ -540,6 +539,7 @@
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="16"/>
         </Grid.ColumnDefinitions>
         <Grid Name="PlayingMask" Grid.RowSpan="3" Grid.ColumnSpan="3" Background="#66000000" x:FieldModifier="public" Visibility="Collapsed"/>
         <Button Name="PlayButton" Style="{StaticResource PlayButtonStyle}" Click="PlayButton_Click" Canvas.ZIndex="4"
@@ -807,7 +807,7 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </ScrollViewer>
-        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Canvas.ZIndex="2"
+        <ScrollViewer Name="TrackScrollViewer" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3" Canvas.ZIndex="2"
                       HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
                       ViewChanged="TrackScrollViewer_ViewChanged" Style="{StaticResource LayerTrackScrollViewer}" x:FieldModifier="public">
             <Canvas Name="TrackCanvas" VerticalAlignment="Top" Width="{x:Bind playerModel.MaxEditWidth, Mode=OneWay}" HorizontalAlignment="Stretch">
@@ -835,7 +835,7 @@
                 </ItemsControl>
             </Canvas>
         </ScrollViewer>
-        <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="1" Grid.ColumnSpan="5" Canvas.ZIndex="-1" HorizontalAlignment="Left"
+        <ScrollViewer Name="BackgroundScrollViewer" Grid.Row="1" Grid.ColumnSpan="3" Canvas.ZIndex="-1" HorizontalAlignment="Left"
                       HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
             <ItemsControl Name="LayerBackgroundItemsControl" ItemsSource="{x:Bind Path=Layers}">
                 <ItemsControl.ItemsPanel>
@@ -871,7 +871,7 @@
             </ToolTipService.ToolTip>
         </Button>
         <Grid Name="LayerScrollGrid" Grid.Row="2" Grid.Column="1" SizeChanged="LayerScrollGrid_SizeChanged"/>
-        <RelativePanel Name="LayerSliderGrid" Grid.Row="2" Grid.Column="4" Canvas.ZIndex="8">
+        <RelativePanel Name="LayerSliderGrid" Grid.Row="2" Grid.Column="2" Canvas.ZIndex="8">
             <Button Name="MinusButton" Style="{StaticResource MinusButtonStyle}" RelativePanel.AlignLeftWithPanel="True"
                     Click="MinusButton_Click" Margin="3,3,0,0">
                 <ToolTipService.ToolTip>

@@ -125,7 +125,6 @@ namespace AuraEditor.UserControls
                 SetPositionByAnimation(_oldPixelPosition.X, _oldPixelPosition.Y);
             }
 
-            NeedSave = true;
             Canvas.SetZIndex(this, 0);
             VisualStateManager.GoToState(this, "Hover", false);
         }

@@ -60,7 +60,7 @@
             <RelativePanel Margin="20,15,50,0">
                 <TextBlock Name="TitleTextBlock" Text="{x:Bind m_Info.Name, Mode=OneWay}" FontSize="20" FontWeight="SemiBold" Foreground="#FF999999"
                                RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"/>
-                <Button Name="ResetBtn" Margin="132,0,0,0" Tapped="ResetBtn_Tapped" Style="{StaticResource ResetButtonStyle}"
+                <Button Name="ResetBtn" Margin="132,0,0,0" Click="ResetBtn_Click" Style="{StaticResource ResetButtonStyle}"
                         RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
                     <ToolTipService.ToolTip>
                         <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">

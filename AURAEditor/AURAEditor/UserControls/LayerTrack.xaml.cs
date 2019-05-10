@@ -18,6 +18,7 @@ namespace AuraEditor.UserControls
     public sealed partial class LayerTrack : UserControl
     {
         private LayerModel m_Layer { get { return this.DataContext as LayerModel; } }
+        private EffectLineViewModel draggingEff;
         private double[] needAlignPositions;
         private double align;
 
@@ -32,59 +33,61 @@ namespace AuraEditor.UserControls
 
         private void Track_DragEnter(object sender, DragEventArgs e)
         {
+            var pair = e.Data.Properties.FirstOrDefault();
+            if (e.Data == null || !(pair.Value is int))
+                return;
+
             needAlignPositions = LayerPage.Self.GetAlignPositions(m_Layer);
+
+            int idx = (int)pair.Value;
+            draggingEff = new EffectLineViewModel(idx);
         }
         private void Track_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data == null)
+            var pair = e.Data.Properties.FirstOrDefault();
+            if (e.Data == null || !(pair.Value is int))
                 return;
 
-            e.DragUIOverride.IsCaptionVisible = false;
-            e.DragUIOverride.IsGlyphVisible = false;
+            if (draggingEff == null)
+                return;
 
-            var pair = e.Data.Properties.FirstOrDefault();
-            int idx = (int)pair.Value;
+            // Try align ++
+            var pointerPosition = e.GetPosition(this);
+            var dropPosition = pointerPosition.X - EffectBlock.LastDraggingPoint.X;
 
-            if (idx >= 0)
+            if (GetAlignPosition(dropPosition, ref align))
+                LayerPage.Self.UpdateSupportLine(align);
+            else
+                LayerPage.Self.UpdateSupportLine(-1);
+
+            if (align > 0)
+                draggingEff.Left = align;
+            else
+                draggingEff.Left = dropPosition >= 0 ? dropPosition : 0;
+            // Try align --
+
+            if (draggingEff.Right > LayerPage.MaxRightPixel || m_Layer.ExceedIfApplyingEff(draggingEff))
             {
+                e.DragUIOverride.IsCaptionVisible = true;
+                e.DragUIOverride.Caption = "Exceed!";
+                e.AcceptedOperation = DataPackageOperation.None;
+            }
+            else
+            {
+                e.DragUIOverride.IsCaptionVisible = false;
+                e.DragUIOverride.IsGlyphVisible = false;
                 e.AcceptedOperation = DataPackageOperation.Copy;
-
-                // Try align
-                var dragOverPosition = e.GetPosition(this);
-                var actualDragOverX = dragOverPosition.X - EffectBlock.LastDraggingPoint.X;
-
-                if (GetAlignPosition(actualDragOverX, ref align))
-                    LayerPage.Self.UpdateSupportLine(align);
-                else
-                    LayerPage.Self.UpdateSupportLine(-1);
             }
         }
         private void Track_Drop(object sender, DragEventArgs e)
         {
-            var pair = e.Data.Properties.FirstOrDefault();
-            int idx = (int)pair.Value;
-            var dropPosition = e.GetPosition(this);
-            var actualDropX = dropPosition.X - EffectBlock.LastDraggingPoint.X;
-            EffectLineViewModel effect = new EffectLineViewModel(idx);
+            if (!m_Layer.TryInsertToTimelineFitly(draggingEff))
+                return;
 
-            if (align > 0)
-                effect.Left = align;
-            else
-                effect.Left = actualDropX >= 0 ? actualDropX : 0;
+            LayerPage.Self.CheckedEffect = draggingEff;
             LayerPage.Self.UpdateSupportLine(-1);
-
-            if (effect.Right > LayerPage.MaxRightPixel)
-                return;
-
-            if (!m_Layer.TryInsertToTimelineFitly(effect))
-            {
-                // TODO
-                return;
-            }
-
-            LayerPage.Self.CheckedEffect = effect;
-            NeedSave = true;
-            Log.Debug("[Track_Drop] " + m_Layer.Name + " : " + GetEffEngNameByIdx(idx));
+            Log.Debug("[Track_Drop] Drop position : " + draggingEff.Left);
+            draggingEff = null;
         }
         private bool GetAlignPosition(double p, ref double result)
         {

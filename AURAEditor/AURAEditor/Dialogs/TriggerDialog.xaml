@@ -290,6 +290,6 @@
         </StackPanel>
         <Image Grid.Row="2" Source="../Assets/Line/asus_ac_shortline_bg.png" Height="1" Stretch="Fill" Margin="0,-50,0,0"/>
         <Button x:Uid="OKButton.Content" Grid.Row="2" Content="OK" Margin="0,20,0,0" HorizontalAlignment="Center"
-                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click"/>
+                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click" TabIndex="1"/>
     </Grid>
 </ContentDialog>

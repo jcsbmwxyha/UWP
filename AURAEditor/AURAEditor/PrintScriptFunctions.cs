@@ -52,6 +52,9 @@ namespace AuraEditor
                 if (layer.Eye == false)
                     continue;
 
+                // Give uniqle index to all layers
+                layer.ScriptName = layer.Name + "_" + layerCount.ToString();
+
                 List<Effect> effCollection = new List<Effect>();
                 foreach (var vm in layer.EffectLineViewModels)
                     effCollection.Add(vm.Model);
@@ -62,7 +65,7 @@ namespace AuraEditor
                 {
                     XmlNode effectNode = CreateXmlNode("effect");
 
-                    // Give uniqle index for all effects
+                    // Give uniqle index to all effects
                     eff.ScriptName = GetEffEngNameByIdx(eff.Type) + effectCount.ToString();
                     effectCount++;
 
@@ -71,7 +74,7 @@ namespace AuraEditor
                     effectNode.Attributes.Append(attribute);
 
                     XmlNode viewportNode = CreateXmlNode("viewport");
-                    viewportNode.InnerText = layer.Name;
+                    viewportNode.InnerText = layer.ScriptName;
                     effectNode.AppendChild(viewportNode);
 
                     if (IsTriggerEffect(eff.Type))

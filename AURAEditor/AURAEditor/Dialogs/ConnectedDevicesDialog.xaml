@@ -138,6 +138,6 @@
         </Grid>
 
         <Button x:Uid="OKButton" Grid.Row="2" Content="OK" Margin="0,28,0,0" HorizontalAlignment="Center" Width="136"
-                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click"/>
+                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click" TabIndex="1"/>
     </Grid>
 </ContentDialog>

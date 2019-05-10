@@ -130,7 +130,7 @@ namespace AuraEditor.Pages
             Bindings.Update();
         }
 
-        private void ResetBtn_Tapped(object sender, TappedRoutedEventArgs e)
+        private void ResetBtn_Click(object sender, RoutedEventArgs e)
         {
             m_Info.InitColor = Colors.Red;
             m_Info.DoubleColor1 = Colors.Red;
@@ -142,12 +142,15 @@ namespace AuraEditor.Pages
             m_Info.RandomRangeMin = 0;
             m_Info.High = 60;
             m_Info.Low = 30;
-            m_Info.CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[DefaultColorPointListCollection.Count -1]); // TODO
+            m_Info.CustomizedPattern = new List<ColorPointModel>(DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1]); // TODO
             m_Info.ColorSegmentation = true;
             m_Info.RainbowSpecialEffects = false;
             m_Info.RainbowSpecialMode = 1;
             ColorPatternModel.Self.Selected = DefaultColorPointListCollection.Count - 1;
+            Single.IsChecked = true;
+            m_Info.ColorModeSelection = 1;
         }
+
         private async void ColorRadioBtn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             RadioButton rb = sender as RadioButton;

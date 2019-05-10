@@ -1,0 +1,560 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionTextBlock.Text" xml:space="preserve">
+    <value>İşlem：</value>
+  </data>
+  <data name="AddEffectButton.Content" xml:space="preserve">
+    <value>Efekt ekle</value>
+  </data>
+  <data name="AddNodeToolTip.Text" xml:space="preserve">
+    <value>Düğüm ekle</value>
+  </data>
+  <data name="AngleBgImgToolTip.Text" xml:space="preserve">
+    <value>Açıyı ayarlamak için tıkla veya sürükle</value>
+  </data>
+  <data name="AngleTextBlock.Text" xml:space="preserve">
+    <value>Açı</value>
+  </data>
+  <data name="AngleTextBoxToolTip.Text" xml:space="preserve">
+    <value>Derece değerini girmek için tıkla</value>
+  </data>
+  <data name="AnticlockwiseToolTip.Text" xml:space="preserve">
+    <value>Saatin tersi yönde</value>
+  </data>
+  <data name="BreathingEffectText" xml:space="preserve">
+    <value>Nefes Alma</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="CentralizeToolTip.Text" xml:space="preserve">
+    <value>İçe doğru</value>
+  </data>
+  <data name="CheckingTextBlock.Text" xml:space="preserve">
+    <value>Kontrol Ediliyor…</value>
+  </data>
+  <data name="ClockwiseToolTip.Text" xml:space="preserve">
+    <value>Saat yönünde</value>
+  </data>
+  <data name="ColorCycleEffectText" xml:space="preserve">
+    <value>Renk döngüsü</value>
+  </data>
+  <data name="ColorPointTooltip.Text" xml:space="preserve">
+    <value>Rengi değiştirmek için çift tıkla</value>
+  </data>
+  <data name="ColorTextBlock.Text" xml:space="preserve">
+    <value>Renk</value>
+  </data>
+  <data name="CometEffectText" xml:space="preserve">
+    <value>Kuyruklu Yıldız</value>
+  </data>
+  <data name="ConnectedDevicesButton.Content" xml:space="preserve">
+    <value>Kullnlblr aygtlr</value>
+  </data>
+  <data name="ConnectedDevicesDialog.Text" xml:space="preserve">
+    <value>Kullnlblr aygtlr</value>
+  </data>
+  <data name="ConnectedDevicesDialogContent.Text" xml:space="preserve">
+    <value>Işık profili düzenlemesi için aygıtları seçin. Seçilen aygıtlar AURA Sync aygıt listesine otomatik eklenir.</value>
+  </data>
+  <data name="CopyItem.Text" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="CutItem.Text" xml:space="preserve">
+    <value>Kes</value>
+  </data>
+  <data name="DCU.Text" xml:space="preserve">
+    <value>Önkoşul güncelleme</value>
+  </data>
+  <data name="DecreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Açıyı 5 derece düşür</value>
+  </data>
+  <data name="DeleteItem.Text" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="DeleteNodeToolTip.Text" xml:space="preserve">
+    <value>Düğümü sil</value>
+  </data>
+  <data name="DeviceUpdatePromptDialogHint.Text" xml:space="preserve">
+    <value>Aydınlatma profillerini düzenlemek için aygıtlarınızı en son yazılım sürümüne güncellediğinizden emin olun.</value>
+  </data>
+  <data name="Double_Click.Text" xml:space="preserve">
+    <value>Çift tıkla</value>
+  </data>
+  <data name="DuplicateItem.Text" xml:space="preserve">
+    <value>Çoğalt</value>
+  </data>
+  <data name="EditButtonTooltip.Text" xml:space="preserve">
+    <value>Katman düzenle</value>
+  </data>
+  <data name="EditLayerText" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="Effects.Text" xml:space="preserve">
+    <value>Efektler</value>
+  </data>
+  <data name="EffectSequenceTextBlock.Text" xml:space="preserve">
+    <value>Efekt sırası：</value>
+  </data>
+  <data name="ErrorMessage_PowerProblem" xml:space="preserve">
+    <value>Bilgisayarın güç kaynağına bağlı VE pilin %20'den fazla olduğundan emin olun.</value>
+  </data>
+  <data name="ErrorMessage_UpdateFail" xml:space="preserve">
+    <value>Güncelleme başarısız. Lütfen tekrar deneyin.</value>
+  </data>
+  <data name="ExportItem.Text" xml:space="preserve">
+    <value>Dışa aktar</value>
+  </data>
+  <data name="EyesHideTooltip.Value" xml:space="preserve">
+    <value>Katmanı gizle</value>
+  </data>
+  <data name="EyesShowTooltip.Value" xml:space="preserve">
+    <value>Katmanı göster</value>
+  </data>
+  <data name="FastTextBlock.Text" xml:space="preserve">
+    <value>Hızlı</value>
+  </data>
+  <data name="FileListButtonTooltip.Text" xml:space="preserve">
+    <value>AURA Creator aydınlatma profili</value>
+  </data>
+  <data name="FilenameTextBlock.Text" xml:space="preserve">
+    <value>Dosya adı</value>
+  </data>
+  <data name="FitAllTooltip.Text" xml:space="preserve">
+    <value>Tüm düzenleme alanını doldur (Ctrl + 0)</value>
+  </data>
+  <data name="GoLeftButtonTooltip.Text" xml:space="preserve">
+    <value>Başa git (Shift + Home)</value>
+  </data>
+  <data name="GoRightButtonTooltip.Text" xml:space="preserve">
+    <value>Sona git (Shift + End)</value>
+  </data>
+  <data name="GradientTextBlock.Text" xml:space="preserve">
+    <value>Gradyan</value>
+  </data>
+  <data name="ImportItem.Text" xml:space="preserve">
+    <value>İçe aktar</value>
+  </data>
+  <data name="IncreaseBtnToolTip.Text" xml:space="preserve">
+    <value>Açıyı 5 derece artır</value>
+  </data>
+  <data name="LayerTooltip.Text" xml:space="preserve">
+    <value>Katman</value>
+  </data>
+  <data name="LeftSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Aydınlatma efektleri panelini genişlet</value>
+  </data>
+  <data name="LeftSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Aydınlatma efektleri panelini daralt</value>
+  </data>
+  <data name="MenuButtonTooltip.Text" xml:space="preserve">
+    <value>Seçenekler</value>
+  </data>
+  <data name="NameTextBlockTooltip.Text" xml:space="preserve">
+    <value>Yeniden adlandırmak için çift tıkla</value>
+  </data>
+  <data name="NewFileItem.Text" xml:space="preserve">
+    <value>Yeni oluştur</value>
+  </data>
+  <data name="NoAD.Text" xml:space="preserve">
+    <value>Kullanılabilir aygıt yok</value>
+  </data>
+  <data name="NoADHint.Text" xml:space="preserve">
+    <value>Lütfen en az bir AURA Sync uyumlu aygıt takın.</value>
+  </data>
+  <data name="NormalTextBlock.Text" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="OKButton.Content" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="One_Click.Text" xml:space="preserve">
+    <value>Tıkla</value>
+  </data>
+  <data name="One_Click_Text" xml:space="preserve">
+    <value>Tıkla</value>
+  </data>
+  <data name="PasteItem.Text" xml:space="preserve">
+    <value>Yapıştır</value>
+  </data>
+  <data name="PatternTextBlock.Text" xml:space="preserve">
+    <value>Desen</value>
+  </data>
+  <data name="PauseButtonTooltip.Text" xml:space="preserve">
+    <value>Duraklat (Shift + 0)</value>
+  </data>
+  <data name="PivotAboutItem.Header" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="PivotUpdateItem.Text" xml:space="preserve">
+    <value>Güncelle</value>
+  </data>
+  <data name="PlayButtonTooltip.Text" xml:space="preserve">
+    <value>Yürüt (Shift + 0)</value>
+  </data>
+  <data name="RainbowEffectText" xml:space="preserve">
+    <value>Gökkuşağı</value>
+  </data>
+  <data name="RandomTextBlock.Text" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="RandomToolTip.Text" xml:space="preserve">
+    <value>Rastgele renk aralığını ayarlamak için sürükle</value>
+  </data>
+  <data name="RedoTooltip.Text" xml:space="preserve">
+    <value>Yinele (Ctrl + Shift + Z)</value>
+  </data>
+  <data name="RemoveAllButton.Content" xml:space="preserve">
+    <value>Tümünü sil</value>
+  </data>
+  <data name="RenameItem.Text" xml:space="preserve">
+    <value>Y. adlandır</value>
+  </data>
+  <data name="ResetBtnTooltip.Text" xml:space="preserve">
+    <value>Sıfırla</value>
+  </data>
+  <data name="ResetToDefaultTooltip.Text" xml:space="preserve">
+    <value>Varsayılan düzeni getir (Ctrl + 1)</value>
+  </data>
+  <data name="RightSideClosedButtonTooltip.Text" xml:space="preserve">
+    <value>Özellik ayarları panelini genişlet</value>
+  </data>
+  <data name="RightSideOpenedButtonTooltip.Text" xml:space="preserve">
+    <value>Özellik ayarları panelini daralt</value>
+  </data>
+  <data name="SaveAndApplyButton.Content" xml:space="preserve">
+    <value>Kydt ve uygula</value>
+  </data>
+  <data name="SaveButton.Content" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="SaveFileTextBlock.Text" xml:space="preserve">
+    <value>Dosyayı kaydet</value>
+  </data>
+  <data name="SelectedAllDeviceText.Text" xml:space="preserve">
+    <value>Aygıtlar</value>
+  </data>
+  <data name="SetLayerButton.Content" xml:space="preserve">
+    <value>Katmn olrk ayrl</value>
+  </data>
+  <data name="SetLayerRectangle.Text" xml:space="preserve">
+    <value>Aygıt ekranından aydınlatma bölgelerini tıklayarak/sürükleyerek seçin ve katman olarak ayarlayın.</value>
+  </data>
+  <data name="SetLayerTooltip.Text" xml:space="preserve">
+    <value>Aygıt ekranından aydınlatma bölgelerini tıklayarak/sürükleyerek seçin ve katman olarak ayarlayın.</value>
+  </data>
+  <data name="SettingPageTextBlock.Text" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="SettingsButtonTooltip.Text" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="SlowTextBlock.Text" xml:space="preserve">
+    <value>Yavaş</value>
+  </data>
+  <data name="SNT_F.Text" xml:space="preserve">
+    <value>(</value>
+  </data>
+  <data name="SNT_R.Text" xml:space="preserve">
+    <value>)aygıt senkronize edildi.</value>
+  </data>
+  <data name="SortDeviceButton.Content" xml:space="preserve">
+    <value>Aygtlr düzenle</value>
+  </data>
+  <data name="SortDeviceTitle" xml:space="preserve">
+    <value>Aygtlr düzenle</value>
+  </data>
+  <data name="SortDeviceTooltip.Text" xml:space="preserve">
+    <value>Kullanılabilir aygıtlarınızın düzenini tekrar düzenlemek için tıklayın (Ctrl + M)</value>
+  </data>
+  <data name="SpecialEffectsTextBlock.Text" xml:space="preserve">
+    <value>Özel efektler</value>
+  </data>
+  <data name="SpeedTextBlock.Text" xml:space="preserve">
+    <value>Hız</value>
+  </data>
+  <data name="SpreadToolTip.Text" xml:space="preserve">
+    <value>Dışa doğru</value>
+  </data>
+  <data name="StarEffectText" xml:space="preserve">
+    <value>Yıldız</value>
+  </data>
+  <data name="StaticEffectText" xml:space="preserve">
+    <value>Sabit</value>
+  </data>
+  <data name="StatusTextBlock_Exist" xml:space="preserve">
+    <value>Dosya adı zaten var. Başka bir ad deneyin.</value>
+  </data>
+  <data name="StatusTextBlock_SpecialChar" xml:space="preserve">
+    <value>Dosya adı özel karakter içeremez.</value>
+  </data>
+  <data name="StrobingEffectText" xml:space="preserve">
+    <value>Flaş</value>
+  </data>
+  <data name="TideEffectText" xml:space="preserve">
+    <value>Gelgit</value>
+  </data>
+  <data name="TimeCursorTooltip.Text" xml:space="preserve">
+    <value>Zaman çizelgesi imleci</value>
+  </data>
+  <data name="TimelineMinusButtonTooltip.Text" xml:space="preserve">
+    <value>Zaman çizelgesi yakınlaştırma</value>
+  </data>
+  <data name="TimelinePlusButtonTooltip.Text" xml:space="preserve">
+    <value>Zaman çizelgesi uzaklaştırma</value>
+  </data>
+  <data name="TrashCanButtonTooltip.Text" xml:space="preserve">
+    <value>Katman sil</value>
+  </data>
+  <data name="TriggerEffects.Text" xml:space="preserve">
+    <value>Efektler：</value>
+  </data>
+  <data name="TriggerEffectTextBlock.Text" xml:space="preserve">
+    <value>Tetikleme efekti yok</value>
+  </data>
+  <data name="TriggerNotice.Text" xml:space="preserve">
+    <value>Bazı aygıtlar bu işlemi desteklemeyebilir.</value>
+  </data>
+  <data name="TriggerStatusOnButtonTooltip.Text" xml:space="preserve">
+    <value>Efekt tetikleme ayarları</value>
+  </data>
+  <data name="UndoTooltip.Text" xml:space="preserve">
+    <value>Geri Al (Ctrl + Z)</value>
+  </data>
+  <data name="UpdateBtn.Content" xml:space="preserve">
+    <value>Güncelle</value>
+  </data>
+  <data name="UpdateButton_Check" xml:space="preserve">
+    <value>Gnclm dntl</value>
+  </data>
+  <data name="UpdateButton_Update" xml:space="preserve">
+    <value>Şmd gnclle</value>
+  </data>
+  <data name="UpdateInfoTextBlock.Text" xml:space="preserve">
+    <value>Bilgisayarınızın pil gücünün %20'den fazla olduğundan emin olun. Güncelleme tamamlanana kadar sisteminizi kapatmayın veya hiçbir aygıtı çıkarmayın.</value>
+  </data>
+  <data name="UpdateStateTextBlock_NewVersion" xml:space="preserve">
+    <value>Yeni sürüm var.</value>
+  </data>
+  <data name="UpdateStateTextBlock_Updating" xml:space="preserve">
+    <value>Güncelleniyor…</value>
+  </data>
+  <data name="UpdateStateTextBlock_UpToDate" xml:space="preserve">
+    <value>Aygıtınızın içeriği güncel.</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Yazılım sürümü</value>
+  </data>
+  <data name="WindowSliderGridTooltip.Text" xml:space="preserve">
+    <value>Zaman çizelgesi panelinin yüksekliğini ayarlamak için yukarı ve aşağı sürükleyin</value>
+  </data>
+  <data name="YesNoCancelDialog_Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="YesNoCancelDialog_Delete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteHint" xml:space="preserve">
+    <value>Bu dosyayı silmek istediğinizden emin misiniz? Silinen dosya geri alınamaz. Devam edilsin mi?</value>
+  </data>
+  <data name="YesNoCancelDialog_DeleteNow" xml:space="preserve">
+    <value>Dosyayı sil</value>
+  </data>
+  <data name="YesNoCancelDialog_Discard" xml:space="preserve">
+    <value>Hayır</value>
+  </data>
+  <data name="YesNoCancelDialog_Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveFile" xml:space="preserve">
+    <value>Dosyayı kaydet</value>
+  </data>
+  <data name="YesNoCancelDialog_SaveHint" xml:space="preserve">
+    <value>Değişiklikler kaydedilsin mi?</value>
+  </data>
+  <data name="ZoomLevelTooltip.Text" xml:space="preserve">
+    <value>Yakınlaştırma seviyeleri</value>
+  </data>
+  <data name="Color_B.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Color_G.Text" xml:space="preserve">
+    <value>G</value>
+  </data>
+  <data name="Color_R.Text" xml:space="preserve">
+    <value>R</value>
+  </data>
+  <data name="DefaultTextBlock.Text" xml:space="preserve">
+    <value>Varsayln</value>
+  </data>
+  <data name="RecentTextBlock.Text" xml:space="preserve">
+    <value>Yakında</value>
+  </data>
+  <data name="LaserEffectText" xml:space="preserve">
+    <value>Lazer</value>
+  </data>
+  <data name="MusicEffectText" xml:space="preserve">
+    <value>Müzik</value>
+  </data>
+  <data name="ReactiveEffectText" xml:space="preserve">
+    <value>Tepkisel</value>
+  </data>
+  <data name="RippleEffectText" xml:space="preserve">
+    <value>Dalgacık</value>
+  </data>
+  <data name="SmartEffectText" xml:space="preserve">
+    <value>Akıllı</value>
+  </data>
+  <data name="EULA_Content.Text" xml:space="preserve">
+    <value>Bu Son Kullanıcı Lisans Anlaşması (“EULA”), ASUSTeK Computer Inc. (“ASUS”) ve kullanıcı olarak Sizin arasında, ASUS Yazılımının (“Yazılım”) kullanımı için geçerli ve bağlayıcı bir anlaşma oluşturur. Yazılımı yükleyerek ve kullanmaya devam ederek BU EULA VE YENİ SÜRÜMLERİNİN KOŞULLARINI OKUDUĞUNUZU, ANLADIĞINIZI VE BUNLARIN BAĞLAYICILIĞINI KABUL ETTİĞİNİZİ AÇIKÇA BEYAN EDERSİNİZ.
+ 
+1.YAZILIM 
+sınırlama olmaksızın gelecekte yapılacak program düzeltmeleri, güncellemeler, yükseltmeler ve değiştirilmiş sürümleri içeren şekilde ilgili ASUS ürünü içinde veya bu ürünle birlikte sağlanan ASUS Yazılımını ifade eder.
+
+Yazılıma, www.opensource.org/licenses adresinde listelenen Ücretsiz Açık Kaynak Kodlu Yazılım lisanslarından biri veya daha fazlasıyla lisanslanmış, ASUS’un veya üçüncü tarafların geliştirdiği diğer yazılımlar da eşlik edebilir. Bu tür Ücretsiz Açık Kaynak Kodlu Yazılımlar size yalnızca ilgili lisans anlaşmasının veya Yazılımla birlikte verilen FOSS lisansları dosyasında yer alan ya da yazılımla birlikte verilen telif hakkı bildiriminin koşulları kapsamında sağlanmaktadır. Bu EULA’nın koşulları, bu tür Ücretsiz Açık Kaynak Kodlu Yazılımlar için geçerli değildir.
+
+2.LİSANS 
+Bu EULA’nın koşullarına tabi şekilde, ASUS, işbu belge ile size Yazılımı yalnızca ASUS ürünlerine katıştırılmış şekilde kullanmanız için ticari ve münhasır olmayan, sınırı ve kişisel bir lisans sağlamaktadır. Yalnızca yedekleme amaçları için, Yazılımın makinede okunabilir biçimde bir kopyasını hazırlayabilirsiniz ancak bu yedek kopyanın orijinal kopyada bulunan tüm telif hakkı bildirimleri ile diğer mülkiyet bildirimlerini içermesi gerekmektedir. Bu lisans, alt lisans olarak verilemez ve bu EULA kapsamındaki tüm hakları devretmeniz ve Yazılımın başka tam ya da kısmi kopyasını elinde bulundurmamanız ve alıcının bu EULA’nın şartlarını kabul etmesi şartlarıyla Yazılımı içeren ASUS ürünlerinin mülkiyetini tamamen devrettiğiniz kişi veya kurumlar dışında aktarılamaz.
+
+3.TERSİNE İŞLEM KISITLAMASI 
+Yazılımda ters mühendislik işlemleri yapmamalı, Yazılımı parçalarına ayırmamalı, şifreleri çözmemeli veya Yazılımı kaynak koda dönüştürmemeli, bunlarla ilgili doğrudan uygulanabilir olan yasaların yasakladığı kapsamda bunların yapılmasına izin vermemeli veya bu tür faaliyetleri teşvik etmelisiniz.
+
+4.GİZLİLİK
+Sınırlama olmaksızın ticari sırlar, her türden telif hakkı korumalı materyal dahil ancak bunlarla sınırlı olmamak üzere Yazılımın gizli bilgilerini tamamen veya kısmen koruma ve açıklamama ya da bunların açıklanmasına neden olmama sorumluluğunuz bulunmaktadır.
+
+5.Fikri Mülkiyet HAKLARI (“IP Hakları”) 
+Yazılımdan doğan tüm IP Hakları, unvanlar ve menfaatlerin ASUS veya lisans vereninin münhasır mülkiyetinde olduğunu ve kalmaya devam edeceğin beyan ve kabul etmektesiniz. Bu EULA’daki hiçbir husus, bu tür IP Haklarını size aktarma amacı taşımamaktadır. IP Haklarının her türlü izinsiz kullanımı, bu EULA’nın ihlali olmakla beraber, sınırlama olmaksızın telif hakkı kanunları ve ticari marka kanunlarını içeren fikri mülkiyet kanunlarının çiğnenmesi anlamına gelecektir.
+Bize Yazılım aracılığıyla ASUS’a ilettiğiniz kişisel bilgiler haricinde herhangi bir bilgi, materyal, fikir, konsept veya teknik göndermeniz halinde (“Geri Bildirimler”), aşağıdakileri beyan ve kabul etmiş olacaksınız: (i) Geri Bildirimleriniz, gizli veya özel bilgiler içermeyecektir; (ii) ASUS, Geri Bildirimlerle ilgili olarak açık veya zımni olarak herhangi bir gizlilik yükümlülüğü altında olmayacaktır; (iii) ASUS, tamamen ASUS’un takdirine bağlı olarak Geri Bildirimleri, dünya genelinde, herhangi bir şekilde, herhangi bir amaçla kullanma veya açıklama hakkına sahip olacaktır; (iv) Geri Bildirimleriniz, ASUS’un Size karşı bir yükümlülüğü olmaksızın ASUS’un mülkiyetine geçecektir ve (v) herhangi bir tazminat veya ödemeye hak kazanmayacaksınız.
+
+6.SÜRE VE FESİH 
+Bu EULA, sizin Yazılımı yüklediğiniz tarih itibarıyla geçerli olacaktır. Yazılımın her türlü kullanımına son vererek ve Yazılımı ASUS ürününden kaldırarak bu Lisansı dilediğiniz zaman sonlandırabilirsiniz. Bu EULA’nın herhangi bir hükmüne uymadığınızı düşünmemiz halinde, haklarınız, ASUS’tan önceden bildirim gelmeksizin iptal edilecektir.
+
+7.Garanti Beyanı ve Sorumluluk Sınırlaması 
+YAZILIMIN “OLDUĞU GIBI” SAĞLANDIĞINI KABUL EDIYORSUNUZ. BU YAZILIMIN KALİTESİ VE PERFORMANSI İLE İLGİLİ RİSKİN TAMAMI, SINIRLAMA OLMAKSIZIN GEREKEN SERVİS VE ONARIM MALİYETLERİNİ İÇEREN ŞEKİLDE SİZE AİT OLACAKTIR. YASALARIN IZIN VERDIĞI KAPSAMDA, ASUS, AÇIK VEYA ZIMNİ OLARAK BU YAZILIM VEYA BU EULA KAPSAMINDA YA DA BU YAZILIM İÇİN SAĞLANAN DİĞER BİLGİ VE BELGELER İLE İLGİLİ OLARAK, SINIRLAMA OLMAKSIZIN TİCARETE ELVERİŞLİLİK VEYA BELİRLİ BİR AMACA UYGUNLUK YA DA İHLAL BARINDIRMAMAYI YA DA KULLANILAMAMA YA DA YETERSİZ PERFORMANSTAN DOĞAN GARANTİLERİ İÇERECEK ŞEKİLDE HERHANGİ BİR GARANTİDE BULUNMAMAKTADIR. ASUS, AYRICA, BU YAZILIMIN KULLANIMINDAN ELDE EDİLEBİLECEK SONUÇLAR VEYA BU YAZILIM ARACILIĞIYLA EDİNİLEN BİLGİLERİN DOĞRULUĞU VEYA GÜVENİLİRLİĞİNE DAİR HERHANGİ BİR GARANTİ SUNMAMAKTADIR. BAZI YARGI ALANLARI, BELİRLİ GARANTİLERİN HARİÇ TUTULMASINA YA DA BELİRLİ ZARARLAR İÇİN SORUMLULUĞUN SINIRLANMASI VEYA HARİÇ BIRAKILMASINA İZİN VERMEMEKTEDİR. BENZER ŞEKİLDE, YUKARIDAKİ YASAL UYARLAR VE SORUMLULUK SINIRLAMALARI SİZİN İÇİN GEÇERLİ OLMAYABİLİR.
+
+BU YAZILIMIN KULLANIMI VE/VEYA PERFORMANSINDAN DOĞAN TÜM RİSK SİZE AİT OLACAKTIR. ASUS, LİSANS VERENLERİ VEYA İLGİLİ YETKİLİLERİ, DİREKTÖRLERİ, ÇALIŞANLARI, ARACILARI VEYA İŞTİRAKLERİ, HİÇBİR DURUMDA, BU EULA YA DA YAZILIM VEYA YAZILIMIN HERHANGİ BİR KISMININ KULLANILMASI YA DA KULLANILMAMASIYLA İLGİLİ YA DA BUNLARDAN DOĞAN HİÇBİR BAĞLI, ARIZİ, DOĞRUDAN, DOLAYLI, ÖZEL, CEZAİ YA DA DİĞER ZARARLARDAN (SINIRLAMA OLMAKSIZIN KÂR KAYBI, KESİNTİ, BİLGİ KAYBI VEYA DİĞER MADDİ HASARLAR), ASUS İLGİLİ ZARARIN OLASILIĞI HAKKINDA BİLGİLENDİRİLMİŞ OLSA DAHİ SORUMLU TUTULAMAYACAKTIR. BAZI YARGI ALANLARI, BELİRLİ GARANTİLERİN HARİÇ TUTULMASINA YA DA BELİRLİ ZARARLAR İÇİN SORUMLULUĞUN SINIRLANMASI VEYA HARİÇ BIRAKILMASINA İZİN VERMEMEKTEDİR. BENZER ŞEKİLDE, YUKARIDAKİ YASAL UYARLAR VE SORUMLULUK SINIRLAMALARI SİZİN İÇİN GEÇERLİ OLMAYABİLİR.
+
+8.Tazminat 
+ASUS ve iştiraklerini, hizmet sağlayıcılarını, sendikacılarını, distribütörlerini, lisans verenlerini, yetkililerini, direktörlerini ve çalışanlarını, bu EULA’yı veya herhangi bir kanun veya yönetmeliği ya da bir üçüncü taraf hakkını ihlal etmeniz sonucu her tür iddia veya taleple bağlantılı olan ya da bunlardan doğan her türlü kayıp, zarar, borç ve masrafa (makul avukat ücretleri ve yargılama giderleri dahil) karşı korumayı ve tazmin etmeyi kabul ediyorsunuz.</value>
+  </data>
+  <data name="EULA_Title.Text" xml:space="preserve">
+    <value>Son Kullanıcı Lisans Anlaşması</value>
+  </data>
+</root>

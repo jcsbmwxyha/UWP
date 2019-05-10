@@ -463,7 +463,7 @@
             </ListBox.ItemsPanel>
         </ListBox>
         <Button x:Name="NextBtn" Grid.Row="2" Content="Next" VerticalAlignment="Center" HorizontalAlignment="Right" Width="136"
-                Style="{StaticResource RogButtonStyle2}" Click="NextButton_Click" Margin="0,0,72,0"/>
+                Style="{StaticResource RogButtonStyle2}" Click="NextButton_Click" Margin="0,0,72,0" TabIndex="1"/>
         <Button x:Name="CloseBtn" Grid.Row="2" Content="Close" VerticalAlignment="Center" HorizontalAlignment="Right" Width="136"
                 Style="{StaticResource RogButtonStyle2}" Click="CloseButton_Click" Margin="0,0,72,0" Visibility="Collapsed"/>
     </Grid>

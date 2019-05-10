@@ -583,7 +583,7 @@
             </StackPanel>
         </Grid>
         <Button x:Uid="OKButton" Grid.Row="3" Content="OK" Height="36" Width="136" HorizontalAlignment="Right" Margin="0,0,40,39"
-                Style="{StaticResource RogButtonStyle2}" Click="OKBtn_Click"/>
+                Style="{StaticResource RogButtonStyle2}" Click="OKBtn_Click" TabIndex="1"/>
 
     </Grid>
 </ContentDialog>

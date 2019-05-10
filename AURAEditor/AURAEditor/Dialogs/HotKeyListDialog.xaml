@@ -144,7 +144,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Save and apply the file"/>
+                        <TextBlock Text="Save and apply the lighting profile"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + S"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -171,7 +171,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Rename current file"/>
+                        <TextBlock Text="Rename current profile"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + R"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -180,7 +180,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Delete current file"/>
+                        <TextBlock Text="Delete current profile"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + Shift + Delete"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -207,7 +207,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Export current file"/>
+                        <TextBlock Text="Export current profile"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + E"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -225,7 +225,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Open shortcuts list"/>
+                        <TextBlock Text="Open shortcut list"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + H"/>
                     </Grid>
                 </StackPanel>
@@ -233,7 +233,7 @@
                 <!--Device area-->
                 <Grid Style="{StaticResource TypeGrid_K}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Device area" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Device display area" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
                 <StackPanel Style="{StaticResource StackPanel_K}">
                     <Grid>
@@ -241,7 +241,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Zoom in/out device area by fixed zoom level"/>
+                        <TextBlock Text="Zoom in/out device display area"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + Plus (+) / Minus (-)"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -285,7 +285,7 @@
                 <!--Timeline editing-->
                 <Grid Style="{StaticResource TypeGrid_K}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Timeline editing - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Timeline panel - Keyboard shortcuts" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
                 <StackPanel Style="{StaticResource StackPanel_K}">
                     <Grid>
@@ -320,7 +320,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Move time cursor to the beginning"/>
+                        <TextBlock Text="Move timeline cursor to the beginning"/>
                         <TextBlock Grid.Column="1" Text="Shift + Home"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -329,7 +329,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Move time cursor to the end"/>
+                        <TextBlock Text="Move timeline cursor to the end"/>
                         <TextBlock Grid.Column="1" Text="Shift + End"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -338,7 +338,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Cut the effect brick"/>
+                        <TextBlock Text="Cut the effect block"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + X"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -347,7 +347,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Copy the effect brick"/>
+                        <TextBlock Text="Copy the effect block"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + C"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -356,7 +356,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Paste the effect brick"/>
+                        <TextBlock Text="Paste the effect block"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + V"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -365,7 +365,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Delete the effect brick"/>
+                        <TextBlock Text="Delete the effect block"/>
                         <TextBlock Grid.Column="1" Text="Delete / Backspace"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -374,7 +374,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Delete all the effect brick on the selected layer"/>
+                        <TextBlock Text="Delete all the effect blocks on the selected layer"/>
                         <TextBlock Grid.Column="1" Text="Shift + E"/>
                     </Grid>
                 </StackPanel>
@@ -394,7 +394,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Zoom in/out device area"/>
+                        <TextBlock Text="Zoom in/out device display area"/>
                         <TextBlock Grid.Column="1" Text="Ctrl + mouse scroll wheel"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
@@ -421,8 +421,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Move the canvas of device area"/>
-                        <TextBlock Grid.Column="1" Text="Z + mouse drag"/>
+                        <TextBlock Text="Move the canvas of device display area"/>
+                        <TextBlock Grid.Column="1" Text="Z + click and drag"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -431,7 +431,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Multi-select or deselect the lighting area"/>
-                        <TextBlock Grid.Column="1" Text="Ctrl + mouse click or drag"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + left click or drag"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -440,7 +440,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Multi-select the lighting area"/>
-                        <TextBlock Grid.Column="1" Text="Shift + mouse click or drag"/>
+                        <TextBlock Grid.Column="1" Text="Shift + left click or drag"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -449,14 +449,14 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Deselect the lighting area"/>
-                        <TextBlock Grid.Column="1" Text="Mouse right click on device area"/>
+                        <TextBlock Grid.Column="1" Text="Right click on device display area"/>
                     </Grid>
                 </StackPanel>
                 <!--End-->
                 <!--Timeline editing-->
                 <Grid Style="{StaticResource TypeGrid_M}">
                     <Image Source="ms-appx:///Assets/HotkeyList/asus_ac_hotkeylist_title_bg.png"/>
-                    <TextBlock Text="Timeline editing" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
+                    <TextBlock Text="Timeline panel" VerticalAlignment="Center" FontSize="14" Margin="15,0,0,0" FontWeight="Bold"/>
                 </Grid>
                 <StackPanel Style="{StaticResource StackPanel_M}">
                     <Grid>
@@ -465,7 +465,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Rename the layer"/>
-                        <TextBlock Grid.Column="1" Text="Mouse double click on the layer name"/>
+                        <TextBlock Grid.Column="1" Text="Double click on the layer name"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -474,7 +474,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Multi-select the continuous layer"/>
-                        <TextBlock Grid.Column="1" Text="Shift + mouse click"/>
+                        <TextBlock Grid.Column="1" Text="Shift + left click"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -483,7 +483,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Multi-select the spaced layer"/>
-                        <TextBlock Grid.Column="1" Text="Ctrl + mouse click"/>
+                        <TextBlock Grid.Column="1" Text="Ctrl + left click"/>
                     </Grid>
                     <Border BorderThickness="1" BorderBrush="White" Opacity="0.4"/>
                     <Grid>
@@ -501,7 +501,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Open function menu"/>
-                        <TextBlock Grid.Column="1" Text="Mouse right click on layer, timeline or effect brick"/>
+                        <TextBlock Grid.Column="1" Text="Right click on layer, timeline or lighting effect block"/>
                     </Grid>
                 </StackPanel>
                 <!--End-->
@@ -509,6 +509,6 @@
         </ScrollViewer>
 
         <Button Grid.Row="2" Content="OK" VerticalAlignment="Center" HorizontalAlignment="Center" Width="136"
-                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click"/>
+                Style="{StaticResource RogButtonStyle2}" Click="OKButton_Click" TabIndex="1"/>
     </Grid>
 </ContentDialog>

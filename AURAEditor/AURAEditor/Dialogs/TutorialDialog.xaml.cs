@@ -29,31 +29,31 @@ namespace AuraEditor.Dialogs
             TutorialFlipViewData.Add(new TutorialItem()
             {
                 Title = "Step 1. Arrange devices",
-                Content = "Arrange your devices according to the actual relative position by pressing the \"Device arrangement\" button and then dragging to move the devices.",
+                Content = "Click the \"Device arrangement\" button,  then drag to rearrange your devices according to the actual relative position.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_arrangedevice_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
                 Title = "Step 2. Create layers",
-                Content = "Drag or click to select the lighting areas on the devices, and press the \"Set as a layer\" button to group the lighting areas and also create a layer.",
+                Content = "Click or drag-select the lighting areas from the device display, and click the \"Set as a layer\" button to group these areas and create a layer.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_createlayers_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
                 Title = "Step 3. Add lighting effects",
-                Content = "Drag a lighting effect brick from the left side panel to timeline area. Now you are able to adjust the length, start time and end time of the lighting effect brick.\nYou can also press the \"Trigger event settings\" button of every layer to add a trigger effect.",
+                Content = "Drag a lighting effect block from the left side to the timeline panel, then you can adjust the length, start and end time of the lighting effect block.\nYou can also click the \"Trigger event settings\" button of each layer to add a trigger effect.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_addlightingeffects_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
-                Title = "Step 4. Manage effect properties",
-                Content = "Adjust the properties of the lighting effect brick on the right side panel.",
+                Title = "Step 4. Manage lighting effect properties",
+                Content = "Adjust the properties of the lighting effect block on the right panel.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_mamageeffect_bg.png"
             });
             TutorialFlipViewData.Add(new TutorialItem()
             {
-                Title = "Step 5. Preview or apply the lighting file",
-                Content = "You can press the \"Play\" button to preview the editing lighting file or press \"Save & apply\" button to save the lighting file and also apply it to your devices.",
+                Title = "Step 5. Preview or apply the lighting profile",
+                Content = "You can click the \"Play\" button to preview the adjusted lighting profile or click the \"Save & apply\"  button to save and apply the lighting profile to your devices.",
                 Image = "ms-appx:///Assets/Tutorial/asus_ac_previeworapply_bg.png"
             });
             TutorialFlipView.ItemsSource = TutorialFlipViewData;

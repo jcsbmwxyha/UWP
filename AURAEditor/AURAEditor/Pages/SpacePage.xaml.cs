@@ -14,6 +14,7 @@ using AuraEditor.Common;
 using AuraEditor.Dialogs;
 using AuraEditor.Models;
 using AuraEditor.UserControls;
+using static AuraEditor.Common.ControlHelper;
 using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.Common.XmlHelper;
@@ -216,7 +217,7 @@ namespace AuraEditor.Pages
             StopScrollTimer();
 
 
-            if (DeviceModelCollection.Count == 0)
+            if (DeviceModelCollection.FindAll(find => find.Plugged == true).Count == 0)
                 MaskManager.GetInstance().ShowMask(MaskType.NoSupportDevice);
             else if (DeviceModelCollection.Find(find => find.Sync == true) == null)
                 MaskManager.GetInstance().ShowMask(MaskType.NoSyncDevice);
@@ -280,6 +281,7 @@ namespace AuraEditor.Pages
                         }
                         else if (deviceData[5] == "false")
                         {
+                            get.Plugged = true;
                             get.Sync = false;
                         }
 
@@ -309,6 +311,7 @@ namespace AuraEditor.Pages
                     dm.Plugged = false;
 
                 RefreshStage();
+                NotifyConnectedDialog();
             }
             catch
             {
@@ -335,18 +338,27 @@ namespace AuraEditor.Pages
                 }
 
                 Log.Debug("[GetPluggedDevices] Get plugged devices : " + result);
-                return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
                 //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return result;
             }
             catch (Exception ex)
             {
                 Log.Debug("[GetPluggedDevices] Get Failed : " + ex.ToString());
-                return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
+                //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:Magnus,Magnus,Magnus,Magnus,Microphone,true:";
                 //return "G703GI,G703GI,G703GI_US,G703GI_US,Notebook,true:PUGIO,PUGIO,PUGIO,PUGIO,Mouse,true:";
                 return null;
             }
         }
+        private void NotifyConnectedDialog()
+        {
+            if (GetCurrentContentDialog() is ConnectedDevicesDialog dialog)
+            {
+                dialog.UpdateDeviceList();
+            }
+
+        }
+
         #endregion
 
         #region -- SpaceStatus --
@@ -468,18 +480,6 @@ namespace AuraEditor.Pages
 
             float percent = float.Parse(itemText.Replace(" %", ""));
             SetSpaceZoomPercent(percent);
-        }
-
-        public void SpaceZoom_For_Hotkey(bool zoom_in)
-        {
-            double percent = double.Parse(SpaceZoomButton.Content.ToString().Replace(" %", ""));
-            if (zoom_in)
-                percent = Math2.FloorToTarget(percent, 25) + 25;
-            else
-                percent = Math2.CeilingToTarget(percent, 25) - 25;
-            if (percent < 25)
-                return;
-            SetSpaceZoomPercent((float)percent);
         }
 
         private float _spaceZoomFactor;
@@ -1073,17 +1073,6 @@ namespace AuraEditor.Pages
         {
             isMouseInSpacePage = false;
             Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
-        }
-        private void ZoomAddInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            SpaceZoom_For_Hotkey(true);
-            args.Handled = true;
-        }
-
-        private void ZoomSubtractInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            SpaceZoom_For_Hotkey(false);
-            args.Handled = true;
         }
 
         private void SelectAllZonesInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)

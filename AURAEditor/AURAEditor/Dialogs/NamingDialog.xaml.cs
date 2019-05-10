@@ -106,6 +106,7 @@ namespace AuraEditor.Dialogs
             if (e.Key == Windows.System.VirtualKey.Escape)
             {
                 Result = false;
+                NamingCancel = true;
                 this.Hide();
                 MainPage.Self.CanShowDeviceUpdateDialog = true;
                 MainPage.Self.ShowDeviceUpdateDialogOrNot();

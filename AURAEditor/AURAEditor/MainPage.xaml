@@ -468,12 +468,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="2"/>
             <RowDefinition Height="250"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" MinWidth="340"/>
             <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
@@ -499,9 +499,12 @@
                 <TextBlock HorizontalAlignment="Center" FontSize="34">
                     No available device
                 </TextBlock>
-                <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0">
-                    Please connect at least one device or select device(s) at the "Available device list".
+                <TextBlock x:Name="NoSupportedDeviceContent" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" x:FieldModifier="Public">
+                    Please connect at least one Aura Sync compatible device.
                 </TextBlock>
+
+                <Button x:Name="GoToUpdateBtn" Content="Update Now" Style="{StaticResource RogButtonStyle2}" Click="SettingsButton_Click"
+                        HorizontalAlignment="Center" Margin="0,20,0,0" Visibility="Collapsed" x:FieldModifier="Public"/>
             </StackPanel>
         </Grid>
         <Grid Name="ActionBarMask" Background="#88000000" Visibility="Collapsed" Grid.Column="1" Canvas.ZIndex="11" x:FieldModifier="public"/>
@@ -511,8 +514,7 @@
         <Grid Name="EffectInfoMask" Background="#88000000" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Canvas.ZIndex="3" x:FieldModifier="public"/>
 
         <!-- Row 0 -->
-        <RelativePanel x:Name="SettingRelativePanel" x:FieldModifier="Public"
-                       Grid.Column="1" Canvas.ZIndex="10"
+        <RelativePanel x:Name="SettingRelativePanel" x:FieldModifier="Public" Grid.Column="1"
                        VerticalAlignment="Center" HorizontalAlignment="Right">
             <Button x:Name="SettingsButton" x:FieldModifier="Public" Width="48" Height="32"
                       Style="{StaticResource SettingsButtonStyle}" Click="SettingsButton_Click">
@@ -527,11 +529,11 @@
                    Visibility="Collapsed"/>
         </RelativePanel>
         <Button x:Uid="ConnectedDevicesButton" Name="ConnectedDevicesButton" Style="{StaticResource RogButtonStyle3}"
-                Width="200" Margin="20,0,0,0" Content="Available devices" Click="ConnectedDevicesButton_Click"
-                Canvas.ZIndex="10"/>
-        <RelativePanel Name="ActionBarRelativePanel" MinWidth="600" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,48,0" x:FieldModifier="public">
+                Width="200" Margin="20,0,0,0" Content="Available devices" Click="ConnectedDevicesButton_Click"/>
+        
+        <RelativePanel Name="ActionBarRelativePanel" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,48,0" x:FieldModifier="public">
             <Button x:Uid="SetLayerButton" Name="SetLayerButton" Style="{StaticResource SetAsLayerButtonStyle}" Background="{StaticResource AppBarBackgroundThemeBrush}"
-                        RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" 
+                        RelativePanel.AlignLeftWithPanel="True" Margin="20,0,0,0" Width="160"
                         x:FieldModifier="Public" Content="Set as a layer" Click="SetLayerButton_Click" IsEnabled="False">
                 <ToolTipService.ToolTip>
                     <ToolTip Background="Black" Placement="Mouse" BorderBrush="White">
@@ -551,8 +553,8 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Rectangle>
-            <Button x:Uid="SortDeviceButton" Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton"
-                        Content="Arrange devices" Margin="20,0,0,0" Click="SortDeviceButton_Click">
+            <Button x:Uid="SortDeviceButton" Name="SortDeviceButton" Style="{StaticResource DeviceSortingButtonStyle}" RelativePanel.RightOf="SetLayerButton" RelativePanel.LeftOf="UndoButton"
+                        Content="Arrange devices" Margin="12,0,20,0" Click="SortDeviceButton_Click" Width="180">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="M"/>
                 </Button.KeyboardAccelerators>
@@ -563,7 +565,7 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="UndoButton" RelativePanel.LeftOf="RedoButton" Margin="0,3,10,0"
+            <Button Name="UndoButton" RelativePanel.LeftOf="RedoButton" Margin="0,3,12,0"
                     Style="{StaticResource UndoButtonStyle}" Command="{x:Bind common:ReUndoManager.UndoCommand}">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="Z"/>
@@ -574,7 +576,7 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Name="RedoButton" RelativePanel.LeftOf="SaveAndApplyButton" Margin="0,3,30,0"
+            <Button Name="RedoButton" RelativePanel.LeftOf="SaveAndApplyButton" Margin="0,3,12,0"
                     Style="{StaticResource RedoButtonStyle}" Command="{x:Bind common:ReUndoManager.RedoCommand}">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="Z"/>
@@ -585,8 +587,8 @@
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button x:Uid="SaveAndApplyButton" Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.LeftOf="HelpButton" Margin="0,0,19,0"
-                    Content="Save &amp; apply" Click="SaveAndApplyButton_Click">
+            <Button x:Uid="SaveAndApplyButton" Name="SaveAndApplyButton" Style="{StaticResource SaveAndApplyButtonStyle}" RelativePanel.LeftOf="HelpButton" Margin="0,0,8,0"
+                    Content="Save &amp; apply" Click="SaveAndApplyButton_Click" Width="160">
                 <Button.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="S"/>
                 </Button.KeyboardAccelerators>
@@ -754,7 +756,7 @@
         <Frame Name="SpaceFrame" Grid.Row="1" Grid.Column="1"/>
         <Frame Name="EffectInfoFrame" Grid.Row="1" Grid.Column="4" x:FieldModifier="public"/>
 
-        <Grid Name="WindowSliderGrid"  Grid.Row="2" Grid.ColumnSpan="3" Background="#18FFFFFF"
+        <Grid Name="WindowSliderGrid"  Grid.Row="2" Grid.ColumnSpan="2" Background="Black"
               PointerPressed="WindowSliderGrid_PointerPressed"
               PointerMoved="WindowSliderGrid_PointerMoved"
               PointerReleased="WindowSliderGrid_PointerReleased"

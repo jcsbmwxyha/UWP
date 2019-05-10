@@ -188,7 +188,7 @@
         </StackPanel>
         <Grid Grid.Column="1" Grid.Row="2">
             <Button x:Uid="OK" x:Name="OKBtn" Content="OK" HorizontalAlignment="Right" VerticalAlignment="Top" Width="136" Height="32" Style="{StaticResource RogButtonStyle2}"
-                    Click="OKBtn_Click"/>
+                    Click="OKBtn_Click" TabIndex="1"/>
         </Grid>
     </Grid>
 </ContentDialog>

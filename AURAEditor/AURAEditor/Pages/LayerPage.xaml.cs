@@ -124,7 +124,6 @@ namespace AuraEditor.Pages
                     value.IsChecked = true;
                     m_EffectInfoFrame.Navigate(typeof(EffectInfoPage), _checkedEffect.Model.Info);
                     CheckedLayer = value.Layer;
-                    NeedSave = true;
                 }
             }
         }
@@ -159,6 +158,7 @@ namespace AuraEditor.Pages
                 if (eff != null && eff.Right > max)
                 {
                     result = eff;
+                    max = eff.Right;
                 }
             }
             return result;
@@ -171,15 +171,33 @@ namespace AuraEditor.Pages
         public ObservableCollection<LayerModel> Layers { get; set; }
         public void AddLayer(LayerModel layer)
         {
-            int index = Layers.IndexOf(layer);
-            Layers.Insert(0, layer);
-            ReUndoManager.Store(new AddLayerCommand(layer, index));
+            Layers.Add(layer);
+            ReUndoManager.Store(new AddLayerCommand(layer, Layers.IndexOf(layer)));
+        }
+        public void InsertLayer(LayerModel layer, int idx)
+        {
+            Layers.Insert(idx, layer);
+            ReUndoManager.Store(new AddLayerCommand(layer, idx));
         }
         public void RemoveLayer(LayerModel layer)
         {
             int index = Layers.IndexOf(layer);
             Layers.Remove(layer);
             ReUndoManager.Store(new DeleteLayerCommand(layer, index));
+        }
+        public void DuplicateCheckedLayer()
+        {
+            if (CheckedLayer == null)
+                return;
+
+            ReUndoManager.Disable();
+            int index = Layers.IndexOf(CheckedLayer);
+            LayerModel clone = LayerModel.Clone(CheckedLayer);
+            Layers.Insert(index, clone);
+            CheckedLayer = clone;
+            ReUndoManager.Enable();
+
+            ReUndoManager.Store(new AddLayerCommand(clone, index));
         }
         private void LayersChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -447,7 +465,7 @@ namespace AuraEditor.Pages
 
         private void TimelineScaleInitialize()
         {
-            MSecondsBetweenLongLines = GetMSecondsPerTimeUnitByLevel(1); // Level 1
+            MSecondsBetweenLongLines = GetMSecondsPerTimeUnitByLevel(6); // Level 6
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
             TimeSpan interval = new TimeSpan(0, 0, 0, 0, MSecondsBetweenLongLines);
 
@@ -673,7 +691,6 @@ namespace AuraEditor.Pages
             RemoveLayer(layer);
             SpacePage.Self.GoToBlankEditing();
             CheckedLayer = null;
-            NeedSave = true;
         }
         public void TrashCanButton_Click(object sender, RoutedEventArgs e)
         {
@@ -682,7 +699,6 @@ namespace AuraEditor.Pages
                 RemoveLayer(CheckedLayer);
                 SpacePage.Self.GoToBlankEditing();
                 CheckedLayer = null;
-                NeedSave = true;
             }
         }
         #endregion
@@ -743,6 +759,7 @@ namespace AuraEditor.Pages
             if (!CheckedLayer.TryInsertToTimelineFitly(copy))
             {
                 // TODO
+                g_CanPaste = true;
                 return;
             }
 
@@ -772,7 +789,7 @@ namespace AuraEditor.Pages
 
             public void ExecuteRedo()
             {
-                LayerPage.Self.AddLayer(_layer);
+                LayerPage.Self.InsertLayer(_layer, _index);
                 LayerPage.Self.CheckedLayer = _layer;
             }
             public void ExecuteUndo()

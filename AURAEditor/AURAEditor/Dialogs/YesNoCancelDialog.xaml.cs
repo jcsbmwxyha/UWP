@@ -55,13 +55,13 @@ namespace AuraEditor.Dialogs
             this.InitializeComponent();
         }
 
-        private void YesButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void YesButton_Click(object sender, RoutedEventArgs e)
         {
             Result = ContentDialogResult.Primary;
             this.Hide();
             MainPage.Self.ShowDeviceUpdateDialogOrNot();
         }
-        private void NoButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void NoButton_Click(object sender, RoutedEventArgs e)
         {
             Result = ContentDialogResult.Secondary;
             this.Hide();
@@ -73,6 +73,17 @@ namespace AuraEditor.Dialogs
             this.Hide();
             MainPage.Self.CanShowDeviceUpdateDialog = true;
             MainPage.Self.ShowDeviceUpdateDialogOrNot();
+        }
+
+        private void YesNoCancelDialog_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Escape)
+            {
+                Result = ContentDialogResult.Secondary;
+                this.Hide();
+                MainPage.Self.CanShowDeviceUpdateDialog = true;
+                MainPage.Self.ShowDeviceUpdateDialogOrNot();
+            }
         }
     }
 }

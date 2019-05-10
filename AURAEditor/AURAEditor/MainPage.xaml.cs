@@ -30,8 +30,8 @@ using DevicZonesPair = System.Tuple<int, int[]>;
 using DeviceZonesPairList = System.Collections.Generic.List<System.Tuple<int, int[]>>;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Input;
 using Windows.ApplicationModel.Resources;
+using Windows.UI.ViewManagement;
 
 namespace AuraEditor
 {
@@ -46,14 +46,15 @@ namespace AuraEditor
         public LayerPage LayerPage;
         public ContentDialog g_ContentDialog;
         static private DeviceUpdatePromptDialog dupd;
-        public string g_NewPlugInDeviceName;
         public bool CanShowDeviceUpdateDialog = true;
         ApplicationDataContainer g_LocalSettings;
         public RecentColor[] g_RecentColor = new RecentColor[8];
         private Dictionary<DeviceModel, Point> oldSortingPositions;
         private ResourceLoader resourceLoader = ResourceLoader.GetForCurrentView();
 
-        public bool needToUpdadte = false;
+        public bool needToUpdate = false;
+
+        private int WindowsSizeFlag = 0;
 
         public EffectLineViewModel SelectedEffect
         {
@@ -170,6 +171,7 @@ namespace AuraEditor
                 g_RecentColor[i] = new RecentColor();
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+            Window.Current.CoreWindow.SizeChanged += CoreWindow_SizeChanged;
             g_PressShift = false;
             g_PressCtrl = false;
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += this.OnCloseRequest;
@@ -190,7 +192,7 @@ namespace AuraEditor
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             Log.Debug("[MainPage_Loaded] Intialize ...");
-            
+
             await IntializeFileOperations();
             SpaceFrame.Navigate(typeof(SpacePage));
             SpacePage = SpacePage.Self;
@@ -200,11 +202,15 @@ namespace AuraEditor
 
             //Start SocketClient
             MaskManager.GetInstance().ShowMask(MaskType.NoSupportDevice);
+            Log.Debug("[MainPage_Loaded] Start client thread");
             startclient();
+            Log.Debug("[MainPage_Loaded] Start client thread complete");
             LoadSettings();
-
+            Log.Debug("[MainPage_Loaded] LoadSettings complete");
             DeviceUpdatesPage.Self.UpdateButton_Click(null, null);
-            SpacePage.Rescan();
+
+            var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+            ResizeButton(visibleBounds.Width);
         }
         private void LoadSettings()
         {
@@ -213,7 +219,7 @@ namespace AuraEditor
             SpacePage.SetSpaceZoomPercent(successful ? percent : 50);
 
             successful = int.TryParse(g_LocalSettings.Values["LayerLevel"] as string, out int level);
-            LayerPage.LayerZoomSlider.Value = successful ? level : 2;
+            LayerPage.LayerZoomSlider.Value = successful ? level : 4;
 
             #region -- Recent Color --
             string value;
@@ -266,6 +272,7 @@ namespace AuraEditor
         private void EffectBlockListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
             SpacePage.SetSpaceStatus(SpaceStatus.Watching);
+            LayerPage.UpdateSupportLine(-1);
 
             // Workaround for preventing EffctBlock from keeping another status after completing
             var ebList = FindAllControl<EffectBlock>(EffectBlockListView, typeof(EffectBlock));
@@ -276,12 +283,13 @@ namespace AuraEditor
             }
         }
 
+        static public int SetLayerCounter = 1;
         private void SetLayerButton_Click(object sender, RoutedEventArgs e)
         {
             LayerModel layer = new LayerModel();
             List<int> selectedIndex;
 
-            layer.Name = "Layer " + (LayerPage.GetLayerCount() + 1);
+            layer.Name = "Layer " + SetLayerCounter++;
 
             foreach (DeviceModel dm in SpacePage.DeviceModelCollection)
             {
@@ -299,11 +307,10 @@ namespace AuraEditor
                     layer.AddDeviceZones(dm.Type, selectedIndex.ToArray());
             }
 
-            LayerPage.AddLayer(layer);
+            LayerPage.InsertLayer(layer, 0);
             Log.Debug("[SetLayerButton] Add the layer : " + layer.Name);
             LayerPage.CheckedLayer = layer;
             LayerPage.TrackScrollViewer.ChangeView(null, 0, null, false);
-            NeedSave = true;
         }
         private void SortDeviceButton_Click(object sender, RoutedEventArgs e)
         {
@@ -430,7 +437,6 @@ namespace AuraEditor
                     newpairs.Add(new DevicZonesPair(dm.Type, selectedIndex.ToArray()));
                 }
 
-                NeedSave = true;
                 ReUndoManager.Store(new EditZonesCommand(layer, oldpairs, newpairs));
                 SpacePage.WatchLayer(layer);
             }
@@ -525,20 +531,25 @@ namespace AuraEditor
             {
                 try
                 {
+                    Log.Debug("[ReceiveData] Connecting");
                     port = "6667";
                     ip = "127.0.0.1";
                     cm = "I'm the message from client";
                     HostName serverHost = new HostName("127.0.0.1");
                     string serverPort = port;
+                    Log.Debug("[ReceiveData] ConnectAsync");
                     await socket.ConnectAsync(serverHost, serverPort);
+                    Log.Debug("[ReceiveData] RunAsync");
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                     {
                         await SpacePage.Rescan();
                     });
                     IsConnection = true;
+                    Log.Debug("[ReceiveData] Connected");
                 }
                 catch (Exception ex)
                 {
+                    Log.Debug("[ReceiveData] Connect failed, try again ...");
                     await Task.Delay(2000);
                 }
             } while (!IsConnection);
@@ -561,31 +572,45 @@ namespace AuraEditor
                     string[] infoArray = response.Split(new char[3] { '[', ']', ',' });
                     if ((infoArray[1] == "PlugIn") && (infoArray[2] != " "))
                     {
-                        g_NewPlugInDeviceName = infoArray[2];
-
                         await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                         {
+                            needToUpdate = true;
+                            SettingBtnNewTab.Visibility = Visibility.Visible;
+
                             var dialog = GetCurrentContentDialog();
 
                             if (dialog != null)
                             {
-                                if (!(dialog is DeviceUpdatePromptDialog))
+                                if (SpacePage.Self.DeviceModelCollection.FindAll(find => find.Plugged == true).Count == 0)
                                 {
-                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
+                                    NoSupportedDeviceContent.Text = "To start editing the lighting profile, the latest software version of connected devices are required.";
+                                    GoToUpdateBtn.Visibility = Visibility.Visible;
+                                }
+                                else if (!(dialog is DeviceUpdatePromptDialog))
+                                {
+                                    dupd = new DeviceUpdatePromptDialog();
                                     g_ContentDialog = dupd;
                                 }
                             }
                             else
                             {
-                                if (CanShowDeviceUpdateDialog)
+                                if (SpacePage.Self.DeviceModelCollection.FindAll(find => find.Plugged == true).Count == 0)
                                 {
-                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
-                                    await dupd.ShowAsync();
+                                    NoSupportedDeviceContent.Text = "To start editing the lighting profile, the latest software version of connected devices are required.";
+                                    GoToUpdateBtn.Visibility = Visibility.Visible;
                                 }
                                 else
                                 {
-                                    dupd = new DeviceUpdatePromptDialog(infoArray[2]);
-                                    g_ContentDialog = dupd;
+                                    if (CanShowDeviceUpdateDialog)
+                                    {
+                                        dupd = new DeviceUpdatePromptDialog();
+                                        await dupd.ShowAsync();
+                                    }
+                                    else
+                                    {
+                                        dupd = new DeviceUpdatePromptDialog();
+                                        g_ContentDialog = dupd;
+                                    }
                                 }
                             }
                         });
@@ -613,7 +638,7 @@ namespace AuraEditor
         {
             if (g_ContentDialog != null && CanShowDeviceUpdateDialog)
             {
-                g_ContentDialog = new DeviceUpdatePromptDialog(g_NewPlugInDeviceName);
+                g_ContentDialog = new DeviceUpdatePromptDialog();
                 await g_ContentDialog.ShowAsync();
             }
         }
@@ -632,8 +657,7 @@ namespace AuraEditor
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            //ConnectedDevicesDialog.Rescan();
-            SpacePage.DeviceModelCollection[0].PixelLeft = 100;
+            //SpacePage.RescanFake();
         }
 
         public class MoveDevicesCommand : IReUndoCommand
@@ -720,8 +744,9 @@ namespace AuraEditor
 
             WindowsPage.Self.WindowsGrid.Visibility = Visibility.Collapsed;
             WindowsPage.Self.WindowsGrid1.Visibility = Visibility.Visible;
-            WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdadte, new SuppressNavigationTransitionInfo());
+            WindowsPage.Self.WindowsFrame1.Navigate(typeof(SettingsPage), needToUpdate, new SuppressNavigationTransitionInfo());
         }
+
         public void OnBackRequested(object sender, BackRequestedEventArgs e)
         {
             if (WindowsPage.Self.WindowsFrame1.Content is SettingsPage)
@@ -749,6 +774,29 @@ namespace AuraEditor
         private void ShortcutsItem_Click(object sender, RoutedEventArgs e)
         {
             ShowShortcutsDialog();
+        }
+
+        private void CoreWindow_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+        {
+            ResizeButton(e.Size.Width);
+        }
+
+        public void ResizeButton(double width)
+        {
+            if ((width < 1204) && (WindowsSizeFlag != 1))
+            {
+                SetLayerButton.Width = 40;
+                SortDeviceButton.Width = 40;
+                SaveAndApplyButton.Width = 40;
+                WindowsSizeFlag = 1;
+            }
+            else if ((width >= 1204) && (WindowsSizeFlag != -1))
+            {
+                SetLayerButton.Width = 160;
+                SortDeviceButton.Width = 180;
+                SaveAndApplyButton.Width = 160;
+                WindowsSizeFlag = -1;
+            }
         }
     }
 }

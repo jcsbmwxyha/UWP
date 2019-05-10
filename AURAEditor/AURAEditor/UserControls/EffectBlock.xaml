@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Height="30" Width="150"
+    <Grid Height="52" Width="210" Margin="0,21,0,0"
           PointerPressed="Grid_PointerPressed"
           PointerEntered="Grid_PointerEntered"
           PointerExited="Grid_PointerExited"
@@ -46,7 +46,7 @@
         <Image Name="FrameImage"
                Source="{x:Bind EffectBlockBackground_Normal ,Mode=OneWay}"
                Stretch="Fill"/>
-        <TextBlock x:Name="EffectBlocktext" Margin="40,0,0,0"
+        <TextBlock x:Name="EffectBlocktext" Margin="56,0,0,0"
                    Text="{x:Bind EffName, Mode=OneWay}"
                    VerticalAlignment="Center"/>
     </Grid>

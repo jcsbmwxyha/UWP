@@ -187,7 +187,7 @@
                    TextAlignment="Center" TextWrapping="Wrap" Margin="0,60,0,0"/>
         <RelativePanel Grid.Column="1" Grid.Row="2">
             <Button x:Uid="UpdateBtn" x:Name="OKBtn" Content="Update" Height="32" Style="{StaticResource RogButtonStyle2}" Click="OKBtn_Click"
-                    RelativePanel.LeftOf="CancelBtn" Margin="0,0,10,0"/>
+                    RelativePanel.LeftOf="CancelBtn" Margin="0,0,10,0" TabIndex="1"/>
             <Button x:Uid="CancelButton" x:Name="CancelBtn" Content="Cancel" Height="32" Style="{StaticResource RogButtonStyle2}" Click="CancelBtn_Click"
                     RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True"/>
         </RelativePanel>

@@ -42,21 +42,22 @@ namespace AuraEditor.Common
             SpacePage spacePage = SpacePage.Self;
             MainPage mainPage = MainPage.Self;
 
+            mainPage.ActionBarMask.Visibility = Visibility.Collapsed;
+            mainPage.SettingRelativePanel.Visibility = Visibility.Visible;
+            mainPage.LiveServiceUpdatingMask.Visibility = Visibility.Collapsed;
+            mainPage.NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
+            spacePage.NoSyncDeviceMask.Visibility = Visibility.Collapsed;
+            layerPage.PlayingMask.Visibility = Visibility.Collapsed;
+            mainPage.EditBarRelativePanel.Visibility = Visibility.Collapsed;
+            mainPage.ActionBarRelativePanel.Visibility = Visibility.Visible;
+            mainPage.AvailableButtonMask.Visibility = Visibility.Collapsed;
+            mainPage.FileComboboxMask.Visibility = Visibility.Collapsed;
+            mainPage.EffectBlockMask.Visibility = Visibility.Collapsed;
+            mainPage.EffectInfoMask.Visibility = Visibility.Collapsed;
+
             switch (type)
             {
                 case MaskType.None:
-                    mainPage.ActionBarMask.Visibility = Visibility.Collapsed;
-                    mainPage.SettingRelativePanel.Visibility = Visibility.Visible;
-                    mainPage.LiveServiceUpdatingMask.Visibility = Visibility.Collapsed;
-                    mainPage.NoSupportedDeviceGrid.Visibility = Visibility.Collapsed;
-                    spacePage.NoSyncDeviceMask.Visibility = Visibility.Collapsed;
-                    layerPage.PlayingMask.Visibility = Visibility.Collapsed;
-                    mainPage.EditBarRelativePanel.Visibility = Visibility.Collapsed;
-                    mainPage.ActionBarRelativePanel.Visibility = Visibility.Visible;
-                    mainPage.AvailableButtonMask.Visibility = Visibility.Collapsed;
-                    mainPage.FileComboboxMask.Visibility = Visibility.Collapsed;
-                    mainPage.EffectBlockMask.Visibility = Visibility.Collapsed;
-                    mainPage.EffectInfoMask.Visibility = Visibility.Collapsed;
                     break;
                 case MaskType.NoSupportDevice:
                     mainPage.NoSupportedDeviceGrid.Visibility = Visibility.Visible;
