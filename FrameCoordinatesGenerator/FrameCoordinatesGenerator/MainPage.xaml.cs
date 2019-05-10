@@ -128,8 +128,9 @@ namespace FrameCoordinatesGenerator
         #endregion
 
         #region -- Start --
-        private async void StartButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
+            StatusTextBlock.Text = "";
             if (gBlueFrameImage == null)
                 return;
 
@@ -148,8 +149,8 @@ namespace FrameCoordinatesGenerator
 
             if (inputCsvIndexes != null && sortedFrameRects.Count != inputCsvIndexes.Count)
             {
-                StatusTextBlock.Text = "CSV 跟 PNG 燈數不相等！";
-                return;
+                StatusTextBlock.Text = "Warning: PNG:" + sortedFrameRects.Count + "個, CSV:" + inputCsvIndexes.Count + "個，燈數不相等！";
+                //return;
             }
 
             for (int i = 0; i < sortedFrameRects.Count; i++)
@@ -163,7 +164,7 @@ namespace FrameCoordinatesGenerator
                     LedIndex = i.ToString(),
                 };
 
-                if (inputCsvIndexes != null)
+                if (inputCsvIndexes != null && i < inputCsvIndexes.Count)
                     model.LedIndex = inputCsvIndexes[i].ToString();
 
                 gIndexingFrameModels.Add(model);

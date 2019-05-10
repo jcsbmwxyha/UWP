@@ -54,6 +54,7 @@
                 <ScrollViewer Name="ImageScrollViewer" Grid.Row="1" Margin="10"
                               BorderBrush="Black" BorderThickness="1"
                               VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch"
+IsZoomInertiaEnabled="False"
                               MinZoomFactor="0.1" MaxZoomFactor="50" ZoomMode="Enabled" x:FieldModifier="public" HorizontalAlignment="Stretch">
                     <Grid Name="DisplayGrid">
                         <Image Name="DeviceImage" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
