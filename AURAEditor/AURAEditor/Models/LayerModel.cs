@@ -681,7 +681,8 @@ namespace AuraEditor.Models
             public void ExecuteRedo()
             {
                 var layer = _elvm.Layer;
-                layer.TryInsertToTimelineFitly(_elvm);
+                layer.AddTimelineEffect(_elvm);
+                LayerPage.Self.CheckedEffect = _elvm;
             }
             public void ExecuteUndo()
             {
@@ -707,6 +708,7 @@ namespace AuraEditor.Models
             {
                 var layer = _elvm.Layer;
                 layer.AddTimelineEffect(_elvm);
+                LayerPage.Self.CheckedEffect = _elvm;
             }
         }
         public class RemoveAllEffectCommand : IReUndoCommand
