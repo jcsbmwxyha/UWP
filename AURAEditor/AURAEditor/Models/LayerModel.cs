@@ -712,32 +712,31 @@ namespace AuraEditor.Models
         public class RemoveAllEffectCommand : IReUndoCommand
         {
             LayerModel _layerModel;
-            LayerModel tmp;
+            List<EffectLineViewModel> _elvms;
+            List<TriggerEffect> _triggerEffs;
+
             public RemoveAllEffectCommand(LayerModel layermodel)
             {
                 _layerModel = layermodel;
-                tmp = LayerModel.Clone(layermodel);
+                _elvms = layermodel.EffectLineViewModels.ToList();
+                _triggerEffs = new List<TriggerEffect>(layermodel.TriggerEffects);
             }
 
             public void ExecuteRedo()
             {
-                int i = tmp.EffectLineViewModels.Count;
-                for (int j = 0; j < i; j++)
-                {
-                    _layerModel.DeleteEffectLine(tmp.EffectLineViewModels[j]);
-                }
+                _layerModel.EffectLineViewModels.Clear();
                 _layerModel.TriggerEffects.Clear();
                 _layerModel.IsTriggering = false;
             }
             public void ExecuteUndo()
             {
-                int i = tmp.EffectLineViewModels.Count;
-                for (int j = 0; j < i; j++)
-                {
-                    _layerModel.TryInsertToTimelineFitly(tmp.EffectLineViewModels[j]);
-                }
-                _layerModel.TriggerEffects = tmp.TriggerEffects;
-                _layerModel.IsTriggering = tmp.isTriggering;
+                foreach (var elvm in _elvms)
+                    _layerModel.AddTimelineEffect(elvm);
+
+                foreach (var tEff in _triggerEffs)
+                    _layerModel.TriggerEffects.Add(tEff);
+
+                _layerModel.IsTriggering = _triggerEffs.Count > 0 ? true : false;
             }
         }
     }

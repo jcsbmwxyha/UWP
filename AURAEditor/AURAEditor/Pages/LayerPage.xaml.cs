@@ -719,8 +719,8 @@ namespace AuraEditor.Pages
         {
             if(CheckedLayer != null)
             {
-                CheckedLayer.ClearAllEffect();
                 CheckedEffect = null;
+                CheckedLayer.ClearAllEffect();
                 args.Handled = true;
             }
         }
