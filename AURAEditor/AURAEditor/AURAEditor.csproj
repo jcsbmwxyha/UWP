@@ -130,7 +130,6 @@
     <Compile Include="Dialogs\TutorialDialog.xaml.cs">
       <DependentUpon>TutorialDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\ColorPatternModel.cs" />
     <Compile Include="Models\ColorPointModel.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
@@ -242,6 +241,7 @@
     <Compile Include="UserControls\TriggerBlock.xaml.cs">
       <DependentUpon>TriggerBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ColorPatternViewModel.cs" />
     <Compile Include="ViewModels\EffectLineViewModel.cs" />
     <Compile Include="WindowsPage.xaml.cs">
       <DependentUpon>WindowsPage.xaml</DependentUpon>

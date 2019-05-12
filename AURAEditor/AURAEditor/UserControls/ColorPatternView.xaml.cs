@@ -19,13 +19,13 @@ namespace AuraEditor.UserControls
 {
     public sealed partial class ColorPatternView : UserControl
     {
-        private ColorPatternModel m_ColorPatternModel { get { return this.DataContext as ColorPatternModel; } }
+        private ColorPatternViewModel mColorPatternVM { get { return this.DataContext as ColorPatternViewModel; } }
 
         private ObservableCollection<ColorPointModel> CurrentColorPoints
         {
             get
             {
-                return m_ColorPatternModel.CurrentColorPoints;
+                return mColorPatternVM.CurrentColorPoints;
             }
         }
 
@@ -65,24 +65,20 @@ namespace AuraEditor.UserControls
 
         private void DefaultRainbow_Click(object sender, RoutedEventArgs e)
         {
-            MenuFlyoutItem mf = sender as MenuFlyoutItem;
+            var oldSelect = mColorPatternVM.Select;
 
-            var pattern = ColorPatternModel.Self;
-            var oldSelect = pattern.Selected;
+            MenuFlyoutItem mf = sender as MenuFlyoutItem;
             var newSelect = (int)Char.GetNumericValue(mf.Name[mf.Name.Length - 1]) - 1;
 
-            m_ColorPatternModel.Selected = newSelect;
-
-            ReUndoManager.Store(new ColorPatternModifyCommand(m_ColorPatternModel.Info, null, null, oldSelect, newSelect));
+            mColorPatternVM.Select = newSelect;
+            ReUndoManager.Store(new ColorPatternModifyCommand(mColorPatternVM.mInfoModel, null, null, oldSelect, newSelect));
         }
         private void CustomizeRainbow_Click(object sender, RoutedEventArgs e)
         {
-            var pattern = ColorPatternModel.Self;
-            var oldSelect = pattern.Selected;
+            var oldSelect = mColorPatternVM.Select;
 
-            m_ColorPatternModel.Selected = -1;
-
-            ReUndoManager.Store(new ColorPatternModifyCommand(m_ColorPatternModel.Info, null, null, oldSelect, -1));
+            mColorPatternVM.Select = -1;
+            ReUndoManager.Store(new ColorPatternModifyCommand(mColorPatternVM.mInfoModel, null, null, oldSelect, -1));
         }
 
         private void AddColorPointButton_Click(object sender, RoutedEventArgs e)
@@ -114,7 +110,7 @@ namespace AuraEditor.UserControls
                         Color = checkedCp.Color,
                     };
                     CurrentColorPoints.Insert(insertIndex, newCp);
-                    m_ColorPatternModel.OnCustomizeChanged();
+                    mColorPatternVM.OnCustomizeChanged();
                     newCp.IsChecked = true;
                 }
             }
@@ -139,7 +135,7 @@ namespace AuraEditor.UserControls
                 }
 
                 CurrentColorPoints.Remove(checkedCp);
-                m_ColorPatternModel.OnCustomizeChanged();
+                mColorPatternVM.OnCustomizeChanged();
                 CurrentColorPoints[needCheckedIndex].IsChecked = true;
             }
         }
@@ -147,11 +143,11 @@ namespace AuraEditor.UserControls
         public class ColorPatternModifyCommand : IReUndoCommand
         {
             private EffectInfoModel _info;
-            List<ColorPointLightData> _newlist;
             List<ColorPointLightData> _oldlist;
+            List<ColorPointLightData> _newlist;
             private int _oldSelect;
             private int _newSelect;
-            private EffectLineViewModel _commonEff = null;
+            private EffectLineViewModel _elvm = null;
 
             public ColorPatternModifyCommand(EffectInfoModel info, List<ColorPointLightData> oldlist, List<ColorPointLightData> newlist, int oldSelect, int newSelect)
             {
@@ -161,8 +157,8 @@ namespace AuraEditor.UserControls
                 _oldSelect = oldSelect;
                 _newSelect = newSelect;
 
-                if (IsCommonEffect(info.Name))
-                    _commonEff = LayerPage.Self.CheckedEffect;
+                if (IsCommonEffect(info.Type))
+                    _elvm = LayerPage.Self.CheckedEffect;
             }
 
             public void ExecuteRedo()
@@ -181,12 +177,12 @@ namespace AuraEditor.UserControls
 
                 _info.PatternSelect = _newSelect;
 
-                if (_commonEff != null)
+                if (_elvm != null) // Is Timeline Effect
                 {
-                    LayerPage.Self.CheckedEffect = _commonEff;
-                    var pm = ColorPatternModel.Self;
-                    pm.Selected = _newSelect;
-                    pm.RefreshCPs();
+                    if (_elvm == LayerPage.Self.CheckedEffect) // Is checking, just refresh it.
+                        ColorPatternViewModel.Self.RefreshCurrentCPs();
+                    else
+                        LayerPage.Self.CheckedEffect = _elvm;
                 }
             }
 
@@ -206,12 +202,12 @@ namespace AuraEditor.UserControls
 
                 _info.PatternSelect = _oldSelect;
 
-                if (_commonEff != null)
+                if (_elvm != null) // Is Timeline Effect
                 {
-                    LayerPage.Self.CheckedEffect = _commonEff;
-                    var pm = ColorPatternModel.Self;
-                    pm.Selected = _newSelect;
-                    pm.RefreshCPs();
+                    if(_elvm == LayerPage.Self.CheckedEffect) // Is checking, just refresh it.
+                        ColorPatternViewModel.Self.RefreshCurrentCPs();
+                    else
+                        LayerPage.Self.CheckedEffect = _elvm;
                 }
             }
         }

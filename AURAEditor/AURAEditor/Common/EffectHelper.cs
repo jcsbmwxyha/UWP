@@ -123,13 +123,10 @@ namespace AuraEditor.Common
             else if (idx == 12) return resourceLoader.GetString("SmartEffectText");
             return null;
         }
-        static public bool IsCommonEffect(string effectName)
+        static public bool IsCommonEffect(int idx)
         {
-            foreach (string s in _commonEffects)
-            {
-                if (s == effectName)
-                    return true;
-            }
+            if (idx < _commonEffects.Length)
+                return true;
 
             return false;
         }

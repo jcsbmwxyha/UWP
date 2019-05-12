@@ -42,7 +42,7 @@ namespace AuraEditor.Pages
         private int _oldColorModeSelectionValue;
         private int _currentColorModeSelectionValue = 1;
 
-        private ColorPatternModel patternModel;
+        private ColorPatternViewModel patternModel;
 
         public EffectInfoPage()
         {
@@ -65,8 +65,7 @@ namespace AuraEditor.Pages
 
             this.DataContext = m_Info;
 
-            patternModel = new ColorPatternModel(m_Info);
-            patternModel.CurrentColorPoints[0].IsChecked = true;
+            patternModel = new ColorPatternViewModel(m_Info);
             ColorPattern.DataContext = patternModel;
 
             if (m_Info.RainbowSpecialMode == 1)
@@ -146,7 +145,7 @@ namespace AuraEditor.Pages
             m_Info.ColorSegmentation = true;
             m_Info.RainbowSpecialEffects = false;
             m_Info.RainbowSpecialMode = 1;
-            ColorPatternModel.Self.Selected = DefaultColorPointListCollection.Count - 1;
+            ColorPatternViewModel.Self.Select = DefaultColorPointListCollection.Count - 1;
             Single.IsChecked = true;
             m_Info.ColorModeSelection = 1;
         }

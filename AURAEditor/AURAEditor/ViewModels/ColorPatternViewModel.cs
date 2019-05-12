@@ -1,4 +1,5 @@
 ﻿using AuraEditor.Common;
+using AuraEditor.Models;
 using AuraEditor.UserControls;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ using static AuraEditor.Common.Definitions;
 using static AuraEditor.Common.EffectHelper;
 using static AuraEditor.UserControls.ColorPatternView;
 
-namespace AuraEditor.Models
+namespace AuraEditor.ViewModels
 {
-    public class ColorPatternModel : INotifyPropertyChanged
+    class ColorPatternViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -26,11 +27,11 @@ namespace AuraEditor.Models
             }
         }
 
-        public EffectInfoModel Info;
+        public EffectInfoModel mInfoModel;
 
-        static private ColorPatternModel _self;
-        static private ColorPatternModel _triggerself;
-        static public ColorPatternModel Self
+        static private ColorPatternViewModel _self;
+        static private ColorPatternViewModel _triggerself;
+        static public ColorPatternViewModel Self
         {
             get
             {
@@ -42,6 +43,7 @@ namespace AuraEditor.Models
         }
 
         #region -- Property --
+
         public ObservableCollection<ColorPointModel> CurrentColorPoints;
         public LinearGradientBrush CurrentColorForground
         {
@@ -51,7 +53,7 @@ namespace AuraEditor.Models
             }
         }
 
-        internal List<ColorPointLightData> GetCustomizedCpData()
+        internal List<ColorPointLightData> GetCustomizedLightData()
         {
             List<ColorPointLightData> res = new List<ColorPointLightData>();
             foreach (var cp in CustomizeColorPoints)
@@ -61,7 +63,11 @@ namespace AuraEditor.Models
             return res;
         }
 
-        public List<ColorPointModel> CustomizeColorPoints;
+        public List<ColorPointModel> CustomizeColorPoints
+        {
+            get { return mInfoModel.CustomizedPattern; }
+            set { mInfoModel.CustomizedPattern = value; }
+        }
         public LinearGradientBrush CustomizeColorForground
         {
             get
@@ -70,32 +76,28 @@ namespace AuraEditor.Models
             }
         }
 
-        private int _selected = -2;
-        public int Selected
+        public int Select
         {
             get
             {
-                return _selected;
+                return mInfoModel.PatternSelect;
             }
             set
             {
-                if (_selected != value)
+                if (mInfoModel.PatternSelect != value)
                 {
-                    Info.PatternSelect = value;
-                    _selected = value;
-                    RefreshCPs();
+                    mInfoModel.PatternSelect = value;
+                    RefreshCurrentCPs();
                 }
             }
         }
         #endregion
 
-        public ColorPatternModel(EffectInfoModel info)
+        public ColorPatternViewModel(EffectInfoModel info)
         {
             CurrentColorPoints = new ObservableCollection<ColorPointModel>();
-            this.Info = info;
-
-            CustomizeColorPoints = info.CustomizedPattern;
-            Selected = info.PatternSelect;
+            mInfoModel = info;
+            RefreshCurrentCPs();
 
             if (!IsTriggerEffect(info.Type))
                 _self = this;
@@ -107,10 +109,9 @@ namespace AuraEditor.Models
         {
             RaisePropertyChanged("CurrentColorForground");
         }
-
         public void OnCustomizeChanged()
         {
-            var oldCPs = GetCustomizedCpData();
+            var oldCPs = GetCustomizedLightData();
 
             SetColorPointBorders(CurrentColorPoints.ToList());
 
@@ -118,39 +119,37 @@ namespace AuraEditor.Models
             foreach (var cp in CurrentColorPoints)
                 CustomizeColorPoints.Add(ColorPointModel.Copy(cp));
 
-            var newCPs = GetCustomizedCpData();
+            var newCPs = GetCustomizedLightData();
 
-            ReUndoManager.Store(new ColorPatternModifyCommand(Info, oldCPs, newCPs, Selected, -1));
+            ReUndoManager.Store(new ColorPatternModifyCommand(mInfoModel, oldCPs, newCPs, Select, -1));
 
-            Selected = -1;
+            Select = -1;
             RaisePropertyChanged("CurrentColorForground");
             RaisePropertyChanged("CustomizeColorForground");
         }
 
-        public void RefreshCPs()
+        public void RefreshCurrentCPs()
         {
             CurrentColorPoints.Clear();
+            List<ColorPointModel> d_cps;
 
-            if (Selected == -1)
+            if (Select == -1)
             {
-                foreach (var cp in CustomizeColorPoints)
-                    CurrentColorPoints.Add(ColorPointModel.Copy(cp));
+                SetColorPointBorders(CustomizeColorPoints);
+                d_cps = CustomizeColorPoints;
             }
+            else if (Select < DefaultColorPointListCollection.Count)
+                d_cps = DefaultColorPointListCollection[Select];
             else
-            {
-                List<ColorPointModel> d_cps;
-                if (Selected < DefaultColorPointListCollection.Count)
-                    d_cps = DefaultColorPointListCollection[Selected];
-                else
-                    d_cps = DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1];
+                d_cps = DefaultColorPointListCollection[DefaultColorPointListCollection.Count - 1];
 
-                foreach (var d_cp in d_cps)
-                {
-                    var cp = ColorPointModel.Copy(d_cp);
-                    CurrentColorPoints.Add(cp);
-                }
+            foreach (var d_cp in d_cps)
+            {
+                var cp = ColorPointModel.Copy(d_cp);
+                CurrentColorPoints.Add(cp);
             }
 
+            CurrentColorPoints[0].IsChecked = true;
             RaisePropertyChanged("CurrentColorForground");
             RaisePropertyChanged("CustomizeColorForground");
         }

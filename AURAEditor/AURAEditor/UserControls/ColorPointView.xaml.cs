@@ -18,7 +18,7 @@ namespace AuraEditor.UserControls
     public sealed partial class ColorPointView : UserControl
     {
         private ColorPointModel m_ColorPointModel { get { return this.DataContext as ColorPointModel; } }
-        private ColorPatternModel parent;
+        private ColorPatternViewModel parent;
 
         public ColorPointView()
         {
@@ -31,7 +31,7 @@ namespace AuraEditor.UserControls
 
         private void ColorPointBg_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            parent = ColorPatternModel.Self;
+            parent = ColorPatternViewModel.Self;
         }
         private void ColorPointRadioButton_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
@@ -66,7 +66,7 @@ namespace AuraEditor.UserControls
             if (colorPickerDialog.ColorPickerResult)
             {
                 m_ColorPointModel.Color = colorPickerDialog.CurrentColor;
-                ColorPatternModel.Self.OnCustomizeChanged();
+                ColorPatternViewModel.Self.OnCustomizeChanged();
             }
 
             if (dialog != null)

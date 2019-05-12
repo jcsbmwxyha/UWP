@@ -13,7 +13,7 @@ using static AuraEditor.Common.XmlHelper;
 
 namespace AuraEditor.Models
 {
-    public class EffectInfoModel : ICloneable, INotifyPropertyChanged
+    public class EffectInfoModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)

@@ -16,7 +16,7 @@
     <StackPanel x:Name="PatternGroup" Orientation="Vertical" >
         <Grid Margin="20,20,0,0">
             <Polygon x:Name="ButtonPolygon" Points="10,10,10,17,15,22,170,22,170,10"
-                     Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
+                     Fill="{x:Bind mColorPatternVM.CurrentColorForground, Mode=OneWay}"/>
             <Button Height="32" Width="196" Style="{StaticResource RogComboBoxButtonStyle1}">
                 <Button.Flyout>
                     <MenuFlyout x:Name="DefaultPatternMenuFlyout" Placement="Bottom" MenuFlyoutPresenterStyle="{StaticResource RogMenuFlyoutPresenterStyle}">
@@ -29,14 +29,14 @@
                         <MenuFlyoutItem x:Name="DefaultPattern7" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="DefaultRainbow_Click"/>
                         <MenuFlyoutSeparator Margin="0,5,0,5" Background="White"/>
                         <MenuFlyoutItem x:Name="CustomizePattern" Style="{StaticResource RogMenuFlyoutItemStyle}" Click="CustomizeRainbow_Click"
-                                        Foreground="{x:Bind m_ColorPatternModel.CustomizeColorForground, Mode=OneWay}"/>
+                                        Foreground="{x:Bind mColorPatternVM.CustomizeColorForground, Mode=OneWay}"/>
                     </MenuFlyout>
                 </Button.Flyout>
             </Button>
         </Grid>
         <StackPanel Orientation="Vertical" Margin="20,0,0,0">
             <ItemsControl Name="ColorPointItemsControl" Margin="-10,0,0,0" Height="20"
-                         ItemsSource="{x:Bind Path=m_ColorPatternModel.CurrentColorPoints}">
+                         ItemsSource="{x:Bind Path=mColorPatternVM.CurrentColorPoints}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas/>
@@ -60,7 +60,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <Rectangle x:Name="PatternRectangle" Width="196" Height="16" HorizontalAlignment="Left"
-                       Fill="{x:Bind m_ColorPatternModel.CurrentColorForground, Mode=OneWay}"/>
+                       Fill="{x:Bind mColorPatternVM.CurrentColorForground, Mode=OneWay}"/>
             <StackPanel Orientation="Horizontal">
                 <Button Click="RemoveColorPointButton_Click" Style="{StaticResource MinusButtonStyle}">
                     <ToolTipService.ToolTip>
